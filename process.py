@@ -21,10 +21,11 @@ class CL_RGBA_Layer():
 				
 		if imagefile:
 			pic = Image.open(imagefile)
+			if self.height or self.width:
+				 pic.thumbnail(self.width, self.height, Image.ANTIALIAS)
 			self.width = pic.size[0]
 			self.height = pic.size[1]
-			temp_buff = numpy.array(pic.convert("RGB").getdata(), dtype=numpy.uint8).reshape(self.width, self.height, 3)
-			self.buff = temp_buff.astype(numpy.float32) / 256
+			temp_buff = numpy.array(pic.convert("RGB").getdata(), dtype=numpy.uint8).reshape(self.width, self.height, 3) / 256
 			print self.buff.dtype
 		elif color:
 			self.buff = numpy.empty((self.width, self.height, 3), dtype=numpy.float32)
@@ -32,7 +33,10 @@ class CL_RGBA_Layer():
 			self.buff[:, :, 1].fill(color[1])
 			self.buff[:, :, 2].fill(color[2])
 		else:
-			self.buff = numpy.empty((self.height, self.width, 3), dtype=numpy.float32)	
+			self.buff = numpy.zeros((self.height, self.width, 3), dtype=numpy.float32)	
+
+	def get_buffer(self):
+		return self.buff
 
 	def normalize(self, rgb):
 		for i in range(3):
@@ -42,17 +46,22 @@ class CL_RGBA_Layer():
 	def showBuffer(self):
 		Image.frombuffer('RGB', (self.width, self.height), self.normalize(self.buff).astype(numpy.uint8), 'raw', 'RGB', 0, 1).show()	
 
-class CL_Composer():
-	
+class CL_Add():
+	'''
+		This filter adds foreground over background using
+	'''
 	source_a = None	
 	source_b = None
 	result	 = None 
 	
 	prg = None
 	queue = None
-	def __init__(self, source_a, source_b):
-		self.source_a = source_a
-		self.source_b = source_b
+	def __init__(self, background = None, foreground = None):
+		if background:
+			self.source_a = background.get_buffer()
+		if foreground:
+			self.source_b = foreground.get_buffer()
+		
 		self.result = numpy.empty_like(self.source_a)
 		
 		ctx = cl.create_some_context()
@@ -80,20 +89,23 @@ class CL_Composer():
 			rgb[...,i]*=255
 		return rgb
 
+	def getResult(self):
+		return self.result
+	
 	def showResult(self):
 		Image.frombuffer('RGB', (512, 512), self.normalize(self.result).astype(numpy.uint8), 'raw', 'RGB', 0, 1).show()
 
-	def perform(self):
+	def cook(self):
 		self.prg.sum(self.queue, self.source_a.shape, None, self.a_buf, self.b_buf, self.dest_buf)
 		cl.enqueue_copy(self.queue, self.result, self.dest_buf)
 
 
-layer1 = CL_RGBA_Layer(imagefile="/Users/max/Desktop/dog.jpg")
+layer1 = CL_RGBA_Layer(imagefile="../media/dog.jpg")
 layer2 = CL_RGBA_Layer(width=512, height=512, color=(1, 0.5, 0.1, 1))
 
 layer1.showBuffer()
 layer2.showBuffer()
 
-comp = CL_Composer(layer1.buff, layer2.buff)
-comp.perform()
+comp = CL_Add(layer1, layer2)
+comp.cook()
 comp.showResult()

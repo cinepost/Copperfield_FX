@@ -2,6 +2,13 @@ import numpy
 from PIL import Image
 import pyopencl as cl
 
+from OpenGL.GL import *
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
+import sys
+
+import threading              
+
 class CLC_Base(object):
 	devOutBuffer = None
 	width		 = 0	
@@ -17,7 +24,10 @@ class CLC_Base(object):
 		if width !=0 and height !=0:
 			self.width = width
 			self.height = height	
-			
+		
+	def load_program(self, filename):
+		of = open("cl/%s" % filename, 'r')
+		return cl.Program(self.engine.ctx, of.read()).build() #TODO cache program here
 		
 	@property
 	def size(self):
@@ -26,6 +36,10 @@ class CLC_Base(object):
 	@property	
 	def area(self):	
 		return self.width * self.height
+		
+	@property	
+	def volume(self):	
+		return self.area * 3
 
 	@property
 	def is_cooked(self):

@@ -1,6 +1,8 @@
 import pyopencl as cl
 
 class CLC_Engine():
+	
+	programs = {}
 
 	def __init__(self, device_id=0):
 		self._ctx = cl.create_some_context()

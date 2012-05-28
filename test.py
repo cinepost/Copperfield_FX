@@ -1,14 +1,20 @@
-from process import *
+import engines	
+import sources
+import comps
 
-# First create engine
-engine = CL_Engine()
+## First create engine
+engine = engines.CLC_Engine()
 
-# Create two layers
-#layer1 = CL_RGBA_Layer(width=64, height=64, imagefile="media/dog.jpg")
-layer1 = CL_RGBA_Layer(width=128, height=128, color=(0, 0, 1, 1))
-layer2 = CL_RGBA_Layer(width=128, height=128, color=(1, 0, 0, 1))
+## Create two test layers
+layer1 = sources.CLC_Source_Image(engine, width=512, height=512, imagefile="media/dog.jpg")
+layer1.cook()
+layer1.show()
 
-# Now create compositing node CL_Add and
-comp = CL_Add(engine, background = layer1, foreground = layer2)
+layer2 = sources.CLC_Source_Image(engine, width=512, height=512, imagefile="media/cross.png")
+layer2.cook()
+layer2.show()
+
+## Now create compositing node CL_Add and
+comp = comps.CLC_Comp_Add(engine, background = layer1, foreground = layer2)
 comp.cook()
-comp.showResult()
+comp.show()

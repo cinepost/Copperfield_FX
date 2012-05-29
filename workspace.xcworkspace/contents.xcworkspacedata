@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <Group
+      location = "group:"
+      name = "">
+      <FileRef
+         location = "group:base.py">
+      </FileRef>
+      <Group
+         location = "group:cl"
+         name = "cl">
+         <FileRef
+            location = "group:comp_add.cl">
+         </FileRef>
+         <FileRef
+            location = "group:comp_screen.cl">
+         </FileRef>
+      </Group>
+      <FileRef
+         location = "group:comps.py">
+      </FileRef>
+      <FileRef
+         location = "group:engines.py">
+      </FileRef>
+      <FileRef
+         location = "group:ide_test.py">
+      </FileRef>
+      <Group
+         location = "group:media"
+         name = "media">
+         <FileRef
+            location = "group:cross.png">
+         </FileRef>
+         <FileRef
+            location = "group:dog.jpg">
+         </FileRef>
+      </Group>
+      <FileRef
+         location = "group:process.py">
+      </FileRef>
+      <FileRef
+         location = "group:README">
+      </FileRef>
+      <FileRef
+         location = "group:README.md">
+      </FileRef>
+      <FileRef
+         location = "group:sources.py">
+      </FileRef>
+      <FileRef
+         location = "group:test.py">
+      </FileRef>
+      <FileRef
+         location = "group:workspace.xcworkspace">
+      </FileRef>
+   </Group>
+</Workspace>

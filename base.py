@@ -24,10 +24,8 @@ class CLC_Base(object):
 		if width !=0 and height !=0:
 			self.width = width
 			self.height = height	
-		
-	def load_program(self, filename):
-		of = open("cl/%s" % filename, 'r')
-		return cl.Program(self.engine.ctx, of.read()).build() #TODO cache program here
+	
+		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
 		
 	@property
 	def size(self):
@@ -39,7 +37,15 @@ class CLC_Base(object):
 		
 	@property	
 	def volume(self):	
-		return self.area * 3
+		return self.area * 4
+
+	@property
+	def nbytes(self):
+		return self.volume * 4
+		
+	@property
+	def pitch(self):
+		return self.width * 16	
 
 	@property
 	def is_cooked(self):
@@ -54,16 +60,22 @@ class CLC_Base(object):
 				raise
 			else:	 
 				self.cooked = True
+				print "Node %s cooked!" % self
 				return True
 
 	def get_out_buffer(self):
+		if not self.is_cooked:
+			self.cook()
+		
 		return self.devOutBuffer
-
+		
 	def show(self):
 		if self.cooked:
 			temp_buff = numpy.zeros((self.width, self.height, 3)).astype(numpy.float32)
-			cl.enqueue_copy(self.engine.queue, temp_buff, self.devOutBuffer).wait()
+			print "Copying dev buffer %s to host buffer %s" % (self.get_out_buffer().size, temp_buff.nbytes)
 			self.engine.queue.finish()
+			evt = cl.enqueue_copy(self.engine.queue, temp_buff, self.devOutBuffer, origin=(0,0), region=self.size)
+			evt.wait()
 			Image.frombuffer('RGB', (self.width, self.height), temp_buff.astype(numpy.uint8), 'raw', 'RGB', 0, 1).show()			
 		else:
 			raise BaseException("Unable to show uncooked source %s !!!" % self)					

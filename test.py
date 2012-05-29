@@ -6,7 +6,7 @@ import comps
 engine = engines.CLC_Engine()
 
 ## Create two test layers
-layer1 = sources.CLC_Source_Image(engine, width=128, height=128, imagefile="media/dog.jpg")
+layer1 = sources.CLC_Source_Image(engine, width=64, height=64, imagefile="media/dog.jpg")
 layer1.cook()
 layer1.show()
 

@@ -23,13 +23,23 @@ class CLC_Comp_Add(base.CLC_Base):
 		if not self.background:
 			raise BaseException("No background specified for %s" % this)	
 		
-		self.devOutBuffer = cl.Buffer(self.engine.ctx, self.engine.mf.WRITE_ONLY, self.background.nbytes)
+		self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.WRITE_ONLY, self.image_format, shape=(self.width, self.height))
 		
-		cz = 1
-		co = 1
+		sampler = cl.Sampler(self.engine.ctx,
+				True, #  Normalized coordinates
+				cl.addressing_mode.CLAMP_TO_EDGE,
+				cl.filter_mode.LINEAR)
 		
-		exec_evt = self.program.run(self.engine.queue, (self.volume,), None, 
-			self.background.get_out_buffer(), 
-			self.foreground.get_out_buffer(), 
-			self.devOutBuffer)
+		
+		self.Buffer1 = cl.Image(self.foreground.devOutBuffer)
+		self.Buffer2 = cl.Image(self.foreground.devOutBuffer)
+		
+		exec_evt = self.program.run_add(self.engine.queue, self.size, None, 
+			self.Buffer1, 
+			self.Buffer2, 
+			self.devOutBuffer,
+			sampler,
+			numpy.int32(self.width),
+			numpy.int32(self.height),
+		)
 		exec_evt.wait()

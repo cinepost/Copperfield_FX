@@ -1,4 +1,5 @@
 import numpy
+import Imath
 from PIL import Image
 import pyopencl as cl
 
@@ -71,12 +72,13 @@ class CLC_Base(object):
 		
 	def show(self):
 		if self.cooked:
-			temp_buff = numpy.zeros((self.width, self.height, 4)).astype(numpy.float32)
+			temp_buff = numpy.empty((self.width, self.height, 4)).astype(numpy.float32)
 			print "Copying dev buffer %s to host buffer %s" % (self.get_out_buffer().size, temp_buff.nbytes)
 			self.engine.queue.finish()
 			evt = cl.enqueue_copy(self.engine.queue, temp_buff, self.devOutBuffer, origin=(0,0), region=self.size)
 			evt.wait()
 			Image.frombuffer('RGBA', (self.width, self.height), temp_buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1).show()		
+			#Imath.PreviewImage(self.width, self.height, temp_buff.tostring())
 		else:
 			raise BaseException("Unable to show uncooked source %s !!!" % self)					
 

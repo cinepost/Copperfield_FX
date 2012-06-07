@@ -1,10 +1,5 @@
-__kernel void run(__global const float *a, __global const float *b, __global float *c)
+__kernel void run_add(__read_only image2d_t img_in_bg, __read_only image2d_t img_in_fg, __write_only image2d_t img_out, sampler_t sampler, int out_width, int out_height)
 {
-	int gid = get_global_id(0);
-	float result = a[gid] + b[gid];
-	
-	// clamping code here
-	if(result > 255)result = 255;
-	
-	c[gid] = result;
+	int x = get_global_id(0);
+	int y = get_global_id(1);
 }

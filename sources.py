@@ -17,29 +17,33 @@ class CLC_Source_Image(base.CLC_Base):
 	def compute(self):
 		if self.imagefile:
 			pic = Image.open(self.imagefile)
-			#if self.area > 0:
-			#	 pic.thumbnail((self.width, self.height), Image.ANTIALIAS)
-			self.width = pic.size[0]
-			self.height = pic.size[1]
-			temp_buff = numpy.array(pic.convert("RGBA").getdata()).reshape(self.width, self.height, 4)
+			source_width = pic.size[0]
+			source_height = pic.size[1]
+			temp_buff = numpy.array(pic.convert("RGBA").getdata()).reshape(source_width, source_height, 4)
 			host_buff = temp_buff.astype(numpy.float32)
 			del temp_buff
 			
-			#self.devInBuffer = cl.Buffer(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, hostbuf=host_buff)
-			#self.devOutBuffer = cl.Buffer(self.engine.ctx, self.engine.mf.WRITE_ONLY, self.nbytes)
-			
-			self.devInBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.width, self.height,), pitches=(self.pitch,), hostbuf=host_buff)
+			self.devInBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(source_width, source_height,), pitches=(source_width * 16,), hostbuf=host_buff)
 			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.WRITE_ONLY, self.image_format, shape=(self.width, self.height))
 			
 			print "Cooking %s for size %sx%s" % (self, self.width, self.height)
 			print "inBuffer size %s, outBuffer size %s" % (self.devInBuffer.size, self.devOutBuffer.size)
-			exec_evt = self.program.run(self.engine.queue, (self.volume,), None, 
+			
+			# Create sampler for sampling image object
+			sampler = cl.Sampler(self.engine.ctx,
+				True, #  Normalized coordinates
+				cl.addressing_mode.CLAMP_TO_EDGE,
+				cl.filter_mode.LINEAR)
+
+			
+			exec_evt = self.program.run(self.engine.queue, self.size, None, 
 				self.devInBuffer, 
 				self.devOutBuffer, 
-				numpy.int32(123),
-				numpy.int32(123),
-				numpy.int32(123),
-				numpy.int32(123),
+				sampler, 
+				numpy.int32(source_width),
+				numpy.int32(source_height),
+				numpy.int32(self.width),
+				numpy.int32(self.height),
 			)
 			exec_evt.wait()
 			

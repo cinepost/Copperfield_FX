@@ -1,6 +1,9 @@
 import engines	
 import sources
 import comps
+import os
+
+os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 
 ## First create engine
 engine = engines.CLC_Engine()

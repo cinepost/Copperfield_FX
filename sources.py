@@ -72,10 +72,10 @@ class CLC_Source_Image(base.CLC_Base):
 				cl.addressing_mode.CLAMP_TO_EDGE,
 				cl.filter_mode.LINEAR)
 				
-			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.WRITE_ONLY, self.image_format, shape=(self.width, self.height))	
+			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))	
 				
 			ext = self.imagefile.split(".")[-1]
-			if ext in ["jpg","JPEG","JPG","jpeg"]:
+			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:
 				self.loadJPG(self.imagefile)
 				print "inBuffer size %s, outBuffer size %s" % (self.devInBuffer.size, self.devOutBuffer.size)
 				exec_evt = self.program.run_jpg(self.engine.queue, self.size, None, 

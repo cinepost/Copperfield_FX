@@ -30,13 +30,9 @@ class CLC_Comp_Add(base.CLC_Base):
 				cl.addressing_mode.CLAMP_TO_EDGE,
 				cl.filter_mode.LINEAR)
 		
-		
-		self.Buffer1 = cl.Image(self.foreground.devOutBuffer)
-		self.Buffer2 = cl.Image(self.foreground.devOutBuffer)
-		
 		exec_evt = self.program.run_add(self.engine.queue, self.size, None, 
-			self.Buffer1, 
-			self.Buffer2, 
+			self.background.get_out_buffer(), 
+			self.foreground.get_out_buffer(), 
 			self.devOutBuffer,
 			sampler,
 			numpy.int32(self.width),

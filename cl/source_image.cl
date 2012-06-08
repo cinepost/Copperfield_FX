@@ -14,7 +14,7 @@ __kernel void run_jpg(	__read_only image2d_t img_in_r,
 		val.x = read_imagef(img_in_r, sampler, coord).x;
 		val.y = read_imagef(img_in_g, sampler, coord).x;
 		val.z = read_imagef(img_in_b, sampler, coord).x;
-			write_imagef(img_out, (int2)(x, out_height - y), val*255);
+			write_imagef(img_out, (int2)(x, out_height - y), val);
 		}
 	}
 }
@@ -36,7 +36,7 @@ __kernel void run_exr(	__read_only image2d_t img_in_r,
 			val.y = read_imagef(img_in_g, sampler, coord).x;
 			val.z = read_imagef(img_in_b, sampler, coord).x;
 			val.w = read_imagef(img_in_a, sampler, coord).x;
-			write_imagef(img_out, (int2)(x, y), val * 255);
+			write_imagef(img_out, (int2)(x, y), val);
 		}
 	}
 }

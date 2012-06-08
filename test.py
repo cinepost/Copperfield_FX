@@ -24,14 +24,20 @@ engine = engines.CLC_Engine("GPU")
 layer1 = sources.CLC_Source_Image(engine)
 layer1.setParms({"width":1920, "height":1276, "imagefile":"media/photo.jpg"})
 layer1.cook()
-layer1.show()
+#layer1.show()
 
 
-blur2 = effects.CLC_Effect_FastBlur(engine);
+blur2 = effects.CLC_Effect_FastBlur(engine)
 blur2.setInput(0, layer1)
-blur2.setParms({"blursize":0.02, "blursizey": 0.04, "useindepy" : True})
+blur2.setParms({"blursize":0.002, "blursizey": 0.004, "useindepy" : True})
 blur2.cook()
-blur2.show()
+#blur2.show()
+
+raster = effects.CLC_Effect_PressRaster(engine)
+raster.setInput(0, blur2)
+raster.setParms({"density":300, "dot_size":1.5})
+raster.cook()
+raster.show()
 
 ## Now create compositing node CL_Add and
 #comp = comps.CLC_Comp_Add(engine)

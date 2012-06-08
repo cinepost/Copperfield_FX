@@ -57,3 +57,30 @@ class CLC_Effect_FastBlur(CLC_Effect):
 			raise BaseException("No input specified !!!")	
 
 
+class CLC_Effect_PressRaster(CLC_Effect):
+	
+	def __init__(self, engine):
+		self.parms.update({
+			"density"	: 50,		# dots density
+			"dot_size"	: 0.9,
+		})
+		self.program = engine.load_program("effects_press_raster.cl")	
+		super(CLC_Effect_PressRaster, self).__init__(engine)
+			
+	def compute(self):	
+		if self.inputs.has_key(0):
+			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.inputs.get(0).size)	
+			self.width = self.inputs.get(0).width
+			self.height = self.inputs.get(0).height
+			print "Raterizing area: %s x %s" %(self.inputs.get(0).width, self.inputs.get(0).height)
+			exec_evt = self.program.raster(self.engine.queue, self.size, None, 
+				self.inputs.get(0).get_out_buffer(),     
+				self.devOutBuffer,
+				numpy.int32(self.inputs.get(0).width),
+				numpy.int32(self.inputs.get(0).height),
+				numpy.float32(self.parms.get("density")),
+				numpy.float32(self.parms.get("dot_size")),
+			)
+			exec_evt.wait()
+		else:
+			raise BaseException("No input specified !!!")

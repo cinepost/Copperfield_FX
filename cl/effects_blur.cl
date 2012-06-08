@@ -62,7 +62,7 @@ __kernel void fast_blur_v(
 
     sum /= ((float)y_samples / 2);
     float4 zero = 0.0;
-    float4 one = 255.0;
+    float4 one = 1.0;
     sum = clamp(sum, zero, one);
     write_imagef(image_out, (int2)(x, y), sum);
 }

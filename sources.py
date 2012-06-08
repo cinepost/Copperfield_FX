@@ -2,28 +2,47 @@ import numpy
 import pyopencl as cl
 import base
 import engines
+import matplotlib.image
 
 			
 class CLC_Source_Image(base.CLC_Base):
 	
-	def __init__(self, engine, width=0, height=0, imagefile = None):
+	def __init__(self, engine):
+		self.parms.update({
+			"filename"	: None,		# image file name to read
+			"width"		: 640, 		# downscale to this resolution. setting this to 0 uses sources resolution
+			"height"	: 480,		# downscale to this resolution. setting this to 0 uses sources resolution
+			"flipx"		: False,	# flip image horizontally
+			"flipy"		: False,	# flip image vertically
+		})
 		self.engine = engine
-		if imagefile:
-			self.imagefile = imagefile
-		
 		self.program = self.engine.load_program("source_image.cl")	
-		super(CLC_Source_Image, self).__init__(engine, width, height)
+		super(CLC_Source_Image, self).__init__(engine)
 		
 	def loadJPG(self, filename):
-		from PIL import Image
+		img = matplotlib.image.imread(filename)
 		
-		pic = Image.open(self.imagefile)
-		self.source_width = pic.size[0]
-		self.source_height = pic.size[1]
-		temp_buff = numpy.array(pic.convert("RGBA").getdata()).reshape(self.source_width, self.source_height, 4)
-		host_buff = temp_buff.astype(numpy.float32)
+		self.source_width = img.shape[1]
+		self.source_height = img.shape[0]
+		
+		if self.parms.get("width") != 0:
+			self.width = self.parms.get("width")
+		else:
+			self.width = self.source_width
+					
+		if self.parms.get("height") != 0:
+			self.height = self.parms.get("height") 
+		else:
+			self.height = self.source_height
 			
-		self.devInBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.source_width, self.source_height,), pitches=(self.source_width * 16,), hostbuf=host_buff)
+		r = numpy.array(img[:,:,0],dtype=numpy.int8)
+		g = numpy.array(img[:,:,1],dtype=numpy.int8)
+		b = numpy.array(img[:,:,2],dtype=numpy.int8)
+		
+		self.devInBufferR = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
+		self.devInBufferG = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
+		self.devInBufferB = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
+
 
 	def loadEXR(self, filename):
 		import OpenEXR
@@ -37,6 +56,16 @@ class CLC_Source_Image(base.CLC_Base):
 		size = (dw.max.x - dw.min.x + 1, dw.max.y - dw.min.y + 1)
 		self.source_width = size[0]
 		self.source_height = size[1]
+		
+		if self.parms.get("width") != 0:
+			self.width = self.parms.get("width")
+		else:
+			self.width = self.source_width
+					
+		if self.parms.get("height") != 0:
+			self.height = self.parms.get("height") 
+		else:
+			self.height = self.source_height
 		
 		redstr = image.channel('R', pt)
 		host_buff_r = numpy.fromstring(redstr, dtype = numpy.float16)
@@ -63,25 +92,18 @@ class CLC_Source_Image(base.CLC_Base):
 		
 			
 	def compute(self):
-		if self.imagefile:
-			
-			print "Cooking %s for size %sx%s" % (self, self.width, self.height)
-			# Create sampler for sampling image object
-			sampler = cl.Sampler(self.engine.ctx,
-				True, #  Normalized coordinates
-				cl.addressing_mode.CLAMP_TO_EDGE,
-				cl.filter_mode.LINEAR)
-				
-			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))	
-				
-			ext = self.imagefile.split(".")[-1]
+		imagefile = self.parms.get("imagefile")
+		if imagefile:	 
+			ext = imagefile.split(".")[-1]
 			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:
-				self.loadJPG(self.imagefile)
-				print "inBuffer size %s, outBuffer size %s" % (self.devInBuffer.size, self.devOutBuffer.size)
+				self.loadJPG(imagefile)
+				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))
+				print "inBuffer size %s, outBuffer size %s" % (self.devInBufferR.size, self.devOutBuffer.size)
 				exec_evt = self.program.run_jpg(self.engine.queue, self.size, None, 
-					self.devInBuffer, 
+					self.devInBufferR, # red channel buffer
+					self.devInBufferG, # green channel buffer
+					self.devInBufferB, # blue channel buffer
 					self.devOutBuffer, 
-					sampler, 
 					numpy.int32(self.source_width),
 					numpy.int32(self.source_height),
 					numpy.int32(self.width),
@@ -89,7 +111,8 @@ class CLC_Source_Image(base.CLC_Base):
 				)
 				exec_evt.wait()
 			elif ext in ["exr", "EXR"]:
-				self.loadEXR(self.imagefile)
+				self.loadEXR(imagefile)
+				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))
 				print "inBuffer size %s, outBuffer size %s" % (self.devInBufferR.size, self.devOutBuffer.size)
 				exec_evt = self.program.run_exr(self.engine.queue, self.size, None, 
 					self.devInBufferR, # red channel buffer
@@ -97,7 +120,6 @@ class CLC_Source_Image(base.CLC_Base):
 					self.devInBufferB, # blue channel buffer
 					self.devInBufferA, # alpha channel buffer      
 					self.devOutBuffer, 
-					sampler, 
 					numpy.int32(self.source_width),
 					numpy.int32(self.source_height),
 					numpy.int32(self.width),

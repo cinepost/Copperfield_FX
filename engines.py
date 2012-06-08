@@ -5,7 +5,7 @@ class CLC_Engine():
 	gpu_devices = []
 	programs = {}
 		
-	def __init__(self):
+	def __init__(self, device_type="GPU"): # "cpu" or "gpu" here or "ALL"
 		print "Initializing compositing engine..."
 		for found_platform in cl.get_platforms():
 			if found_platform.name in ['NVIDIA CUDA', 'ATI Stream', 'Apple']:
@@ -28,8 +28,17 @@ class CLC_Engine():
 			print "Found GPU devices: %s" % self.gpu_devices
 		else:
 			print "No GPU devices found"
-	
-		self._ctx = cl.Context(devices = self.gpu_devices, dev_type = None)
+		
+		if device_type in ["gpu","GPU","Gpu"]:
+			print "Creating engine using GPU devices"
+			self._ctx = cl.Context(devices = self.gpu_devices)
+		elif device_type in ["cpu","CPU","Cpu"]:
+			print "Creating engine using CPU devices"
+			self._ctx = cl.Context(devices = self.cpu_devices)
+		else:
+			print "Creating engine using any type of device"
+			self._ctx = cl.Context(devices = self.cpu_devices + self.gpu_devices)
+		
 		self._queue = cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
 		self._mf = cl.mem_flags
 		print "Done."	

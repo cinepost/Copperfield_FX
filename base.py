@@ -11,22 +11,28 @@ import sys
 import threading              
 
 class CLC_Base(object):
-	devOutBuffer = None
-	width		 = 0	
-	height		 = 0
-	cooked		 = False
+	devOutBuffer 	= None
+	width		 	= None	
+	height		 	= None
+	cooked		 	= False
+	parms		 	= {
+		"effectamount"	: 	1,
+	}
+	inputs			= {}
 	
-	def __init__(self, engine, width, height):
+	def __init__(self, engine):
 		if engine:
 			self.engine = engine
 		else:
 			raise BaseException("No OpenCL engine specified !!!")
 			
-		if width !=0 and height !=0:
-			self.width = width
-			self.height = height	
-	
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
+	
+	def setParms(self, parameters):
+		self.parms.update(parameters)
+	
+	def setInput(self, layer_number, layer):
+		self.inputs[layer_number] = layer
 		
 	@property
 	def size(self):

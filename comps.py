@@ -7,9 +7,7 @@ class CLC_Comp_Add(base.CLC_Base):
 	'''
 		This filter adds foreground over background using OpenCL
 	'''
-	def __init__(self, engine, width=0, height=0, background = None, foreground = None):
-		self.background = background
-		self.foreground = foreground
+	def __init__(self, engine):
 
 		self.width = self.background.width
 		self.height = self.background.height

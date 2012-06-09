@@ -11,21 +11,22 @@ import sys
 import threading              
 
 class CLC_Base(object):
+	name			= None
 	devOutBuffer 	= None
-	width		 	= None	
-	height		 	= None
-	cooked		 	= False
 	parms		 	= {
 		"effectamount"	: 	1,
 	}
-	inputs			= {}
 	
 	def __init__(self, engine):
 		if engine:
 			self.engine = engine
 		else:
 			raise BaseException("No OpenCL engine specified !!!")
-			
+		
+		self.width	= None	
+		self.height	= None
+		self.cooked	= False	
+		self.inputs	= {}
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
 	
 	def setParms(self, parameters):
@@ -52,32 +53,31 @@ class CLC_Base(object):
 		
 	@property
 	def pitch(self):
-		return self.width * 16	
-
-	@property
-	def is_cooked(self):
-		return self.cooked		
+		return self.width * 16		
 
 	def cook(self):
-		if not self.cooked:
+		if self.cooked != True:
+			for key in self.inputs.keys():
+				self.inputs[key].cook()
+				
 			try:
 				self.compute()
 			except:
-				self.cooked = False
 				raise
 			else:	 
 				self.cooked = True
-				print "Node %s cooked!" % self
 				return True
+		else:
+			print "%s node already cooked !" % self		
 
 	def get_out_buffer(self):
-		if not self.is_cooked:
+		if self.cooked == False:
 			self.cook()
 		
 		return self.devOutBuffer
 		
 	def show(self):
-		if self.cooked:
+		if self.cooked == True:
 			temp_buff = numpy.empty((self.width, self.height, 4)).astype(numpy.float32)
 			print "Copying dev buffer %s to host buffer %s" % (self.get_out_buffer().size, temp_buff.nbytes)
 			self.engine.queue.finish()

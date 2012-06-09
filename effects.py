@@ -13,7 +13,7 @@ class CLC_Effect(base.CLC_Base):
 
 
 class CLC_Effect_FastBlur(CLC_Effect):
-	
+	name = "FastBlur"
 	def __init__(self, engine):
 		self.parms.update({
 			"blursize"	: 0.05,		# blur diameter for both X and Y in normalized coordinates
@@ -52,17 +52,16 @@ class CLC_Effect_FastBlur(CLC_Effect):
 			)
 			exec_evt.wait()
 			del self.devTmpBuffer
-			
 		else:
 			raise BaseException("No input specified !!!")	
 
 
 class CLC_Effect_PressRaster(CLC_Effect):
-	
+	name	= "PressRaster"
 	def __init__(self, engine):
 		self.parms.update({
-			"density"	: 50,		# dots density
-			"dot_size"	: 0.9,
+			"density"	: 100,		# dots density
+			"quality"	: 2,		# dots aa quality 2 is good, but 3 is better
 		})
 		self.program = engine.load_program("effects_press_raster.cl")	
 		super(CLC_Effect_PressRaster, self).__init__(engine)
@@ -79,7 +78,7 @@ class CLC_Effect_PressRaster(CLC_Effect):
 				numpy.int32(self.inputs.get(0).width),
 				numpy.int32(self.inputs.get(0).height),
 				numpy.float32(self.parms.get("density")),
-				numpy.float32(self.parms.get("dot_size")),
+				numpy.int32(self.parms.get("quality")),
 			)
 			exec_evt.wait()
 		else:

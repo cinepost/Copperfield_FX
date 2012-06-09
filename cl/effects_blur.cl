@@ -11,10 +11,11 @@ __kernel void fast_blur_h(
 
 	float2 coord = (float2)((float)x / (float)img_width, (float)y / (float)img_height);
     
-	int x_samples = img_width * blur_diameter;
+	int x_samples = img_width * blur_diameter + 2;
 	float dx = blur_diameter / x_samples;
 	
 	float4 sum = 0;
+	float ww = 0;
 	float dist = 0;
 	float2 sample_coord;
 	float w;
@@ -23,12 +24,12 @@ __kernel void fast_blur_h(
 		dist = a * dx - blur_diameter / 2;
 		sample_coord.x += dist;
 		w = 1 - fabs(dist / (blur_diameter / 2));
-
+		ww += w;
 		sum += read_imagef(image_in, sampler, sample_coord) * w;
 	}
 
 
-    sum /= ((float)x_samples / 2);
+    sum /= ww;
     write_imagef(image_out, (int2)(x, y), sum);
 }
 
@@ -43,24 +44,25 @@ __kernel void fast_blur_v(
 
 	float2 coord = (float2)((float)x / (float)img_width, (float)y / (float)img_height);
     
-	int y_samples = img_height * blur_diametery;
+	int y_samples = img_height * blur_diametery + 2;
 	float dy = blur_diametery / y_samples;
 	
 	float4 sum = 0;
+	float ww = 0;
 	float dist = 0;
 	float2 sample_coord;
 	float w;
 	for(int a = 0; a < y_samples; a++){
 		sample_coord = coord;
-		dist = a * dy - blur_diametery / 2;
+		dist = a * dy - blur_diametery / 3;
 		sample_coord.y += dist;
 		w = 1 - fabs(dist / (blur_diametery / 2));
-
+		ww += w;
 		sum += read_imagef(image_in, sampler, sample_coord) * w;
 	}
 
 
-    sum /= ((float)y_samples / 2);
+    sum /= ww;
     float4 zero = 0.0;
     float4 one = 1.0;
     sum = clamp(sum, zero, one);

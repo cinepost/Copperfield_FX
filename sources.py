@@ -7,6 +7,8 @@ import matplotlib.image
 			
 class CLC_Source_Image(base.CLC_Base):
 	
+	name = "ImageLoader"
+	
 	def __init__(self, engine):
 		self.parms.update({
 			"filename"	: None,		# image file name to read

@@ -63,8 +63,8 @@ __kernel void raster(
 		    float d_m = smoothstep(clamp(val + smooth_bias, 0.0f, 1.0f), clamp( val - smooth_bias, 0.0f , 1.0f), sqrt(su*su + sv*sv));
 		
 		    // cyan
-		    xx = coord.x*iar*cos(0.785f) - coord.y*sin(0.785f);
-			yy = coord.x*iar*sin(0.785f) + coord.y*cos(0.785f);
+		    xx = coord.x*iar*cos(0.785f) - (coord.y + 0.5f)*sin(0.785f);
+			yy = coord.x*iar*sin(0.785f) + (coord.y + 0.5f)*cos(0.785f);
 			u = xx * density;
 			v = yy * density;
 		    

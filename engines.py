@@ -1,10 +1,18 @@
+import sys
 import pyopencl as cl
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+from OpenGL.GL import *
+from PyQt4 import QtGui
+
+from viewer import *
 
 class CLC_Engine():
 	cpu_devices = []
 	gpu_devices = []
-	programs = {}
-		
+	programs 	= {}
+	viewer		= None	
+	app 		= None
 	def __init__(self, device_type="GPU"): # "cpu" or "gpu" here or "ALL"
 		print "Initializing compositing engine..."
 		for found_platform in cl.get_platforms():
@@ -45,8 +53,20 @@ class CLC_Engine():
 	
 	def load_program(self, filename):
 		of = open("cl/%s" % filename, 'r')
-		return cl.Program(self.ctx, of.read()).build()	
-	
+		return cl.Program(self.ctx, of.read()).build()
+		
+	def display(self, node = None):		
+		if not self.app:
+			app = QtGui.QApplication(['Compy Node Viewer'])
+		
+			if not self.viewer:
+				# Create viewer instance here
+				self.viewer = NodeViewer(node)
+				self.viewer.setWindowTitle('View node: %s' % node)
+				self.viewer.resize(node.width, node.height)
+				self.viewer.show()
+				app.exec_()
+		
 	@property
 	def ctx(self):
 		return self._ctx

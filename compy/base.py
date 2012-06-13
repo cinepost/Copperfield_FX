@@ -39,6 +39,7 @@ class CLC_Base(CLC_Node):
 		self.cooked	= False	
 		self.inputs	= {}
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
+		self.common_program = engine.load_program("common.cl")
 		self.parms = {
 			"effectamount"	: 	1,
 		}
@@ -92,11 +93,20 @@ class CLC_Base(CLC_Node):
 		
 	def show(self):
 		if self.cooked == True:
-			temp_buff = numpy.empty((self.width, self.height, 4)).astype(numpy.float32)
-			print "Copying dev buffer %s to host buffer %s" % (self.get_out_buffer().size, temp_buff.nbytes)
+			temp_buff = numpy.empty((self.width, self.height, 4), dtype = numpy.float16)
 			self.engine.queue.finish()
-			evt = cl.enqueue_copy(self.engine.queue, temp_buff, self.devOutBuffer, origin=(0,0), region=self.size)
+			imgToShowBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.size)
+			
+			evt = self.common_program.quantize_show(self.engine.queue, self.size, None, 
+				self.devOutBuffer,
+				imgToShowBuffer
+			)
 			evt.wait()
+			
+			print "Copying dev buffer %s to host buffer %s" % (self.get_out_buffer().size, temp_buff.nbytes)
+			evt = cl.enqueue_copy(self.engine.queue, temp_buff, imgToShowBuffer, origin=(0,0), region=self.size)
+			evt.wait()
+			
 			Image.frombuffer('RGBA', (self.width, self.height), temp_buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1).show()		
 		else:
 			raise BaseException("Unable to show uncooked source %s !!!" % self)					

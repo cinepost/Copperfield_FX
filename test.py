@@ -1,5 +1,4 @@
 import os
-
 import compy
 
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"

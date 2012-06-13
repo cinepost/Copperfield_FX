@@ -1,4 +1,4 @@
-__constant sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_LINEAR;
+__constant sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_REPEAT | CLK_FILTER_LINEAR;
 
 float level(float in , float min, float max){
 	float out = clamp(in - min, 0.0f, 1.0f);
@@ -104,5 +104,5 @@ __kernel void raster(
 	out.y = acc.y;
 	out.z = acc.z;
 
-    write_imagef(image_out, (int2)(x, y), out * 255);
+    write_imagef(image_out, (int2)(x, y), out);
 }

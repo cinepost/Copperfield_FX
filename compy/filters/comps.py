@@ -1,12 +1,13 @@
+from compy import base
 import pyopencl as cl
 import numpy
-import base
-import engines
 
 class CLC_Comp_Add(base.CLC_Base):
 	'''
 		This filter adds foreground over background using OpenCL
 	'''
+	name = "add"
+	category = "Comps"
 	def __init__(self, engine):
 
 		self.width = self.background.width

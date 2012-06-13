@@ -1,14 +1,11 @@
-import numpy
-import pyopencl as cl
-import base
-import engines
+from compy import base
 import matplotlib.image
-
+import pyopencl as cl
+import numpy
 			
 class CLC_Source_Image(base.CLC_Base):
-	
-	name = "ImageLoader"
-	
+	name = "file"
+	category = "Sources"
 	def __init__(self, engine):
 		self.parms.update({
 			"filename"	: None,		# image file name to read

@@ -1,21 +1,32 @@
-import numpy
+import sys
 import Imath
 from PIL import Image
 import pyopencl as cl
-
-from OpenGL.GL import *
-from OpenGL.GLU import *
-from OpenGL.GLUT import *
-import sys
+import numpy
 
 import threading              
 
-class CLC_Base(object):
+class CLC_Node(object):
+	# Base class for nodes graph representation
+	def __init__(self):
+		self.title 	= self.name 	# Do incrementation here (Blur1, Blur2, Blur3, etc...)
+		self.x_pos	= 0.0
+		self.y_pos	= 0.0
+		self.color	= (0.5, 1.0, 0.25,)
+		
+	def setPos(self, x, y):
+		self.x_pos = x
+		self.y_pos = y
+		
+	def getPos(self):
+		return (self.x_pos, self.y_pos,)		
+
+class CLC_Base(CLC_Node):
+	# Base class for FX filters
+	__cfx__			= True
 	name			= None
 	devOutBuffer 	= None
-	parms		 	= {
-		"effectamount"	: 	1,
-	}
+	parms			= {}
 	
 	def __init__(self, engine):
 		if engine:
@@ -28,7 +39,10 @@ class CLC_Base(object):
 		self.cooked	= False	
 		self.inputs	= {}
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
-	
+		self.parms = {
+			"effectamount"	: 	1,
+		}
+		
 	def setParms(self, parameters):
 		self.parms.update(parameters)
 	
@@ -84,7 +98,6 @@ class CLC_Base(object):
 			evt = cl.enqueue_copy(self.engine.queue, temp_buff, self.devOutBuffer, origin=(0,0), region=self.size)
 			evt.wait()
 			Image.frombuffer('RGBA', (self.width, self.height), temp_buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1).show()		
-			#Imath.PreviewImage(self.width, self.height, temp_buff.tostring())
 		else:
 			raise BaseException("Unable to show uncooked source %s !!!" % self)					
 

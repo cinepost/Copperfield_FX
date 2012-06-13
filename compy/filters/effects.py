@@ -1,7 +1,6 @@
-import numpy
+from compy import base
 import pyopencl as cl
-import base
-import engines
+import numpy
 
 class CLC_Effect(base.CLC_Base):
 	
@@ -13,7 +12,8 @@ class CLC_Effect(base.CLC_Base):
 
 
 class CLC_Effect_FastBlur(CLC_Effect):
-	name = "FastBlur"
+	name = "fastblur"
+	category = "Effects"
 	def __init__(self, engine):
 		self.parms.update({
 			"blursize"	: 0.05,		# blur diameter for both X and Y in normalized coordinates
@@ -57,7 +57,8 @@ class CLC_Effect_FastBlur(CLC_Effect):
 
 
 class CLC_Effect_PressRaster(CLC_Effect):
-	name	= "PressRaster"
+	name	= "raster"
+	category = "Effects"
 	def __init__(self, engine):
 		self.parms.update({
 			"density"	: 100,		# dots density

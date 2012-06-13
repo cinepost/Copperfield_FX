@@ -1,32 +1,31 @@
-import engines	
-import sources
-import comps
-import effects
 import os
+
+import compy
 
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 
 ## First create engine
-engine = engines.CLC_Engine("GPU")
+engine = compy.CreateEngine("GPU")
 
+## Create composition
+comp = engine.createNode("img")
 
 
 ## Create source layer
-layer1 = sources.CLC_Source_Image(engine)
-layer1.setParms({"width":960, "height":648, "imagefile":"media/photo.jpg"})
+layer1 = comp.createNode("file")
+layer1.setParms({"width":1920, "height":1200, "imagefile":"media/photo.jpg"})
 
-
-blur2 = effects.CLC_Effect_FastBlur(engine)
+## Create blur node
+blur2 = comp.createNode("fastblur")
 blur2.setInput(0, layer1)
-blur2.setParms({"blursize":0.002, "blursizey": 0.004, "useindepy" : True})
+blur2.setParms({"blursize":0.001, "blursizey": 0.002, "useindepy" : True})
 
-raster = effects.CLC_Effect_PressRaster(engine)
+## Create raster node
+raster = comp.createNode("raster")
 raster.setInput(0, blur2)
-raster.setParms({"density":320, "quality":3})
+raster.setParms({"density":320, "quality":4})
 raster.cook()
-#raster.show()
-
-engine.display(node=raster)
+raster.show()
 
 ## Now create compositing node CL_Add and
 #comp = comps.CLC_Comp_Add(engine)

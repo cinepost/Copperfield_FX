@@ -1,11 +1,6 @@
 import sys
 import pyopencl as cl
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
-from OpenGL.GL import *
-from PyQt4 import QtGui
-
-from viewer import *
+import compy.composition as composition
 
 class CLC_Engine():
 	cpu_devices = []
@@ -13,7 +8,10 @@ class CLC_Engine():
 	programs 	= {}
 	viewer		= None	
 	app 		= None
-	def __init__(self, device_type="GPU"): # "cpu" or "gpu" here or "ALL"
+	filters		= {}
+	comps		= {}
+	
+	def __init__(self, device_type="GPU", filters={}, cl_path=""): # "cpu" or "gpu" here or "ALL"
 		print "Initializing compositing engine..."
 		for found_platform in cl.get_platforms():
 			if found_platform.name in ['NVIDIA CUDA', 'ATI Stream', 'Apple']:
@@ -49,23 +47,13 @@ class CLC_Engine():
 		
 		self._queue = cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
 		self._mf = cl.mem_flags
-		print "Done."	
+		self.filters = filters
+		self.cl_path = cl_path
+		print "Bundled with filters: %s \n Done." % self.filters	
 	
 	def load_program(self, filename):
-		of = open("cl/%s" % filename, 'r')
+		of = open("%s/%s" % (self.cl_path, filename), 'r')
 		return cl.Program(self.ctx, of.read()).build()
-		
-	def display(self, node = None):		
-		if not self.app:
-			app = QtGui.QApplication(['Compy Node Viewer'])
-		
-			if not self.viewer:
-				# Create viewer instance here
-				self.viewer = NodeViewer(node)
-				self.viewer.setWindowTitle('View node: %s' % node)
-				self.viewer.resize(node.width, node.height)
-				self.viewer.show()
-				app.exec_()
 		
 	@property
 	def ctx(self):
@@ -78,3 +66,13 @@ class CLC_Engine():
 	@property
 	def mf(self):
 		return self._mf
+		
+	def createNode(self, node_type):
+		if node_type in ["comp", "img"]:
+			comp = composition.CLC_Composition(self)
+			self.comps[node_type] = comp
+			return comp
+		else:
+			print "Invalid node type specified!!!"
+			return None
+					

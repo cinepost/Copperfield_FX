@@ -1,7 +1,10 @@
 from PyQt4 import QtGui, QtCore
 
 class TimelineWidget(QtGui.QWidget):
-  
+    in_frame = 0
+    out_frame = 250
+    cursor = 0.0
+
     def __init__(self, parent=None):      
         super(TimelineWidget, self).__init__(parent)
         self.isPressed = False
@@ -9,7 +12,7 @@ class TimelineWidget(QtGui.QWidget):
         
     def initUI(self):
         self.setFixedHeight(30)
-        self.value = 75
+        self.value = 175
         self.num = [75, 150, 225, 300, 375, 450, 525, 600, 675]
 
 
@@ -61,13 +64,13 @@ class TimelineWidget(QtGui.QWidget):
 
         j = 0
 
+        #draw frames
         for i in range(step, 10*step, step):
-          
             qp.drawLine(i, 0, i, 5)
             metrics = qp.fontMetrics()
             fw = metrics.width(str(self.num[j]))
             qp.drawText(i-fw/2, h/2, str(self.num[j]))
-            j = j + 1
+            j += 1
 
     def mousePressEvent(self, e):
         self.isPressed = True

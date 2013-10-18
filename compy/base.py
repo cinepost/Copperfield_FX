@@ -5,6 +5,7 @@ import pyopencl as cl
 import numpy
 
 import threading              
+from parameter import *
 
 class CLC_Node(object):
 	# Base class for nodes graph representation

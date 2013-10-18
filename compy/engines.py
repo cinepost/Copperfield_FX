@@ -2,7 +2,7 @@ import sys
 import pyopencl as cl
 import compy.composition as composition
 
-class CLC_Engine():
+class CLC_Engine(object):
 	cpu_devices = []
 	gpu_devices = []
 	programs 	= {}
@@ -10,7 +10,8 @@ class CLC_Engine():
 	app 		= None
 	filters		= {}
 	comps		= {}
-	
+	time		= 0
+
 	def __init__(self, device_type="GPU", filters={}, cl_path=""): # "cpu" or "gpu" here or "ALL"
 		print "Initializing compositing engine..."
 		for found_platform in cl.get_platforms():
@@ -45,10 +46,10 @@ class CLC_Engine():
 			print "Creating engine using any type of device"
 			self._ctx = cl.Context(devices = self.cpu_devices + self.gpu_devices)
 		
-		self._queue = cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
-		self._mf = cl.mem_flags
-		self.filters = filters
-		self.cl_path = cl_path
+		self._queue 	= cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
+		self._mf 		= cl.mem_flags
+		self.filters 	= filters
+		self.cl_path 	= cl_path
 		print "Bundled with filters: %s \n Done." % self.filters	
 	
 	def load_program(self, filename):
@@ -66,6 +67,9 @@ class CLC_Engine():
 	@property
 	def mf(self):
 		return self._mf
+
+	def setTime(self, time):
+		self.time = time	
 		
 	def createNode(self, node_type):
 		if node_type in ["comp", "img"]:

@@ -1,5 +1,6 @@
 import sys
 import pyopencl as cl
+import pickle
 import compy.composition as composition
 
 class CLC_Engine(object):
@@ -80,3 +81,11 @@ class CLC_Engine(object):
 			print "Invalid node type specified!!!"
 			return None
 					
+	def children(self):
+		return self.comps
+
+	def save_project(self, filename):
+		pickle.dump( self.comps, open( filename, "wb"))
+
+	def open_project(self, filename):
+		self.comps = pickle.load( open( filename, "rb"))					

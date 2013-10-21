@@ -3,40 +3,49 @@ from PyQt4 import QtGui, QtCore, QtOpenGL
 
 from compy.engines import CLC_Engine
 
-from timeline import TimelineWidget
-from params import ParamsWidget
-from nodeviewer import NodeViewerWidget
+from widgets import TimelineWidget
+from widgets import ParamsWidget
+from widgets import NodeViewerWidget
+from widgets import ImageviewWidget
+from widgets import TreeNodeViewerWidget
+from widgets import PythonWidget
 
 class Workarea(QtGui.QWidget):
     def __init__(self, parent=None):
         super(Workarea, self).__init__(parent)
         
         # Init out engine and widgets first
-        self.node_view = NodeViewerWidget(self)
-        self.parm_view = ParamsWidget(self)
-        self.time_view = TimelineWidget(self)
+        self.node_view  = NodeViewerWidget(self)
+        self.parm_view  = ParamsWidget(self)
+        self.time_view  = TimelineWidget(self)
+        self.img_view   = ImageviewWidget(self)
+        self.tree_view  = TreeNodeViewerWidget(self)
+        self.python_view = PythonWidget(self)
 
         # Now init our UI 
         self.initUI()
         
     def initUI(self):      
-        hbox = QtGui.QHBoxLayout(self)
+        HBox = QtGui.QHBoxLayout(self)
+        
+        tabs = QtGui.QTabWidget()
+        tabs.addTab(self.node_view, "Node view")
+        tabs.addTab(self.tree_view, "Tree view")
+        tabs.addTab(self.python_view, "Interactive shell")
 
-        splitter1 = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        splitter1.addWidget(self.node_view)
-        splitter1.addWidget(self.parm_view)
+        VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
+        VSplitter.addWidget(self.img_view)
+        VSplitter.addWidget(self.time_view)
+        VSplitter.addWidget(tabs)
 
-        splitter2 = QtGui.QSplitter(QtCore.Qt.Vertical)
-        splitter2.addWidget(splitter1)
-        splitter2.addWidget(self.time_view)
+        HSplitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
+        HSplitter.addWidget(VSplitter)
+        HSplitter.addWidget(self.parm_view)        
 
-        hbox.addWidget(splitter2)
-        self.setLayout(hbox)
+        HBox.addWidget(HSplitter)
+        self.setLayout(HBox)
         self.show()
         
-    def onChanged(self, text):
-        self.lbl.setText(text)
-        self.lbl.adjustSize() 
 
 class Window(QtGui.QMainWindow):
     def __init__(self):
@@ -44,8 +53,18 @@ class Window(QtGui.QMainWindow):
         self.engine = CLC_Engine("GPU")
         self.initUI()
     
-    def open(self):
-        print "Open scene..."
+    def close(self):
+        exit()
+
+    def open_project(self):
+        fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
+        if fname:    
+            self.engine.open_project(fname)   
+
+    def save_project(self):
+        fname = QtGui.QFileDialog.getSaveFileName(self, 'Save file', '/home')    
+        if fname:
+            self.engine.save_project(fname)
 
     def initUI(self):      
         self.workarea = Workarea(self)
@@ -56,15 +75,21 @@ class Window(QtGui.QMainWindow):
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(self.close)
 
-        openAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_358_file_import.png'), 'Open', self)
+        openAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_358_file_import.png'), 'Open project', self)
         openAction.setShortcut('Ctrl+O')
-        openAction.setStatusTip('Open file')
-        openAction.triggered.connect(self.open)
+        openAction.setStatusTip('Open project')
+        openAction.triggered.connect(self.open_project)
+
+        saveAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_359_file_export.png'), 'Save project', self)
+        saveAction.setShortcut('Ctrl+S')
+        saveAction.setStatusTip('Save project')
+        saveAction.triggered.connect(self.save_project)
 
         menubar = self.menuBar()
 
         fileMenu = menubar.addMenu('&File')
         fileMenu.addAction(openAction)
+        fileMenu.addAction(saveAction)
         fileMenu.addAction(exitAction)
 
         viewMenu = menubar.addMenu('&View')
@@ -73,11 +98,12 @@ class Window(QtGui.QMainWindow):
         
         toolbar = self.addToolBar('Toolbar')
         toolbar.addAction(openAction)
+        toolbar.addAction(saveAction)
         toolbar.addAction(exitAction)
 
         QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
         
-        self.setGeometry(300, 300, 900, 600)
+        #self.setGeometry(300, 300, 900, 600)
         self.setWindowTitle('Compy Job Assembler')
         self.statusBar().showMessage('Ready...')
         self.show()       

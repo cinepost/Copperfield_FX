@@ -11,16 +11,17 @@ from widgets import TreeNodeViewerWidget
 from widgets import PythonWidget
 
 class Workarea(QtGui.QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, engine=None):
         super(Workarea, self).__init__(parent)
-        
+        self.engine = engine
+
         # Init out engine and widgets first
         self.node_view  = NodeViewerWidget(self)
         self.parm_view  = ParamsWidget(self)
         self.time_view  = TimelineWidget(self)
         self.img_view   = ImageviewWidget(self)
         self.tree_view  = TreeNodeViewerWidget(self)
-        self.python_view = PythonWidget(self)
+        self.python_view = PythonWidget(self, engine = self.engine)
 
         # Now init our UI 
         self.initUI()
@@ -67,7 +68,7 @@ class Window(QtGui.QMainWindow):
             self.engine.save_project(fname)
 
     def initUI(self):      
-        self.workarea = Workarea(self)
+        self.workarea = Workarea(self, engine=self.engine)
         self.setCentralWidget(self.workarea)
 
         exitAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_388_exit.png'), 'Exit', self)

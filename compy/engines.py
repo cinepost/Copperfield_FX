@@ -19,7 +19,7 @@ class CLC_Engine(object):
 			if found_platform.name in ['NVIDIA CUDA', 'ATI Stream', 'Apple']:
 				my_platform = found_platform
 			else:
-				raise BaseException("Unable to found capable OpenCL GPU")
+				raise BaseException("Unable to found capable OpenCL device!")
 		
 		for found_device in my_platform.get_devices():
 			if cl.device_type.to_string(found_device.type) == "GPU":

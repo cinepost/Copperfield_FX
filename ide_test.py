@@ -1,7 +1,7 @@
-import sys
+import sys, os
 from PyQt4 import QtGui, QtCore, QtOpenGL
 
-from compy.engines import CLC_Engine
+import compy
 
 from widgets import TimelineWidget
 from widgets import ParamsWidget
@@ -10,23 +10,28 @@ from widgets import ImageviewWidget
 from widgets import TreeNodeViewerWidget
 from widgets import PythonWidget
 
+os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
+
 class Workarea(QtGui.QWidget):
     def __init__(self, parent=None, engine=None):
         super(Workarea, self).__init__(parent)
         self.engine = engine
+        self.engine.set_network_change_callback(self.rebuild_widgets)
 
         # Init out engine and widgets first
         self.node_view  = NodeViewerWidget(self)
         self.parm_view  = ParamsWidget(self)
         self.time_view  = TimelineWidget(self)
-        self.img_view   = ImageviewWidget(self)
-        self.tree_view  = TreeNodeViewerWidget(self)
+        self.img_view   = ImageviewWidget(self, node = None)
+        self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine)
         self.python_view = PythonWidget(self, engine = self.engine)
 
         # Now init our UI 
         self.initUI()
         
-    def initUI(self):      
+    def initUI(self): 
+
+        # Create layout and place widgets     
         HBox = QtGui.QHBoxLayout(self)
         
         tabs = QtGui.QTabWidget()
@@ -46,12 +51,15 @@ class Workarea(QtGui.QWidget):
         HBox.addWidget(HSplitter)
         self.setLayout(HBox)
         self.show()
-        
+       
+    def rebuild_widgets(self):
+        print "Callback called ..."
+        self.tree_view.emit(QtCore.SIGNAL('network_changed'))    
 
 class Window(QtGui.QMainWindow):
     def __init__(self):
         super(Window, self).__init__()
-        self.engine = CLC_Engine("GPU")
+        self.engine = compy.CreateEngine("GPU")
         self.initUI()
     
     def close(self):

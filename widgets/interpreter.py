@@ -3,7 +3,7 @@ import re
 import sys
 import code
 
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
@@ -18,8 +18,8 @@ class PythonWidget(QtGui.QWidget):
         self.textEdit = PyInterp(self)
 
         # this is how you pass in locals to the interpreter
-        self.textEdit.initInterpreter(locals()) 
-
+        self.textEdit.initInterpreter(locals())
+        
         self.resize(650, 300)
         self.centerOnScreen()
 
@@ -38,10 +38,8 @@ class PyInterp(QTextEdit):
     class InteractiveInterpreter(code.InteractiveInterpreter):
         def __init__(self, locals):
             code.InteractiveInterpreter.__init__(self, locals)
-
         def runIt(self, command):
             code.InteractiveInterpreter.runsource(self, command)
-
 
     def __init__(self,  parent):
         super(PyInterp,  self).__init__(parent)
@@ -65,8 +63,7 @@ class PyInterp(QTextEdit):
         self.setFont(QFont('Courier', 12))
 
         # initilize interpreter with self locals
-        self.initInterpreter(locals())
-
+        self.initInterpreter(locals())  
 
     def printBanner(self):
         self.write(sys.version)
@@ -82,7 +79,7 @@ class PyInterp(QTextEdit):
         else:
             self.insertPlainText('>>> ')
 
-    def initInterpreter(self, interpreterLocals=None):
+    def initInterpreter(self, interpreterLocals=None, parent=None):
         if interpreterLocals:
             # when we pass in locals, we don't want it to be named "self"
             # so we rename it with the name of the class that did the passing

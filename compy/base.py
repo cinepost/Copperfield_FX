@@ -9,6 +9,9 @@ from parameter import *
 
 class CLC_Node(object):
 	# Base class for nodes graph representation
+	name = None
+	nodes = None
+
 	def __init__(self):
 		self.title 	= self.name 	# Do incrementation here (Blur1, Blur2, Blur3, etc...)
 		self.x_pos	= 0.0
@@ -20,11 +23,18 @@ class CLC_Node(object):
 		self.y_pos = y
 		
 	def getPos(self):
-		return (self.x_pos, self.y_pos,)		
+		return (self.x_pos, self.y_pos,)
+
+	@property	
+	def children(self):
+		return self.nodes
+
+	def __str__(self):
+		return self.__class__.__name__					
 
 class CLC_Base(CLC_Node):
 	# Base class for FX filters
-	__cfx__			= True
+	__fx__			= True # Indicated that this is FX node
 	name			= None
 	devOutBuffer 	= None
 	parms			= {}

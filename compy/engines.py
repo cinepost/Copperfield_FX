@@ -1,19 +1,32 @@
 import sys
 import pyopencl as cl
 import pickle
-import compy.composition as composition
+import compy.network_manager as network_manager
 
-class CLC_Engine(object):
+import re
+lastNum = re.compile(r'(?:[^\d]*(\d+)[^\d]*)+')
+
+def increment(s):
+    """ look for the last sequence of number(s) in a string and increment """
+    m = lastNum.search(s)
+    if m:
+        next = str(int(m.group(1))+1)
+        start, end = m.span(1)
+        s = s[:max(end-len(next), start)] + next + s[end:]
+    return s
+
+class CLC_Engine(network_manager.CLC_NetworkManager):
 	cpu_devices = []
 	gpu_devices = []
 	programs 	= {}
 	viewer		= None	
 	app 		= None
 	filters		= {}
-	comps		= {}
 	time		= 0
+	network_cb  = None
 
 	def __init__(self, device_type="GPU", filters={}, cl_path=""): # "cpu" or "gpu" here or "ALL"
+		super(CLC_Engine, self).__init__(["comp"]) # only CLC_Composition class nodes allowed to be created at the root/engine level
 		print "Initializing compositing engine..."
 		for found_platform in cl.get_platforms():
 			if found_platform.name in ['NVIDIA CUDA', 'ATI Stream', 'Apple']:
@@ -53,6 +66,14 @@ class CLC_Engine(object):
 		self.cl_path 	= cl_path
 		print "Bundled with filters: %s \n Done." % self.filters	
 	
+	def set_network_change_callback(self, callback):
+		self.network_cb = callback
+
+	def call_network_changed_callback(self):
+		if self.network_cb:
+			print "Calling network change callback..."
+			self.network_cb()	 	
+
 	def load_program(self, filename):
 		of = open("%s/%s" % (self.cl_path, filename), 'r')
 		return cl.Program(self.ctx, of.read()).build()
@@ -70,22 +91,18 @@ class CLC_Engine(object):
 		return self._mf
 
 	def setTime(self, time):
-		self.time = time	
-		
-	def createNode(self, node_type):
-		if node_type in ["comp", "img"]:
-			comp = composition.CLC_Composition(self)
-			self.comps[node_type] = comp
-			return comp
-		else:
-			print "Invalid node type specified!!!"
-			return None
-					
+		self.time = time			
+	
+	@property				
 	def children(self):
-		return self.comps
+		return self.nodes
+
+	@property 
+	def engine(self):
+		return self	
 
 	def save_project(self, filename):
 		pickle.dump( self.comps, open( filename, "wb"))
 
 	def open_project(self, filename):
-		self.comps = pickle.load( open( filename, "rb"))					
+		self.nodes = pickle.load( open( filename, "rb"))					

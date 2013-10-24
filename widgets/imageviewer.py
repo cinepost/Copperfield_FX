@@ -5,14 +5,16 @@ from OpenGL.GLU import *
 import math
 
 class ImageviewWidget(QGLWidget):
+    node = None # Node to display
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, node = None):
         super(ImageviewWidget, self).__init__(parent)
         self.setMinimumWidth(640)
         self.setMinimumHeight(360)
         self.setMouseTracking(True)
         self.isPressed = False
         self.oldx = self.oldy = 0
+        self.node = node
 
     def paintGL(self):
         glMatrixMode( GL_PROJECTION )

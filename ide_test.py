@@ -53,7 +53,7 @@ class Workarea(QtGui.QWidget):
         self.show()
        
     def rebuild_widgets(self):
-        print "Callback called ..."
+        print "Network change callback called by engine..."
         self.tree_view.emit(QtCore.SIGNAL('network_changed'))    
 
 class Window(QtGui.QMainWindow):

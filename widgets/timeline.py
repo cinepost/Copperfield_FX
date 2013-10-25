@@ -1,80 +1,43 @@
 from PyQt4 import QtGui, QtCore
 
-class TimeLine(QtGui.QWidget):
-    cursor = 0.0
-
+class TimeLine(QtGui.QGraphicsScene):
+    
     def __init__(self, parent=None):      
         super(TimeLine, self).__init__(parent)
-        self.isPressed = False
         self.initUI()
         
     def initUI(self):
-        #self.setFixedHeight(30)
-        self.value = 175
-        self.num = [75, 150, 225, 300, 375, 450, 525, 600, 675]
+        self.cursor_moves = False 
+        self.cursor_width = 10
+        self.cursor_pos_x = 0
+        self.cursor = QtGui.QGraphicsRectItem(self.cursor_pos_x, 0, self.cursor_width, 26)
+        self.cursor.setX(self.cursor_pos_x)
+        self.addItem(self.cursor)
+   
+    def mouseMoveEvent(self, event):
+        if self.is_mouse_moves_cursor(event): 
+            scene_pos = event.scenePos()
+            self.cursor_pos_x = scene_pos.x() - self.cursor_width / 2
+            self.cursor.setX( self.cursor_pos_x)
 
-    def setValue(self, value):
-        self.value = value
+    def mousePressEvent(self, event):
+        if self.is_mouse_hits_cursor(event): 
+            self.cursor_moves = True
 
+    def mouseReleaseEvent(self, event):
+        self.cursor_moves = False                 
 
-    def paintEvent(self, e):
-        qp = QtGui.QPainter()
-        qp.begin(self)
-        self.drawWidget(qp)
-        qp.end()
-      
-      
-    def drawWidget(self, qp):
-        font = QtGui.QFont('Arial', 8, QtGui.QFont.Light)
-        qp.setFont(font)
+    def is_mouse_hits_cursor(self, event):    
+        scene_pos_x = event.scenePos().x()
+        if scene_pos_x > self.cursor_pos_x and scene_pos_x < self.cursor_pos_x + self.cursor_width:
+            return True
 
-        size = self.size()
-        w = size.width()
-        h = size.height()
+    def is_mouse_moves_cursor(self, event):
+        scene_pos_x = event.scenePos().x()
+        if scene_pos_x > self.cursor_pos_x and scene_pos_x < self.cursor_pos_x + self.cursor_width or self.cursor_moves is True:
+            return True
 
-        step = int(round(w / 10.0))
-
-        till = int(((w / 750.0) * self.value))
-        full = int(((w / 750.0) * 700))
-
-        if self.value >= 700:
-        
-            qp.setPen(QtGui.QColor(255, 255, 255))
-            qp.setBrush(QtGui.QColor(255, 255, 184))
-            qp.drawRect(0, 0, full, h)
-            qp.setPen(QtGui.QColor(255, 175, 175))
-            qp.setBrush(QtGui.QColor(255, 175, 175))
-            qp.drawRect(full, 0, till-full, h)
-            
-        else:
-            qp.setPen(QtGui.QColor(255, 255, 255))
-            qp.setBrush(QtGui.QColor(255, 255, 184))
-            qp.drawRect(0, 0, till, h)
-
-
-        pen = QtGui.QPen(QtGui.QColor(20, 20, 20), 1, 
-            QtCore.Qt.SolidLine)
-            
-        qp.setPen(pen)
-        qp.setBrush(QtCore.Qt.NoBrush)
-        qp.drawRect(0, 0, w-1, h-1)
-
-        j = 0
-
-        #draw frames
-        for i in range(step, 10*step, step):
-            qp.drawLine(i, 0, i, 5)
-            metrics = qp.fontMetrics()
-            fw = metrics.width(str(self.num[j]))
-            qp.drawText(i-fw/2, h/2, str(self.num[j]))
-            j += 1
-
-    def mousePressEvent(self, e):
-        self.isPressed = True
-
-    def mouseReleaseEvent(self, e):
-        self.isPressed = False    
-
+        return False            
 
 class TimelineWidget(QtGui.QWidget):
     in_frame = 0
@@ -117,6 +80,8 @@ class TimelineWidget(QtGui.QWidget):
         # Time line
         timelinebox = QtGui.QHBoxLayout()
         timeline = TimeLine(self)
+        timeline = QtGui.QGraphicsView(self)
+        timeline.setScene(TimeLine(self))
         timelinebox.addWidget(timeline)
 
         # Set main layout

@@ -19,6 +19,7 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
         #self.setLayout(layout)
 
     def createNodeLevel(self, node, parent_widget):
+        print "Building treeview for node %s with childern: %s" % (node, node.children.keys())
         for node_name in node.children.keys():
             cur_node = node.children[node_name]
             item = QtGui.QTreeWidgetItem(parent_widget)
@@ -29,5 +30,6 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
 
     @QtCore.pyqtSlot()   
     def rebuild(self):
+        self.clear()
         self.createNodeLevel(self.engine, self)
         

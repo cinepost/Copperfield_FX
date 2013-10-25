@@ -113,11 +113,12 @@ class Window(QtGui.QMainWindow):
         QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
         
         #self.setGeometry(300, 300, 900, 600)
-        self.setWindowTitle('Compy Job Assembler')
+        self.setWindowTitle("Bare Metal Composer")
         self.statusBar().showMessage('Ready...')
         self.show()       
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
+    app.setWindowIcon(QtGui.QIcon('icons/biohazard.png'))
     win = Window()
     sys.exit(app.exec_())

@@ -3,18 +3,6 @@ import pyopencl as cl
 import pickle
 import compy.network_manager as network_manager
 
-import re
-lastNum = re.compile(r'(?:[^\d]*(\d+)[^\d]*)+')
-
-def increment(s):
-    """ look for the last sequence of number(s) in a string and increment """
-    m = lastNum.search(s)
-    if m:
-        next = str(int(m.group(1))+1)
-        start, end = m.span(1)
-        s = s[:max(end-len(next), start)] + next + s[end:]
-    return s
-
 class CLC_Engine(network_manager.CLC_NetworkManager):
 	cpu_devices = []
 	gpu_devices = []
@@ -92,17 +80,13 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 
 	def setTime(self, time):
 		self.time = time			
-	
-	@property				
-	def children(self):
-		return self.nodes
 
 	@property 
 	def engine(self):
 		return self	
 
 	def save_project(self, filename):
-		pickle.dump( self.comps, open( filename, "wb"))
+		pickle.dump( self.children, open( filename, "wb"))
 
 	def open_project(self, filename):
-		self.nodes = pickle.load( open( filename, "rb"))					
+		self.children = pickle.load( open( filename, "rb"))					

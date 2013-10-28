@@ -4,24 +4,24 @@ import numpy
 
 class CLC_Effect(base.CLC_Base):
 	
-	def __init__(self, engine):
+	def __init__(self, engine, parent):
 		self.parms.update({
 			"maskinput"	: None,		# use this as operation mask
 		})	
-		super(CLC_Effect, self).__init__(engine)
+		super(CLC_Effect, self).__init__(engine, parent)
 
 
 class CLC_Effect_FastBlur(CLC_Effect):
 	name = "fastblur"
-	category = "Effects"
-	def __init__(self, engine):
+	category = "effects"
+	def __init__(self, engine, parent):
+		super(CLC_Effect_FastBlur, self).__init__(engine, parent)
 		self.parms.update({
 			"blursize"	: 0.05,		# blur diameter for both X and Y in normalized coordinates
 			"blursizey"	: 0.05, 	# blur diameter for Y in normalized coordinates
 			"useindepy"	: False,	# use independent Y blur diameter
 		})
 		self.program = engine.load_program("effects_blur.cl")	
-		super(CLC_Effect_FastBlur, self).__init__(engine)
 			
 	def compute(self):	
 		if self.inputs.has_key(0):
@@ -57,15 +57,15 @@ class CLC_Effect_FastBlur(CLC_Effect):
 
 
 class CLC_Effect_PressRaster(CLC_Effect):
-	name	= "raster"
-	category = "Effects"
-	def __init__(self, engine):
+	name	= "press_raster"
+	category = "effects"
+	def __init__(self, engine, parent):
+		super(CLC_Effect_PressRaster, self).__init__(engine, parent)
 		self.parms.update({
 			"density"	: 100,		# dots density
 			"quality"	: 2,		# dots aa quality 2 is good, but 3 is better
 		})
 		self.program = engine.load_program("effects_press_raster.cl")	
-		super(CLC_Effect_PressRaster, self).__init__(engine)
 			
 	def compute(self):	
 		if self.inputs.has_key(0):

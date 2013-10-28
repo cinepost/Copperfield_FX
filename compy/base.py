@@ -5,14 +5,14 @@ import pyopencl as cl
 import numpy
 
 import threading              
-from parameter import *
+from compy import parameter
 
 class CLC_Node(object):
 	# Base class for nodes graph representation
 	name = None
 
-	def __init__(self):
-		self.title 	= self.name 	# Do incrementation here (Blur1, Blur2, Blur3, etc...)
+	def __init__(self, parent = None):
+		self.parent = parent
 		self.x_pos	= 0.0
 		self.y_pos	= 0.0
 		self.color	= (0.5, 1.0, 0.25,)
@@ -30,24 +30,26 @@ class CLC_Node(object):
 class CLC_Base(CLC_Node):
 	# Base class for FX filters
 	__fx__			= True # Indicated that this is FX node
-	name			= None
-	devOutBuffer 	= None
-	parms			= {}
+	name			= None # This is a TYPE name for the particular FX node... don't be confused here
 	
-	def __init__(self, engine):
+	def __init__(self, engine, parent):
+		super(CLC_Base, self).__init__(parent)
 		if engine:
 			self.engine = engine
 		else:
-			raise BaseException("No OpenCL engine specified !!!")
+			raise BaseException("No engine specified !!!")
 		
 		self.width	= None	
 		self.height	= None
 		self.cooked	= False	
 		self.inputs	= {}
+
+		self.devOutBuffer = None # Device output buffer. This buffer holds thre result image array
+
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
 		self.common_program = engine.load_program("common.cl")
 		self.parms = {
-			"effectamount"	: 	1,
+			"effectamount"	: 	parameter.CompyParameter(1),
 		}
 	
 	@property	

@@ -5,7 +5,7 @@ class CLC_Composition(base.CLC_Node, network_manager.CLC_NetworkManager):
 	__mgr__ = True # Indicates that this is a network manager node
 	name 	= 'comp'
 
-	def __init__(self, engine):
-		base.CLC_Node.__init__(self)
+	def __init__(self, engine, parent):
 		network_manager.CLC_NetworkManager.__init__(self)
+		base.CLC_Node.__init__(self, parent)
 		self.engine = engine

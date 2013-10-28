@@ -7,7 +7,7 @@ os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 engine = compy.CreateEngine("GPU")
 
 ## Create composition
-comp = engine.createNode("img")
+comp = engine.createNode("comp")
 
 
 ## Create source layer

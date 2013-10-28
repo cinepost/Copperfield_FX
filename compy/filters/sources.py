@@ -5,8 +5,9 @@ import numpy
 			
 class CLC_Source_Image(base.CLC_Base):
 	name = "file"
-	category = "Sources"
-	def __init__(self, engine):
+	category = "sources"
+	def __init__(self, engine, parent):
+		super(CLC_Source_Image, self).__init__(engine, parent)
 		self.parms.update({
 			"filename"	: None,		# image file name to read
 			"width"		: 640, 		# downscale to this resolution. setting this to 0 uses sources resolution
@@ -16,7 +17,6 @@ class CLC_Source_Image(base.CLC_Base):
 		})
 		self.engine = engine
 		self.program = self.engine.load_program("source_image.cl")	
-		super(CLC_Source_Image, self).__init__(engine)
 		
 	def loadJPG(self, filename):
 		img = matplotlib.image.imread(filename)

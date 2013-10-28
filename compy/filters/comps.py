@@ -7,14 +7,13 @@ class CLC_Comp_Add(base.CLC_Base):
 		This filter adds foreground over background using OpenCL
 	'''
 	name = "add"
-	category = "Comps"
-	def __init__(self, engine):
-
+	category = "comps"
+	def __init__(self, engine, parent):
+		super(CLC_Comp_Add, self).__init__(engine, parent)
 		self.width = self.background.width
 		self.height = self.background.height
 
-		self.program = engine.load_program("comp_add.cl")
-		super(CLC_Comp_Add, self).__init__(engine, width, height) 
+		self.program = engine.load_program("comp_add.cl") 
 		
 	def compute(self):
 		if not self.foreground:

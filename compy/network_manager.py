@@ -16,6 +16,7 @@ class CLC_NetworkManager(object):
 		# mask is a list with node type names that are allowed to be created by this NetworkManager instance e.d ["img","comp"] If mask is None than any node type can be used
 		self.mask = mask
 		self.node_dict = {}
+		self.parent = None
 
 	@property 
 	def nodes(self):
@@ -45,5 +46,32 @@ class CLC_NetworkManager(object):
 
 		return node
 
+	# traverse nodes from this
+	def traverse(self, path_list):
+		print "Getting node: %s" % path_list
+		node = self.nodes[path_list[0]]
+		if len(path_list[1::]) > 0:
+			# recursive traverse
+			return node.traverse(path_list[1::])
+		else:
+			# return this node
+			return node
+
+	# return node object by it's path	
 	def node(self, path):
-		return None
+		path_list = filter(lambda a: a != '', path.split("/"))
+		
+		if path[0] == "/":
+			# traverse from root
+			return self.root.traverse(path_list)
+		else:	
+			# traverse from this
+			return self.traverse(path_list)
+
+	# return root node
+	@property
+	def root(self):
+		if self.parent:
+			return self.parent.root
+		else:
+			return self				

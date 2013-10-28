@@ -5,7 +5,7 @@ class CompyKey(object):
 	in_type = "linear"
 	out_type = "linear"
 
-	def __init__(value, in_type=None, out_type=None):
+	def __init__(self, value, in_type=None, out_type=None):
 		self.value = value
 
 		if in_type:
@@ -14,10 +14,10 @@ class CompyKey(object):
 		if out_type:
 			self.out_type = out_type	
 
-	def set(value):
+	def set(self, value):
 		self.value = value
 
-	def get():
+	def get(self):
 		return self.value		
 
 
@@ -36,10 +36,10 @@ class CompyParameter(object):
 	is_animated 	= False
 	curve			= {}
 
-	def __init__(value=None):
+	def __init__(self, value=None):
 		self.value = value
 
-	def get(time=None):
+	def get(self, time=None):
 		if not self.is_animated:
 			# Constant parameter
 			return self.value
@@ -47,7 +47,7 @@ class CompyParameter(object):
 			# Animated parameter
 			pass
 
-	def set(value):
+	def set(self, value):
 		if not self.is_animated:
 			# Constant parameter
 			self.value = value
@@ -55,6 +55,9 @@ class CompyParameter(object):
 			# Animated parameter
 			raise BaseException("Unable to set parm that contains curve animation !!! Use addKeyFrame(time, key) instead !!!")
 
-	def addKeyFrame(time, key):
+	def addKeyFrame(self, time, key):
 		self.is_animated = True
-		curve[time] = key		
+		curve[time] = key
+
+	def __str__(self):
+		return self.value			

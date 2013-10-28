@@ -24,51 +24,45 @@ class ImageviewWidget(QGLWidget):
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        glDepthFunc( GL_LEQUAL );
-        glEnable( GL_DEPTH_TEST );
-        glEnable( GL_CULL_FACE );
-        glFrontFace( GL_CCW );
         glDisable( GL_LIGHTING );
         glShadeModel( GL_FLAT );
 
         glColor(1.0, 1.0, 1.0)
-        glBegin(GL_LINE_STRIP)
-        glVertex(-1,-1,-1)
-        glVertex( 1,-1,-1)
-        glVertex( 1, 1,-1)
-        glVertex(-1, 1,-1)
-        glVertex(-1,-1, 1)
-        glVertex( 1,-1, 1)
-        glVertex( 1, 1, 1)
-        glVertex(-1, 1, 1)
-        glEnd()
-        glColor(1.0, 0.0, 0.0)
-        glBegin(GL_LINES)
-        glVertex( 0, 0, 0)
-        glVertex( 1, 0, 0)
-        glEnd()
-        glColor(0.0, 1.0, 0.0)
-        glBegin(GL_LINES)
-        glVertex( 0, 0, 0)
-        glVertex( 0, 1, 0)
-        glEnd()
-        glColor(0.0, 0.0, 1.0)
-        glBegin(GL_LINES)
-        glVertex( 0, 0, 0)
-        glVertex( 0, 0, 1)
+        glBegin(GL_QUADS)
+        glVertex(-.5,.5,0)
+        glVertex(.5,.5,0)
+        glVertex(.5,-.5,0)
+        glVertex(-.5,-.5,0)
         glEnd()
 
         glFlush()
 
-    def resizeGL(self, widthInPixels, heightInPixels):
-        glViewport(0, 0, widthInPixels, heightInPixels)
+    def resizeGL(self, width, height):
+        self.width, self.height = width, height
+        glViewport(0, 0, width, height)
 
     def initializeGL(self):
+        self.texid = glGenTextures(1)
+
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glClearDepth(1.0)
 
-        # glMatrixMode(GL_PROJECTION)
-        # glLoadIdentity()
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+
+        # the window corner OpenGL coordinates are (-+1, -+1)
+        glOrtho(-1, 1, -1, 1, -1, 1)
+
+    @QtCore.pyqtSlot()    
+    def setNode(self, node):
+        self.node = node
+        glBindTexture(GL_TEXTURE_2D, self.texid)
+        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+        glTexImage2D(
+            GL_TEXTURE_2D, 0, 3, self.node.width, self.node.height, 0,
+            GL_RGBA, GL_UNSIGNED_BYTE, self.node.get_out_buffer
+        )
+
 
     def mouseMoveEvent(self, mouseEvent):
         if int(mouseEvent.buttons()) != QtCore.Qt.NoButton :

@@ -32,7 +32,6 @@ class CLC_NetworkManager(object):
 	def createNode(self, node_type=None):
 		print "Creating node %s inside %s" % (node_type, self.__class__.__name__)
 
-
 		if self.mask and node_type not in self.mask:
 			print "Creating node of type %s not allowed by this manager." % node_type
 			return None
@@ -45,6 +44,13 @@ class CLC_NetworkManager(object):
 		print "Created node %s childs is %s" % (node, node.children)	
 
 		return node
+
+	@property 	
+	def path(self):
+		if self.parent:
+			return "%s/%s" % (self.parent.path, self.name)
+
+		return ""		
 
 	# traverse nodes from this
 	def traverse(self, path_list):

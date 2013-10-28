@@ -6,6 +6,7 @@ import numpy
 
 import threading              
 from compy import parameter
+import compy.network_manager as network_manager
 
 class CLC_Node(object):
 	# Base class for nodes graph representation
@@ -27,12 +28,13 @@ class CLC_Node(object):
 	def __str__(self):
 		return self.__class__.__name__						
 
-class CLC_Base(CLC_Node):
+class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 	# Base class for FX filters
 	__fx__			= True # Indicated that this is FX node
 	name			= None # This is a TYPE name for the particular FX node... don't be confused here
 	
 	def __init__(self, engine, parent):
+		network_manager.CLC_NetworkManager.__init__(self)
 		super(CLC_Base, self).__init__(parent)
 		if engine:
 			self.engine = engine

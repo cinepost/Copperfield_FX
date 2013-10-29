@@ -13,56 +13,75 @@ class ImageviewWidget(QGLWidget):
         self.setMouseTracking(True)
         self.isPressed = False
         self.oldx = self.oldy = 0
-        self.node = node
+        self.setNode()
+
+        self.setCursor(QtCore.Qt.CrossCursor)
+
+        self.scale = 1.0 
+        self.pivot_x = 0.0
+        self.pivot_y = 0.0
 
     def paintGL(self):
-        glMatrixMode( GL_PROJECTION )
-        glLoadIdentity()
-        glMatrixMode( GL_MODELVIEW );
-        glLoadIdentity();
-
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glDisable( GL_LIGHTING )
         glEnable( GL_TEXTURE_2D )
         glBindTexture(GL_TEXTURE_2D, self.texid)
 
+        glLoadIdentity();
+        glTranslated (0.0 + self.pivot_x, 0.0 - self.pivot_y, -10.0);
+        glScaled (1.0 * self.scale, 1.0 * self.scale, 1.0);
+        glColor4f(1.0, 1.0, 1.0, 1.0);
+
         glBegin(GL_QUADS)
-        glTexCoord2f(0.0, 1.0); glVertex2d(-.5,.5);
-        glTexCoord2f(1.0, 1.0); glVertex2d(.5,.5);
-        glTexCoord2f(1.0, 0.0); glVertex2d(.5,-.5);
-        glTexCoord2f(0.0, 0.0); glVertex2d(-.5,-.5);
+        glTexCoord2f(0.0,0.0);
+        #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 1.0f);
+        glVertex2d(-self.image_width/2.0, -self.image_height/2.0);
+        glTexCoord2f(1.0,0.0);
+        #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 1.0f);
+        glVertex2d(self.image_width/2.0, -self.image_height/2.0);
+        glTexCoord2f(1.0,1.0);
+        #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 0.0f);
+        glVertex2d(self.image_width/2.0, self.image_height/2.0);
+        glTexCoord2f(0.0,1.0);
+        #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 0.0f);
+        glVertex2d(-self.image_width/2.0, self.image_height/2.0);
         glEnd()
 
         glDisable( GL_TEXTURE_2D )
         glColor(1.0, 1.0, 1.0)
         glBegin(GL_LINES)
-        glVertex2d(-.5,.5);glVertex2d(.5,.5);
-        glVertex2d(.5,.5);glVertex2d(.5,-.5);
-        glVertex2d(.5,-.5);glVertex2d(-.5,-.5);
-        glVertex2d(-.5,-.5);glVertex2d(-.5,.5);
+        glVertex2d(-1.0,self.ar);glVertex2d(1.0,self.ar);
+        glVertex2d(1.0,self.ar);glVertex2d(1.0,-self.ar);
+        glVertex2d(1.0,-self.ar);glVertex2d(-1.0,-self.ar);
+        glVertex2d(-1.0,-self.ar);glVertex2d(-1.0,self.ar);
         glEnd()
 
         glFlush()
 
     def resizeGL(self, width, height):
         self.width, self.height = width, height
-        glViewport(0, 0, width, height)
+        #glViewport(0, 0, width, height)
+
+        glViewport (0, 0, width, height);
+        glMatrixMode (GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho (-width/2.0, width/2.0, -height/2.0, height/2.0, -10000.0, 10000.0);
+        glMatrixMode (GL_MODELVIEW);
 
     def initializeGL(self):
-        img = Image.open("media/deftex_02.jpg")
-        ix, iy, image = img.size[0], img.size[1], img.tostring()
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDisable(GL_DEPTH_TEST);
+        glColor4f(1.0, 1.0, 1.0, 1.0);
 
         self.bindImageTexture()
 
-        glClearColor(0.0, 0.0, 0.0, 1.0)
-        glClearDepth(1.0)
-
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-
-        # the window corner OpenGL coordinates are (-+1, -+1)
-        glOrtho(-1, 1, -1, 1, -1, 1)
+    def reset_view(self):
+        self.scale = 0.0 
+        self.pivot_x = 0.0
+        self.pivot_y = 0.0
+        self.updateGL()
 
     def bindImageTexture(self):
         if self.node:
@@ -80,14 +99,17 @@ class ImageviewWidget(QGLWidget):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     @QtCore.pyqtSlot()    
-    def setNode(self, node):
-        self.node = node
-        glBindTexture(GL_TEXTURE_2D, self.texid)
-        glPixelStorei(GL_UNPACK_ALIGNMENT,1)
-        glTexImage2D(
-            GL_TEXTURE_2D, 0, 3, self.node.width, self.node.height, 0,
-            GL_RGBA, GL_UNSIGNED_BYTE, self.node.get_out_buffer
-        )
+    def setNode(self, node = None):
+        if node:
+            self.node = node
+            self.bindImageTexture()
+            self.image_width = self.node.width
+            self.image_height = self.node.height
+        else:
+            self.node = None
+            self.image_width = 1920
+            self.image_height = 1080
+            self.ar = 1.0 * self.image_height / self.image_width    
 
 
     def mouseMoveEvent(self, mouseEvent):

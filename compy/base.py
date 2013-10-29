@@ -4,29 +4,30 @@ from PIL import Image
 import pyopencl as cl
 import numpy
 
-import threading              
+import threading
 from compy import parameter
 import compy.network_manager as network_manager
 
+
 class CLC_Node(object):
-	# Base class for nodes graph representation
-	name = None
+    # Base class for nodes graph representation
+    name = None
 
-	def __init__(self, parent = None):
-		self.parent = parent
-		self.x_pos	= 0.0
-		self.y_pos	= 0.0
-		self.color	= (0.5, 1.0, 0.25,)
-		
-	def setPos(self, x, y):
-		self.x_pos = x
-		self.y_pos = y
-		
-	def getPos(self):
-		return (self.x_pos, self.y_pos,)
+    def __init__(self, parent=None):
+        self.parent = parent
+        self.x_pos = 0.0
+        self.y_pos = 0.0
+        self.color = (0.5, 1.0, 0.25,)
 
-	def __str__(self):
-		return self.__class__.__name__						
+    def setPos(self, x, y):
+        self.x_pos = x
+        self.y_pos = y
+
+    def getPos(self):
+        return (self.x_pos, self.y_pos,)
+
+    def __str__(self):
+        return self.__class__.__name__
 
 class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 	# Base class for FX filters
@@ -124,4 +125,3 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 			Image.frombuffer('RGBA', (self.width, self.height), temp_buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1).show()		
 		else:
 			raise BaseException("Unable to show uncooked source %s !!!" % self)					
-

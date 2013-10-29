@@ -19,11 +19,11 @@ class Workarea(QtGui.QWidget):
         self.engine.set_network_change_callback(self.rebuild_widgets)
 
         # Init out engine and widgets first
-        self.node_view  = NodeViewerWidget(self)
         self.parm_view  = ParamsWidget(self)
         self.time_view  = TimelineWidget(self)
         self.img_view   = ImageviewWidget(self, node = None)
         self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine)
+        self.node_view  = NodeViewerWidget(self)
         self.python_view = PythonWidget(self, engine = self.engine)
 
         # Now init our UI 
@@ -61,7 +61,7 @@ class Window(QtGui.QMainWindow):
         super(Window, self).__init__()
         self.engine = compy.CreateEngine("GPU")
         self.initUI()
-    
+
     def close(self):
         exit()
 
@@ -78,6 +78,7 @@ class Window(QtGui.QMainWindow):
     def initUI(self):      
         self.workarea = Workarea(self, engine=self.engine)
         self.setCentralWidget(self.workarea)
+
 
         exitAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_388_exit.png'), 'Exit', self)
         exitAction.setShortcut('Ctrl+Q')

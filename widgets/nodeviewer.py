@@ -1,5 +1,5 @@
 from PyQt4 import QtGui, QtCore, Qt
-
+import compy
 
 class NodeViewerWidget(QtGui.QWidget):
 
@@ -7,8 +7,20 @@ class NodeViewerWidget(QtGui.QWidget):
         super(NodeViewerWidget, self).__init__(parent=parent)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.makeScene()
-        self.addBlock(10, 10, 'Block1', (70, 70, 170))
-        self.addBlock(30, 30, 'Block2', (70, 100, 100))
+        self.addBlock(10, 10, 'Block1', (70, 70, 170), {})
+
+
+        ## First create engine
+        engine = compy.CreateEngine("GPU")
+        ## Create composition
+        comp = engine.createNode("comp")
+        ## Create source layer
+        layer1 = comp.createNode("file")
+        layer1.setPos(10, 10)
+        layer1.setParms({"width": 1920, "height": 1200, "imagefile": "~/Pictures/ava_05.png"})
+
+        self.makeBlockFromNode(layer1)
+
 
     def makeScene(self):
 
@@ -19,11 +31,14 @@ class NodeViewerWidget(QtGui.QWidget):
         layout.addWidget(self.view)
         self.setLayout(layout)
 
-    def addBlock(self, x, y, title, color):
-        self.scene.addBlock(x=x, y=y, text=title, color=color)
+    def addBlock(self, x, y, title, color, params):
+
+        self.scene.addBlock(x=x, y=y, text=title, color=color, params=params)
 
     def makeBlockFromNode(self, node):
-        pass
+        print node
+        print node.__dict__
+        self.addBlock(node.x_pos, node.y_pos, node.name, node.color, params=node.parms)
 
 
 class BlockScene(QtGui.QGraphicsScene):
@@ -34,8 +49,8 @@ class BlockScene(QtGui.QGraphicsScene):
         self.selected_blocks = []
         self.move_mode = False
 
-    def addBlock(self, x, y, text='', color=(70, 70, 70)):
-        self.addItem(Block(x=x, y=y, w=70, h=50, text=text, color=color, scene=self))
+    def addBlock(self, x, y, text='', color=(70, 70, 70), params={}):
+        Block(x=x, y=y, w=70, h=50, text=text, color=color, params=params, scene=self)
 
     def mouseReleaseEvent(self, event):
         for item in self.items():
@@ -54,7 +69,7 @@ class Block(QtGui.QGraphicsItemGroup):
         self.setFlags(QtGui.QGraphicsItem.ItemIsMovable | QtGui.QGraphicsItem.ItemIsSelectable | QtGui.QGraphicsItem.ItemIsFocusable)
         self.w = kwargs['w']
         self.h = kwargs['h']
-        self.properties = kwargs.get('properties')
+        self.properties = kwargs.get('params')
         self.text = kwargs['text']
 
         self.selected = False
@@ -81,14 +96,14 @@ class Block(QtGui.QGraphicsItemGroup):
         self.title.setFont(self.text_font)
         self.title.setPos(3, 5)
 
-        self.property_text = '\n'.join(['%s: %s' % (k, v) for k, v in self.properties.iteritems()]) if self.properties else ''
+        self.property_text = '\n'.join(['%s: %s' % (k, str(v)) for k, v in self.properties.iteritems()]) if self.properties else ''
 
         self.body = QtGui.QGraphicsRectItem(0, self.head_height, self.w, self.h, parent=self, scene=self.scene())
         self.body.setBrush(self.body_color)
 
-        self.QtGui.QGraphicsSimpleTextItem(self.property_text, scene=self.scene(), parent=self)
-        self.title.setFont(self.text_font)
-        self.title.setPos(3, self.head_height+5)
+        self.pop_text = QtGui.QGraphicsSimpleTextItem(self.property_text, scene=self.scene(), parent=self)
+        self.pop_text.setFont(self.text_font)
+        self.pop_text.setPos(3, self.head_height+5)
 
         self.rect = QtGui.QGraphicsRectItem(0, 0, self.w, self.h+self.head_height, parent=self, scene=self.scene())
         self.rect.setPen(self.border_color)

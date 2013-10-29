@@ -3,10 +3,9 @@ from PyQt4.QtOpenGL import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import math
+from PIL import Image
 
 class ImageviewWidget(QGLWidget):
-    node = None # Node to display
-
     def __init__(self, parent=None, node = None):
         super(ImageviewWidget, self).__init__(parent)
         self.setMinimumWidth(640)
@@ -24,15 +23,24 @@ class ImageviewWidget(QGLWidget):
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        glDisable( GL_LIGHTING );
-        glShadeModel( GL_FLAT );
+        glDisable( GL_LIGHTING )
+        glEnable( GL_TEXTURE_2D )
+        glBindTexture(GL_TEXTURE_2D, self.texid)
 
-        glColor(1.0, 1.0, 1.0)
         glBegin(GL_QUADS)
-        glVertex(-.5,.5,0)
-        glVertex(.5,.5,0)
-        glVertex(.5,-.5,0)
-        glVertex(-.5,-.5,0)
+        glTexCoord2f(0.0, 1.0); glVertex2d(-.5,.5);
+        glTexCoord2f(1.0, 1.0); glVertex2d(.5,.5);
+        glTexCoord2f(1.0, 0.0); glVertex2d(.5,-.5);
+        glTexCoord2f(0.0, 0.0); glVertex2d(-.5,-.5);
+        glEnd()
+
+        glDisable( GL_TEXTURE_2D )
+        glColor(1.0, 1.0, 1.0)
+        glBegin(GL_LINES)
+        glVertex2d(-.5,.5);glVertex2d(.5,.5);
+        glVertex2d(.5,.5);glVertex2d(.5,-.5);
+        glVertex2d(.5,-.5);glVertex2d(-.5,-.5);
+        glVertex2d(-.5,-.5);glVertex2d(-.5,.5);
         glEnd()
 
         glFlush()
@@ -42,7 +50,10 @@ class ImageviewWidget(QGLWidget):
         glViewport(0, 0, width, height)
 
     def initializeGL(self):
-        self.texid = glGenTextures(1)
+        img = Image.open("media/deftex_02.jpg")
+        ix, iy, image = img.size[0], img.size[1], img.tostring()
+
+        self.bindImageTexture()
 
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glClearDepth(1.0)
@@ -52,6 +63,21 @@ class ImageviewWidget(QGLWidget):
 
         # the window corner OpenGL coordinates are (-+1, -+1)
         glOrtho(-1, 1, -1, 1, -1, 1)
+
+    def bindImageTexture(self):
+        if self.node:
+            # bind texture from current compy node
+            pass
+        else:
+            # bind default texture here
+            image = QtGui.QImage("media/deftex_02.jpg")    
+            self.texid = self.bindTexture(image, GL_TEXTURE_2D, GL_RGBA) 
+
+        glGenerateMipmap(GL_TEXTURE_2D);  #Generate num_mipmaps number of mipmaps here.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     @QtCore.pyqtSlot()    
     def setNode(self, node):

@@ -60,4 +60,4 @@ class CompyParameter(object):
 		curve[time] = key
 
 	def __str__(self):
-		return self.value			
+		return str(self.value)

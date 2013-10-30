@@ -1,5 +1,6 @@
 from PyQt4 import QtGui, QtCore, Qt
 import compy
+from compy import parameter
 
 class NodeViewerWidget(QtGui.QWidget):
 
@@ -7,11 +8,11 @@ class NodeViewerWidget(QtGui.QWidget):
         super(NodeViewerWidget, self).__init__(parent=parent)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.makeScene()
-        self.addBlock(10, 10, 'Block1', (70, 70, 170), {})
+        b1 = self.addBlock(100, 10, 'Block1', (0.7, 0.7, 1.7), {})
 
 
         ## First create engine
-        engine = compy.CreateEngine("GPU")
+        engine = parent.engine
         ## Create composition
         comp = engine.createNode("comp")
         ## Create source layer
@@ -19,44 +20,50 @@ class NodeViewerWidget(QtGui.QWidget):
         layer1.setPos(10, 10)
         layer1.setParms({"width": 1920, "height": 1200, "imagefile": "~/Pictures/ava_05.png"})
 
-        self.makeBlockFromNode(layer1)
+        b2 = self.makeBlockFromNode(layer1)
+        self.makeConnection(b1, b2)
 
 
     def makeScene(self):
 
         self.scene = BlockScene(0, 0, self.minimumWidth(), self.minimumHeight(), self)
         self.view = QtGui.QGraphicsView(self.scene)
-        self.view.setAlignment(QtCore.Qt.AlignAbsolute)
+        self.view.setAlignment(QtCore.Qt.AlignLeft)
         layout = QtGui.QHBoxLayout(self)
         layout.addWidget(self.view)
         self.setLayout(layout)
 
     def addBlock(self, x, y, title, color, params):
-
-        self.scene.addBlock(x=x, y=y, text=title, color=color, params=params)
+        return self.scene.addBlock(x=x, y=y, text=title, color=color, params=params)
 
     def makeBlockFromNode(self, node):
-        print node
-        print node.__dict__
-        self.addBlock(node.x_pos, node.y_pos, node.name, node.color, params=node.parms)
+        return self.addBlock(node.x_pos, node.y_pos, node.name, node.color, params=node.parms)
+
+    def makeConnection(self, output, input):
+        output.select_handler()
+        input.select_handler()
 
 
 class BlockScene(QtGui.QGraphicsScene):
 
     def __init__(self, *args, **kwargs):
         super(BlockScene, self).__init__(*args)
-        self.setBackgroundBrush(QtGui.QColor(0, 0, 0))
+        self.setBackgroundBrush(QtGui.QColor(255, 255, 255))
         self.selected_blocks = []
         self.move_mode = False
 
     def addBlock(self, x, y, text='', color=(70, 70, 70), params={}):
-        Block(x=x, y=y, w=70, h=50, text=text, color=color, params=params, scene=self)
+        b = Block(x=x, y=y, w=70, h=50, text=text, color=color, params=params, scene=self)
+        return b
 
     def mouseReleaseEvent(self, event):
-        for item in self.items():
-            if isinstance(item, Connection):
-                print item
         super(BlockScene, self).mouseReleaseEvent(event)
+
+    def make_connection(self, output, input):
+        connection = Connection(output=output, input=input, scene=self)
+        self.selected_blocks = []
+        output.connections.append(connection)
+        return connection
 
 
 class Block(QtGui.QGraphicsItemGroup):
@@ -79,8 +86,10 @@ class Block(QtGui.QGraphicsItemGroup):
         self.socket_number = 5
         self.arrows = {}
         self.sockets = {}
-        print kwargs['color']
-        self.head_color = QtGui.QColor(*kwargs['color']) if 'color' in kwargs else QtGui.QColor(70, 70, 70)
+
+        # view options
+        head_color = map(lambda x: x*100,  kwargs['color'])
+        self.head_color = QtGui.QColor(*head_color) if 'color' in kwargs else QtGui.QColor(70, 70, 70)
         self.head_selected_color = QtGui.QColor(70, 200, 70)
         self.body_color = QtGui.QColor(200, 0, 0)
         self.border_color = QtGui.QColor(100, 50, 20)
@@ -101,17 +110,18 @@ class Block(QtGui.QGraphicsItemGroup):
         self.body = QtGui.QGraphicsRectItem(0, self.head_height, self.w, self.h, parent=self, scene=self.scene())
         self.body.setBrush(self.body_color)
 
-        self.pop_text = QtGui.QGraphicsSimpleTextItem(self.property_text, scene=self.scene(), parent=self)
-        self.pop_text.setFont(self.text_font)
-        self.pop_text.setPos(3, self.head_height+5)
+        self.prop_text = QtGui.QGraphicsTextItem(self.property_text, scene=self.scene(), parent=self)
+        self.prop_text.setFont(self.text_font)
+        self.prop_text.setPos(3, self.head_height+5)
+        self.prop_text.setTextWidth(self.w-6)
 
-        self.rect = QtGui.QGraphicsRectItem(0, 0, self.w, self.h+self.head_height, parent=self, scene=self.scene())
-        self.rect.setPen(self.border_color)
+        #self.rect = QtGui.QGraphicsRectItem(0, 0, self.w, self.h+self.head_height, parent=self, scene=self.scene())
+        #self.rect.setPen(self.border_color)
 
         self.addToGroup(self.head)
         self.addToGroup(self.title)
         self.addToGroup(self.body)
-        self.addToGroup(self.rect)
+        #self.addToGroup(self.rect)
 
         self.generate_sockets()
 
@@ -125,7 +135,6 @@ class Block(QtGui.QGraphicsItemGroup):
             if conn.output == block or conn.input == block:
                 return True
         return False
-
 
     def generate_sockets(self):
 
@@ -182,7 +191,6 @@ class Block(QtGui.QGraphicsItemGroup):
 
         triangle = QtGui.QGraphicsPolygonItem(QtGui.QPolygonF([p1, p2, p3, p1]),  scene=self.scene())
         triangle.setPen(self.triangle_pen)
-        self.addToGroup(triangle)
         return triangle
 
     def remove_arrow(self, side, index):
@@ -215,14 +223,9 @@ class Block(QtGui.QGraphicsItemGroup):
         return min_connections[0], min_index
 
 
+    def select_handler(self):
 
-    def mouseReleaseEvent(self, event):
-
-        scene = self.scene()
-
-        if scene.move_mode:
-            scene.move_mode = False
-        else:
+            scene = self.scene()
             self.select()
             if self not in scene.selected_blocks:
                 scene.selected_blocks.append(self)
@@ -236,12 +239,7 @@ class Block(QtGui.QGraphicsItemGroup):
                 if not self.find_connection(other_block):
                     output = blocks[0]
                     input = blocks[1]
-                    connection = Connection(output = output,
-                                            input = input,
-                                            scene=self.scene())
-                    scene.addItem(connection)
-                    scene.selected_blocks = []
-                    output.connections.append(connection)
+                    connection = self.scene().make_connection(output, input)
 
                     if other_block == input:
                         other_block.inputs.append(connection)
@@ -253,7 +251,18 @@ class Block(QtGui.QGraphicsItemGroup):
                     output.select()
                     input.select()
 
+    def mouseReleaseEvent(self, event):
+
+
+        scene = self.scene()
+
+        if scene.move_mode:
+            scene.move_mode = False
+        else:
+            self.select_handler()
+
         super(Block, self).mouseReleaseEvent(event)
+
 
 
     def unconnect(self, connection):

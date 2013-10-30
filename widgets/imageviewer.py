@@ -6,8 +6,9 @@ import math
 from PIL import Image
 
 class ImageviewWidget(QGLWidget):
-    def __init__(self, parent=None, node = None):
+    def __init__(self, parent=None, engine = None):
         super(ImageviewWidget, self).__init__(parent)
+        self.engine = engine
         self.setMinimumWidth(640)
         self.setMinimumHeight(360)
         self.setMouseTracking(True)
@@ -36,32 +37,39 @@ class ImageviewWidget(QGLWidget):
         glBegin(GL_QUADS)
         glTexCoord2f(0.0,0.0);
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 1.0f);
-        glVertex2d(-self.image_width/2.0, -self.image_height/2.0);
+        glVertex2d(-self.img_half_width, -self.img_half_height);
         glTexCoord2f(1.0,0.0);
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 1.0f);
-        glVertex2d(self.image_width/2.0, -self.image_height/2.0);
+        glVertex2d(self.img_half_width, -self.img_half_height);
         glTexCoord2f(1.0,1.0);
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 0.0f);
-        glVertex2d(self.image_width/2.0, self.image_height/2.0);
+        glVertex2d(self.img_half_width, self.img_half_height);
         glTexCoord2f(0.0,1.0);
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 0.0f);
-        glVertex2d(-self.image_width/2.0, self.image_height/2.0);
+        glVertex2d(-self.img_half_width, self.img_half_height);
         glEnd()
 
         glDisable( GL_TEXTURE_2D )
         glColor(1.0, 1.0, 1.0)
         glBegin(GL_LINES)
-        glVertex2d(-1.0,self.ar);glVertex2d(1.0,self.ar);
-        glVertex2d(1.0,self.ar);glVertex2d(1.0,-self.ar);
-        glVertex2d(1.0,-self.ar);glVertex2d(-1.0,-self.ar);
-        glVertex2d(-1.0,-self.ar);glVertex2d(-1.0,self.ar);
+        glVertex2d(-self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,self.img_half_height);
+        glVertex2d(self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,-self.img_half_height);
+        glVertex2d(self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,-self.img_half_height);
+        glVertex2d(-self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,self.img_half_height);
         glEnd()
+
+        # draw text
+        if self.node:
+            node_path = node.path
+        else:
+            node_path = "No output node selected !"    
+
+        self.renderText( 0.0, 0.0, 0.0, node_path ); 
 
         glFlush()
 
     def resizeGL(self, width, height):
         self.width, self.height = width, height
-        #glViewport(0, 0, width, height)
 
         glViewport (0, 0, width, height);
         glMatrixMode (GL_PROJECTION);
@@ -86,7 +94,7 @@ class ImageviewWidget(QGLWidget):
     def bindImageTexture(self):
         if self.node:
             # bind texture from current compy node
-            pass
+            img_buffer = self.node.get_out_buffer()
         else:
             # bind default texture here
             image = QtGui.QImage("media/deftex_02.jpg")    
@@ -99,9 +107,10 @@ class ImageviewWidget(QGLWidget):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
     @QtCore.pyqtSlot()    
-    def setNode(self, node = None):
-        if node:
-            self.node = node
+    def setNode(self, node_path = None):
+        if node_path:
+            print "Showing node %s" % node_path
+            self.node = self.engine.node(node_path)
             self.bindImageTexture()
             self.image_width = self.node.width
             self.image_height = self.node.height
@@ -109,7 +118,10 @@ class ImageviewWidget(QGLWidget):
             self.node = None
             self.image_width = 1920
             self.image_height = 1080
-            self.ar = 1.0 * self.image_height / self.image_width    
+            self.ar = 1.0 * self.image_height / self.image_width
+
+        self.img_half_width = self.image_width / 2.0
+        self.img_half_height = self.image_height / 2.0        
 
 
     def mouseMoveEvent(self, mouseEvent):

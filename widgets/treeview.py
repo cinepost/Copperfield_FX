@@ -2,10 +2,12 @@ from PyQt4 import QtGui, QtCore
 
 class TreeNodeViewerWidget(QtGui.QTreeWidget):
   
-    def __init__(self, parent=None, engine=None):      
+    def __init__(self, parent=None, engine=None, viewer=None):      
         super(TreeNodeViewerWidget, self).__init__(parent)
         self.engine = engine
-        
+        self.viewer = viewer
+        self.current_node = None
+
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.connect(self, QtCore.SIGNAL("network_changed"), self.rebuild)
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextTree)
@@ -16,7 +18,6 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
         self.setHeaderItem(header) 
 
     def createNodeLevel(self, node, parent_widget):
-        print "Building treeview for node %s with childern: %s" % (node, node.children.keys())
         for node_name in node.children.keys():
             cur_node = node.children[node_name]
             item = QtGui.QTreeWidgetItem(parent_widget)
@@ -40,14 +41,17 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
             return
 
         item = self.itemAt(point)
+        node_path = str(item.text(2))
         name = item.text(0)  # The text of the node.
 
         # We build the menu.
         menu=QtGui.QMenu(self)
         action=menu.addAction(name)
         menu.addSeparator()
+
         action_1=menu.addAction("Show in viewer")
+        action_1.triggered.connect(lambda: self.viewer.setNode(node_path))
+
         action_2=menu.addAction("Delete")
 
-        #print QtGui.QCursor.pos()
-        menu.exec_(QtGui.QCursor.pos())
+        menu.exec_(QtGui.QCursor.pos())  

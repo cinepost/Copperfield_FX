@@ -21,8 +21,8 @@ class Workarea(QtGui.QWidget):
         # Init out engine and widgets first
         self.parm_view  = ParamsWidget(self)
         self.time_view  = TimelineWidget(self)
-        self.img_view   = ImageviewWidget(self, node = None)
-        self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine)
+        self.img_view   = ImageviewWidget(self, engine = self.engine)
+        self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine, viewer = self.img_view)
         self.node_view  = NodeViewerWidget(self)
         self.python_view = PythonWidget(self, engine = self.engine)
 

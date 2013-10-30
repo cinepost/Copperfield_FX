@@ -11,13 +11,13 @@ class NodeViewerWidget(QtGui.QWidget):
 
 
         ## First create engine
-        engine = compy.CreateEngine("GPU")
+        engine = parent.engine
         ## Create composition
         comp = engine.createNode("comp")
         ## Create source layer
         layer1 = comp.createNode("file")
         layer1.setPos(10, 10)
-        layer1.setParms({"width": 1920, "height": 1200, "imagefile": "~/Pictures/ava_05.png"})
+        layer1.setParms({"width": 1920, "height": 1200, "imagefile": "media/dog.jpg"})
 
         self.makeBlockFromNode(layer1)
 
@@ -96,7 +96,7 @@ class Block(QtGui.QGraphicsItemGroup):
         self.title.setFont(self.text_font)
         self.title.setPos(3, 5)
 
-        self.property_text = '\n'.join(['%s: %s' % (k, str(v)) for k, v in self.properties.iteritems()]) if self.properties else ''
+        self.property_text = ''
 
         self.body = QtGui.QGraphicsRectItem(0, self.head_height, self.w, self.h, parent=self, scene=self.scene())
         self.body.setBrush(self.body_color)

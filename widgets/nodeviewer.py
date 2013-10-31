@@ -8,24 +8,26 @@ class NodeViewerWidget(QtGui.QWidget):
         super(NodeViewerWidget, self).__init__(parent=parent)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
         self.makeScene()
-        b1 = self.addBlock(100, 10, 'Block1', (0.7, 0.7, 1.7), {})
-
-
-        ## First create engine
         engine = parent.engine
+
+
+        # ------ EXAMPLE -------
         ## Create composition
         comp = engine.createNode("comp")
         ## Create source layer
+        b1 = self.addBlock(120, 10, 'Block1', (0.8, 0.6, 0.1), {})
         layer1 = comp.createNode("file")
         layer1.setPos(10, 10)
         layer1.setParms({"width": 1920, "height": 1200, "imagefile": "~/Pictures/ava_05.png"})
-
         b2 = self.makeBlockFromNode(layer1)
         self.makeConnection(b1, b2)
+        # ------- END OF EXAMPLE ---------
 
 
     def makeScene(self):
-
+        """
+        Create scene
+        """
         self.scene = BlockScene(0, 0, self.minimumWidth(), self.minimumHeight(), self)
         self.view = QtGui.QGraphicsView(self.scene)
         self.view.setAlignment(QtCore.Qt.AlignLeft)
@@ -34,12 +36,21 @@ class NodeViewerWidget(QtGui.QWidget):
         self.setLayout(layout)
 
     def addBlock(self, x, y, title, color, params):
+        """
+        Add block to the scene
+        """
         return self.scene.addBlock(x=x, y=y, text=title, color=color, params=params)
 
     def makeBlockFromNode(self, node):
+        """
+        Make block from node
+        """
         return self.addBlock(node.x_pos, node.y_pos, node.name, node.color, params=node.parms)
 
     def makeConnection(self, output, input):
+        """
+        Emulate click event
+        """
         output.select_handler()
         input.select_handler()
 
@@ -48,18 +59,24 @@ class BlockScene(QtGui.QGraphicsScene):
 
     def __init__(self, *args, **kwargs):
         super(BlockScene, self).__init__(*args)
-        self.setBackgroundBrush(QtGui.QColor(255, 255, 255))
+        self.setBackgroundBrush(QtGui.QColor(0, 0, 0))
         self.selected_blocks = []
         self.move_mode = False
 
     def addBlock(self, x, y, text='', color=(70, 70, 70), params={}):
-        b = Block(x=x, y=y, w=70, h=50, text=text, color=color, params=params, scene=self)
+        """
+        Add block to the scene
+        """
+        b = Block(x=x, y=y, w=90, h=60, text=text, color=color, params=params, scene=self)
         return b
 
     def mouseReleaseEvent(self, event):
         super(BlockScene, self).mouseReleaseEvent(event)
 
     def make_connection(self, output, input):
+        """
+        Connect two blocks in the scene
+        """
         connection = Connection(output=output, input=input, scene=self)
         self.selected_blocks = []
         output.connections.append(connection)
@@ -88,49 +105,54 @@ class Block(QtGui.QGraphicsItemGroup):
         self.sockets = {}
 
         # view options
-        head_color = map(lambda x: x*100,  kwargs['color'])
+        head_color = map(lambda x: x*255,  kwargs['color'])
         self.head_color = QtGui.QColor(*head_color) if 'color' in kwargs else QtGui.QColor(70, 70, 70)
         self.head_selected_color = QtGui.QColor(70, 200, 70)
         self.body_color = QtGui.QColor(200, 0, 0)
         self.border_color = QtGui.QColor(100, 50, 20)
         self.text_font = QtGui.QFont('Decorative', 10)
-        self.triangle_pen = QtGui.QPen(QtGui.QColor(70, 200, 70), 2)
+        self.triangle_pen = QtGui.QPen(QtGui.QColor(255, 255, 255), 2)
 
-
+        # head of block
         self.head = QtGui.QGraphicsRectItem(0, 0, self.w, self.head_height,  parent=self, scene=self.scene())
         self.head.setBrush(self.head_color)
 
-
+        # title of block
         self.title = QtGui.QGraphicsSimpleTextItem(self.text, scene=self.scene(), parent=self)
         self.title.setFont(self.text_font)
         self.title.setPos(3, 5)
 
-        self.property_text = '\n'.join(['%s: %s' % (k, str(v)) for k, v in self.properties.iteritems()]) if self.properties else ''
-
+        # bocy of block
         self.body = QtGui.QGraphicsRectItem(0, self.head_height, self.w, self.h, parent=self, scene=self.scene())
         self.body.setBrush(self.body_color)
 
+        # properties of node
+        self.properties = dict((k, str(v)) for k, v in self.properties.iteritems() if k not in
+                        ['file', 'imagefile', 'filename' 'width', 'height'])
+        self.property_text = '\n'.join(['%s: %s' % (k, str(v)) for k, v in self.properties.iteritems()]) if self.properties else ''
         self.prop_text = QtGui.QGraphicsTextItem(self.property_text, scene=self.scene(), parent=self)
         self.prop_text.setFont(self.text_font)
-        self.prop_text.setPos(3, self.head_height+5)
+        self.prop_text.setPos(3, self.head_height+2)
         self.prop_text.setTextWidth(self.w-6)
 
-        #self.rect = QtGui.QGraphicsRectItem(0, 0, self.w, self.h+self.head_height, parent=self, scene=self.scene())
-        #self.rect.setPen(self.border_color)
-
-        self.addToGroup(self.head)
-        self.addToGroup(self.title)
-        self.addToGroup(self.body)
-        #self.addToGroup(self.rect)
-
+        # block composition
+        #self.addToGroup(self.head)
+        #self.addToGroup(self.title)
+        #self.addToGroup(self.body)
         self.generate_sockets()
 
 
     @property
     def connections(self):
+        """
+        Input and output connections union
+        """
         return self.inputs + self.outputs
 
     def find_connection(self, block):
+        """
+        Check if connection already exists
+        """
         for conn in self.connections:
             if conn.output == block or conn.input == block:
                 return True
@@ -138,28 +160,42 @@ class Block(QtGui.QGraphicsItemGroup):
 
     def generate_sockets(self):
 
+        """
+        Create block sockets.
+        Sockets are used to determine the input/output coordinates of connections
+        """
+
         w = self.w
         h = self.h+self.head_height
         dw = w / (self.socket_number + 1)
         dh = h / (self.socket_number + 1)
 
+        # Crete dict for arrows depending on block side
         if not self.arrows:
             self.arrows['head'] = [None for i in xrange(1, self.socket_number+1)]
             self.arrows['bottom'] = [None for i in xrange(1, self.socket_number+1)]
             self.arrows['left'] = [None for i in xrange(1, self.socket_number+1)]
             self.arrows['right'] = [None for i in xrange(1, self.socket_number+1)]
 
+        # Create sockets depending on block side
         if not self.sockets:
             self.sockets['head'] = [{'coord': (self.x() + dw * i, self.y()-5), 'connections': 0} for i in xrange(1, self.socket_number+1)]
             self.sockets['bottom'] = [{'coord': (self.x() + dw * i, self.y()+h+5), 'connections': 0} for i in xrange(1, self.socket_number+1)]
             self.sockets['left'] = [{'coord': (self.x()-5, self.y() + dh * i), 'connections': 0} for i in xrange(1, self.socket_number+1)]
             self.sockets['right'] = [{'coord': (self.x()+w+5, self.y() + dh * i), 'connections': 0} for i in xrange(1, self.socket_number+1)]
 
+        # Remove all arrows from sockets
         for side in self.sockets:
             for index in range(0, self.socket_number):
                 self.remove_arrow(side, index)
 
+
     def rebind_sockets(self):
+
+        """
+        Rebinding sockets. Create new sockets with the state of previous sockets.
+        """
+
         w = self.w
         h = self.h+self.head_height
         dw = w / (self.socket_number + 1)
@@ -172,6 +208,10 @@ class Block(QtGui.QGraphicsItemGroup):
         self.sockets['right'] = [{'coord': (self.x()+w+5, self.y() + dh * i), 'connections': self.sockets['right'][i-1]['connections']} for i in xrange(1, self.socket_number+1)]
 
     def add_arrow(self, side, index):
+
+        """
+        Adding arrow (triangle) to the connection input point
+        """
         if side == 'left':
             p1 = Qt.QPointF(self.sockets[side][index]['coord'][0], self.sockets[side][index]['coord'][1]-4)
             p2 = Qt.QPointF(self.sockets[side][index]['coord'][0]+5, self.sockets[side][index]['coord'][1])
@@ -194,19 +234,27 @@ class Block(QtGui.QGraphicsItemGroup):
         return triangle
 
     def remove_arrow(self, side, index):
+        """
+        Remove arrow from arrows dict, scene and graphic item group
+        """
         if self.arrows[side][index]:
             self.removeFromGroup(self.arrows[side][index])
             self.scene().removeItem(self.arrows[side][index])
             self.arrows[side][index] = None
-            self.arrows[side][index] = None
+
 
     def decrease_socket_connection(self, side, index):
-
+        """
+        Decrease the counter of socket connections
+        """
         self.sockets[side][index]['connections'] -= 1
         if self.sockets[side][index]['connections'] < 1:
             self.remove_arrow(side, index)
 
     def select_socket(self, side):
+        """
+        Select the socket with minimum of connections
+        """
 
         self.rebind_sockets()
 
@@ -225,34 +273,43 @@ class Block(QtGui.QGraphicsItemGroup):
 
     def select_handler(self):
 
-            scene = self.scene()
-            self.select()
-            if self not in scene.selected_blocks:
-                scene.selected_blocks.append(self)
-            else:
-                scene.selected_blocks.remove(self)
+        """
+        Handler of block selection operation.
+        When user clicks on block and don't move it this handler is used.
+        """
 
-            blocks = scene.selected_blocks
+        scene = self.scene()
+        self.select()
+        if self not in scene.selected_blocks:
+            scene.selected_blocks.append(self)
+        else:
+            scene.selected_blocks.remove(self)
 
-            if len(blocks) > 1:
-                other_block = blocks[0] if blocks[0] != self else blocks[1]
-                if not self.find_connection(other_block):
-                    output = blocks[0]
-                    input = blocks[1]
-                    connection = self.scene().make_connection(output, input)
+        blocks = scene.selected_blocks
 
-                    if other_block == input:
-                        other_block.inputs.append(connection)
-                        self.outputs.append(connection)
-                    else:
-                        other_block.outputs.append(connection)
-                        self.inputs.append(connection)
+        if len(blocks) > 1:
+            other_block = blocks[0] if blocks[0] != self else blocks[1]
+            if not self.find_connection(other_block):
+                output = blocks[0]
+                input = blocks[1]
+                connection = self.scene().make_connection(output, input)
 
-                    output.select()
-                    input.select()
+                if other_block == input:
+                    other_block.inputs.append(connection)
+                    self.outputs.append(connection)
+                else:
+                    other_block.outputs.append(connection)
+                    self.inputs.append(connection)
+
+                output.select()
+                input.select()
 
     def mouseReleaseEvent(self, event):
 
+        """
+        Mouse left key release handler.
+        If block hasn't been moved then it is selected. Otherwise it is marked as moving.
+        """
 
         scene = self.scene()
 
@@ -266,6 +323,9 @@ class Block(QtGui.QGraphicsItemGroup):
 
 
     def unconnect(self, connection):
+        """
+        Remove connection from its blocks
+        """
         if connection in self.inputs:
             self.inputs.remove(connection)
         elif connection in self.outputs:
@@ -273,6 +333,10 @@ class Block(QtGui.QGraphicsItemGroup):
 
 
     def mouseMoveEvent(self, event):
+        """
+        Block moveing handler.
+        On each move event new block sockets are generated (if they don't exist) and all connections are redrawn
+        """
         scene = self.scene()
         scene.move_mode = True
         super(Block, self).mouseMoveEvent(event)
@@ -284,6 +348,9 @@ class Block(QtGui.QGraphicsItemGroup):
             conn.setLine(conn.x1, conn.y1, conn.x2, conn.y2)
 
     def select(self):
+        """
+        Mark block as selected
+        """
         if not self.selected:
             self.selected = True
             self.setSelected(True)
@@ -294,6 +361,9 @@ class Block(QtGui.QGraphicsItemGroup):
             self.head.setBrush(self.head_color)
 
     def keyReleaseEvent(self, event):
+        """
+        Delete block handler. Backspace or delete button causes the deletion of the block
+        """
         if event.matches(Qt.QKeySequence.Delete) or event.matches(Qt.QKeySequence.Back):
             self.hide()
             for conn in self.connections:
@@ -313,7 +383,9 @@ class Connection(QtGui.QGraphicsLineItem):
         self.y2 = None
         self.side_input = None
         self.selected = False
-        self.color = QtGui.QColor(70, 200, 70)
+        
+        # colors
+        self.color = QtGui.QColor(255, 255, 255)
         self.selected_color = QtGui.QColor(150, 90, 70)
 
         self.calc_coordinates()
@@ -323,14 +395,22 @@ class Connection(QtGui.QGraphicsLineItem):
 
 
     def setLine(self, *__args):
+        """
+        Redraw conenctionn
+        """
         self.calc_coordinates()
         super(Connection, self).setLine(*__args)
 
 
     def calc_coordinates(self):
+        
+        """
+        Calculate input and output points
+        """
 
         side_input, side_output = None, None
 
+        # Select the block side
         if self.output.x() > self.input.x() + self.input.w:
             side_input = 'right'
         elif self.output.x() > self.input.x() and self.output.x() <= self.input.x() + self.input.w:
@@ -353,36 +433,43 @@ class Connection(QtGui.QGraphicsLineItem):
             side_output = 'right'
 
 
-        # inputs
+        # If input connection exists - remove it and decrease input block socket counter
 
         if self.index_input is not None and self.side_input is not None:
 
             if self.input.sockets[self.side_input][self.index_input]['connections'] > 0:
                 self.input.decrease_socket_connection(self.side_input, self.index_input)
 
+        # Select new socket
         coords, index_input = self.input.select_socket(side_input)
 
+        # If socket is changes decrease the previous socket counter
         if self.side_input and self.index_input is not None:
             if self.side_input != side_input or self.index_input != index_input:
                 if self.input.sockets[self.side_input][self.index_input]['connections'] > 0:
                     self.input.decrease_socket_connection(self.side_input, self.index_input)
 
-
+        # Set new input coordinates
         self.x2 = coords[0]
         self.y2 = coords[1]
         self.side_input = side_input
         self.index_input = index_input
 
+        # add arrow to the socket
         if not self.input.arrows[self.side_input][self.index_input]:
             self.input.arrows[self.side_input][self.index_input] = self.input.add_arrow(self.side_input, self.index_input)
 
-        # outputs
 
+
+        # If output connection exists - remove it and decrease output block socket counter
         if self.index_output is not None:
             if self.output.sockets[self.side_output][self.index_output]['connections'] > 0:
                 self.output.decrease_socket_connection(self.side_output, self.index_output)
 
+        # Select new socket
         coords, index_output = self.output.select_socket(side_output)
+        
+        # Coordinates correction
         self.x1 = coords[0]
         if side_output == 'right':
             self.x1 -= 4
@@ -393,10 +480,14 @@ class Connection(QtGui.QGraphicsLineItem):
             self.y1 += 4
         if side_output == 'bottom':
             self.y1 -= 4
+            
         self.side_output = side_output
         self.index_output = index_output
 
     def select(self):
+        """
+        Mark connections selected
+        """
         if not self.selected:
             self.selected = True
             self.setSelected(True)
@@ -411,6 +502,9 @@ class Connection(QtGui.QGraphicsLineItem):
         super(Connection, self).mouseReleaseEvent(event)
 
     def keyReleaseEvent(self, event):
+        """
+        Remove connection on backspace or delete button release event
+        """
         if event.matches(Qt.QKeySequence.Delete) or event.matches(Qt.QKeySequence.Back):
             self.input.decrease_socket_connection(self.side_input, self.index_input)
             self.output.decrease_socket_connection(self.side_output, self.index_output)

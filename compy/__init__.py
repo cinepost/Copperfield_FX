@@ -15,11 +15,11 @@ for module_name in settings.fx_modules:
 		obj = getattr(module, name)
 		if inspect.isclass(obj):
 			if hasattr(obj,"__fx__"):
-				if obj.name:
-					effects[obj.name] = obj
+				if obj.type_name:
+					effects[obj.type_name] = obj
 					print "FX filter %s loaded..." % obj
 			elif hasattr(obj, "__mgr__"):
-					effects[obj.name] = obj
+					effects[obj.type_name] = obj
 					print "Network manager %s loaded..." % obj
 								
 

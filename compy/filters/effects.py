@@ -5,14 +5,14 @@ import numpy
 class CLC_Effect(base.CLC_Base):
 	
 	def __init__(self, engine, parent):
+		super(CLC_Effect, self).__init__(engine, parent)
 		self.parms.update({
 			"maskinput"	: None,		# use this as operation mask
 		})	
-		super(CLC_Effect, self).__init__(engine, parent)
 
 
 class CLC_Effect_FastBlur(CLC_Effect):
-	name = "fastblur"
+	type_name = "fastblur"
 	category = "effects"
 	def __init__(self, engine, parent):
 		super(CLC_Effect_FastBlur, self).__init__(engine, parent)
@@ -21,17 +21,19 @@ class CLC_Effect_FastBlur(CLC_Effect):
 			"blursizey"	: 0.05, 	# blur diameter for Y in normalized coordinates
 			"useindepy"	: False,	# use independent Y blur diameter
 		})
-		self.program = engine.load_program("effects_blur.cl")	
+		self.program = engine.load_program("effects_blur.cl")
+		self.__inputs__ = [None]
+		self.__input_names__ = ["Input 1"]	
 			
 	def compute(self):	
-		if self.inputs.has_key(0):
+		if self.has_inputs():
 			self.devTmpBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.inputs.get(0).size)
 			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.inputs.get(0).size)	
 			self.width = self.inputs.get(0).width
 			self.height = self.inputs.get(0).height
 			print "Blurring area: %s x %s" %(self.inputs.get(0).width, self.inputs.get(0).height)
 			exec_evt = self.program.fast_blur_h(self.engine.queue, self.size, None, 
-				self.inputs.get(0).get_out_buffer(),     
+				self.__inputs__[0].get_out_buffer(),     
 				self.devTmpBuffer, 
 				numpy.float32(self.parms.get("blursize")),
 				numpy.float32(self.parms.get("blursizey")),
@@ -57,7 +59,7 @@ class CLC_Effect_FastBlur(CLC_Effect):
 
 
 class CLC_Effect_PressRaster(CLC_Effect):
-	name	= "press_raster"
+	type_name	= "press_raster"
 	category = "effects"
 	def __init__(self, engine, parent):
 		super(CLC_Effect_PressRaster, self).__init__(engine, parent)
@@ -65,16 +67,18 @@ class CLC_Effect_PressRaster(CLC_Effect):
 			"density"	: 100,		# dots density
 			"quality"	: 2,		# dots aa quality 2 is good, but 3 is better
 		})
-		self.program = engine.load_program("effects_press_raster.cl")	
+		self.program = engine.load_program("effects_press_raster.cl")
+		self.__inputs__ = [None]
+		self.__input_names__ = ["Input 1"]	
 			
 	def compute(self):	
-		if self.inputs.has_key(0):
+		if self.has_inputs():
 			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.inputs.get(0).size)	
 			self.width = self.inputs.get(0).width
 			self.height = self.inputs.get(0).height
 			print "Raterizing area: %s x %s" %(self.inputs.get(0).width, self.inputs.get(0).height)
 			exec_evt = self.program.raster(self.engine.queue, self.size, None, 
-				self.inputs.get(0).get_out_buffer(),     
+				self.__inputs__[0].get_out_buffer(),     
 				self.devOutBuffer,
 				numpy.int32(self.inputs.get(0).width),
 				numpy.int32(self.inputs.get(0).height),

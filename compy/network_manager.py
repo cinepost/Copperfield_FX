@@ -1,33 +1,57 @@
 import re
 lastNum = re.compile(r'(?:[^\d]*(\d+)[^\d]*)+')
 
-def increment(s):
-    """ look for the last sequence of number(s) in a string and increment """
-    m = lastNum.search(s)
-    if m:
-        next = str(int(m.group(1))+1)
-        start, end = m.span(1)
-        s = s[:max(end-len(next), start)] + next + s[end:]
-    return s
-
 class CLC_NetworkManager(object):
-	
+	"""
+	This class implements all the network related methods to be used with Compy nodes. It handles child/parent relations, node creation, manipulation methods
+	and tree traversal.
+
+	"""
 	def __init__(self, mask=None):
 		# mask is a list with node type names that are allowed to be created by this NetworkManager instance e.d ["img","comp"] If mask is None than any node type can be used
 		self.mask = mask
 		self.node_dict = {}
 		self.parent = None
+		self.__inputs__ = []
+		self.__input_names__ = []
+
+	def __increment__(self, s):
+		""" look for the last sequence of number(s) in a string and increment """
+		m = lastNum.search(s)
+		if m:
+			next = str(int(m.group(1))+1)
+			start, end = m.span(1)
+			s = s[:max(end-len(next), start)] + next + s[end:]
+		return s	
 
 	@property 
 	def nodes(self):
 		return self.node_dict
 
-	@property
 	def children(self):
 		if self.node_dict != {}:
 			return self.node_dict	
 		else:
-			return None	
+			return None
+
+	def inputs(self):
+		return self.__inputs__		
+
+	def inputNames(self):
+		""" Returns dict of input names eg: ["Input 1", "Input 2"] """
+		return [name for name in self.__input_names__]
+
+	def setInput(self, input_index, node):
+		try:
+			self.__inputs__[input_index] = node					
+		except:
+			raise
+
+	def has_inputs(self):
+		if len(self.__inputs__) > 0:
+			return True
+		else:
+			return False		
 
 	def createNode(self, node_type=None):
 		print "Creating node %s inside %s" % (node_type, self.__class__.__name__)
@@ -37,7 +61,7 @@ class CLC_NetworkManager(object):
 			return None
 
 		node = self.engine.filters[node_type](self.engine, self)
-		self.node_dict[node.name] = node
+		self.node_dict[node.name()] = node
 		if self.engine.network_cb:
 			self.engine.network_cb()
 
@@ -45,10 +69,12 @@ class CLC_NetworkManager(object):
 
 		return node
 
-	@property 	
+	def name(self):
+		return self.type_name	
+
 	def path(self):
 		if self.parent:
-			return "%s/%s" % (self.parent.path, self.name)
+			return "%s/%s" % (self.parent.path, self.name())
 
 		return ""		
 

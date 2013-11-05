@@ -10,8 +10,7 @@ import compy.network_manager as network_manager
 
 
 class CLC_Node(object):
-    # Base class for nodes graph representation
-    name = None
+    """ Base class for nodes graph representation """
 
     def __init__(self, parent=None):
         self.parent = parent
@@ -32,7 +31,7 @@ class CLC_Node(object):
 class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 	# Base class for FX filters
 	__fx__			= True # Indicated that this is FX node
-	name			= None # This is a TYPE name for the particular FX node... don't be confused here
+	type_name		= None # This is a TYPE name for the particular FX node...
 	
 	def __init__(self, engine, parent):
 		network_manager.CLC_NetworkManager.__init__(self)
@@ -45,7 +44,6 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 		self.width	= None	
 		self.height	= None
 		self.cooked	= False	
-		self.inputs	= {}
 
 		self.devOutBuffer = None # Device output buffer. This buffer holds thre result image array
 
@@ -61,9 +59,6 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 
 	def setParms(self, parameters):
 		self.parms.update(parameters)
-	
-	def setInput(self, layer_number, layer):
-		self.inputs[layer_number] = layer
 		
 	@property
 	def size(self):
@@ -87,8 +82,8 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 
 	def cook(self):
 		if self.cooked != True:
-			for key in self.inputs.keys():
-				self.inputs[key].cook()
+			for node in self.inputs():
+				node.cook()
 				
 			try:
 				self.compute()

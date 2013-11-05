@@ -18,12 +18,12 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
         self.setHeaderItem(header) 
 
     def createNodeLevel(self, node, parent_widget):
-        for node_name in node.children.keys():
-            cur_node = node.children[node_name]
+        for node_name in node.children().keys():
+            cur_node = node.children()[node_name]
             item = QtGui.QTreeWidgetItem(parent_widget)
             item.setText(0, str(cur_node))
-            item.setText(1, cur_node.name)
-            item.setText(2, cur_node.path)
+            item.setText(1, cur_node.name())
+            item.setText(2, cur_node.path())
             if cur_node.children:
                 self.createNodeLevel(cur_node, item)    
 

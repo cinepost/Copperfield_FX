@@ -2,6 +2,7 @@ import sys
 import pyopencl as cl
 import pickle
 import compy.network_manager as network_manager
+from pyopencl.tools import get_gl_sharing_context_properties
 
 class CLC_Engine(network_manager.CLC_NetworkManager):
 	cpu_devices = []
@@ -41,6 +42,9 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 		if device_type in ["gpu","GPU","Gpu"]:
 			print "Creating engine using GPU devices"
 			self._ctx = cl.Context(devices = self.gpu_devices)
+			#self._ctx = cl.Context(properties=[
+            #    (cl.context_properties.PLATFORM, cl.get_platforms()[0])]
+            #    + get_gl_sharing_context_properties())
 		elif device_type in ["cpu","CPU","Cpu"]:
 			print "Creating engine using CPU devices"
 			self._ctx = cl.Context(devices = self.cpu_devices)
@@ -65,7 +69,11 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 	def load_program(self, filename):
 		of = open("%s/%s" % (self.cl_path, filename), 'r')
 		return cl.Program(self.ctx, of.read()).build()
-		
+	
+	@property 
+	def have_gl(self):
+		return cl.have_gl()	
+
 	@property
 	def ctx(self):
 		return self._ctx

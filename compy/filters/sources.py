@@ -4,7 +4,7 @@ import pyopencl as cl
 import numpy
 			
 class CLC_Source_Image(base.CLC_Base):
-	name = "file"
+	type_name = "file"
 	category = "sources"
 	def __init__(self, engine, parent):
 		super(CLC_Source_Image, self).__init__(engine, parent)
@@ -16,7 +16,7 @@ class CLC_Source_Image(base.CLC_Base):
 			"flipy"		: False,	# flip image vertically
 		})
 		self.engine = engine
-		self.program = self.engine.load_program("source_image.cl")	
+		self.program = self.engine.load_program("source_image.cl")
 		
 	def loadJPG(self, filename):
 		img = matplotlib.image.imread(filename)

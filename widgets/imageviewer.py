@@ -2,8 +2,11 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtOpenGL import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from OpenGL.raw.GL.VERSION.GL_1_5 import glBufferData as rawGlBufferData
 import math
 from PIL import Image
+
+import pyopencl as cl
 
 class ImageviewWidget(QGLWidget):
     def __init__(self, parent=None, engine = None):
@@ -27,7 +30,10 @@ class ImageviewWidget(QGLWidget):
 
         glDisable( GL_LIGHTING )
         glEnable( GL_TEXTURE_2D )
-        glBindTexture(GL_TEXTURE_2D, self.texid)
+        if self.node:
+            glBindTexture(GL_TEXTURE_2D, self.texid_cl)
+        else:
+            glBindTexture(GL_TEXTURE_2D, self.texid_gl)    
 
         glLoadIdentity();
         glTranslated (0.0 + self.pivot_x, 0.0 - self.pivot_y, -10.0);
@@ -49,7 +55,9 @@ class ImageviewWidget(QGLWidget):
         glVertex2d(-self.img_half_width, self.img_half_height);
         glEnd()
 
+        glBindTexture(GL_TEXTURE_2D, 0)
         glDisable( GL_TEXTURE_2D )
+
         glColor(1.0, 1.0, 1.0)
         glBegin(GL_LINES)
         glVertex2d(-self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,self.img_half_height);
@@ -60,7 +68,7 @@ class ImageviewWidget(QGLWidget):
 
         # draw text
         if self.node:
-            node_path = node.path
+            node_path = self.node.path
         else:
             node_path = "No output node selected !"    
 
@@ -83,6 +91,18 @@ class ImageviewWidget(QGLWidget):
         glDisable(GL_DEPTH_TEST);
         glColor4f(1.0, 1.0, 1.0, 1.0);
 
+        # bind default texture here  
+        self.texid_gl = self.bindTexture(QtGui.QImage("media/deftex_02.jpg"), GL_TEXTURE_2D, GL_RGBA) 
+        self.texid_cl = glGenTextures(1)
+
+        glBindTexture(GL_TEXTURE_2D, self.texid_cl)
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glBindTexture(GL_TEXTURE_2D, 0)
+
         self.bindImageTexture()
 
     def reset_view(self):
@@ -94,17 +114,31 @@ class ImageviewWidget(QGLWidget):
     def bindImageTexture(self):
         if self.node:
             # bind texture from current compy node
-            img_buffer = self.node.get_out_buffer()
-        else:
-            # bind default texture here
-            image = QtGui.QImage("media/deftex_02.jpg")    
-            self.texid = self.bindTexture(image, GL_TEXTURE_2D, GL_RGBA) 
+            img_cl_buffer = self.node.get_out_buffer()
 
-        glGenerateMipmap(GL_TEXTURE_2D);  #Generate num_mipmaps number of mipmaps here.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glBindTexture(GL_TEXTURE_2D, self.texid_cl)
+            glFlush()
+
+            print "GL texture : %s" % self.texid_gl
+            print "CL texture : %s" % self.texid_cl
+            print "Node size: %s %s" % (self.node.width , self.node.height)
+
+            #glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.width , self.node.height, 0, GL_RGBA, GL_FLOAT, None)
+            #display_cl_gl_texture = cl.GLTexture(self.engine.ctx, self.engine.mf.WRITE_ONLY,  GL_TEXTURE_2D, 0, self.texid_cl, 2);    
+
+            pbo = glGenBuffers(1)
+            glBindBuffer(GL_ARRAY_BUFFER, pbo)
+            rawGlBufferData(GL_ARRAY_BUFFER,  self.node.width * self.node.height, None, GL_STATIC_DRAW)
+            glEnableClientState(GL_VERTEX_ARRAY)
+            try:
+                display_pbo_cl = cl.GLBuffer(self.engine.ctx, self.engine.mf.WRITE_ONLY, int(pbo))
+            except:
+                raise
+            #cl.enqueue_acquire_gl_objects(queue, [coords_dev])
+            #prog.generate_sin(queue, (n_vertices,), None, coords_dev)
+            #cl.enqueue_release_gl_objects(queue, [coords_dev])
+
+            glBindTexture(GL_TEXTURE_2D, 0)
 
     @QtCore.pyqtSlot()    
     def setNode(self, node_path = None):
@@ -121,7 +155,8 @@ class ImageviewWidget(QGLWidget):
             self.ar = 1.0 * self.image_height / self.image_width
 
         self.img_half_width = self.image_width / 2.0
-        self.img_half_height = self.image_height / 2.0        
+        self.img_half_height = self.image_height / 2.0
+        self.updateGL()        
 
 
     def mouseMoveEvent(self, mouseEvent):

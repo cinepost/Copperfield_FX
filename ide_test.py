@@ -60,6 +60,10 @@ class Window(QtGui.QMainWindow):
     def __init__(self):
         super(Window, self).__init__()
         self.engine = compy.CreateEngine("GPU")
+        if not self.engine.have_gl:
+            print "OpecCL - OpenGL interoperability not supported !!! Abort."
+            exit()
+            
         self.initUI()
 
     def close(self):

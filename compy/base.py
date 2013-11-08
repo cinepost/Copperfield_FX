@@ -5,7 +5,7 @@ import pyopencl as cl
 import numpy
 
 import threading
-from compy import parameter
+from compy.parameter import CompyParameter
 import compy.network_manager as network_manager
 
 
@@ -17,6 +17,9 @@ class CLC_Node(object):
         self.x_pos = 0.0
         self.y_pos = 0.0
         self.color = (0.5, 1.0, 0.25,)
+        self.parms = {}
+        self.icon = None
+        self.parms = {}
 
     def setPos(self, x, y):
         self.x_pos = x
@@ -24,6 +27,18 @@ class CLC_Node(object):
 
     def getPos(self):
         return (self.x_pos, self.y_pos,)
+
+    def getIcon(self):
+    	return self.icon    
+
+    def addParameter(self, name, parm_type, value=None):
+    	parm = CompyParameter(self, name, parm_type)
+    	if value != None: parm.set(value)
+    	self.parms[name] = parm
+
+    def setParms(self, parameters):
+		for parm in parameters:
+			self.parms[parm].set(parameters[parm])		
 
     def __str__(self):
         return self.__class__.__name__
@@ -49,16 +64,8 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
 		self.common_program = engine.load_program("common.cl")
-		self.parms = {
-			"effectamount"	: 	parameter.CompyParameter(1),
-		}
-	
-	@property	
-	def children(self):
-		return None	
-
-	def setParms(self, parameters):
-		self.parms.update(parameters)
+		
+		self.addParameter("bypass", bool, False)
 		
 	@property
 	def size(self):

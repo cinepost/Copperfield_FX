@@ -20,44 +20,49 @@ class CompyKey(object):
 	def get(self):
 		return self.value		
 
-
-class CompyCurve(object):
-	keys = []
-	
-	def insertKey(time, key):
-		self.keys += (time, key,)
-
-
-	def removeKey(time):
-		pass	
-
 		
 class CompyParameter(object):
-	is_animated 	= False
-	curve			= {}
+	def __init__(self, node, name, parm_type):
+		self.keyframes = {}
+		self.value = None
+		self.__node__ = node
+		self.__name__ = name
+		self.__type__ = parm_type
+		self.is_animated = False
 
-	def __init__(self, value=None):
-		self.value = value
+	def node(self):
+		return self.__node__	
 
-	def get(self, time=None):
-		if not self.is_animated:
+	def name(self):
+		return self.__name__
+
+	def type(self):
+		return self.__type__		
+
+	def eval(self):
+		if self.is_animated:
+			# Animated parameter
+			return self.evalAtTime(self.__node__.engine.time())
+		else:
 			# Constant parameter
 			return self.value
-		else:
-			# Animated parameter
-			pass
+
+	def evalAtTime(self, time):
+		raise BaseException("Unimplemented evalAtTime(self, time) in %s" % self)
 
 	def set(self, value):
-		if not self.is_animated:
-			# Constant parameter
-			self.value = value
-		else:
+		if self.is_animated:
 			# Animated parameter
 			raise BaseException("Unable to set parm that contains curve animation !!! Use addKeyFrame(time, key) instead !!!")
+		else:
+			# Constant parameter
+			if type(value) == self.__type__:
+				self.value = value
+			else:
+				raise BaseException("Parameter type doesn't match !!! %s expected, but %s provided !" % (self.__type__, type(value)))	
 
-	def addKeyFrame(self, time, key):
-		self.is_animated = True
-		curve[time] = key
+	def setKeyFrame(self, keyframe):
+		raise BaseException("Unimplemented setKeyFrame(self, keyframe) in %s" % self)
 
 	def __str__(self):
 		return self.value			

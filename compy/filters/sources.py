@@ -1,4 +1,4 @@
-from compy import base
+from compy import base, parameter
 import matplotlib.image
 import pyopencl as cl
 import numpy
@@ -8,15 +8,14 @@ class CLC_Source_Image(base.CLC_Base):
 	category = "sources"
 	def __init__(self, engine, parent):
 		super(CLC_Source_Image, self).__init__(engine, parent)
-		self.parms.update({
-			"filename"	: None,		# image file name to read
-			"width"		: 640, 		# downscale to this resolution. setting this to 0 uses sources resolution
-			"height"	: 480,		# downscale to this resolution. setting this to 0 uses sources resolution
-			"flipx"		: False,	# flip image horizontally
-			"flipy"		: False,	# flip image vertically
-		})
 		self.engine = engine
 		self.program = self.engine.load_program("source_image.cl")
+
+		self.addParameter("filename", str, None)
+		self.addParameter("width", int, 640)
+		self.addParameter("height", int, 480)
+		self.addParameter("flipx", bool, False)
+		self.addParameter("flipy", bool, False)
 		
 	def loadJPG(self, filename):
 		img = matplotlib.image.imread(filename)
@@ -91,7 +90,7 @@ class CLC_Source_Image(base.CLC_Base):
 		
 			
 	def compute(self):
-		imagefile = self.parms.get("imagefile")
+		imagefile = self.parms.get("filename")
 		if imagefile:	 
 			ext = imagefile.split(".")[-1]
 			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:

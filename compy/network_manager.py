@@ -10,7 +10,7 @@ class CLC_NetworkManager(object):
 	def __init__(self, mask=None):
 		# mask is a list with node type names that are allowed to be created by this NetworkManager instance e.d ["img","comp"] If mask is None than any node type can be used
 		self.mask = mask
-		self.node_dict = {}
+		self.__node_dict__ = {}
 		self.parent = None
 		self.__inputs__ = []
 		self.__input_names__ = []
@@ -26,13 +26,13 @@ class CLC_NetworkManager(object):
 
 	@property 
 	def nodes(self):
-		return self.node_dict
+		return self.__node_dict__
 
 	def children(self):
-		if self.node_dict != {}:
-			return self.node_dict	
+		if self.__node_dict__.keys() > 0:
+			return [self.__node_dict__[name] for name in self.__node_dict__]	
 		else:
-			return None
+			return []
 
 	def inputs(self):
 		return self.__inputs__		
@@ -61,7 +61,7 @@ class CLC_NetworkManager(object):
 			return None
 
 		node = self.engine.filters[node_type](self.engine, self)
-		self.node_dict[node.name()] = node
+		self.__node_dict__[node.name()] = node
 		if self.engine.network_cb:
 			self.engine.network_cb()
 
@@ -74,7 +74,7 @@ class CLC_NetworkManager(object):
 
 	def path(self):
 		if self.parent:
-			return "%s/%s" % (self.parent.path, self.name())
+			return "%s/%s" % (self.parent.path(), self.name())
 
 		return ""		
 

@@ -19,10 +19,10 @@ class Workarea(QtGui.QWidget):
         self.engine.set_network_change_callback(self.rebuild_widgets)
 
         # Init out engine and widgets first
-        self.parm_view  = ParamsWidget(self)
+        self.parm_view  = ParamsWidget(self, engine = self.engine)
         self.time_view  = TimelineWidget(self)
         self.img_view   = ImageviewWidget(self, engine = self.engine)
-        self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine, viewer = self.img_view)
+        self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine, viewer = self.img_view, params = self.parm_view)
         self.node_view  = NodeViewerWidget(self)
         self.python_view = PythonWidget(self, engine = self.engine)
 

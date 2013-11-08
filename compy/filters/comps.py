@@ -10,9 +10,6 @@ class CLC_Comp_Add(base.CLC_Base):
 	category = "comps"
 	def __init__(self, engine, parent):
 		super(CLC_Comp_Add, self).__init__(engine, parent)
-		self.width = self.background.width
-		self.height = self.background.height
-
 		self.program = engine.load_program("comp_add.cl")
 		self.__inputs__ = [None, None]
 		self.__input_names__ = ["Input 1","Input 2"] 

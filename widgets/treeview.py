@@ -2,15 +2,17 @@ from PyQt4 import QtGui, QtCore
 
 class TreeNodeViewerWidget(QtGui.QTreeWidget):
   
-    def __init__(self, parent=None, engine=None, viewer=None):      
+    def __init__(self, parent=None, engine=None, viewer=None, params=None):      
         super(TreeNodeViewerWidget, self).__init__(parent)
         self.engine = engine
         self.viewer = viewer
+        self.params = params
         self.current_node = None
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.connect(self, QtCore.SIGNAL("network_changed"), self.rebuild)
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextTree)
+        self.itemClicked.connect(self.handleItemClicked)
         self.initUI()
         
     def initUI(self):
@@ -18,14 +20,16 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
         self.setHeaderItem(header) 
 
     def createNodeLevel(self, node, parent_widget):
-        for node_name in node.children().keys():
-            cur_node = node.children()[node_name]
+        for cur_node in node.children():
             item = QtGui.QTreeWidgetItem(parent_widget)
             item.setText(0, str(cur_node))
             item.setText(1, cur_node.name())
             item.setText(2, cur_node.path())
-            if cur_node.children:
+            if cur_node.children():
                 self.createNodeLevel(cur_node, item)    
+
+    def handleItemClicked(self, item, column):
+        self.params.emit(QtCore.SIGNAL('node_selected'), str(item.text(2)))              
 
     @QtCore.pyqtSlot()   
     def rebuild(self):

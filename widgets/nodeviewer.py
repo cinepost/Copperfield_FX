@@ -17,7 +17,7 @@ class NodeViewerWidget(QtGui.QWidget):
         ## Create source layer
         file1 = comp.createNode("file")
         file1.setPos(10, 10)
-        file1.setParms({"width": 1920, "height": 1200, "imagefile": "media/dog.jpg"})
+        file1.setParms({"width": 1920, "height": 1200, "filename": "media/dog.jpg"})
 
         blur1 = comp.createNode("fastblur")
         blur1.setInput(0, file1)
@@ -42,7 +42,7 @@ class NodeViewerWidget(QtGui.QWidget):
     def makeBlockFromNode(self, node):
         print node
         print node.__dict__
-        self.addBlock(node.x_pos, node.y_pos, node.name, node.color, params=node.parms)
+        self.addBlock(node.x_pos, node.y_pos, node.name(), node.color, params=node.parms)
 
 
 class BlockScene(QtGui.QGraphicsScene):

@@ -20,6 +20,7 @@ class ParamsWidget(QtGui.QWidget):
         vbox = QtGui.QVBoxLayout()
         vbox.addLayout(self.header)
         vbox.addLayout(self.grid)
+        vbox.addStretch(1)
         self.setLayout(vbox)
 
     @QtCore.pyqtSlot()   
@@ -59,6 +60,9 @@ class ParamsWidget(QtGui.QWidget):
                 if parm_type is bool:
                     valueEdit = QtGui.QCheckBox()
                     if value: valueEdit.setCheckState(Qt.Checked)
+                elif parm_type is int:
+                    valueEdit = QtGui.QSpinBox()  
+                    valueEdit.setValue(value)  
                 else:    
                     valueEdit = QtGui.QLineEdit(str(value))
             else:
@@ -68,6 +72,3 @@ class ParamsWidget(QtGui.QWidget):
             self.grid.addWidget(QtGui.QLabel(parm_name), i, 0)
             self.grid.addWidget(valueEdit, i, 1)
             i+=1
-
-        #spacer = QtGui.QSpacerItem()
-        #self.grid.addItem(spacer)            

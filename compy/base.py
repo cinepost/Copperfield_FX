@@ -100,7 +100,15 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 				self.cooked = True
 				return True
 		else:
-			print "%s node already cooked !" % self		
+			print "%s node already cooked !" % self
+
+	def render(self, frame = None):
+		if frame:
+			render_frame = frame
+		else:
+			render_frame = self.engine.frame()
+			
+		print "Rendering frame %s for node %s" % (frame, self)		
 
 	def get_out_buffer(self):
 		if self.cooked == False:

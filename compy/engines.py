@@ -8,14 +8,15 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 	cpu_devices = []
 	gpu_devices = []
 	programs 	= {}
-	viewer		= None	
 	app 		= None
 	filters		= {}
-	time		= 0
 	network_cb  = None
 
 	def __init__(self, device_type="GPU", filters={}, cl_path=""): # "cpu" or "gpu" here or "ALL"
 		super(CLC_Engine, self).__init__(["comp"]) # only CLC_Composition class nodes allowed to be created at the root/engine level
+		self.__time__= 0
+		self.__fps__ = 25
+
 		print "Initializing compositing engine..."
 		for found_platform in cl.get_platforms():
 			if found_platform.name in ['NVIDIA CUDA', 'ATI Stream', 'Apple']:
@@ -86,8 +87,20 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 	def mf(self):
 		return self._mf
 
+	def fps(self):
+		return self.__fps__
+
+	def time(self):
+		return self.__time__
+
+	def frame(self):
+		return self.__time__ * __fps__		
+
+	def setFps(self, fps):
+		self.__fps__ = fps	
+
 	def setTime(self, time):
-		self.time = time			
+		self.__time__ = time			
 
 	@property 
 	def engine(self):

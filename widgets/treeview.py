@@ -4,6 +4,7 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
   
     def __init__(self, parent=None, engine=None, viewer=None, params=None):      
         super(TreeNodeViewerWidget, self).__init__(parent)
+        self.parent = parent
         self.engine = engine
         self.viewer = viewer
         self.params = params
@@ -56,6 +57,9 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
         action_1=menu.addAction("Show in viewer")
         action_1.triggered.connect(lambda: self.viewer.setNode(node_path))
 
-        action_2=menu.addAction("Delete")
+        action_1=menu.addAction("Render")
+        action_1.triggered.connect(lambda: self.parent.renderNode(node_path))
+
+        action_3=menu.addAction("Delete")
 
         menu.exec_(QtGui.QCursor.pos())  

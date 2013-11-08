@@ -2,6 +2,7 @@ import sys, os
 from PyQt4 import QtGui, QtCore, QtOpenGL
 
 import compy
+from render_dialog import RenderNodeDialog
 
 from widgets import TimelineWidget
 from widgets import ParamsWidget
@@ -54,7 +55,12 @@ class Workarea(QtGui.QWidget):
        
     def rebuild_widgets(self):
         print "Network change callback called by engine..."
-        self.tree_view.emit(QtCore.SIGNAL('network_changed'))    
+        self.tree_view.emit(QtCore.SIGNAL('network_changed'))
+
+    @QtCore.pyqtSlot()   
+    def renderNode(self, node_name):
+        node = self.engine.node(node_name)
+        RenderNodeDialog.render(self, node)        
 
 class Window(QtGui.QMainWindow):
     def __init__(self):

@@ -1,4 +1,5 @@
 import inspect
+import string
 #import pyopencl as cl
 #import numpy
 from compy.engines import CLC_Engine as engine

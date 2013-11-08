@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, string
 from PyQt4 import QtGui, QtCore
 
 class RenderNodeDialog(QtGui.QDialog):
@@ -33,7 +33,7 @@ class RenderNodeDialog(QtGui.QDialog):
         # file layout
         file_layout = QtGui.QHBoxLayout()
 
-        self.filename = QtGui.QLineEdit("~/test/%s_$F.jpg" % node.name())
+        self.filename = QtGui.QLineEdit("~/test/%s_$F4.jpg" % node.name())
         self.filename.setMinimumWidth(400)
         self.browser = QtGui.QPushButton("Browse", self)
         self.browser.clicked.connect(self.browse)
@@ -47,7 +47,7 @@ class RenderNodeDialog(QtGui.QDialog):
         self.cancel = QtGui.QPushButton("Cancel", self)
         self.cancel.clicked.connect(self.reject)
         self.render = QtGui.QPushButton("Render", self)
-        self.render.clicked.connect(self.accept)
+        self.render.clicked.connect(self.renderNode)
 
         btns_layout.addStretch(1)
         btns_layout.addWidget(self.cancel) 
@@ -61,6 +61,17 @@ class RenderNodeDialog(QtGui.QDialog):
         self.setLayout(layout)
         self.setWindowTitle('Render Node Dialog')
 
+    @QtCore.pyqtSlot()    
+    def renderNode(self):
+        start_frame = self.start_frame.value()
+        end_frame = self.end_frame.value()
+        step_frame = self.step_frame.value()
+        for frame in range(start_frame, end_frame, step_frame):
+            self.node.renderToFile(self.filename.text(), frame)
+
+        self.close()    
+
+    @QtCore.pyqtSlot()
     def browse(self):
         filename = str(self.filename.text()).rsplit("/")[-1]
         directory = QtGui.QFileDialog.getExistingDirectory(self, "Browse Directory", self.filename.text(), QtGui.QFileDialog.ShowDirsOnly | QtGui.QFileDialog.DontResolveSymlinks);    

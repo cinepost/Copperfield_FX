@@ -1,4 +1,4 @@
-import sys
+import sys, string
 import Imath
 from PIL import Image
 import pyopencl as cl
@@ -6,6 +6,7 @@ import numpy
 
 import threading
 from compy.parameter import CompyParameter
+from compy.compy_string import CompyString
 import compy.network_manager as network_manager
 
 
@@ -102,13 +103,15 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 		else:
 			print "%s node already cooked !" % self
 
-	def render(self, frame = None):
+	def renderToFile(self, filename, frame = None):
 		if frame:
 			render_frame = frame
 		else:
 			render_frame = self.engine.frame()
-			
-		print "Rendering frame %s for node %s" % (frame, self)		
+
+		self.engine.setFrame(frame)	
+		render_file_name = CompyString(self.engine, filename).expandedString()	
+		print "Rendering frame %s for node %s to file: %s" % (render_frame, self.path(), render_file_name)		
 
 	def get_out_buffer(self):
 		if self.cooked == False:

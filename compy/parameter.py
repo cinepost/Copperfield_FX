@@ -50,6 +50,9 @@ class CompyParameter(object):
 	def evalAtTime(self, time):
 		raise BaseException("Unimplemented evalAtTime(self, time) in %s" % self)
 
+	def unexpandedString(self):
+		raise BaseException("Unimplemented unexpandedString(self) in %s" % self)
+
 	def set(self, value):
 		if self.is_animated:
 			# Animated parameter

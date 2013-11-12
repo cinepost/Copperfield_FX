@@ -1,8 +1,11 @@
 import sys
 import pyopencl as cl
 import pickle
+import numpy
 import compy.network_manager as network_manager
+from compy.compy_string import CompyString
 from pyopencl.tools import get_gl_sharing_context_properties
+from PIL import Image
 
 class CLC_Engine(network_manager.CLC_NetworkManager):
 	cpu_devices = []
@@ -105,12 +108,31 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 		self.__frame__ = float(time) * float(self.__fps__)
 
 	def setFrame(self, frame):
+		print "Frame %s" % frame
 		self.__frame__ = frame
 		self.__time__ = float(frame) / float(self.__fps__)				
 
 	@property 
 	def engine(self):
-		return self	
+		return self
+
+	def renderToFile(self, node_path, filename, frame = None):
+		node = self.node(node_path)
+		if frame:
+			render_frame = frame
+		else:
+			render_frame = self.frame()
+
+		self.setFrame(frame)	
+		render_file_name = CompyString(self.engine, filename).expandedString()	
+		print "Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name)
+		
+		buff = node.getOutHostBuffer()
+		image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)
+		image.save(render_file_name, 'JPEG', quality=100)
+
+		#file = open(render_file_name, 'w+')
+		#file.close()			
 
 	def save_project(self, filename):
 		pickle.dump( self.children, open( filename, "wb"))

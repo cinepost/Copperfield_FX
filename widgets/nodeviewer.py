@@ -10,14 +10,14 @@ class NodeViewerWidget(QtGui.QWidget):
         self.addBlock(10, 10, 'Block1', (70, 70, 170), {})
 
 
-        ## First create engine
+        ## First get engine
         engine = parent.engine
         ## Create composition
         comp = engine.createNode("comp")
         ## Create source layer
         file1 = comp.createNode("file")
         file1.setPos(10, 10)
-        file1.setParms({"width": 1920, "height": 1200, "filename": "media/dog.jpg"})
+        file1.setParms({"width": 1280, "height": 720, "filename": "media/dog.jpg"})
 
         blur1 = comp.createNode("fastblur")
         blur1.setInput(0, file1)

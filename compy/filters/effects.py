@@ -17,30 +17,30 @@ class CLC_Effect_FastBlur(base.CLC_Base):
 			
 	def compute(self):	
 		if self.has_inputs():
-			self.devTmpBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.inputs.get(0).size)
-			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.inputs.get(0).size)	
-			self.width = self.inputs.get(0).width
-			self.height = self.inputs.get(0).height
-			print "Blurring area: %s x %s" %(self.inputs.get(0).width, self.inputs.get(0).height)
+			self.devTmpBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.input(0).size)
+			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.input(0).size)	
+			self.width = self.input(0).width
+			self.height = self.input(0).height
+			print "Blurring area: %s x %s" %(self.input(0).width, self.input(0).height)
 			exec_evt = self.program.fast_blur_h(self.engine.queue, self.size, None, 
-				self.__inputs__[0].get_out_buffer(),     
+				self.input(0).getOutDevBuffer(),     
 				self.devTmpBuffer, 
-				numpy.float32(self.parms.get("blursize")),
-				numpy.float32(self.parms.get("blursizey")),
-				numpy.int32(self.inputs.get(0).width),
-				numpy.int32(self.inputs.get(0).height),
-				numpy.int32(self.parms.get("useindepy")),
+				numpy.float32(self.parms.get("blursize").eval()),
+				numpy.float32(self.parms.get("blursizey").eval()),
+				numpy.int32(self.input(0).width),
+				numpy.int32(self.input(0).height),
+				numpy.int32(self.parms.get("useindepy").eval()),
 			)
 			exec_evt.wait()
 			
 			exec_evt = self.program.fast_blur_v(self.engine.queue, self.size, None, 
 				self.devTmpBuffer,     
 				self.devOutBuffer, 
-				numpy.float32(self.parms.get("blursize")),
-				numpy.float32(self.parms.get("blursizey")),
-				numpy.int32(self.inputs.get(0).width),
-				numpy.int32(self.inputs.get(0).height),
-				numpy.int32(self.parms.get("useindepy")),
+				numpy.float32(self.parms.get("blursize").eval()),
+				numpy.float32(self.parms.get("blursizey").eval()),
+				numpy.int32(self.input(0).width),
+				numpy.int32(self.input(0).height),
+				numpy.int32(self.parms.get("useindepy").eval()),
 			)
 			exec_evt.wait()
 			del self.devTmpBuffer
@@ -63,16 +63,16 @@ class CLC_Effect_PressRaster(base.CLC_Base):
 	def compute(self):	
 		if self.has_inputs():
 			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.inputs.get(0).size)	
-			self.width = self.inputs.get(0).width
-			self.height = self.inputs.get(0).height
-			print "Raterizing area: %s x %s" %(self.inputs.get(0).width, self.inputs.get(0).height)
+			self.width = self.input(0).width
+			self.height = self.input(0).height
+			print "Raterizing area: %s x %s" %(self.input(0).width, self.input(0).height)
 			exec_evt = self.program.raster(self.engine.queue, self.size, None, 
-				self.__inputs__[0].get_out_buffer(),     
+				self.input(0).getOutDevBuffer(),     
 				self.devOutBuffer,
-				numpy.int32(self.inputs.get(0).width),
-				numpy.int32(self.inputs.get(0).height),
-				numpy.float32(self.parms.get("density")),
-				numpy.int32(self.parms.get("quality")),
+				numpy.int32(self.input(0).width),
+				numpy.int32(self.input(0).height),
+				numpy.float32(self.parms.get("density").eval()),
+				numpy.int32(self.parms.get("quality").eval()),
 			)
 			exec_evt.wait()
 		else:

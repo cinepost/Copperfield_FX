@@ -23,13 +23,13 @@ class CLC_Source_Image(base.CLC_Base):
 		self.source_width = img.shape[1]
 		self.source_height = img.shape[0]
 		
-		if self.parms.get("width") != 0:
-			self.width = self.parms.get("width")
+		if self.parms.get("width").eval() != 0:
+			self.width = self.parms.get("width").eval()
 		else:
 			self.width = self.source_width
 					
-		if self.parms.get("height") != 0:
-			self.height = self.parms.get("height") 
+		if self.parms.get("height").eval() != 0:
+			self.height = self.parms.get("height").eval() 
 		else:
 			self.height = self.source_height
 			
@@ -55,13 +55,13 @@ class CLC_Source_Image(base.CLC_Base):
 		self.source_width = size[0]
 		self.source_height = size[1]
 		
-		if self.parms.get("width") != 0:
-			self.width = self.parms.get("width")
+		if self.parms.get("width").eval() != 0:
+			self.width = self.parms.get("width").eval()
 		else:
 			self.width = self.source_width
 					
-		if self.parms.get("height") != 0:
-			self.height = self.parms.get("height") 
+		if self.parms.get("height").eval() != 0:
+			self.height = self.parms.get("height").eval() 
 		else:
 			self.height = self.source_height
 		
@@ -90,7 +90,7 @@ class CLC_Source_Image(base.CLC_Base):
 		
 			
 	def compute(self):
-		imagefile = self.parms.get("filename")
+		imagefile = self.parms.get("filename").eval()
 		if imagefile:	 
 			ext = imagefile.split(".")[-1]
 			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:

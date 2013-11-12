@@ -58,9 +58,8 @@ class Workarea(QtGui.QWidget):
         self.tree_view.emit(QtCore.SIGNAL('network_changed'))
 
     @QtCore.pyqtSlot()   
-    def renderNode(self, node_name):
-        node = self.engine.node(node_name)
-        RenderNodeDialog.render(self, node)        
+    def renderNode(self, node_path):
+        RenderNodeDialog.render(self.engine, node_path)        
 
 class Window(QtGui.QMainWindow):
     def __init__(self):

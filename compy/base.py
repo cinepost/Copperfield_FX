@@ -101,40 +101,29 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 				self.cooked = True
 				return True
 		else:
-			print "%s node already cooked !" % self
+			print "%s node already cooked !" % self	
 
-	def renderToFile(self, filename, frame = None):
-		if frame:
-			render_frame = frame
-		else:
-			render_frame = self.engine.frame()
-
-		self.engine.setFrame(frame)	
-		render_file_name = CompyString(self.engine, filename).expandedString()	
-		print "Rendering frame %s for node %s to file: %s" % (render_frame, self.path(), render_file_name)		
-
-	def get_out_buffer(self):
+	def getOutDevBuffer(self):
 		if self.cooked == False:
 			self.cook()
 		
 		return self.devOutBuffer
-		
+
+	def getOutHostBuffer(self):
+		device_buffer = self.getOutDevBuffer()
+		host_buffer = numpy.empty((self.width, self.height, 4), dtype = numpy.float16)
+		#self.engine.queue.finish()
+		quantized_buffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.size)	
+		evt = self.common_program.quantize_show(self.engine.queue, self.size, None, device_buffer, quantized_buffer )
+		#evt.wait()
+
+		evt = cl.enqueue_copy(self.engine.queue, host_buffer, quantized_buffer, origin=(0,0), region=self.size)
+		evt.wait()
+		return host_buffer
+
 	def show(self):
-		if self.cooked == True:
-			temp_buff = numpy.empty((self.width, self.height, 4), dtype = numpy.float16)
-			self.engine.queue.finish()
-			imgToShowBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.size)
-			
-			evt = self.common_program.quantize_show(self.engine.queue, self.size, None, 
-				self.devOutBuffer,
-				imgToShowBuffer
-			)
-			evt.wait()
-			
-			print "Copying dev buffer %s to host buffer %s" % (self.get_out_buffer().size, temp_buff.nbytes)
-			evt = cl.enqueue_copy(self.engine.queue, temp_buff, imgToShowBuffer, origin=(0,0), region=self.size)
-			evt.wait()
-			
-			Image.frombuffer('RGBA', (self.width, self.height), temp_buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1).show()		
-		else:
+		try:
+			host_buff = self.getOutHostBuffer()
+			Image.frombuffer('RGBA', (self.width, self.height), host_buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1).show()		
+		except:
 			raise BaseException("Unable to show uncooked source %s !!!" % self)					

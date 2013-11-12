@@ -1,10 +1,12 @@
-import sys, os, string
+import sys, os, string, time
 from PyQt4 import QtGui, QtCore
+from os.path import expanduser
 
 class RenderNodeDialog(QtGui.QDialog):
-    def __init__(self, parent, node):
-        super(RenderNodeDialog, self).__init__(parent)
-        self.node = node
+    def __init__(self, engine, node_path):
+        super(RenderNodeDialog, self).__init__()
+        self.engine = engine
+        self.node = engine.node(node_path) 
         layout = QtGui.QVBoxLayout(self)
         
         # frame range layout
@@ -33,7 +35,7 @@ class RenderNodeDialog(QtGui.QDialog):
         # file layout
         file_layout = QtGui.QHBoxLayout()
 
-        self.filename = QtGui.QLineEdit("~/test/%s_$F4.jpg" % node.name())
+        self.filename = QtGui.QLineEdit("%s/test/%s_$F4.jpg" % (expanduser("~"), self.node.name()))
         self.filename.setMinimumWidth(400)
         self.browser = QtGui.QPushButton("Browse", self)
         self.browser.clicked.connect(self.browse)
@@ -66,9 +68,18 @@ class RenderNodeDialog(QtGui.QDialog):
         start_frame = self.start_frame.value()
         end_frame = self.end_frame.value()
         step_frame = self.step_frame.value()
-        for frame in range(start_frame, end_frame, step_frame):
-            self.node.renderToFile(self.filename.text(), frame)
+        start_time = time.time()
+        
+        progress = QtGui.QProgressDialog("Rendering in progress.", "Cancel", start_frame, end_frame, self)
+        progress.setWindowModality(QtCore.Qt.WindowModal)
+        progress.setAutoClose(True)
+        progress.show()
 
+        for frame in range(start_frame, end_frame, step_frame):
+            self.engine.renderToFile(self.node.path(), self.filename.text(), frame)
+            progress.setValue(frame)
+
+        print "Rendering done in %s seconds." % (time.time() - start_time)
         self.close()    
 
     @QtCore.pyqtSlot()
@@ -79,8 +90,8 @@ class RenderNodeDialog(QtGui.QDialog):
 
     # static method to create the dialog and return (date, time, accepted)
     @staticmethod
-    def render(parent, node):
-        dialog = RenderNodeDialog(parent, node)
+    def render(engine, node_path):
+        dialog = RenderNodeDialog(engine, node_path)
         result = dialog.exec_()
         #filename = dialog.dateFilename()
         return True

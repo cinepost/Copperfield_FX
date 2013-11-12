@@ -59,9 +59,11 @@ class ParamsWidget(QtGui.QWidget):
 
                 if parm_type is bool:
                     valueEdit = QtGui.QCheckBox()
-                    if value: valueEdit.setCheckState(Qt.Checked)
+                    if value: valueEdit.setCheckState(QtCore.Qt.Checked)
                 elif parm_type is int:
-                    valueEdit = QtGui.QSpinBox()  
+                    valueEdit = QtGui.QSpinBox()
+                    valueEdit.setMinimum(0)
+                    valueEdit.setMaximum(10000)  
                     valueEdit.setValue(value)  
                 else:    
                     valueEdit = QtGui.QLineEdit(str(value))

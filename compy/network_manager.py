@@ -35,7 +35,15 @@ class CLC_NetworkManager(object):
 			return []
 
 	def inputs(self):
-		return self.__inputs__		
+		return self.__inputs__
+
+	def input(self, index):
+		try:
+			node = self.__inputs__[index]
+		except:
+			raise BaseException("Wrong input index %s specified for node %s !!!") % (index, self)
+
+		return node			
 
 	def inputNames(self):
 		""" Returns dict of input names eg: ["Input 1", "Input 2"] """

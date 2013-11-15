@@ -51,26 +51,22 @@ class ParamsWidget(QtGui.QWidget):
         
         # build new parms widgets
         i = 1
-        for parm_name in node.parms:
-            if node.parms.get(parm_name):
-                parm = node.parms.get(parm_name)
-                value = parm.eval()
-                parm_type = parm.type()
+        for parm in node.parms():
+            value = parm.eval()
+            parm_type = parm.type()
 
-                if parm_type is bool:
-                    valueEdit = QtGui.QCheckBox()
-                    if value: valueEdit.setCheckState(QtCore.Qt.Checked)
-                elif parm_type is int:
-                    valueEdit = QtGui.QSpinBox()
-                    valueEdit.setMinimum(0)
-                    valueEdit.setMaximum(10000)  
-                    valueEdit.setValue(value)  
-                else:    
-                    valueEdit = QtGui.QLineEdit(str(value))
-            else:
-                valueEdit = QtGui.QLineEdit("Missing parameter ...")
-                valueEdit.setReadOnly(True)
-
-            self.grid.addWidget(QtGui.QLabel(parm_name), i, 0)
+            if parm_type is bool:
+                valueEdit = QtGui.QCheckBox()
+                if value: valueEdit.setCheckState(QtCore.Qt.Checked)
+            elif parm_type is int:
+                valueEdit = QtGui.QSpinBox()
+                valueEdit.setMinimum(0)
+                valueEdit.setMaximum(10000)  
+                valueEdit.setValue(value)
+                valueEdit.setStyleSheet("background-color: rgb(128,255,128)")  
+            else:    
+                valueEdit = QtGui.QLineEdit(str(value))
+            
+            self.grid.addWidget(QtGui.QLabel(parm.name()), i, 0)
             self.grid.addWidget(valueEdit, i, 1)
             i+=1

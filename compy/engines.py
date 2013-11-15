@@ -4,6 +4,7 @@ import pickle
 import numpy
 import compy.network_manager as network_manager
 from compy.compy_string import CompyString
+from compy.translators import compyNullTranslator, boomShotTranslator
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
 
@@ -16,7 +17,7 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 	network_cb  = None
 
 	def __init__(self, device_type="GPU", filters={}, cl_path=""): # "cpu" or "gpu" here or "ALL"
-		super(CLC_Engine, self).__init__(["comp"]) # only CLC_Composition class nodes allowed to be created at the root/engine level
+		super(CLC_Engine, self).__init__(self, None, ["comp"]) # only CLC_Composition class nodes allowed to be created at the root/engine level
 		self.__time__= 0
 		self.__frame__= 0
 		self.__fps__ = 25.0
@@ -61,7 +62,13 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 		self._mf 		= cl.mem_flags
 		self.filters 	= filters
 		self.cl_path 	= cl_path
-		print "Bundled with filters: %s \n Done." % self.filters	
+		print "Bundled with filters: %s \n Done." % self.filters
+
+		# register translators
+		self.translators = {}
+		translators = [compyNullTranslator(), boomShotTranslator() ]
+		for translator in translators:
+			self.translators[translator.registerExtension()] = translator	
 	
 	def set_network_change_callback(self, callback):
 		self.network_cb = callback
@@ -112,7 +119,6 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 		self.__frame__ = frame
 		self.__time__ = float(frame) / float(self.__fps__)				
 
-	@property 
 	def engine(self):
 		return self
 
@@ -135,7 +141,43 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 		#file.close()			
 
 	def save_project(self, filename):
-		pickle.dump( self.children, open( filename, "wb"))
+		project_file = open(filename, "wb")
+
+		# write out nodes
+		node_list = []
+		for node in self.nodes:
+			node_list += node.dump(recursive=True, dump_parms=True)
+
+		project_file.write("nodes = %s\n" % node_list)
+		project_file.close()
+
+	def readFile(self, file_path):
+		return open(file_path, "rb").read()
 
 	def open_project(self, filename):
-		self.children = pickle.load( open( filename, "rb"))					
+		file_extension = filename.rsplit(".",1)[-1]
+		translator = self.translators.get(file_extension)
+		if not translator: raise BaseException("No translator found for file type \"%s\"" % file_extension)
+		project_string = translator.translateToString(filename)
+		project_code = compile(project_string, '<string>', 'exec')
+
+		self.flush() # erase all node networks this engine holds
+		ns = {}
+		exec project_code in ns
+		links = ns['links']
+		
+		# create nodes and fill parameters
+		for node_desc in ns['nodes']:
+			node = self.node(node_desc["path"]).createNode(node_desc["type"], node_desc["name"]) 
+			if node_desc.get("parms"):
+				node.setParms(node_desc["parms"])
+
+		# set up links between nodes
+		for link in ns['links']:
+			from_node = self.node(link[0])
+			to_node = self.node(link[1])
+			input_index = link[3]
+			to_node.setInput(input_index, from_node)		
+
+		self.call_network_changed_callback()
+

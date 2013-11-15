@@ -6,6 +6,5 @@ class CLC_Composition(base.CLC_Node, network_manager.CLC_NetworkManager):
 	type_name 	= 'comp'
 
 	def __init__(self, engine, parent):
-		network_manager.CLC_NetworkManager.__init__(self)
-		base.CLC_Node.__init__(self, parent)
-		self.engine = engine
+		network_manager.CLC_NetworkManager.__init__(self, engine, parent)
+		base.CLC_Node.__init__(self)

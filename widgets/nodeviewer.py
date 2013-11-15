@@ -27,7 +27,6 @@ class NodeViewerWidget(QtGui.QWidget):
 
 
     def makeScene(self):
-
         self.scene = BlockScene(0, 0, self.minimumWidth(), self.minimumHeight(), self)
         self.view = QtGui.QGraphicsView(self.scene)
         self.view.setAlignment(QtCore.Qt.AlignAbsolute)

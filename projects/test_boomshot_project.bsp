@@ -1,0 +1,24 @@
+{
+    "bricks": [
+        {
+            "file_path": "abc_$F4.jpg",
+            "start_frame": 1,
+        },
+        {
+            "file_path": "def_$F4.jpg",
+            "start_frame": 121,
+        },
+    ],
+    "transitions": [
+        {
+            "type": "blend",
+            "brick_indexes": [0, 1],
+            "frame_range": [121, 141],
+        },
+    ],
+    "project": {
+        "frame_number": 220,
+        "resolution": {"width": 740, "height": 480},
+        "output_file_path": "trolololo.jpg",
+    }
+}    

@@ -11,38 +11,26 @@ import compy.network_manager as network_manager
 
 
 class CLC_Node(object):
-    """ Base class for nodes graph representation """
+	""" Base class for nodes graph representation """
 
-    def __init__(self, parent=None):
-        self.parent = parent
-        self.x_pos = 0.0
-        self.y_pos = 0.0
-        self.color = (0.5, 1.0, 0.25,)
-        self.parms = {}
-        self.icon = None
-        self.parms = {}
+	def __init__(self):
+		self.x_pos = 0.0
+		self.y_pos = 0.0
+		self.color = (0.5, 1.0, 0.25,)
+		self.icon = None
 
-    def setPos(self, x, y):
-        self.x_pos = x
-        self.y_pos = y
+	def setPos(self, x, y):
+		self.x_pos = x
+		self.y_pos = y
 
-    def getPos(self):
-        return (self.x_pos, self.y_pos,)
+	def getPos(self):
+		return (self.x_pos, self.y_pos,)
 
-    def getIcon(self):
-    	return self.icon    
+	def getIcon(self):
+		return self.icon    				
 
-    def addParameter(self, name, parm_type, value=None):
-    	parm = CompyParameter(self, name, parm_type)
-    	if value != None: parm.set(value)
-    	self.parms[name] = parm
-
-    def setParms(self, parameters):
-		for parm in parameters:
-			self.parms[parm].set(parameters[parm])		
-
-    def __str__(self):
-        return self.__class__.__name__
+	def __str__(self):
+		return self.__class__.__name__
 
 class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 	# Base class for FX filters
@@ -50,13 +38,9 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 	type_name		= None # This is a TYPE name for the particular FX node...
 	
 	def __init__(self, engine, parent):
-		network_manager.CLC_NetworkManager.__init__(self)
-		super(CLC_Base, self).__init__(parent)
-		if engine:
-			self.engine = engine
-		else:
-			raise BaseException("No engine specified !!!")
-		
+		network_manager.CLC_NetworkManager.__init__(self, engine, parent, mask=None)
+		super(CLC_Base, self).__init__()
+
 		self.width	= None	
 		self.height	= None
 		self.cooked	= False	
@@ -67,7 +51,7 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 		self.common_program = engine.load_program("common.cl")
 		
 		self.addParameter("bypass", bool, False)
-		
+
 	@property
 	def size(self):
 		return (self.width, self.height)

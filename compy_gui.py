@@ -77,7 +77,7 @@ class Window(QtGui.QMainWindow):
     def open_project(self):
         fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', '/home')
         if fname:    
-            self.engine.open_project(fname)   
+            self.engine.open_project(str(fname))   
 
     def save_project(self):
         fname = QtGui.QFileDialog.getSaveFileName(self, 'Save file', '/home')    

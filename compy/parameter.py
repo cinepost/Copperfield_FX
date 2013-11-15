@@ -1,12 +1,15 @@
 from collections import OrderedDict
 
+CompyLinear = 0
+CompyBezier = 2
 
-class CompyKey(object):
-	in_type = "linear"
-	out_type = "linear"
-
-	def __init__(self, value, in_type=None, out_type=None):
-		self.value = value
+class CompyKeyframe(object):
+	def __init__(self, engine):
+		self.v = value
+		self.f = None
+		self.t = None
+		self.in_type = CompyLinear
+		self.out_type = CompyLinear
 
 		if in_type:
 			self.in_type = in_type
@@ -14,21 +17,32 @@ class CompyKey(object):
 		if out_type:
 			self.out_type = out_type	
 
-	def set(self, value):
-		self.value = value
+	def value(self):
+		return self.v		
 
-	def get(self):
-		return self.value		
+	def setValue(self, time, value):
+		self.v = value
+
+	def dump(self):
+		return { "t": self.t, "v": self.value }
+
+	def frame(self):
+		return self.f
+
+	def setFrame(self, frame):
+		self.f = frame
+
+	def setTime(self, time):
+		self.t = time				
 
 		
 class CompyParameter(object):
 	def __init__(self, node, name, parm_type):
-		self.keyframes = {}
+		self.keyframes = []
 		self.value = None
 		self.__node__ = node
 		self.__name__ = name
 		self.__type__ = parm_type
-		self.is_animated = False
 
 	def node(self):
 		return self.__node__	
@@ -36,11 +50,26 @@ class CompyParameter(object):
 	def name(self):
 		return self.__name__
 
+	def path(self):
+		return "%s/%s" % (self.node().path(), self.name())
+
+	def dump(self):
+		if self.animated():
+			return [key.dump() for key in self.keyframes]
+		else:
+			return self.value			
+
 	def type(self):
-		return self.__type__		
+		return self.__type__
+
+	def animated(self):
+		if self.keyframes:
+			return True
+		else:
+			return False
 
 	def eval(self):
-		if self.is_animated:
+		if self.animated():
 			# Animated parameter
 			return self.evalAtTime(self.__node__.engine.time())
 		else:
@@ -50,22 +79,30 @@ class CompyParameter(object):
 	def evalAtTime(self, time):
 		raise BaseException("Unimplemented evalAtTime(self, time) in %s" % self)
 
+	def evalAtFrame(self, frame):
+		raise BaseException("Unimplemented evalAtFrame(self, frame) in %s" % self)	
+
 	def unexpandedString(self):
 		raise BaseException("Unimplemented unexpandedString(self) in %s" % self)
 
 	def set(self, value):
-		if self.is_animated:
-			# Animated parameter
-			raise BaseException("Unable to set parm that contains curve animation !!! Use addKeyFrame(time, key) instead !!!")
+		if type(value) in [list, tuple]:
+			# set up animated parameter
+			pass
 		else:
-			# Constant parameter
-			if type(value) == self.__type__:
-				self.value = value
+			# set up single parameter value	
+			if self.keyframes:
+				# Animated parameter
+				raise BaseException("Unable to set parm that contains curve animation !!! Use addKeyFrame(time, key) instead !!!")
 			else:
-				raise BaseException("Parameter type doesn't match !!! %s expected, but %s provided !" % (self.__type__, type(value)))	
+				# Constant parameter
+				if type(value) == self.__type__:
+					self.value = value
+				else:
+					raise BaseException("Parameter type doesn't match !!! %s expected, but %s provided !" % (self.__type__, type(value)))	
 
-	def setKeyFrame(self, keyframe):
-		raise BaseException("Unimplemented setKeyFrame(self, keyframe) in %s" % self)
+	def setKeyframe(self, keyframe):
+		self.keframes.append(keyframe)
 
 	def __str__(self):
 		return self.value			

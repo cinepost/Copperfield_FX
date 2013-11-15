@@ -16,6 +16,7 @@ class CLC_Source_Image(base.CLC_Base):
 		self.addParameter("height", int, 480)
 		self.addParameter("flipx", bool, False)
 		self.addParameter("flipy", bool, False)
+		self.addParameter("startframe", int, 0)
 		
 	def loadJPG(self, filename):
 		img = matplotlib.image.imread(filename)
@@ -23,13 +24,13 @@ class CLC_Source_Image(base.CLC_Base):
 		self.source_width = img.shape[1]
 		self.source_height = img.shape[0]
 		
-		if self.parms.get("width").eval() != 0:
-			self.width = self.parms.get("width").eval()
+		if self.parm("width").eval() != 0:
+			self.width = self.parm("width").eval()
 		else:
 			self.width = self.source_width
 					
-		if self.parms.get("height").eval() != 0:
-			self.height = self.parms.get("height").eval() 
+		if self.parm("height").eval() != 0:
+			self.height = self.parm("height").eval() 
 		else:
 			self.height = self.source_height
 			
@@ -55,13 +56,13 @@ class CLC_Source_Image(base.CLC_Base):
 		self.source_width = size[0]
 		self.source_height = size[1]
 		
-		if self.parms.get("width").eval() != 0:
-			self.width = self.parms.get("width").eval()
+		if self.parm("width").eval() != 0:
+			self.width = self.parm("width").eval()
 		else:
 			self.width = self.source_width
 					
-		if self.parms.get("height").eval() != 0:
-			self.height = self.parms.get("height").eval() 
+		if self.parm("height").eval() != 0:
+			self.height = self.parm("height").eval() 
 		else:
 			self.height = self.source_height
 		
@@ -90,7 +91,7 @@ class CLC_Source_Image(base.CLC_Base):
 		
 			
 	def compute(self):
-		imagefile = self.parms.get("filename").eval()
+		imagefile = self.parm("filename").eval()
 		if imagefile:	 
 			ext = imagefile.split(".")[-1]
 			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:

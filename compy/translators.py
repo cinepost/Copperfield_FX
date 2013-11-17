@@ -14,7 +14,7 @@ class compyNullTranslator(baseCompyTranslator):
 
 	def translateToString(self, source_project_file_name):
 		print "Translating CPY project"
-		source_project_file = open(source_project_file_name, "rb").read()
+		source_project_file = open(source_project_file_name, "rb")
 		project_string = source_project_file.read()
 		source_project_file.close()
 		return project_string
@@ -48,7 +48,7 @@ class boomShotTranslator(baseCompyTranslator):
 		nodes = [{
 			"name": "movie",
 			"type": "comp",
-			"path": "/"
+			"path": "/img"
 		}]
 
 		# parse and create bricks
@@ -58,7 +58,7 @@ class boomShotTranslator(baseCompyTranslator):
 			nodes += [{
 				"name": "brick_%s" % i,
 				"type": "file",
-				"path": "/movie",
+				"path": "/img/movie",
 				"parms": {
 					"filename": brick["file_path"],
 					"startframe": brick["start_frame"]
@@ -76,7 +76,7 @@ class boomShotTranslator(baseCompyTranslator):
 			nodes += [{
 				"name": transition_name,
 				"type": transition["type"],
-				"path": "/movie",
+				"path": "/img/movie",
 				"parms": {
 					"factor": (
 						{"t": in_time, "v": 0.0},
@@ -90,8 +90,8 @@ class boomShotTranslator(baseCompyTranslator):
 
 			# create links for this transition
 			links += [
-				("/movie/brick_%s" % transition["brick_indexes"][0], "/movie/%s" % transition_name, 0, 0, ),
-				("/movie/brick_%s" % transition["brick_indexes"][1], "/movie/%s" % transition_name, 0, 1, )
+				("/img/movie/brick_%s" % transition["brick_indexes"][0], "/img/movie/%s" % transition_name, 0, 0, ),
+				("/img/movie/brick_%s" % transition["brick_indexes"][1], "/img/movie/%s" % transition_name, 0, 1, )
 			]
 
 			i += 1

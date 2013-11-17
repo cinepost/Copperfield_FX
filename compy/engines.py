@@ -68,7 +68,16 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 		self.translators = {}
 		translators = [compyNullTranslator(), boomShotTranslator() ]
 		for translator in translators:
-			self.translators[translator.registerExtension()] = translator	
+			self.translators[translator.registerExtension()] = translator
+
+		# create base network managers
+		img = network_manager.CLC_NetworkManager(self, self, ["comp"])
+		img.setName("img")
+		self.__node_dict__["img"] = img
+
+		out = network_manager.CLC_NetworkManager(self, self, ["composite"])
+		out.setName("out")
+		self.__node_dict__["out"] = out		
 	
 	def set_network_change_callback(self, callback):
 		self.network_cb = callback
@@ -122,6 +131,10 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 	def engine(self):
 		return self
 
+	def flush(self):
+		for net_name in self.__node_dict__:
+			self.__node_dict__[net_name].flush()	
+
 	def renderToFile(self, node_path, filename, frame = None):
 		node = self.node(node_path)
 		if frame:
@@ -156,7 +169,7 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 
 	def open_project(self, filename):
 		file_extension = filename.rsplit(".",1)[-1]
-		translator = self.translators.get(file_extension)
+		translator = self.translators.get(file_extension, None)
 		if not translator: raise BaseException("No translator found for file type \"%s\"" % file_extension)
 		project_string = translator.translateToString(filename)
 		project_code = compile(project_string, '<string>', 'exec')

@@ -29,13 +29,10 @@ class CLC_Node(object):
 	def getIcon(self):
 		return self.icon    				
 
-	def __str__(self):
-		return self.__class__.__name__
-
 class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 	# Base class for FX filters
-	__fx__			= True # Indicated that this is FX node
-	type_name		= None # This is a TYPE name for the particular FX node...
+	__op__			= True # Indicated that this is OP node
+	type_name		= None # This is a TYPE name for the particular compositing OP ...
 	
 	def __init__(self, engine, parent):
 		network_manager.CLC_NetworkManager.__init__(self, engine, parent, mask=None)

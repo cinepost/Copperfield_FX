@@ -9,11 +9,14 @@ class NodeViewerWidget(QtGui.QWidget):
         self.makeScene()
         self.addBlock(10, 10, 'Block1', (70, 70, 170), {})
 
+        ## Create out composite node
+        out = parent.engine.node("out").createNode("composite")
 
-        ## First get engine
-        engine = parent.engine
+        ## First get image network
+        img = parent.engine.node("img")
         ## Create composition
-        comp = engine.createNode("comp")
+        comp = img.createNode("comp")
+        img.createNode("comp")
         ## Create source layer
         file1 = comp.createNode("file")
         file1.setPos(10, 10)

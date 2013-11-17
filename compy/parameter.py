@@ -3,6 +3,11 @@ from collections import OrderedDict
 CompyLinear = 0
 CompyBezier = 2
 
+CompyInt = int 
+CompyFloat = float 
+CompyString = str 
+CompyButton = "button"
+
 class CompyKeyframe(object):
 	def __init__(self, engine):
 		self.v = value
@@ -37,12 +42,19 @@ class CompyKeyframe(object):
 
 		
 class CompyParameter(object):
-	def __init__(self, node, name, parm_type):
+	def __init__(self, node, name, parm_type, label = None):
 		self.keyframes = []
 		self.value = None
 		self.__node__ = node
 		self.__name__ = name
+		self.__label__ = label
 		self.__type__ = parm_type
+
+	def label(self):
+		if self.__label__:
+			return self.__label__
+		else:
+			return self.name()		
 
 	def node(self):
 		return self.__node__	

@@ -1,4 +1,5 @@
 from PyQt4 import Qt, QtGui, QtCore
+from compy.parameter import *
 
 class ParamsWidget(QtGui.QWidget):
   
@@ -32,7 +33,8 @@ class ParamsWidget(QtGui.QWidget):
         for i in range(self.header.count()): self.header.itemAt(i).widget().close()
 
         # build header
-        icon = node.getIcon()
+        #icon = node.getIcon()
+        icon = None
         if not icon:
             icon = self.default_icon
 
@@ -58,12 +60,14 @@ class ParamsWidget(QtGui.QWidget):
             if parm_type is bool:
                 valueEdit = QtGui.QCheckBox()
                 if value: valueEdit.setCheckState(QtCore.Qt.Checked)
-            elif parm_type is int:
+            elif parm_type is CompyInt:
                 valueEdit = QtGui.QSpinBox()
                 valueEdit.setMinimum(0)
                 valueEdit.setMaximum(10000)  
                 valueEdit.setValue(value)
-                valueEdit.setStyleSheet("background-color: rgb(128,255,128)")  
+                valueEdit.setStyleSheet("background-color: rgb(128,255,128)")
+            elif parm_type is CompyButton:
+                valueEdit = QtGui.QPushButton(parm.label(), self)  
             else:    
                 valueEdit = QtGui.QLineEdit(str(value))
             

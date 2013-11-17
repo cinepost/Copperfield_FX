@@ -26,13 +26,14 @@ class CLC_NetworkManager(object):
 			next = str(int(m.group(1))+1)
 			start, end = m.span(1)
 			s = s[:max(end-len(next), start)] + next + s[end:]
-		return s	
+		else:
+			return "%s1" % s	
 
 	def engine(self):
 		return self.__engine__	
 
-	def addParameter(self, name, parm_type, value=None):
-		parm = CompyParameter(self, name, parm_type)
+	def addParameter(self, name, parm_type, value=None, label=None):
+		parm = CompyParameter(self, name, parm_type, label=label)
 		if value != None: parm.set(value)
 		self.__parms__[name] = parm
 
@@ -91,9 +92,7 @@ class CLC_NetworkManager(object):
 
 	def flush(self):
 		self.__node_dict__ = {}
-		self.__parent__ = None
-		self.__inputs__ = []
-		self.__input_names__ = []		
+		
 
 	def createNode(self, node_type_name, node_name=None):
 		print "Creating node %s inside %s" % (node_type_name, self.__class__.__name__)
@@ -105,7 +104,7 @@ class CLC_NetworkManager(object):
 		if node_name:
 			name = node_name
 		else:
-			name = node_type_name
+			name = node_type_name	
 
 		if node_type_name in self.engine().filters:
 			node = self.engine().filters[node_type_name](self.engine(), self)	
@@ -113,7 +112,7 @@ class CLC_NetworkManager(object):
 		else:
 			raise BaseException("Unsupported node type \"%s\". Abort." % node_type_name)	
 
-		self.__node_dict__[name] = node
+		self.__node_dict__[node.name()] = node
 		if self.engine().network_cb:
 			self.engine().network_cb()
 
@@ -122,7 +121,12 @@ class CLC_NetworkManager(object):
 		return node
 
 	def setName(self, name):
-		self.__name__ = name	
+		if name in self.parent().__node_dict__:
+			# need to rename this node name by appending number to this node name
+			new_name = self.__increment__(name)
+			self.__name__ = new_name
+		else:	
+			self.__name__ = name	
 
 	def name(self):
 		return self.__name__	
@@ -203,6 +207,9 @@ class CLC_NetworkManager(object):
 			for node in self.children():
 				desc_list += node.dump(recursive=True, dump_parms=dump_parms)
 
-			return desc_list		
+			return desc_list
+
+	def __str__(self):
+		return self.__class__.__name__				
 
 

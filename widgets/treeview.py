@@ -17,20 +17,20 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
         self.initUI()
         
     def initUI(self):
-        header=QtGui.QTreeWidgetItem(["Type", "Name", "Path"])
+        header=QtGui.QTreeWidgetItem(["Name", "Path","Type"])
         self.setHeaderItem(header) 
 
     def createNodeLevel(self, node, parent_widget):
         for cur_node in node.children():
             item = QtGui.QTreeWidgetItem(parent_widget)
-            item.setText(0, str(cur_node))
-            item.setText(1, cur_node.name())
-            item.setText(2, cur_node.path())
+            item.setText(0, cur_node.name())
+            item.setText(1, cur_node.path())
+            item.setText(2, str(cur_node))
             if cur_node.children():
                 self.createNodeLevel(cur_node, item)    
 
     def handleItemClicked(self, item, column):
-        self.params.emit(QtCore.SIGNAL('node_selected'), str(item.text(2)))              
+        self.params.emit(QtCore.SIGNAL('node_selected'), str(item.text(1)))              
 
     @QtCore.pyqtSlot()   
     def rebuild(self):
@@ -46,7 +46,7 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
             return
 
         item = self.itemAt(point)
-        node_path = str(item.text(2))
+        node_path = str(item.text(1))
         name = item.text(0)  # The text of the node.
 
         # We build the menu.

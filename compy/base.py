@@ -11,7 +11,7 @@ import compy.network_manager as network_manager
 
 
 class CLC_Node(object):
-	""" Base class for nodes graph representation """
+	""" Base class for nodes graph rendering """
 
 	def __init__(self):
 		self.x_pos = 0.0
@@ -30,7 +30,7 @@ class CLC_Node(object):
 		return self.icon    				
 
 class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
-	# Base class for FX filters
+	# Base class for OPs
 	__op__			= True # Indicated that this is OP node
 	type_name		= None # This is a TYPE name for the particular compositing OP ...
 	
@@ -67,14 +67,22 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 		
 	@property
 	def pitch(self):
-		return self.width * 16		
+		return self.width * 16
 
-	def cook(self):
-		if self.cooked != True:
+	def isTimeDependent(self):
+		return False			
+
+	def cook(self, force=False, frame_range=()):
+
+		if any(node.cooked is False for node in self.inputs()):
+			print "Cooking inputs: %s" % [inp.name() for inp in self.inputs()]
 			for node in self.inputs():
 				node.cook()
-				
+				print "Node %s cooked!" % node.name()
+
+		if self.cooked != True:
 			try:
+				print "Computing node %s" % self.name()
 				self.compute()
 			except:
 				raise
@@ -82,7 +90,8 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 				self.cooked = True
 				return True
 		else:
-			print "%s node already cooked !" % self	
+			print "%s node already cooked !" % self
+			return True	
 
 	def getOutDevBuffer(self):
 		if self.cooked == False:
@@ -91,15 +100,26 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 		return self.devOutBuffer
 
 	def getOutHostBuffer(self):
+		print "Queue is %s" % self.engine.queue
 		device_buffer = self.getOutDevBuffer()
+		print "Device buffer is %s of size %s" % (device_buffer, device_buffer.size)
 		host_buffer = numpy.empty((self.width, self.height, 4), dtype = numpy.float16)
-		#self.engine.queue.finish()
+		self.engine.queue.finish()
+		print "Building quantized buffer for node %s with size %s" % (self, self.size)
 		quantized_buffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.size)	
-		evt = self.common_program.quantize_show(self.engine.queue, self.size, None, device_buffer, quantized_buffer )
-		#evt.wait()
+		print "Quantized buffer is %s of size %s" % (quantized_buffer, quantized_buffer.size)
+		print "Executing quantize program for node %s" % self.name()
+		print "Queue is %s" % self.engine.queue
 
-		evt = cl.enqueue_copy(self.engine.queue, host_buffer, quantized_buffer, origin=(0,0), region=self.size)
-		evt.wait()
+		with cl.CommandQueue(self.engine.ctx) as queue:
+			evt = self.common_program.quantize_show(queue, self.size, None, device_buffer, quantized_buffer )
+			print "Waiting for quantize program for node %s" % self.name()
+			evt.wait()
+
+		with cl.CommandQueue(self.engine.ctx) as queue:	
+			evt = cl.enqueue_copy(queue, host_buffer, quantized_buffer, origin=(0,0), region=self.size)
+			evt.wait()
+		
 		return host_buffer
 
 	def show(self):

@@ -3,10 +3,14 @@ from collections import OrderedDict
 CompyLinear = 0
 CompyBezier = 2
 
-CompyInt = int 
-CompyFloat = float 
-CompyString = str 
-CompyButton = "button"
+CompyParmInt = int
+CompyParmBool = bool
+CompyParmFloat = float 
+CompyParmString = str
+CompyParmOpPath = "oppath"
+CompyParmFile = str
+CompyParmButton = "button"
+CompyParmOrderedMenu = "menu"
 
 class CompyKeyframe(object):
 	def __init__(self, engine):
@@ -42,13 +46,15 @@ class CompyKeyframe(object):
 
 		
 class CompyParameter(object):
-	def __init__(self, node, name, parm_type, label = None):
+	def __init__(self, node, name, parm_type, label = None, callback = None, menu_items = []):
 		self.keyframes = []
 		self.value = None
+		self.__cb__ = callback
 		self.__node__ = node
 		self.__name__ = name
 		self.__label__ = label
 		self.__type__ = parm_type
+		self.__menu_items__ = OrderedDict(menu_items)
 
 	def label(self):
 		if self.__label__:
@@ -88,6 +94,12 @@ class CompyParameter(object):
 			# Constant parameter
 			return self.value
 
+	def evalAsInt(self):
+		return int(self.eval())
+
+	def evalAsFloat(self):
+		return float(self.eval())	
+
 	def evalAtTime(self, time):
 		raise BaseException("Unimplemented evalAtTime(self, time) in %s" % self)
 
@@ -108,13 +120,19 @@ class CompyParameter(object):
 				raise BaseException("Unable to set parm that contains curve animation !!! Use addKeyFrame(time, key) instead !!!")
 			else:
 				# Constant parameter
-				if type(value) == self.__type__:
-					self.value = value
-				else:
-					raise BaseException("Parameter type doesn't match !!! %s expected, but %s provided !" % (self.__type__, type(value)))	
-
+				self.value = value
+				
 	def setKeyframe(self, keyframe):
 		self.keframes.append(keyframe)
 
-	def __str__(self):
-		return self.value			
+	def setCallback(self, callback):
+		self.__cb__ = callback
+
+	def getCallback(self):
+		return self.__cb__	
+
+	def callback(self):
+		self.__cb__()	
+
+	#def __str__(self):
+	#	return self.value			

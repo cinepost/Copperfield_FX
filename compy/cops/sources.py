@@ -1,4 +1,6 @@
+
 from compy import base, parameter
+from compy.compy_string import CompyString
 import matplotlib.image
 import pyopencl as cl
 import numpy
@@ -8,15 +10,21 @@ class CLC_Source_Image(base.CLC_Base):
 	category = "sources"
 	def __init__(self, engine, parent):
 		super(CLC_Source_Image, self).__init__(engine, parent)
-		self.engine = engine
 		self.program = self.engine.load_program("source_image.cl")
 
-		self.addParameter("filename", str, None)
-		self.addParameter("width", int, 640)
-		self.addParameter("height", int, 480)
-		self.addParameter("flipx", bool, False)
-		self.addParameter("flipy", bool, False)
-		self.addParameter("startframe", int, 0)
+		self.addParameter("filename", parameter.CompyParmString, None)
+		self.addParameter("width", parameter.CompyParmInt, 640)
+		self.addParameter("height", parameter.CompyParmInt, 480)
+		self.addParameter("flipx", parameter.CompyParmBool, False)
+		self.addParameter("flipy", parameter.CompyParmBool, False)
+		self.addParameter("startframe", parameter.CompyParmInt, 0, label="Shift to Start Frame")
+		self.addParameter("missingfr", parameter.CompyParmOrderedMenu, 3, label="Missing Frames", menu_items=[
+			("closest", "Use Closest Frame"),
+			("previous", "Use Previous Frame"),
+			("next", "Use Next Frame"),
+			("black", "Use Black Frame"),
+			("error", "Report Error")
+		])
 		
 	def loadJPG(self, filename):
 		img = matplotlib.image.imread(filename)
@@ -91,11 +99,14 @@ class CLC_Source_Image(base.CLC_Base):
 		
 			
 	def compute(self):
-		imagefile = self.parm("filename").eval()
+		print "Computing %s ..." % self.name()
+		imagefile = CompyString(self.engine, self.parm("filename").eval()).expandedString()
+		
 		if imagefile:	 
 			ext = imagefile.split(".")[-1]
 			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:
 				self.loadJPG(imagefile)
+				print "Creating device buffer for %s jpg..." % self.name()
 				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))
 				print "inBuffer size %s, outBuffer size %s" % (self.devInBufferR.size, self.devOutBuffer.size)
 				exec_evt = self.program.run_jpg(self.engine.queue, self.size, None, 
@@ -108,9 +119,11 @@ class CLC_Source_Image(base.CLC_Base):
 					numpy.int32(self.width),
 					numpy.int32(self.height),
 				)
+				print "Waiting for %s program ..." % self.name()
 				exec_evt.wait()
 			elif ext in ["exr", "EXR"]:
 				self.loadEXR(imagefile)
+				print "Creating device buffer for %s exr ..." % self.name()
 				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))
 				print "inBuffer size %s, outBuffer size %s" % (self.devInBufferR.size, self.devOutBuffer.size)
 				exec_evt = self.program.run_exr(self.engine.queue, self.size, None, 
@@ -124,7 +137,9 @@ class CLC_Source_Image(base.CLC_Base):
 					numpy.int32(self.width),
 					numpy.int32(self.height),
 				)
+				print "Waiting for %s program ..." % self.name()
 				exec_evt.wait()
+			print "Computing of %s done !" % self.name()	
 		else:
 			raise BaseException("No imagefile specified !!!")	
 

@@ -25,22 +25,22 @@ class CLC_Effect_FastBlur(base.CLC_Base):
 			exec_evt = self.program.fast_blur_h(self.engine.queue, self.size, None, 
 				self.input(0).getOutDevBuffer(),     
 				self.devTmpBuffer, 
-				numpy.float32(self.parms.get("blursize").eval()),
-				numpy.float32(self.parms.get("blursizey").eval()),
+				numpy.float32(self.parm("blursize").eval()),
+				numpy.float32(self.parm("blursizey").eval()),
 				numpy.int32(self.input(0).width),
 				numpy.int32(self.input(0).height),
-				numpy.int32(self.parms.get("useindepy").eval()),
+				numpy.int32(self.parms("useindepy").eval()),
 			)
 			exec_evt.wait()
 			
 			exec_evt = self.program.fast_blur_v(self.engine.queue, self.size, None, 
 				self.devTmpBuffer,     
 				self.devOutBuffer, 
-				numpy.float32(self.parms.get("blursize").eval()),
-				numpy.float32(self.parms.get("blursizey").eval()),
+				numpy.float32(self.parm("blursize").eval()),
+				numpy.float32(self.parm("blursizey").eval()),
 				numpy.int32(self.input(0).width),
 				numpy.int32(self.input(0).height),
-				numpy.int32(self.parms.get("useindepy").eval()),
+				numpy.int32(self.parms("useindepy").eval()),
 			)
 			exec_evt.wait()
 			del self.devTmpBuffer
@@ -71,8 +71,8 @@ class CLC_Effect_PressRaster(base.CLC_Base):
 				self.devOutBuffer,
 				numpy.int32(self.input(0).width),
 				numpy.int32(self.input(0).height),
-				numpy.float32(self.parms.get("density").eval()),
-				numpy.int32(self.parms.get("quality").eval()),
+				numpy.float32(self.parm("density").eval()),
+				numpy.int32(self.parm("quality").eval()),
 			)
 			exec_evt.wait()
 		else:

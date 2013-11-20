@@ -14,6 +14,7 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
         self.connect(self, QtCore.SIGNAL("network_changed"), self.rebuild)
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextTree)
         self.itemClicked.connect(self.handleItemClicked)
+        self.setDragEnabled(True)
         self.initUI()
         
     def initUI(self):
@@ -27,7 +28,7 @@ class TreeNodeViewerWidget(QtGui.QTreeWidget):
             item.setText(1, cur_node.path())
             item.setText(2, str(cur_node))
             if cur_node.children():
-                self.createNodeLevel(cur_node, item)    
+                self.createNodeLevel(cur_node, item)   
 
     def handleItemClicked(self, item, column):
         self.params.emit(QtCore.SIGNAL('node_selected'), str(item.text(1)))              

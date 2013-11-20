@@ -1,5 +1,5 @@
 from compy.parameter import CompyParameter
-import re
+import re, collections
 lastNum = re.compile(r'(?:[^\d]*(\d+)[^\d]*)+')
 
 class CLC_NetworkManager(object):
@@ -13,7 +13,7 @@ class CLC_NetworkManager(object):
 		self.__engine__ = engine
 		self.__mask__ = mask
 		self.__name__ = None
-		self.__parms__ = {}
+		self.__parms__ = collections.OrderedDict()
 		self.__node_dict__ = {}
 		self.__parent__ = parent
 		self.__inputs__ = []
@@ -29,11 +29,12 @@ class CLC_NetworkManager(object):
 		else:
 			return "%s1" % s	
 
+	@property 
 	def engine(self):
 		return self.__engine__	
 
-	def addParameter(self, name, parm_type, value=None, label=None):
-		parm = CompyParameter(self, name, parm_type, label=label)
+	def addParameter(self, name, parm_type, value=None, label=None, callback=None, menu_items=[]):
+		parm = CompyParameter(self, name, parm_type, label=label, callback=callback, menu_items=menu_items)
 		if value != None: parm.set(value)
 		self.__parms__[name] = parm
 
@@ -44,6 +45,7 @@ class CLC_NetworkManager(object):
 		return [self.__parms__[name] for name in self.__parms__]	
 
 	def setParms(self, parameters):
+		self.cooked = False
 		for parm_name in parameters:
 			self.__parms__[parm_name].set(parameters[parm_name])
 
@@ -106,15 +108,15 @@ class CLC_NetworkManager(object):
 		else:
 			name = node_type_name	
 
-		if node_type_name in self.engine().filters:
-			node = self.engine().filters[node_type_name](self.engine(), self)	
+		if node_type_name in self.engine.filters:
+			node = self.engine.filters[node_type_name](self.engine, self)	
 			node.setName(name)
 		else:
 			raise BaseException("Unsupported node type \"%s\". Abort." % node_type_name)	
 
 		self.__node_dict__[node.name()] = node
-		if self.engine().network_cb:
-			self.engine().network_cb()
+		if self.engine.network_cb:
+			self.engine.network_cb()
 
 		print "Created node %s childs is %s" % (node, node.children())	
 
@@ -155,8 +157,9 @@ class CLC_NetworkManager(object):
 
 	# traverse nodes from this
 	def traverse(self, path_list):
-		print "Getting node: %s" % path_list
-		node = self.__node_dict__[path_list[0]]
+		#print "Getting node: %s" % path_list
+		node = self.__node_dict__.get(path_list[0])
+		if not node: raise BaseException("Unable to get node %s in %s.traverse(self, path_list)" % (path_list[0], self))
 		if len(path_list[1::]) > 0:
 			# recursive traverse
 			return node.traverse(path_list[1::])

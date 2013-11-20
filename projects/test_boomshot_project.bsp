@@ -1,12 +1,16 @@
 {
     "bricks": [
         {
-            "file_path": "abc_$F4.jpg",
+            "file_path": "/Users/max/test/sources/01/abc_$F4.jpg",
             "start_frame": 1,
+            "width":640,
+            "height":480
         },
         {
-            "file_path": "def_$F4.jpg",
+            "file_path": "/Users/max/test/sources/02/xyz_$F4.jpg",
             "start_frame": 121,
+            "width":640,
+            "height":480 
         },
     ],
     "transitions": [
@@ -17,8 +21,8 @@
         },
     ],
     "project": {
-        "frame_number": 220,
-        "resolution": {"width": 740, "height": 480},
-        "output_file_path": "trolololo.jpg",
+        "frame_number": 50,
+        "resolution": {"width": 1280, "height": 720},
+        "output_file_path": "/Users/max/test/lala_$F4.jpg",
     }
 }    

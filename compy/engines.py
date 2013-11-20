@@ -124,10 +124,10 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 		self.__frame__ = float(time) * float(self.__fps__)
 
 	def setFrame(self, frame):
-		print "Frame %s" % frame
 		self.__frame__ = frame
-		self.__time__ = float(frame) / float(self.__fps__)				
+		self.__time__ = float(frame) / float(self.__fps__)			
 
+	@property	
 	def engine(self):
 		return self
 
@@ -142,16 +142,15 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 		else:
 			render_frame = self.frame()
 
+		self.setFrame(render_frame)	
+
 		self.setFrame(frame)	
 		render_file_name = CompyString(self.engine, filename).expandedString()	
 		print "Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name)
 		
 		buff = node.getOutHostBuffer()
 		image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)
-		image.save(render_file_name, 'JPEG', quality=100)
-
-		#file = open(render_file_name, 'w+')
-		#file.close()			
+		image.save(render_file_name, 'JPEG', quality=100)			
 
 	def save_project(self, filename):
 		project_file = open(filename, "wb")

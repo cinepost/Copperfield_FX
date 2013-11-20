@@ -67,12 +67,14 @@ class boomShotTranslator(baseCompyTranslator):
 			i += 1
 
 		# parse and create transitions
+		last_transition_path = None
 		transitions = ns.get("transitions",[])
 		i = 1
 		for transition in transitions:
 			in_time = float(transition["frame_range"][0]) / prefs.get("fps", 25.0)
 			out_time = float(transition["frame_range"][1]) / prefs.get("fps", 25.0)
 			transition_name =  "%s_%s" % (transition["type"], i)
+			last_transition_path = "/img/movie/%s" % transition_name
 			nodes += [{
 				"name": transition_name,
 				"type": transition["type"],
@@ -83,34 +85,42 @@ class boomShotTranslator(baseCompyTranslator):
 						{"t": out_time, "v": 1.0}
 					)
 				}
-			}]	
+			}]
 
-			# write out nodes
-			project_string += "nodes = %s\n\n" % nodes
+		# generate outputs
+		output_parms = ns.get("project")
 
-			# create links for this transition
-			links += [
-				("/img/movie/brick_%s" % transition["brick_indexes"][0], "/img/movie/%s" % transition_name, 0, 0, ),
-				("/img/movie/brick_%s" % transition["brick_indexes"][1], "/img/movie/%s" % transition_name, 0, 1, )
-			]
+		if not output_parms:
+			print "Warning! No output specified in project %s. Using defaults." % source_project_file_name
+		else:	
+			nodes += [{
+				"name": "composite1",
+				"type": "composite",
+				"path": "/out",
+				"parms": {
+					"coppath": last_transition_path,
+					"f1": 0,
+					"f2": int(output_parms["frame_number"]),
+					"f3": 1,
+					"copoutput": output_parms["output_file_path"]
+				}
+			}]
+		
 
-			i += 1
+		# write out nodes
+		project_string += "nodes = %s\n\n" % nodes
+
+		# create links for this transition
+		links += [
+			("/img/movie/brick_%s" % transition["brick_indexes"][0], "/img/movie/%s" % transition_name, 0, 0, ),
+			("/img/movie/brick_%s" % transition["brick_indexes"][1], "/img/movie/%s" % transition_name, 0, 1, )
+		]
+
+		i += 1
  
-			#write out links
-			project_string += "links = %s\n\n" % links
+		#write out links
+		project_string += "links = %s\n\n" % links
 
-			# generate output parameters
-			output_parms = ns.get("project")
-
-			if not output_parms:
-				print "Warning! No output specified in project %s. Using defaults." % source_project_file_name
-			else:	
-				output = {}
-
-
-				# write out translated output
-				project_string += "output = %s\n\n" % output
-
-			source_project_file.close()
-			return project_string	
+		source_project_file.close()
+		return project_string	
 	

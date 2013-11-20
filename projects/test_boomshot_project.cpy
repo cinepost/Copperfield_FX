@@ -19,7 +19,7 @@ nodes = [
 		"name": "brick1",
 		"path": "/img/comp1",
 		"parms": {
-			"filename": "$PROJECT_ROOT/brick1/brick_$F4.jpg",
+			"filename": "/Users/max/test/sources/01/abc_$F4.jpg",
 			"startframe": 0 # shift sequence start to a specific frame 0
 		}
 	},
@@ -28,7 +28,7 @@ nodes = [
 		"name": "brick2",
 		"path": "/img/comp1",
 		"parms": {
-			"filename": "$PROJECT_ROOT/brick2/brick_$F4.jpg",
+			"filename": "/Users/max/test/sources/02/xyz_$F4.jpg",
 			"startframe": 100 # shift sequence start to a specific frame 100
 		}
 	},
@@ -37,7 +37,7 @@ nodes = [
 		"name": "brick3",
 		"path": "/img/comp1",
 		"parms": {
-			"filename": "$PROJECT_ROOT/brick3/brick_$F4.jpg",
+			"filename": "/Users/max/test/sources/02/xyz_$F4.jpg",
 			"startframe": 175 # shift sequence start to a specific frame 100
 		}
 	},
@@ -62,6 +62,18 @@ nodes = [
 				{"t":8.0, "v":1.0}  # set "factor" to 1 at frame 200
 			)
 		}
+	},
+	{ # output 1
+		"type": "composite",
+		"name": "composite1",
+		"path": "/out",
+		"parms": {
+			"coppath": "/img/comp1/blend1",
+			"copoutput": "/Users/max/test/cpy_test_$F4.jpg",
+			"f1": 0,
+			"f2": 50,
+			"f3": 1
+		}
 	}
 ]
 
@@ -82,25 +94,3 @@ output = {
 	"filename": "$PROJECT_ROOT/movie/movie_$F4.jpg",
 	"resolution": (1280, 720) # this is optional parameter. if not supplied calculation engine will use the input files resolution e.g "brick1"
 }
-
-#  Here is some ASCII art for this netwoek :))
-#
-################################################
-#
-# /--------\       /--------\
-# | brick1 |       | brick2 |
-# \--------/       \--------/
-#     |                 |
-#     \------\  /------/
-#            |  |
-#         /--------\       /--------\
-#         | blend1 |       | brick3 |
-#         \--------/       \--------/
-#              |               |
-#              \-----\   /-----/
-#                    |   |
-#                  /--------\
-#                  | blend2 |
-#                  \--------/
-#
-#

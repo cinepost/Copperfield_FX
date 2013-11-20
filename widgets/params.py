@@ -1,5 +1,14 @@
 from PyQt4 import Qt, QtGui, QtCore
-from compy.parameter import *
+from compy import parameter
+
+class OpPathWidget(QtGui.QLineEdit):
+    def __init__(self, contents, parent=None):
+        super(OpPathWidget, self).__init__(contents, parent)
+        print "OpPathWidget"
+        self.setAcceptDrops(True)
+
+    def dropEvent(self, event):
+        print "Drop!"
 
 class ParamsWidget(QtGui.QWidget):
   
@@ -23,6 +32,7 @@ class ParamsWidget(QtGui.QWidget):
         vbox.addLayout(self.grid)
         vbox.addStretch(1)
         self.setLayout(vbox)
+        self.setAcceptDrops(True)
 
     @QtCore.pyqtSlot()   
     def setNode(self, node_path = None):
@@ -44,6 +54,7 @@ class ParamsWidget(QtGui.QWidget):
 
         node_type = QtGui.QLabel(node.type_name)
         node_type.setStyleSheet("font-weight: bold")
+   
 
         node_name = QtGui.QLineEdit(node.name())
 
@@ -58,19 +69,41 @@ class ParamsWidget(QtGui.QWidget):
             parm_type = parm.type()
 
             if parm_type is bool:
+                # check box
                 valueEdit = QtGui.QCheckBox()
                 if value: valueEdit.setCheckState(QtCore.Qt.Checked)
-            elif parm_type is CompyInt:
+            
+            elif parm_type is parameter.CompyParmInt:
+                # integer
                 valueEdit = QtGui.QSpinBox()
                 valueEdit.setMinimum(0)
                 valueEdit.setMaximum(10000)  
                 valueEdit.setValue(value)
-                valueEdit.setStyleSheet("background-color: rgb(128,255,128)")
-            elif parm_type is CompyButton:
-                valueEdit = QtGui.QPushButton(parm.label(), self)  
+            
+            elif parm_type is parameter.CompyParmButton:
+                # button
+                valueEdit = QtGui.QPushButton(parm.label(), self)
+                valueEdit.clicked.connect(parm.getCallback())
+
+            elif parm_type is parameter.CompyParmOpPath:
+                # op path
+                valueEdit = OpPathWidget(str(value))      
+            
+            elif parm_type is parameter.CompyParmOrderedMenu:
+                valueEdit = QtGui.QComboBox(self)
+                for item_name in parm.__menu_items__:
+                    valueEdit.addItem(parm.__menu_items__[item_name])
+                valueEdit.setCurrentIndex(parm.evalAsInt())            
             else:    
+                # all other
                 valueEdit = QtGui.QLineEdit(str(value))
             
-            self.grid.addWidget(QtGui.QLabel(parm.name()), i, 0)
+            # highlight animated parameter
+            if parm.animated():
+                valueEdit.setStyleSheet("background-color: rgb(128,255,128)")    
+
+            label = QtGui.QLabel(parm.label())
+            label.setStatusTip(parm.name())
+            self.grid.addWidget(label, i, 0)
             self.grid.addWidget(valueEdit, i, 1)
             i+=1

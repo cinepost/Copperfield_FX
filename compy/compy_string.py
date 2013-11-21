@@ -1,4 +1,5 @@
 import string
+import os
 
 class CompyString(object):
 	
@@ -11,7 +12,7 @@ class CompyString(object):
 		return self.string_val	
 
 	def expandedString(self):
-		string_template = string.Template( self.string_val )
+		string_template = string.Template( os.path.expandvars(self.string_val) )
 		frame = self.engine.frame()
 		string_expanded = string_template.substitute({
 			'F': frame,

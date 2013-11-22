@@ -108,8 +108,8 @@ class CLC_NetworkManager(object):
 		else:
 			name = node_type_name	
 
-		if node_type_name in self.engine.filters:
-			node = self.engine.filters[node_type_name](self.engine, self)	
+		if node_type_name in self.engine.ops:
+			node = self.engine.ops[node_type_name](self.engine, self)	
 			node.setName(name)
 		else:
 			raise BaseException("Unsupported node type \"%s\". Abort." % node_type_name)	

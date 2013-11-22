@@ -1,7 +1,9 @@
+import os
+os.environ["PYOPENCL_COMPILER_OUTPUT"] = "1"
+os.environ["PYOPENCL_NO_CACHE"] = "1"
+
 import inspect
 import string
-#import pyopencl as cl
-#import numpy
 from compy.engines import CLC_Engine as engine
 import settings
 import base
@@ -25,5 +27,5 @@ for module_name in settings.cop_modules + settings.out_modules:
 								
 
 
-def CreateEngine(device_type):
-	return engine(device_type, ops, settings.cl_path)
+def CreateEngine(device_type = "ALL", device_index=None):
+	return engine(device_type = device_type, device_index=device_index, ops=ops, cl_path=settings.cl_path)

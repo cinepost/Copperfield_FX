@@ -1,5 +1,5 @@
 class COP_Plane(object):
-	def __init__(parent_cop, channel_names=[], dtype=float):
+	def __init__(self, parent_cop, channel_names=[], dtype=float):
 		self.parent_cop = parent_cop
 		self.__channels__ = {}
 		self.__dtype__ = dtype

@@ -8,7 +8,7 @@ import threading
 from compy.parameter import CompyParameter
 from compy.compy_string import CompyString
 from compy.op_manager import OP_Manager
-from compy.cop_plane import COP_Plane    				
+from compy.cops.cop_plane import COP_Plane    				
 
 class COP_Node(OP_Manager):
 	# Base class for OPs

@@ -1,4 +1,4 @@
-import sys
+import sys, os
 import pyopencl as cl
 import pickle
 import numpy
@@ -69,7 +69,7 @@ class CLC_Engine(OP_Manager):
 			self.network_cb()	 	
 
 	def load_program(self, filename):
-		of = open("%s/%s" % (self.cl_path, filename), 'r')
+		of = open("%s/%s" % (os.path.expandvars(self.cl_path), filename), 'r')
 		return cl.Program(self.ctx, of.read()).build()
 	
 	@property 

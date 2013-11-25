@@ -1,8 +1,8 @@
-from compy import base
+from compy.cops.cop_node import COP_Node
 import pyopencl as cl
 import numpy
 
-class CLC_Comp_Add(base.CLC_Base):
+class CLC_Comp_Add(COP_Node):
 	'''
 		This filter adds foreground over background using OpenCL
 	'''
@@ -33,7 +33,7 @@ class CLC_Comp_Add(base.CLC_Base):
 		)
 		exec_evt.wait()
 
-class CLC_Comp_Blend(base.CLC_Base):
+class CLC_Comp_Blend(COP_Node):
 	'''
 		This filter blends foreground over background using OpenCL
 	'''

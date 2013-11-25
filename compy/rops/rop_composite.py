@@ -1,12 +1,12 @@
-import base
+from compy.rops.rop_base import ROP_Base
 from compy import parameter
 
-class CLC_Composite(base.CLC_Out):
+class ROP_Composite(ROP_Base):
 	type_name = "composite"
 	category = "image"
 
 	def __init__(self, engine, parent):
-		super(CLC_Composite, self).__init__(engine, parent)
+		super(ROP_Composite, self).__init__(engine, parent)
 		self.addParameter("coppath", parameter.CompyParmOpPath, "", label="COP Name")
 		self.addParameter("copoutput", parameter.CompyParmFile, "", label="Output Picture")
 

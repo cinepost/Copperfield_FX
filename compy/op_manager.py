@@ -1,8 +1,9 @@
+from compy.op_node import OP_Node
 from compy.parameter import CompyParameter
 import re, collections
 lastNum = re.compile(r'(?:[^\d]*(\d+)[^\d]*)+')
 
-class CLC_NetworkManager(object):
+class OP_Manager(OP_Node):
 	"""
 	This class implements all the network related methods to be used with Compy nodes. It handles child/parent relations, node creation, manipulation methods
 	and tree traversal.
@@ -10,6 +11,7 @@ class CLC_NetworkManager(object):
 	"""
 	def __init__(self, engine, parent, mask=None):
 		# mask is a list with node type names that are allowed to be created by this NetworkManager instance e.d ["img","comp"] If mask is None than any node type can be used
+		super(OP_Manager, self).__init__()
 		self.__engine__ = engine
 		self.__mask__ = mask
 		self.__name__ = None

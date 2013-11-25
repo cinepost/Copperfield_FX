@@ -6,7 +6,6 @@ import inspect
 import string
 from compy.engines import CLC_Engine as engine
 import settings
-import base
 
 print "Loading operators..."
 

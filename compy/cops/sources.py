@@ -18,6 +18,7 @@ class CLC_Source_Image(COP_Node):
 		self.addParameter("flipx", parameter.CompyParmBool, False)
 		self.addParameter("flipy", parameter.CompyParmBool, False)
 		self.addParameter("startframe", parameter.CompyParmInt, 0, label="Shift to Start Frame")
+		self.addParameter("start", parameter.CompyParmInt, 0, label="File Range Start")
 		self.addParameter("missingfr", parameter.CompyParmOrderedMenu, 3, label="Missing Frames", menu_items=[
 			("closest", "Use Closest Frame"),
 			("previous", "Use Previous Frame"),
@@ -99,10 +100,11 @@ class CLC_Source_Image(COP_Node):
 		
 			
 	def compute(self):
-		print "Computing %s ..." % self.name()
-		imagefile = CompyString(self.engine, self.parm("filename").eval()).expandedString()
+		filename = CompyString(self.engine, self.parm("filename").eval())
+		imagefile = filename.expandedString(context={"frame": self.engine.frame() + self.parm("start").eval()})
 		
 		if imagefile:	 
+			print "Computing %s ... with filename %s " % (self.name(), imagefile)
 			ext = imagefile.split(".")[-1]
 			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:
 				self.loadJPG(imagefile)
@@ -141,6 +143,11 @@ class CLC_Source_Image(COP_Node):
 				exec_evt.wait()
 			print "Computing of %s done !" % self.name()	
 		else:
-			raise BaseException("No imagefile specified !!!")	
+			if self.parm("missingfr").eval() is 4:
+				raise BaseException("No imagefile specified !!!")
+			else:
+				self.width = self.parm("width").eval()
+				self.height = self.parm("height").eval()
+				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))		
 
 

@@ -3,17 +3,20 @@ import os
 
 class CompyString(object):
 	
-	def __init__(self, engine, string_val, node = None):
+	def __init__(self, engine, string_val):
 		self.engine = engine
-		self.node = node
 		self.string_val = str(string_val)
 	
 	def unexpandedString(self):
 		return self.string_val	
 
-	def expandedString(self):
+	def expandedString(self, context = {}):
 		string_template = string.Template( os.path.expandvars(self.string_val) )
-		frame = self.engine.frame()
+		if "frame" in context:
+			frame = context["frame"]
+		else:	
+			frame = self.engine.frame()
+		
 		string_expanded = string_template.substitute({
 			'F': frame,
 			'F2': '%02d' % frame,

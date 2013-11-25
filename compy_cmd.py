@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-#! /usr/bin/python
-=======
 #!/usr/bin/python
->>>>>>> 413b9765cdcf65f6aff8d149afe3463fce1cc418
 import argparse
 
 def main():

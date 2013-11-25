@@ -1,8 +1,9 @@
-from compy import base, parameter
+from compy.cops.cop_node import COP_Node
+from compy import parameter
 import pyopencl as cl
 import numpy
 
-class CLC_Effect_FastBlur(base.CLC_Base):
+class CLC_Effect_FastBlur(COP_Node):
 	type_name = "fastblur"
 	category = "effects"
 	def __init__(self, engine, parent):
@@ -48,7 +49,7 @@ class CLC_Effect_FastBlur(base.CLC_Base):
 			raise BaseException("No input specified !!!")	
 
 
-class CLC_Effect_PressRaster(base.CLC_Base):
+class CLC_Effect_PressRaster(COP_Node):
 	type_name	= "press_raster"
 	category = "effects"
 	def __init__(self, engine, parent):

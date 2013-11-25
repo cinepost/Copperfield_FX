@@ -1,12 +1,12 @@
 cop_modules = (
-	'compy.cops.composition',
+	'compy.cops.cop_network',
 	'compy.cops.sources',
 	'compy.cops.effects',
 	'compy.cops.comps',
 )
 
 out_modules = (
-	'compy.outs.composite'
+	'compy.rops.rop_composite'
 ),
 
-cl_path = "compy/cl"
+cl_path = "$COMPY_HOME/compy/cl"

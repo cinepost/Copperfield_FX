@@ -2,13 +2,13 @@ import sys
 import pyopencl as cl
 import pickle
 import numpy
-import compy.network_manager as network_manager
+from compy.op_manager import OP_Manager
 from compy.compy_string import CompyString
 from compy.translators import compyNullTranslator, boomShotTranslator
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
 
-class CLC_Engine(network_manager.CLC_NetworkManager):
+class CLC_Engine(OP_Manager):
 	programs 	= {}
 	app 		= None
 	filters		= {}
@@ -52,11 +52,11 @@ class CLC_Engine(network_manager.CLC_NetworkManager):
 			self.translators[translator.registerExtension()] = translator
 
 		# create base network managers
-		img = network_manager.CLC_NetworkManager(self, self, ["comp"])
+		img = OP_Manager(self, self, ["comp"])
 		img.setName("img")
 		self.__node_dict__["img"] = img
 
-		out = network_manager.CLC_NetworkManager(self, self, ["composite"])
+		out = OP_Manager(self, self, ["composite"])
 		out.setName("out")
 		self.__node_dict__["out"] = out		
 	

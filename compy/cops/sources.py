@@ -1,11 +1,11 @@
-
-from compy import base, parameter
+from compy.cops.cop_node import COP_Node
+from compy import parameter
 from compy.compy_string import CompyString
 import matplotlib.image
 import pyopencl as cl
 import numpy
 			
-class CLC_Source_Image(base.CLC_Base):
+class CLC_Source_Image(COP_Node):
 	type_name = "file"
 	category = "sources"
 	def __init__(self, engine, parent):

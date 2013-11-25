@@ -7,36 +7,16 @@ import numpy
 import threading
 from compy.parameter import CompyParameter
 from compy.compy_string import CompyString
-import compy.network_manager as network_manager
+from compy.op_manager import OP_Manager
+from compy.cop_plane import COP_Plane    				
 
-
-class CLC_Node(object):
-	""" Base class for nodes graph rendering """
-
-	def __init__(self):
-		self.x_pos = 0.0
-		self.y_pos = 0.0
-		self.color = (0.5, 1.0, 0.25,)
-		self.icon = None
-
-	def setPos(self, x, y):
-		self.x_pos = x
-		self.y_pos = y
-
-	def getPos(self):
-		return (self.x_pos, self.y_pos,)
-
-	def getIcon(self):
-		return self.icon    				
-
-class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
+class COP_Node(OP_Manager):
 	# Base class for OPs
 	__op__			= True # Indicated that this is OP node
 	type_name		= None # This is a TYPE name for the particular compositing OP ...
 	
-	def __init__(self, engine, parent):
-		network_manager.CLC_NetworkManager.__init__(self, engine, parent, mask=None)
-		super(CLC_Base, self).__init__()
+	def __init__(self, engine, parent, mask=None):
+		super(COP_Node, self).__init__(engine, parent, mask=mask)
 
 		self.width	= None	
 		self.height	= None
@@ -48,6 +28,10 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 		self.common_program = engine.load_program("common.cl")
 		
 		self.addParameter("bypass", bool, False)
+		self.__planes__ = {
+			"C": COP_Plane(self, channel_names=['r','g','b'], dtype=float),
+			"A": COP_Plane(self, dtype=float)
+		}
 
 	@property
 	def size(self):
@@ -70,7 +54,16 @@ class CLC_Base(CLC_Node, network_manager.CLC_NetworkManager):
 		return self.width * 16
 
 	def isTimeDependent(self):
-		return False			
+		return False		
+
+	def planes(self):
+		return self.__planes__.keys()
+
+	def components(self, plane):
+		try:
+			return self.__planes__.get(plane).components()			
+		except:
+			raise BaseException("Unable to get components from plane %s" % plane)	
 
 	def cook(self, force=False, frame_range=()):
 

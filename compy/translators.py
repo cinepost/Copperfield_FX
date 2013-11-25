@@ -61,7 +61,8 @@ class boomShotTranslator(baseCompyTranslator):
 				"path": "/img/movie",
 				"parms": {
 					"filename": brick["file_path"],
-					"startframe": brick["start_frame"]
+					"startframe": brick["start_frame"],
+					"start": 1
 				}
 			}]
 			i += 1

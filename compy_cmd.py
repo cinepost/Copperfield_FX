@@ -53,7 +53,7 @@ def main():
 
 		print "Rendering frames from %s to %s with step %s" % (out_node.parm('f1').eval(), out_node.parm('f2').eval(), out_node.parm('f3').eval())
 		out_node.render()
+		return True
 
 if __name__ == "__main__":
     main()
-    return True

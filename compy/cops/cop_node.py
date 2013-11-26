@@ -66,7 +66,6 @@ class COP_Node(OP_Manager):
 			raise BaseException("Unable to get components from plane %s" % plane)	
 
 	def cook(self, force=False, frame_range=()):
-
 		if any(node.cooked is False for node in self.inputs()):
 			print "Cooking inputs: %s" % [inp.name() for inp in self.inputs()]
 			for node in self.inputs():
@@ -87,6 +86,7 @@ class COP_Node(OP_Manager):
 			return True	
 
 	def getOutDevBuffer(self):
+		self.cooked = False
 		if self.cooked == False:
 			self.cook()
 		
@@ -115,9 +115,3 @@ class COP_Node(OP_Manager):
 		
 		return host_buffer
 
-	def show(self):
-		try:
-			host_buff = self.getOutHostBuffer()
-			Image.frombuffer('RGBA', (self.width, self.height), host_buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1).show()		
-		except:
-			raise BaseException("Unable to show uncooked source %s !!!" % self)					

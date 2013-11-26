@@ -8,7 +8,7 @@
         },
         {
             "file_path": "$COMPY_HOME/test/sources/xyz_$F4.jpg",
-            "start_frame": 20,
+            "start_frame": 10,
             "width":1280,
             "height":720 
         },
@@ -21,7 +21,7 @@
         },
     ],
     "project": {
-        "frame_number": 5,
+        "frame_number": 20,
         "resolution": {"width": 1280, "height": 720},
         "output_file_path": "$COMPY_HOME/test/out/output_$F4.jpg",
     }

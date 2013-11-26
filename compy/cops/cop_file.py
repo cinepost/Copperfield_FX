@@ -102,7 +102,8 @@ class COP_File(COP_Node):
 			
 	def compute(self):
 		filename = CompyString(self.engine, self.parm("filename").eval())
-		imagefile = filename.expandedString(context={"frame": self.engine.frame() + self.parm("start").eval()})
+		image_frame = self.engine.frame() + self.parm("start").evalAsInt() - self.parm("startframe").evalAsInt()
+		imagefile = filename.expandedString(context={"frame": image_frame})
 		
 		if os.path.isfile(imagefile):	 
 			print "Computing %s ... with filename %s " % (self.name(), imagefile)

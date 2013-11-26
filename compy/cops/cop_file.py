@@ -6,16 +6,16 @@ import pyopencl as cl
 import numpy
 import os
 			
-class CLC_Source_Image(COP_Node):
+class COP_File(COP_Node):
 	type_name = "file"
 	category = "sources"
 	def __init__(self, engine, parent):
-		super(CLC_Source_Image, self).__init__(engine, parent)
+		super(COP_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
 
 		self.addParameter("filename", parameter.CompyParmString, None)
-		self.addParameter("width", parameter.CompyParmInt, 640)
-		self.addParameter("height", parameter.CompyParmInt, 480)
+		self.addParameter("width", parameter.CompyParmInt, 1280)
+		self.addParameter("height", parameter.CompyParmInt, 720)
 		self.addParameter("flipx", parameter.CompyParmBool, False)
 		self.addParameter("flipy", parameter.CompyParmBool, False)
 		self.addParameter("startframe", parameter.CompyParmInt, 0, label="Shift to Start Frame")

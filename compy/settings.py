@@ -1,6 +1,6 @@
 cop_modules = (
 	'compy.cops.cop_network',
-	'compy.cops.sources',
+	'compy.cops.cop_file',
 	'compy.cops.effects',
 	'compy.cops.comps',
 )

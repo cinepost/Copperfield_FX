@@ -13,18 +13,12 @@ CompyParmButton = "button"
 CompyParmOrderedMenu = "menu"
 
 class CompyKeyframe(object):
-	def __init__(self, engine):
+	def __init__(self, engine, time=None, value=None):
 		self.v = value
 		self.f = None
-		self.t = None
+		self.t = time
 		self.in_type = CompyLinear
 		self.out_type = CompyLinear
-
-		if in_type:
-			self.in_type = in_type
-
-		if out_type:
-			self.out_type = out_type	
 
 	def value(self):
 		return self.v		
@@ -42,12 +36,15 @@ class CompyKeyframe(object):
 		self.f = frame
 
 	def setTime(self, time):
-		self.t = time				
+		self.t = time
+
+	def __repr__(self):
+		return "<CompyKeyframe: t:%s v:%s>"	% (self.t, self.v)				
 
 		
 class CompyParameter(object):
 	def __init__(self, node, name, parm_type, label = None, callback = None, menu_items = []):
-		self.keyframes = []
+		self.__keyframes__ = []
 		self.value = None
 		self.__cb__ = callback
 		self.__node__ = node
@@ -81,7 +78,7 @@ class CompyParameter(object):
 		return self.__type__
 
 	def animated(self):
-		if self.keyframes:
+		if self.__keyframes__:
 			return True
 		else:
 			return False
@@ -101,7 +98,39 @@ class CompyParameter(object):
 		return float(self.eval())	
 
 	def evalAtTime(self, time):
-		raise BaseException("Unimplemented evalAtTime(self, time) in %s" % self)
+		lesser_keys = sorted(k for k in self.__keyframes__ if k.t <= time)
+		greter_keys = sorted(k for k in self.__keyframes__ if k.t >= time)
+
+		if lesser_keys: 
+			left_k = lesser_keys[-1]
+		else: 
+			left_k = None
+		
+		if greter_keys: 
+			right_k = greter_keys[0] 
+		else: 
+			right_k = None
+
+		if not left_k:
+			# no interpolation
+			print "NO INTERPOLATION AT %s. USING CLOSEST RIGHT KEY at time %s" % (time, right_k.t)
+			return right_k.value()	
+
+		if not right_k:
+			# no interpolation
+			print "NO INTERPOLATION AT %s. USING CLOSEST LEFT KEY at time %s" % (time, left_k.t)
+			return left_k.value()
+
+		if right_k.t == left_k.t:
+			return left_k.value()
+
+		min_w = (time - left_k.t) / (right_k.t - left_k.t)
+		max_w = (right_k.t - time) / (right_k.t - left_k.t)
+
+		interp = min_w * right_k.value() + max_w * left_k.value()
+		print "INTERPOLATED KEY VALUE AT %s is %s" % (time, interp)
+		return interp
+		#raise BaseException("Unimplemented evalAtTime(self, time) in %s" % self)
 
 	def evalAtFrame(self, frame):
 		raise BaseException("Unimplemented evalAtFrame(self, frame) in %s" % self)	
@@ -112,10 +141,12 @@ class CompyParameter(object):
 	def set(self, value):
 		if type(value) in [list, tuple]:
 			# set up animated parameter
-			pass
+			for key in value:
+				keyframe = CompyKeyframe(self.node().engine, time=key["t"], value=key["v"])
+				self.setKeyframe(keyframe)
 		else:
 			# set up single parameter value	
-			if self.keyframes:
+			if self.__keyframes__:
 				# Animated parameter
 				raise BaseException("Unable to set parm that contains curve animation !!! Use addKeyFrame(time, key) instead !!!")
 			else:
@@ -123,7 +154,7 @@ class CompyParameter(object):
 				self.value = value
 				
 	def setKeyframe(self, keyframe):
-		self.keframes.append(keyframe)
+		self.__keyframes__.append(keyframe)
 
 	def setCallback(self, callback):
 		self.__cb__ = callback

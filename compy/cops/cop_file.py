@@ -98,7 +98,9 @@ class COP_File(COP_Node):
 			self.devInBufferA = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_a)
 		else:
 			self.devInBufferA = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=numpy.ones(self.source_width * self.source_height, dtype = numpy.float16))
-		
+	
+	def compute_sw(self):
+		pass	
 			
 	def compute(self):
 		filename = CompyString(self.engine, self.parm("filename").eval())
@@ -150,6 +152,7 @@ class COP_File(COP_Node):
 			else:
 				self.width = self.parm("width").eval()
 				self.height = self.parm("height").eval()
-				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))		
+				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.width, self.height), hostbuf=numpy.zeros(self.width * self.height * 4, dtype = numpy.float32))
+				#self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE , self.image_format, shape=(self.width, self.height))
 
 

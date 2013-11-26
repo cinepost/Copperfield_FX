@@ -46,7 +46,17 @@ class CLC_Comp_Blend(COP_Node):
 		self.__input_names__ = ["Input 1","Input 2"]
 
 		self.addParameter("factor", float, 0.5) 
-		
+	
+	def bypass_node(self):
+		factor = self.parm("factor").evalAsFloat()
+		if factor <= 0.0:
+			return self.input(0)
+
+		if factor >= 1.0:
+			return self.input(1)
+
+		return None
+				
 	def compute(self):
 		self.width, self.height = self.input(0).size
 		self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))

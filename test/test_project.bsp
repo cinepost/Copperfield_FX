@@ -17,11 +17,11 @@
         {
             "type": "blend",
             "brick_indexes": [0, 1],
-            "frame_range": [20, 30],
+            "frame_range": [10, 20],
         },
     ],
     "project": {
-        "frame_number": 20,
+        "frame_number": 30,
         "resolution": {"width": 1280, "height": 720},
         "output_file_path": "$COMPY_HOME/test/out/output_$F4.jpg",
     }

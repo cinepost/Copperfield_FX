@@ -63,7 +63,10 @@ class COP_Node(OP_Manager):
 		try:
 			return self.__planes__.get(plane).components()			
 		except:
-			raise BaseException("Unable to get components from plane %s" % plane)	
+			raise BaseException("Unable to get components from plane %s" % plane)
+
+	def bypass_node(self):
+		return None			
 
 	def cook(self, force=False, frame_range=()):
 		if any(node.cooked is False for node in self.inputs()):
@@ -86,6 +89,13 @@ class COP_Node(OP_Manager):
 			return True	
 
 	def getOutDevBuffer(self):
+		bypass_node = self.bypass_node()
+		if bypass_node:
+			out_buffer = bypass_node.getOutDevBuffer()
+			self.width = bypass_node.width
+			self.height = bypass_node.height
+			return out_buffer
+
 		self.cooked = False
 		if self.cooked == False:
 			self.cook()

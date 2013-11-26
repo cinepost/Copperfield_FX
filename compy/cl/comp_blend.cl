@@ -12,7 +12,7 @@ __kernel void run_blend(__read_only image2d_t img_in_0, __read_only image2d_t im
 			write_imagef(
 				img_out, 
 				pos, 
-				in_0 + in_1
+				in_0 * (1.0f - factor) + in_1 * factor
 			);
 		}
 	}

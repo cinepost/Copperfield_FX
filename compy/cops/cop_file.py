@@ -14,8 +14,8 @@ class COP_File(COP_Node):
 		self.program = self.engine.load_program("source_image.cl")
 
 		self.addParameter("filename", parameter.CompyParmString, None)
-		self.addParameter("width", parameter.CompyParmInt, 1280)
-		self.addParameter("height", parameter.CompyParmInt, 720)
+		self.addParameter("width", parameter.CompyParmInt, 0)
+		self.addParameter("height", parameter.CompyParmInt, 0)
 		self.addParameter("flipx", parameter.CompyParmBool, False)
 		self.addParameter("flipy", parameter.CompyParmBool, False)
 		self.addParameter("startframe", parameter.CompyParmInt, 0, label="Shift to Start Frame")

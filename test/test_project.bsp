@@ -12,6 +12,12 @@
             "width":1280,
             "height":720 
         },
+        {
+            "file_path": "$COMPY_HOME/test/sources/abc_$F4.jpg",
+            "start_frame": 30,
+            "width":1280,
+            "height":720 
+        }
     ],
     "transitions": [
         {
@@ -19,9 +25,14 @@
             "brick_indexes": [0, 1],
             "frame_range": [10, 20],
         },
+        {
+            "type": "blend",
+            "brick_indexes": [1, 2],
+            "frame_range": [30, 40],
+        },
     ],
     "project": {
-        "frame_number": 30,
+        "frame_number": 50,
         "resolution": {"width": 1280, "height": 720},
         "output_file_path": "$COMPY_HOME/test/out/output_$F4.jpg",
     }

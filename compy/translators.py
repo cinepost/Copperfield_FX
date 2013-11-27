@@ -75,7 +75,6 @@ class boomShotTranslator(baseCompyTranslator):
 			in_time = float(transition["frame_range"][0]) / prefs.get("fps", 25.0)
 			out_time = float(transition["frame_range"][1]) / prefs.get("fps", 25.0)
 			transition_name =  "%s_%s" % (transition["type"], i)
-			last_transition_path = "/img/movie/%s" % transition_name
 			nodes += [{
 				"name": transition_name,
 				"type": transition["type"],
@@ -87,6 +86,16 @@ class boomShotTranslator(baseCompyTranslator):
 					)
 				}
 			}]
+
+			# create links for this transition
+			links += [
+				(last_transition_path or "/img/movie/brick_%s" % transition["brick_indexes"][0], "/img/movie/%s" % transition_name, 0, 0, ),
+				("/img/movie/brick_%s" % transition["brick_indexes"][1], "/img/movie/%s" % transition_name, 0, 1, )
+			]
+
+			last_transition_path = "/img/movie/%s" % transition_name	
+
+			i += 1
 
 		# generate outputs
 		output_parms = ns.get("project")
@@ -111,14 +120,6 @@ class boomShotTranslator(baseCompyTranslator):
 		# write out nodes
 		project_string += "nodes = %s\n\n" % nodes
 
-		# create links for this transition
-		links += [
-			("/img/movie/brick_%s" % transition["brick_indexes"][0], "/img/movie/%s" % transition_name, 0, 0, ),
-			("/img/movie/brick_%s" % transition["brick_indexes"][1], "/img/movie/%s" % transition_name, 0, 1, )
-		]
-
-		i += 1
- 
 		#write out links
 		project_string += "links = %s\n\n" % links
 

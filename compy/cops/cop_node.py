@@ -27,7 +27,7 @@ class COP_Node(OP_Manager):
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
 		self.common_program = engine.load_program("common.cl")
 		
-		self.addParameter("bypass", bool, False)
+		self.addParameter("effectamount", float, 1.0, label="Effect Amount")
 		self.__planes__ = {
 			"C": COP_Plane(self, channel_names=['r','g','b'], dtype=float),
 			"A": COP_Plane(self, dtype=float)

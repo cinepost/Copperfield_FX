@@ -104,6 +104,9 @@ class CompyParameter(object):
 		lesser_keys = sorted(k for k in self.__keyframes__ if k.t <= time)
 		greater_keys = sorted(k for k in self.__keyframes__ if k.t >= time)
 
+		self.log("lesser_keys: %s" % ["t:%s, v:%s ; "%(key.t, key.value()) for key in lesser_keys])
+		self.log("greater_keys: %s" % ["t:%s, v:%s ; "%(key.t, key.value()) for key in greater_keys])
+
 		if lesser_keys: 
 			left_k = lesser_keys[-1]
 		else: 

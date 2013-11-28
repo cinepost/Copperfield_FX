@@ -50,11 +50,11 @@ class CLC_Comp_Blend(COP_Node):
 	def bypass_node(self):
 		factor = self.parm("factor").evalAsFloat()
 		if factor <= 0.0:
-			self.log("Bypassing node %s with node %s at input 0" % (self.path(), self.input(0).path(), self.engine.frame() ))
+			self.log("Bypassing node %s with node %s at input 0" % (self.path(), self.input(0).path()))
 			return self.input(0)
 
 		if factor >= 1.0:
-			self.log("Bypassing node %s with node %s at input 1" % (self.path(), self.input(0).path(), self.engine.frame() ))
+			self.log("Bypassing node %s with node %s at input 1" % (self.path(), self.input(0).path()))
 			return self.input(1)
 
 		return None

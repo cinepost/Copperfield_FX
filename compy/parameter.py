@@ -53,6 +53,9 @@ class CompyParameter(object):
 		self.__type__ = parm_type
 		self.__menu_items__ = OrderedDict(menu_items)
 
+	def log(self, text):
+		print "%s parm at frame %s: %s" % (self.path(), self.node().engine.frame(), text)	
+
 	def label(self):
 		if self.__label__:
 			return self.__label__
@@ -113,12 +116,12 @@ class CompyParameter(object):
 
 		if not left_k:
 			# no interpolation
-			print "NO INTERPOLATION AT %s. USING CLOSEST RIGHT KEY at time %s" % (time, right_k.t)
+			self.log("No interpolation. Using closest right key at time %s" % right_k.t)
 			return right_k.value()	
 
 		if not right_k:
 			# no interpolation
-			print "NO INTERPOLATION AT %s. USING CLOSEST LEFT KEY at time %s" % (time, left_k.t)
+			self.log("No interpolation. Using closest left key at time %s" % left_k.t)
 			return left_k.value()
 
 		if right_k.t == left_k.t:
@@ -128,7 +131,7 @@ class CompyParameter(object):
 		max_w = (right_k.t - time) / (right_k.t - left_k.t)
 
 		interp = min_w * right_k.value() + max_w * left_k.value()
-		print "INTERPOLATED KEY VALUE AT %s is %s" % (time, interp)
+		self.log("Interpolated value is %s" % interp)
 		return interp
 		#raise BaseException("Unimplemented evalAtTime(self, time) in %s" % self)
 

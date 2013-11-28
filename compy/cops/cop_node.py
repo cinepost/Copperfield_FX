@@ -107,20 +107,17 @@ class COP_Node(OP_Manager):
 		return self.devOutBuffer
 
 	def getOutHostBuffer(self):
-		print "Queue is %s" % self.engine.queue
 		device_buffer = self.getOutDevBuffer()
-		print "Device buffer is %s of size %s" % (device_buffer, device_buffer.size)
+		#print "Device buffer is %s of size %s" % (device_buffer, device_buffer.size)
 		host_buffer = numpy.empty((self.width, self.height, 4), dtype = numpy.float16)
 		self.engine.queue.finish()
-		print "Building quantized buffer for node %s with size %s" % (self, self.size)
+		#print "Building quantized buffer for node %s with size %s" % (self, self.size)
 		quantized_buffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.size)	
-		print "Quantized buffer is %s of size %s" % (quantized_buffer, quantized_buffer.size)
-		print "Executing quantize program for node %s" % self.name()
-		print "Queue is %s" % self.engine.queue
-
+		#print "Quantized buffer is %s of size %s" % (quantized_buffer, quantized_buffer.size)
+		#print "Executing quantize program for node %s" % self.name()
+		
 		with cl.CommandQueue(self.engine.ctx) as queue:
 			evt = self.common_program.quantize_show(queue, self.size, None, device_buffer, quantized_buffer )
-			print "Waiting for quantize program for node %s" % self.name()
 			evt.wait()
 
 		with cl.CommandQueue(self.engine.ctx) as queue:	

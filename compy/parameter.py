@@ -101,11 +101,11 @@ class CompyParameter(object):
 		return float(self.eval())	
 
 	def evalAtTime(self, time):
-		lesser_keys = sorted(k for k in self.__keyframes__ if k.t <= time)
-		greater_keys = sorted(k for k in self.__keyframes__ if k.t >= time)
+		lesser_keys = sorted([k for k in self.__keyframes__ if k.t <= time], key=lambda x: x.t)
+		greater_keys = sorted([k for k in self.__keyframes__ if k.t >= time], key=lambda x: x.t)
 
-		self.log("lesser_keys: %s" % ["t:%s, v:%s ; "%(key.t, key.value()) for key in lesser_keys])
-		self.log("greater_keys: %s" % ["t:%s, v:%s ; "%(key.t, key.value()) for key in greater_keys])
+		#self.log("lesser_keys: %s" % ["t:%s, v:%s ; "%(key.t, key.value()) for key in lesser_keys])
+		#self.log("greater_keys: %s" % ["t:%s, v:%s ; "%(key.t, key.value()) for key in greater_keys])
 
 		if lesser_keys: 
 			left_k = lesser_keys[-1]
@@ -120,13 +120,13 @@ class CompyParameter(object):
 		if not left_k:
 			# no interpolation
 			self.log("No interpolation. Using closest right key at time %s with value %s" % (right_k.t, right_k.value()))
-			self.log(["t:%s,v:%s ; " % (key.t, key.value()) for key in self.__keyframes__])
+			#self.log(["t:%s,v:%s ; " % (key.t, key.value()) for key in self.__keyframes__])
 			return right_k.value()	
 
 		if not right_k:
 			# no interpolation
 			self.log("No interpolation. Using closest left key at time %s with value %s" % (left_k.t, left_k.value()))
-			self.log(["t:%s,v:%s ; " % (key.t, key.value()) for key in self.__keyframes__])
+			#self.log(["t:%s,v:%s ; " % (key.t, key.value()) for key in self.__keyframes__])
 			return left_k.value()
 
 		if right_k.t == left_k.t:

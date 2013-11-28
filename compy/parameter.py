@@ -27,7 +27,7 @@ class CompyKeyframe(object):
 		self.v = value
 
 	def dump(self):
-		return { "t": self.t, "v": self.value }
+		return { "t": self.t, "v": self.v }
 
 	def frame(self):
 		return self.f
@@ -70,7 +70,7 @@ class CompyParameter(object):
 
 	def dump(self):
 		if self.animated():
-			return [key.dump() for key in self.keyframes]
+			return [key.dump() for key in self.__keyframes__]
 		else:
 			return self.value			
 

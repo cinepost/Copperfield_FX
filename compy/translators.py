@@ -63,8 +63,8 @@ class boomShotTranslator(baseCompyTranslator):
 				"type": "file",
 				"path": "/img/movie",
 				"parms": {
-					"filename": brick["file_path"],
-					"startframe": brick["start_frame"],
+					"filename": brick.get("file_path"),
+					"startframe": brick.get("start_frame"),
 					"start": 1,
 					"width": output_parms.get("resolution", {"width": 0, "height": 0}).get("width"),
 					"height" : output_parms.get("resolution", {"width": 0, "height": 0}).get("height"),

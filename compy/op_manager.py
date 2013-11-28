@@ -62,10 +62,10 @@ class OP_Manager(OP_Node):
 		return self.__parent__	
 
 	def children(self):
-		if self.__node_dict__.keys() > 0:
-			return [self.__node_dict__[name] for name in self.__node_dict__]	
-		else:
-			return []
+		if self.__node_dict__:
+			return [self.__node_dict__.get(node_name) for node_name in self.__node_dict__]	
+		
+		return []
 
 	def inputs(self):
 		return self.__inputs__
@@ -88,7 +88,7 @@ class OP_Manager(OP_Node):
 		except:
 			raise
 
-	def has_inputs(self):
+	def hasInputs(self):
 		if len(self.__inputs__) > 0:
 			return True
 		else:
@@ -213,6 +213,19 @@ class OP_Manager(OP_Node):
 				desc_list += node.dump(recursive=True, dump_parms=dump_parms)
 
 			return desc_list
+
+	def dumpLinks(self, recursive=False):
+		links = []
+		i = 0
+		for input_node in self.inputs():		
+			links += [(input_node.path(), self.path(), 0, i)]
+			i += 1
+
+		if recursive:
+			for child_node in self.children():
+				links += child_node.dumpLinks(recursive=True)	
+
+		return links	
 
 	def __str__(self):
 		return self.__class__.__name__				

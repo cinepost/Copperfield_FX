@@ -138,10 +138,13 @@ class CLC_Engine(OP_Manager):
 
 		# write out nodes
 		node_list = []
-		for node in self.nodes:
+		node_links = []
+		for node in self.node("/img").children() + self.node("/out").children():
 			node_list += node.dump(recursive=True, dump_parms=True)
+			node_links += node.dumpLinks(recursive=True)
 
 		project_file.write("nodes = %s\n" % node_list)
+		project_file.write("links = %s\n" % node_links)
 		project_file.close()
 
 	def readFile(self, file_path):

@@ -10,6 +10,7 @@ def main():
 	parser.add_argument('-e', '--engine', help='Engine: GPU or CPU', required=False)
 	parser.add_argument('-l', '--list', help='List OpenCL devices', action='store_true', required=False)
 	parser.add_argument('-d', '--device', help='Device index to use. example: -g GPU -d 0', required=False)
+	parser.add_argument('-c', '--convert', help='Convert projects. example -c new_project.cpy', required=False)
 	
 
 	args = parser.parse_args()
@@ -30,7 +31,7 @@ def main():
 				print("Device max clock speed:", device.max_clock_frequency, 'MHz')
 				print("Device compute units:", device.max_compute_units)
 
-		return True
+		exit(True)
 				
 	import compy
 	eng = "GPU"
@@ -39,6 +40,10 @@ def main():
 	if args.device: dev = int(args.device)
 	engine = compy.CreateEngine(device_type = eng, device_index = dev)
 	engine.open_project(args.project)
+
+	if args.convert:
+		engine.save_project(args.convert)
+		exit(True)
 
 	# try to get output node
 	if args.output and args.render:
@@ -53,7 +58,7 @@ def main():
 
 		print "Rendering frames from %s to %s with step %s" % (out_node.parm('f1').eval(), out_node.parm('f2').eval(), out_node.parm('f3').eval())
 		out_node.render()
-		return True
+		exit(True)
 
 if __name__ == "__main__":
     main()

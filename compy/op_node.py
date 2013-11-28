@@ -29,4 +29,4 @@ class OP_Node(OP_Parameters, OP_NetworkBoxItem):
 		OP_NetworkBoxItem.__init__(self)
 
 	def log(self, text):
-		print "%s: %s" % (self.path(), text)	
+		print "%s at frame %s: %s" % (self.path(), self.engine.frame(), text)	

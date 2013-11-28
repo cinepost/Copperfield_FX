@@ -116,12 +116,12 @@ class CompyParameter(object):
 
 		if not left_k:
 			# no interpolation
-			self.log("No interpolation. Using closest right key at time %s" % right_k.t)
+			self.log("No interpolation. Using closest right key at time %s with value %s" % (right_k.t, right_k.value()))
 			return right_k.value()	
 
 		if not right_k:
 			# no interpolation
-			self.log("No interpolation. Using closest left key at time %s" % left_k.t)
+			self.log("No interpolation. Using closest left key at time %s with value %s" % (left_k.t, left_k.value()))
 			return left_k.value()
 
 		if right_k.t == left_k.t:

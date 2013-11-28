@@ -50,11 +50,11 @@ class CLC_Comp_Blend(COP_Node):
 	def bypass_node(self):
 		factor = self.parm("factor").evalAsFloat()
 		if factor <= 0.0:
-			print "Bypassing node %s with node %s at frame %s" % (self.path(), self.input(0).path(), self.engine.frame() )
+			self.log("Bypassing node %s with node %s at frame %s" % (self.path(), self.input(0).path(), self.engine.frame() ))
 			return self.input(0)
 
 		if factor >= 1.0:
-			print "Bypassing node %s with node %s at frame %s" % (self.path(), self.input(0).path(), self.engine.frame() )
+			self.log("Bypassing node %s with node %s at frame %s" % (self.path(), self.input(0).path(), self.engine.frame() ))
 			return self.input(1)
 
 		return None
@@ -67,7 +67,6 @@ class CLC_Comp_Blend(COP_Node):
 				True, #  Normalized coordinates
 				cl.addressing_mode.CLAMP_TO_EDGE,
 				cl.filter_mode.LINEAR)
-		print "Running blend program for node %s" % self.name()
 		exec_evt = self.program.run_blend(self.engine.queue, self.size, None, 
 			self.input(0).getOutDevBuffer(), 
 			self.input(1).getOutDevBuffer(), 
@@ -78,5 +77,4 @@ class CLC_Comp_Blend(COP_Node):
 			numpy.float32(self.parm("factor").evalAsFloat())
 		)
 		exec_evt.wait()
-		print "Blend program for node %s completed." % self.name()
-
+		

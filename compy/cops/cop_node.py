@@ -70,27 +70,31 @@ class COP_Node(OP_Manager):
 
 	def cook(self, force=False, frame_range=()):
 		if any(node.cooked is False for node in self.inputs()):
-			print "Cooking inputs: %s" % [inp.name() for inp in self.inputs()]
+			self.log("Cooking inputs: %s" % [inp.name() for inp in self.inputs()])
 			for node in self.inputs():
 				node.cook()
-				print "Node %s cooked!" % node.name()
 
 		if self.cooked != True:
 			try:
-				print "Computing node %s" % self.name()
+				self.log("Computing started.")
 				self.compute()
+				self.log("Computing done.")
 			except:
 				raise
 			else:	 
 				self.cooked = True
+				self.log("Cooked.")
 				return True
 		else:
-			print "%s node already cooked !" % self
+			self.log("Already cooked." )
 			return True	
 
 	def getOutDevBuffer(self):
 		bypass_node = self.bypass_node()
 		if bypass_node:
+
+			self.log("Getting bypass buffer from node %s" % bypass_node.path())
+
 			out_buffer = bypass_node.getOutDevBuffer()
 			self.width = bypass_node.width
 			self.height = bypass_node.height

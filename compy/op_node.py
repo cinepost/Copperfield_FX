@@ -27,3 +27,6 @@ class OP_Node(OP_Parameters, OP_NetworkBoxItem):
 	def __init__(self):
 		OP_Parameters.__init__(self)
 		OP_NetworkBoxItem.__init__(self)
+
+	def log(self, text):
+		print "%s: %s" % (self.path(), text)	

@@ -54,7 +54,7 @@ class CLC_Comp_Blend(COP_Node):
 			return self.input(0)
 
 		if factor >= 1.0:
-			self.log("Bypassing node %s with node %s at input 1" % (self.path(), self.input(0).path()))
+			self.log("Bypassing node %s with node %s at input 1" % (self.path(), self.input(1).path()))
 			return self.input(1)
 
 		return None

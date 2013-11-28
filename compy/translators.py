@@ -32,6 +32,9 @@ class boomShotTranslator(baseCompyTranslator):
 		# read and compile project  
 		source_project_file = open(source_project_file_name, "rb")
 		ns = eval(source_project_file.read())
+		# parse output parms
+		output_parms = ns.get("project", {})
+
 		# parse project prefs
 		prefs = ns.get("prefs")
 
@@ -62,7 +65,9 @@ class boomShotTranslator(baseCompyTranslator):
 				"parms": {
 					"filename": brick["file_path"],
 					"startframe": brick["start_frame"],
-					"start": 1
+					"start": 1,
+					"width": output_parms.get("resolution", {"width": 0, "height": 0}).get("width"),
+					"height" : output_parms.get("resolution", {"width": 0, "height": 0}).get("height"),
 				}
 			}]
 			i += 1
@@ -98,8 +103,6 @@ class boomShotTranslator(baseCompyTranslator):
 			i += 1
 
 		# generate outputs
-		output_parms = ns.get("project")
-
 		if not output_parms:
 			print "Warning! No output specified in project %s. Using defaults." % source_project_file_name
 		else:	

@@ -3,20 +3,20 @@
         {
             "file_path": "$COMPY_HOME/test/sources/abc_$F4.jpg",
             "start_frame": 0,
-            "width":1280,
-            "height":720
+            #"width":1280,
+            #"height":720
         },
         {
             "file_path": "$COMPY_HOME/test/sources/xyz_$F4.jpg",
             "start_frame": 10,
-            "width":1280,
-            "height":720 
+            #"width":1280,
+            #"height":720 
         },
         {
             "file_path": "$COMPY_HOME/test/sources/abc_$F4.jpg",
             "start_frame": 30,
-            "width":1280,
-            "height":720 
+            #"width":1280,
+            #"height":720 
         }
     ],
     "transitions": [
@@ -32,8 +32,8 @@
         },
     ],
     "project": {
-        "frame_number": 50,
-        "resolution": {"width": 1280, "height": 720},
+        "frame_number": 100,
+        "resolution": {"width": 640, "height": 360},
         "output_file_path": "$COMPY_HOME/test/out/output_$F4.jpg",
     }
 }    

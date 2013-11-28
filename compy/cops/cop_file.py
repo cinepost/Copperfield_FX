@@ -150,8 +150,14 @@ class COP_File(COP_Node):
 			if self.parm("missingfr").eval() is 4:
 				raise BaseException("Image file %s does not exist !!!" % imagefile)
 			else:
+				# try to find sequence to get resolution frame resolution if
+				file_name_pattern = self.parm("filename").eval()
+
 				self.width = self.parm("width").eval()
 				self.height = self.parm("height").eval()
+				if 0 in [self.width, self.height]:
+					raise BaseException("Image file %s does not exist !!!" % imagefile)
+
 				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.width, self.height), hostbuf=numpy.zeros(self.width * self.height * 4, dtype = numpy.float32))
 				#self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE , self.image_format, shape=(self.width, self.height))
 

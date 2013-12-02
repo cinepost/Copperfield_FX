@@ -19,30 +19,43 @@ class CLC_Engine(OP_Manager):
 		self.__time__= 0
 		self.__frame__= 0
 		self.__fps__ = 25.0
+		self.sw_mode = False
+		self.cl_mode = False
 
-		print "Initializing compositing engine..."
+		print "Initializing engine of type %s" % device_type
 		devices = []
 		platforms = cl.get_platforms()
 		for platform in platforms:
 			if device_type is "CPU":
 				devices += platform.get_devices(cl.device_type.CPU)
+			
 			elif device_type is "GPU":
 				devices += platform.get_devices(cl.device_type.GPU)
-			else:	 
-				devices += platform.get_devices(cl.device_type.ALL)
+			
+			elif device_type is "ALL":	 
+				devices += platform.get_devices(cl.device_type.ALL)	
+			
+			else:
+				devices = None	
+			
+		if devices:		
+			if device_index:
+				print "Creating engine selected device: %s" % devices[device_index] 
+				self._ctx = cl.Context(devices = [devices[device_index]])
+			else:	
+				print "Creating engine using devices: %s" % devices 
+				self._ctx = cl.Context(devices = devices)
 
+			self._queue 	= cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
+			self._mf 		= cl.mem_flags
+			self.cl_path 	= cl_path
+			self.cl_mode = True
+			self.log("USING OPEN_CL MODE !!!")	
+		else:
+			self.sw_mode = True
+			self.log("USING SOFTWARE MODE !!!")		
 
-		if device_index:
-			print "Creating engine selected device: %s" % devices[device_index] 
-			self._ctx = cl.Context(devices = [devices[device_index]])
-		else:	
-			print "Creating engine using devices: %s" % devices 
-			self._ctx = cl.Context(devices = devices)
-
-		self._queue 	= cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
-		self._mf 		= cl.mem_flags
-		self.ops 		= ops
-		self.cl_path 	= cl_path
+		self.ops = ops
 		print "Bundled with ops: %s \n Done." % self.ops
 
 		# register translators
@@ -69,9 +82,12 @@ class CLC_Engine(OP_Manager):
 			self.network_cb()	 	
 
 	def load_program(self, filename):
-		of = open("%s/%s" % (os.path.expandvars(self.cl_path), filename), 'r')
-		return cl.Program(self.ctx, of.read()).build()
-	
+		if self.cl_mode:
+			of = open("%s/%s" % (os.path.expandvars(self.cl_path), filename), 'r')
+			return cl.Program(self.ctx, of.read()).build()
+		else:
+			return None
+
 	@property 
 	def have_gl(self):
 		return cl.have_gl()	
@@ -127,11 +143,27 @@ class CLC_Engine(OP_Manager):
 
 		self.setFrame(frame)	
 		render_file_name = CompyString(self.engine, filename).expandedString()	
-		print "Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name)
 		
-		buff = node.getOutHostBuffer()
-		image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)
-		image.save(render_file_name, 'JPEG', quality=100)			
+		if self.cl_mode:
+			self.log("OpenCL. Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name))
+			buff = node.getOutHostBuffer()
+			image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
+		else:
+			self.log("Software. Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name))
+			planes = node.getCookedPlanes()
+			if 'C' in planes:
+				r = planes['C'].getChannel(component='r')
+				g = planes['C'].getChannel(component='g')
+				b = planes['C'].getChannel(component='b')
+				if 'A' in planes:
+					a = planes['A'].getChannel()
+					image = Image.merge('RGBA', [r, g, b, a])
+				else:	
+					image = Image,merge('RGB', [r, g, b])
+			else:
+				raise BaseException("No color plane to save in node %s !!!" % node_path)
+
+		image.save(render_file_name, 'JPEG', quality=100)
 
 	def save_project(self, filename):
 		project_file = open(filename, "wb")

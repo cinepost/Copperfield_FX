@@ -19,12 +19,13 @@ for module_name in settings.cop_modules + settings.out_modules:
 			if hasattr(obj,"__op__"):
 				if obj.type_name:
 					ops[obj.type_name] = obj
-					print "FX filter %s loaded..." % obj
+					print "Operator %s loaded..." % obj
 			elif hasattr(obj, "__mgr__"):
 					ops[obj.type_name] = obj
 					print "Network manager %s loaded..." % obj
 								
 
 
-def CreateEngine(device_type = "ALL", device_index=None):
+def CreateEngine(device_type = None, device_index=None):
+	print "Creating engine instance of type: %s" % device_type
 	return engine(device_type = device_type, device_index=device_index, ops=ops, cl_path=settings.cl_path)

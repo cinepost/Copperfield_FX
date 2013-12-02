@@ -59,6 +59,9 @@ class COP_Node(OP_Manager):
 	def planes(self):
 		return self.__planes__.keys()
 
+	def getPlane(self, plane_name):
+		return self.__planes__.get(plane_name)	
+
 	def components(self, plane):
 		try:
 			return self.__planes__.get(plane).components()			
@@ -68,17 +71,22 @@ class COP_Node(OP_Manager):
 	def bypass_node(self):
 		return None			
 
-	def cook(self, force=False, frame_range=()):
+	def cook(self, force=False, frame_range=(), software=False):
 		if any(node.cooked is False for node in self.inputs()):
 			self.log("Cooking inputs: %s" % [inp.name() for inp in self.inputs()])
 			for node in self.inputs():
-				node.cook()
+				node.cook(software=software)
 
 		if self.cooked != True:
 			try:
-				self.log("Computing started.")
-				self.compute()
-				self.log("Computing done.")
+				if software:
+					self.log("SW computing started.")
+					self.compute_sw()
+					self.log("SW computing done.")
+				else:
+					self.log("CL computing started.")
+					self.compute()
+					self.log("CL computing done.")
 			except:
 				raise
 			else:	 
@@ -89,11 +97,26 @@ class COP_Node(OP_Manager):
 			self.log("Already cooked." )
 			return True	
 
+	def getCookedPlanes(self):
+		bypass_node = self.bypass_node()
+		if bypass_node:
+
+			self.log("Getting bypass planes from node %s" % bypass_node.path())
+			self.width = bypass_node.width
+			self.height = bypass_node.height
+			return bypass_node.getCookedPlanes()
+
+		self.cooked = False
+		if self.cooked == False:
+			self.cook(software=True)
+
+		return self.__planes__	
+
 	def getOutDevBuffer(self):
 		bypass_node = self.bypass_node()
 		if bypass_node:
 
-			self.log("Getting bypass buffer from node %s" % bypass_node.path())
+			self.log("Getting bypass cl buffer from node %s" % bypass_node.path())
 
 			out_buffer = bypass_node.getOutDevBuffer()
 			self.width = bypass_node.width

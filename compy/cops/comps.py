@@ -1,6 +1,7 @@
 from compy.cops.cop_node import COP_Node
 import pyopencl as cl
 import numpy
+import Image 
 
 class CLC_Comp_Add(COP_Node):
 	'''
@@ -59,6 +60,18 @@ class CLC_Comp_Blend(COP_Node):
 
 		return None
 				
+	def compute_sw(self):
+		self.width, self.height = self.input(0).size
+		factor = self.parm("factor").evalAsFloat()
+		for plane_name in self.input(0).planes():
+			plane_0 = self.input(0).getPlane(plane_name)
+			plane_1 = self.input(1).getPlane(plane_name)
+			out_plane = self.__planes__[plane_name]
+			for component in plane_0.components():
+				channel_0 = plane_0.getChannel(component)
+				channel_1 = plane_1.getChannel(component)
+				out_plane.setChannel(Image.blend(channel_0, channel_1, factor), component=component )
+
 	def compute(self):
 		self.width, self.height = self.input(0).size
 		self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))

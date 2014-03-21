@@ -163,6 +163,10 @@ class CLC_Engine(OP_Manager):
 			else:
 				raise BaseException("No color plane to save in node %s !!!" % node_path)
 
+		if "lin" in sys.platform :
+			# Flip image vertically
+			image = image.transpose(Image.FLIP_TOP_BOTTOM)
+
 		image.save(render_file_name, 'JPEG', quality=100)
 
 	def save_project(self, filename):

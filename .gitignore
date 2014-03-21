@@ -25,3 +25,9 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#Test output files
+test/out/*
+
+#DS
+.DS_Store

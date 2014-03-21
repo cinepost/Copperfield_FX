@@ -1,7 +1,12 @@
-fx_modules 		= (
-	'compy.filters.sources',
-	'compy.filters.effects',
-	'compy.filters.comps',
+cop_modules = (
+	'compy.cops.cop_network',
+	'compy.cops.cop_file',
+	'compy.cops.effects',
+	'compy.cops.comps',
 )
 
-cl_path = "compy/cl"
+out_modules = (
+	'compy.rops.rop_composite'
+),
+
+cl_path = "$COMPY_HOME/compy/cl"

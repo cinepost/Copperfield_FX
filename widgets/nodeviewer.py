@@ -20,7 +20,7 @@ class NodeViewerWidget(QtGui.QWidget):
         ## Create source layer
         file1 = comp.createNode("file")
         file1.setPos(10, 10)
-        file1.setParms({"width": 1280, "height": 720, "filename": "media/dog.jpg"})
+        file1.setParms({"width": 1280, "height": 720, "filename": "/Users/max/Desktop/773dee750c33093fd74279637db1a38b.jpg"})
 
         blur1 = comp.createNode("fastblur")
         blur1.setInput(0, file1)

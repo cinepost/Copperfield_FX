@@ -1,4 +1,4 @@
-import Image
+from PIL import Image
 
 class COP_Plane(object):
 	def __init__(self, parent_cop, channel_names=[], dtype=float):

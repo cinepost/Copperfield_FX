@@ -125,7 +125,9 @@ class COP_Node(OP_Manager):
 
 		self.cooked = False
 		if self.cooked == False:
+			print "Cooking node %s" % self.name()
 			self.cook()
+			print "Cooking node %s done." % self.name()
 		
 		return self.devOutBuffer
 

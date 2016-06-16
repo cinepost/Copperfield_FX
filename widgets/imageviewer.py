@@ -2,7 +2,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtOpenGL import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from OpenGL.raw.GL.VERSION.GL_1_5 import glBufferData as rawGlBufferData
+#from OpenGL.raw.GL.VERSION.GL_1_5 import glBufferData as rawGlBufferData
 import math
 from PIL import Image
 
@@ -26,7 +26,10 @@ class ImageviewWidget(QGLWidget):
         self.pivot_y = 0.0
 
     def paintGL(self):
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if not self.isValid():
+            return
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glDisable( GL_LIGHTING )
         glEnable( GL_TEXTURE_2D )
@@ -88,7 +91,7 @@ class ImageviewWidget(QGLWidget):
     def initializeGL(self):
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_DEPTH_TEST);
         glColor4f(1.0, 1.0, 1.0, 1.0);
 
         # bind default texture here  
@@ -114,7 +117,7 @@ class ImageviewWidget(QGLWidget):
     def bindImageTexture(self):
         if self.node:
             # bind texture from current compy node
-            img_cl_buffer = self.node.get_out_buffer()
+            img_cl_buffer = self.node.getOutDevBuffer()
 
             glBindTexture(GL_TEXTURE_2D, self.texid_cl)
             glFlush()
@@ -123,13 +126,14 @@ class ImageviewWidget(QGLWidget):
             print "CL texture : %s" % self.texid_cl
             print "Node size: %s %s" % (self.node.width , self.node.height)
 
-            #glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.width , self.node.height, 0, GL_RGBA, GL_FLOAT, None)
-            #display_cl_gl_texture = cl.GLTexture(self.engine.ctx, self.engine.mf.WRITE_ONLY,  GL_TEXTURE_2D, 0, self.texid_cl, 2);    
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.width , self.node.height, 0, GL_RGBA, GL_FLOAT, None)
+            display_cl_gl_texture = cl.GLTexture(self.engine.ctx, self.engine.mf.WRITE_ONLY,  GL_TEXTURE_2D, 0, self.texid_cl, 2);    
 
             pbo = glGenBuffers(1)
             glBindBuffer(GL_ARRAY_BUFFER, pbo)
             rawGlBufferData(GL_ARRAY_BUFFER,  self.node.width * self.node.height, None, GL_STATIC_DRAW)
             glEnableClientState(GL_VERTEX_ARRAY)
+            
             try:
                 display_pbo_cl = cl.GLBuffer(self.engine.ctx, self.engine.mf.WRITE_ONLY, int(pbo))
             except:
@@ -138,7 +142,9 @@ class ImageviewWidget(QGLWidget):
             #prog.generate_sin(queue, (n_vertices,), None, coords_dev)
             #cl.enqueue_release_gl_objects(queue, [coords_dev])
 
+            print "Binding texture"
             glBindTexture(GL_TEXTURE_2D, 0)
+            print "Binding done"
 
     @QtCore.pyqtSlot()    
     def setNode(self, node_path = None):

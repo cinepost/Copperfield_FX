@@ -2,7 +2,7 @@ from compy.cops.cop_node import COP_Node
 from compy import parameter
 from compy.compy_string import CompyString
 import matplotlib.image
-import Image
+from PIL import Image 
 import pyopencl as cl
 import numpy
 import os
@@ -14,7 +14,7 @@ class COP_File(COP_Node):
 		super(COP_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
 
-		self.addParameter("filename", parameter.CompyParmString, None)
+		self.addParameter("filename", parameter.CompyParmFile, None)
 		self.addParameter("width", parameter.CompyParmInt, 0)
 		self.addParameter("height", parameter.CompyParmInt, 0)
 		self.addParameter("flipx", parameter.CompyParmBool, False)

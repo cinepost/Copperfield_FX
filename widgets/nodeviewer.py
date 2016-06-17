@@ -24,7 +24,7 @@ class NodeViewerWidget(QtGui.QWidget):
 
         blur1 = comp.createNode("fastblur")
         blur1.setInput(0, file1)
-        blur1.setParms({"blursize":0.1, "blursizey": 0.2, "useindepy" : True}) 
+        blur1.setParms({"blursize":0.01, "blursizey": 0.5, "useindepy" : True}) 
 
         self.makeBlockFromNode(file1)
 

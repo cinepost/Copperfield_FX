@@ -84,13 +84,20 @@ class ParamsWidget(QtGui.QWidget):
                 # check box
                 valueEdit = QtGui.QCheckBox()
                 if value: valueEdit.setCheckState(QtCore.Qt.Checked)
-            
+                valueEdit.stateChanged.connect(parm.setValue)
+
             elif parm_type is parameter.CompyParmInt:
                 # integer
                 valueEdit = QtGui.QSpinBox()
                 valueEdit.setMinimum(0)
                 valueEdit.setMaximum(10000)  
                 valueEdit.setValue(value)
+                valueEdit.valueChanged.connect(parm.setValueInt)
+
+            elif parm_type is parameter.CompyParmFloat:
+                # float
+                valueEdit = QtGui.QLineEdit(str(value)) 
+                valueEdit.textChanged.connect(parm.setValueFloat)
             
             elif parm_type is parameter.CompyParmButton:
                 # button
@@ -111,7 +118,8 @@ class ParamsWidget(QtGui.QWidget):
             elif parm_type is parameter.CompyParmFile:
                 # file path
                 valueEdit = QtGui.QHBoxLayout()
-                filePath = QtGui.QLineEdit(str(value))           
+                filePath = QtGui.QLineEdit(str(value))
+                filePath.textChanged.connect(parm.setValueStr)           
                 fileDialog = QtGui.QPushButton("Choose", self)
                 fileDialog.clicked.connect(lambda: self.BrowseFile(filePath))
                 valueEdit.addWidget(filePath)
@@ -120,13 +128,14 @@ class ParamsWidget(QtGui.QWidget):
             else:    
                 # all other
                 valueEdit = QtGui.QLineEdit(str(value))
+                valueEdit.textChanged.connect(parm.setValue)  
             
             # highlight animated parameter
             if parm.animated():
                 valueEdit.setStyleSheet("background-color: rgb(128,255,128)")    
 
             label = QtGui.QLabel(parm.label())
-            label.setStatusTip(parm.name())
+            label.setStatusTip(parm.name)
 
             self.grid.addWidget(label, i, 0)
 

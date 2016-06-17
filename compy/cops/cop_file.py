@@ -144,6 +144,9 @@ class COP_File(COP_Node):
 	def compute(self):
 		self.log("Computing using CL.")
 		imagefile = self.getImageFileName()
+		print "READING IMAGE %s" % imagefile
+		self.width = self.parm("width").eval()
+		self.height = self.parm("height").eval()
 
 		if os.path.isfile(imagefile):	 
 			ext = imagefile.split(".")[-1]

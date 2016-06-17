@@ -1,8 +1,10 @@
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtOpenGL import *
 from OpenGL.GL import *
-from OpenGL.GLU import *
-#from OpenGL.raw.GL.VERSION.GL_1_5 import glBufferData as rawGlBufferData
+#from OpenGL.GLU import *
+
+from OpenGL.raw.GL.VERSION.GL_1_5 import glBufferData as rawGlBufferData
+
 import math
 from PIL import Image
 
@@ -25,74 +27,90 @@ class ImageviewWidget(QGLWidget):
         self.pivot_x = 0.0
         self.pivot_y = 0.0
 
-    def paintGL(self):
-        if not self.isValid():
-            return
+        self.node = None
+        self.node_path = None
+        self.draw_new_node = False
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
+    def drawCopNodeImageData(self):
         glDisable( GL_LIGHTING )
         glEnable( GL_TEXTURE_2D )
+        # bind proper texture to display
         if self.node:
+            # texture from COP_Node iamge data
+            if self.draw_new_node:
+                try:
+                    self.buildCopImageDataTexture()
+                except:
+                    raise 
+
+                self.draw_new_node = False
+
             glBindTexture(GL_TEXTURE_2D, self.texid_cl)
         else:
+            # default texture
             glBindTexture(GL_TEXTURE_2D, self.texid_gl)    
 
-        glLoadIdentity();
-        glTranslated (0.0 + self.pivot_x, 0.0 - self.pivot_y, -10.0);
-        glScaled (1.0 * self.scale, 1.0 * self.scale, 1.0);
-        glColor4f(1.0, 1.0, 1.0, 1.0);
-
         glBegin(GL_QUADS)
-        glTexCoord2f(0.0,0.0);
+        glTexCoord2f(0.0,0.0)
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 1.0f);
-        glVertex2d(-self.img_half_width, -self.img_half_height);
-        glTexCoord2f(1.0,0.0);
+        glVertex2d(-self.img_half_width, -self.img_half_height)
+        glTexCoord2f(1.0,0.0)
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 1.0f);
-        glVertex2d(self.img_half_width, -self.img_half_height);
-        glTexCoord2f(1.0,1.0);
+        glVertex2d(self.img_half_width, -self.img_half_height)
+        glTexCoord2f(1.0,1.0)
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 0.0f);
-        glVertex2d(self.img_half_width, self.img_half_height);
+        glVertex2d(self.img_half_width, self.img_half_height)
         glTexCoord2f(0.0,1.0);
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 0.0f);
-        glVertex2d(-self.img_half_width, self.img_half_height);
+        glVertex2d(-self.img_half_width, self.img_half_height)
         glEnd()
 
         glBindTexture(GL_TEXTURE_2D, 0)
         glDisable( GL_TEXTURE_2D )
 
+    def paintGL(self):
+        if not self.isValid():
+            return
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  
+
+        glLoadIdentity()
+        glTranslated (0.0 + self.pivot_x, 0.0 - self.pivot_y, -10.0)
+        glScaled (1.0 * self.scale, 1.0 * self.scale, 1.0)
+        glColor4f(1.0, 1.0, 1.0, 1.0)
+
+        self.drawCopNodeImageData()
+
         glColor(1.0, 1.0, 1.0)
         glBegin(GL_LINES)
-        glVertex2d(-self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,self.img_half_height);
-        glVertex2d(self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,-self.img_half_height);
-        glVertex2d(self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,-self.img_half_height);
-        glVertex2d(-self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,self.img_half_height);
+        glVertex2d(-self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,self.img_half_height)
+        glVertex2d(self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,-self.img_half_height)
+        glVertex2d(self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,-self.img_half_height)
+        glVertex2d(-self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,self.img_half_height)
         glEnd()
 
         # draw text
-        if self.node:
-            node_path = self.node.path
+        if self.node_path:
+            self.renderText( 0.0, 0.0, 0.0, self.node_path ) 
         else:
-            node_path = "No output node selected !"    
-
-        self.renderText( 0.0, 0.0, 0.0, node_path ); 
+            self.renderText( 0.0, 0.0, 0.0, "No output node selected !" )    
 
         glFlush()
 
     def resizeGL(self, width, height):
         self.width, self.height = width, height
 
-        glViewport (0, 0, width, height);
-        glMatrixMode (GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho (-width/2.0, width/2.0, -height/2.0, height/2.0, -10000.0, 10000.0);
-        glMatrixMode (GL_MODELVIEW);
+        glViewport (0, 0, width, height)
+        glMatrixMode (GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho (-width/2.0, width/2.0, -height/2.0, height/2.0, -10000.0, 10000.0)
+        glMatrixMode (GL_MODELVIEW)
 
     def initializeGL(self):
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable(GL_DEPTH_TEST);
-        glColor4f(1.0, 1.0, 1.0, 1.0);
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        #glEnable(GL_DEPTH_TEST)
+        glColor4f(1.0, 1.0, 1.0, 1.0)
 
         # bind default texture here  
         self.texid_gl = self.bindTexture(QtGui.QImage("media/deftex_02.jpg"), GL_TEXTURE_2D, GL_RGBA) 
@@ -100,13 +118,11 @@ class ImageviewWidget(QGLWidget):
 
         glBindTexture(GL_TEXTURE_2D, self.texid_cl)
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glBindTexture(GL_TEXTURE_2D, 0)
-
-        self.bindImageTexture()
 
     def reset_view(self):
         self.scale = 0.0 
@@ -114,30 +130,29 @@ class ImageviewWidget(QGLWidget):
         self.pivot_y = 0.0
         self.updateGL()
 
-    def bindImageTexture(self):
+    def buildCopImageDataTexture(self):
         if self.node:
             # bind texture from current compy node
             img_cl_buffer = self.node.getOutDevBuffer()
 
-            glBindTexture(GL_TEXTURE_2D, self.texid_cl)
-            glFlush()
+            #glBindTexture(GL_TEXTURE_2D, self.texid_cl)
+            glBindTexture(GL_TEXTURE_2D, 0)
 
-            print "GL texture : %s" % self.texid_gl
-            print "CL texture : %s" % self.texid_cl
-            print "Node size: %s %s" % (self.node.width , self.node.height)
+            print "Node size: %s %s" % (self.node.getWidth() , self.node.getHeight())
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.width , self.node.height, 0, GL_RGBA, GL_FLOAT, None)
-            display_cl_gl_texture = cl.GLTexture(self.engine.ctx, self.engine.mf.WRITE_ONLY,  GL_TEXTURE_2D, 0, self.texid_cl, 2);    
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.getWidth() , self.node.getHeight(), 0, GL_RGBA, GL_FLOAT, None)
+            display_cl_gl_texture = cl.GLTexture(self.engine.ctx, self.engine.mf.WRITE_ONLY,  GL_TEXTURE_2D, 0, self.texid_cl, 2)    
+            self.engine.queue.finish()
 
-            pbo = glGenBuffers(1)
-            glBindBuffer(GL_ARRAY_BUFFER, pbo)
-            rawGlBufferData(GL_ARRAY_BUFFER,  self.node.width * self.node.height, None, GL_STATIC_DRAW)
-            glEnableClientState(GL_VERTEX_ARRAY)
+            #pbo = glGenBuffers(1)
+            #glBindBuffer(GL_ARRAY_BUFFER, pbo)
+            #rawGlBufferData(GL_ARRAY_BUFFER,  self.node.width * self.node.height, None, GL_STATIC_DRAW)
+            #glEnableClientState(GL_VERTEX_ARRAY)
             
-            try:
-                display_pbo_cl = cl.GLBuffer(self.engine.ctx, self.engine.mf.WRITE_ONLY, int(pbo))
-            except:
-                raise
+            #try:
+            #    display_pbo_cl = cl.GLBuffer(self.engine.ctx, self.engine.mf.WRITE_ONLY, int(pbo))
+            #except:
+            #    raise
             #cl.enqueue_acquire_gl_objects(queue, [coords_dev])
             #prog.generate_sin(queue, (n_vertices,), None, coords_dev)
             #cl.enqueue_release_gl_objects(queue, [coords_dev])
@@ -150,12 +165,18 @@ class ImageviewWidget(QGLWidget):
     def setNode(self, node_path = None):
         if node_path:
             print "Showing node %s" % node_path
-            self.node = self.engine.node(node_path)
-            self.bindImageTexture()
-            self.image_width = self.node.width
-            self.image_height = self.node.height
+            
+            if self.node_path != node_path:
+                self.node = self.engine.node(node_path)
+                self.node_path = node_path
+                self.node.cook()
+                self.image_width = self.node.getWidth()
+                self.image_height = self.node.getHeight()
+                self.draw_new_node = True
+  
         else:
             self.node = None
+            self.node_path = None
             self.image_width = 1920
             self.image_height = 1080
             self.ar = 1.0 * self.image_height / self.image_width

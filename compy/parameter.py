@@ -60,11 +60,13 @@ class CompyParameter(object):
 		if self.__label__:
 			return self.__label__
 		else:
-			return self.name()		
+			return self.name		
 
+	@property
 	def node(self):
 		return self.__node__	
 
+	@property
 	def name(self):
 		return self.__name__
 
@@ -79,6 +81,30 @@ class CompyParameter(object):
 
 	def type(self):
 		return self.__type__
+
+	def invalidateNode(self):
+		self.node.invalidate()
+		# call this method to force recook node. e.g. parameter changed
+
+	def setValue(self, value):
+		self.value = value
+		self.invalidateNode()
+		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
+
+	def setValueStr(self, value):
+		self.value = str(value)
+		self.invalidateNode()
+		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
+
+	def setValueInt(self, value):
+		self.value = int(value)
+		self.invalidateNode()
+		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
+
+	def setValueFloat(self, value):
+		self.value = float(value)
+		self.invalidateNode()
+		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
 
 	def animated(self):
 		if self.__keyframes__:

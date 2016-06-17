@@ -19,7 +19,7 @@ class COP_Node(OP_Manager):
 		super(COP_Node, self).__init__(engine, parent, mask=mask)
 
 		self.width	= None	
-		self.height	= None
+		self.height = None
 		self.cooked	= False	
 
 		self.devOutBuffer = None # Device output buffer. This buffer holds thre result image array
@@ -33,13 +33,19 @@ class COP_Node(OP_Manager):
 			"A": COP_Plane(self, dtype=float)
 		}
 
+	def getWidth(self):
+		return self.width
+
+	def getHeight(self):
+		return self.height
+
 	@property
 	def size(self):
-		return (self.width, self.height)
+		return (self.getWidth(), self.getHeight())
 		
 	@property	
 	def area(self):	
-		return self.width * self.height
+		return self.getWidth() * self.getHeight()
 		
 	@property	
 	def volume(self):	
@@ -71,7 +77,11 @@ class COP_Node(OP_Manager):
 	def bypass_node(self):
 		return None			
 
-	def cook(self, force=False, frame_range=()):
+	def invalidate(self):
+		print "Node %s invalidated!" % self.name
+		self.cooked = False
+
+	def cook(self, force=False, frame_range=(), software=False):
 		if any(node.cooked is False for node in self.inputs()):
 			self.log("Cooking inputs: %s" % [inp.name() for inp in self.inputs()])
 			for node in self.inputs():
@@ -95,8 +105,8 @@ class COP_Node(OP_Manager):
 		if bypass_node:
 
 			self.log("Getting bypass planes from node %s" % bypass_node.path())
-			self.width = bypass_node.width
-			self.height = bypass_node.height
+			self.width = bypass_node.getWidth()
+			self.height = bypass_node.getHeight()
 			return bypass_node.getCookedPlanes()
 
 		self.cooked = False
@@ -111,14 +121,14 @@ class COP_Node(OP_Manager):
 
 			self.log("Getting bypass cl buffer from node %s" % bypass_node.path())
 
-			out_buffer = bypass_node.getOutDevBuffer()
-			self.width = bypass_node.width
-			self.height = bypass_node.height
-			return out_buffer
+			self.width = bypass_node.getWidth()
+			self.height = bypass_node.getHeight()
+			return bypass_node.getOutDevBuffer()
 
-		self.cooked = False
 		if self.cooked == False:
+			print "Cooking node %s" % self.name()
 			self.cook()
+			print "Cooking node %s done." % self.name()
 		
 		return self.devOutBuffer
 

@@ -88,7 +88,7 @@ class OP_Manager(OP_Node):
 		except:
 			raise
 
-	def hasInputs(self):
+	def has_inputs(self):
 		if len(self.__inputs__) > 0:
 			return True
 		else:

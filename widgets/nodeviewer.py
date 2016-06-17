@@ -20,11 +20,11 @@ class NodeViewerWidget(QtGui.QWidget):
         ## Create source layer
         file1 = comp.createNode("file")
         file1.setPos(10, 10)
-        file1.setParms({"width": 1280, "height": 720, "filename": "media/dog.jpg"})
+        file1.setParms({"width": 1280, "height": 720, "filename": "/Users/max/Desktop/773dee750c33093fd74279637db1a38b.jpg"})
 
         blur1 = comp.createNode("fastblur")
         blur1.setInput(0, file1)
-        blur1.setParms({"blursize":0.1, "blursizey": 0.2, "useindepy" : True}) 
+        blur1.setParms({"blursize":0.01, "blursizey": 0.5, "useindepy" : True}) 
 
         self.makeBlockFromNode(file1)
 

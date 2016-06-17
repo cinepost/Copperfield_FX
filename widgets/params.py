@@ -1,6 +1,15 @@
 from PyQt4 import Qt, QtGui, QtCore
 from compy import parameter
 
+def clearParametersLayout(layout):
+    while layout.count():
+        child = layout.takeAt(0)
+        if child.widget() is not None:
+            child.widget().deleteLater()
+        elif child.layout() is not None:
+            clearParametersLayout(child.layout())
+
+
 class OpPathWidget(QtGui.QLineEdit):
     def __init__(self, contents, parent=None):
         super(OpPathWidget, self).__init__(contents, parent)
@@ -34,13 +43,17 @@ class ParamsWidget(QtGui.QWidget):
         self.setLayout(vbox)
         self.setAcceptDrops(True)
 
+    def BrowseFile(self, lineEdit):
+        fname = QtGui.QFileDialog.getOpenFileName()
+        lineEdit.setText(fname)
+
     @QtCore.pyqtSlot()   
     def setNode(self, node_path = None):
         node = self.engine.node(node_path)
         
         # remove old parms widgets
-        for i in range(self.grid.count()): self.grid.itemAt(i).widget().close()
-        for i in range(self.header.count()): self.header.itemAt(i).widget().close()
+        clearParametersLayout(self.header)
+        clearParametersLayout(self.grid)
 
         # build header
         #icon = node.getIcon()
@@ -55,7 +68,6 @@ class ParamsWidget(QtGui.QWidget):
         node_type = QtGui.QLabel(node.type_name)
         node_type.setStyleSheet("font-weight: bold")
    
-
         node_name = QtGui.QLineEdit(node.name())
 
         self.header.addWidget(node_btn)
@@ -72,13 +84,20 @@ class ParamsWidget(QtGui.QWidget):
                 # check box
                 valueEdit = QtGui.QCheckBox()
                 if value: valueEdit.setCheckState(QtCore.Qt.Checked)
-            
+                valueEdit.stateChanged.connect(parm.setValue)
+
             elif parm_type is parameter.CompyParmInt:
                 # integer
                 valueEdit = QtGui.QSpinBox()
                 valueEdit.setMinimum(0)
                 valueEdit.setMaximum(10000)  
                 valueEdit.setValue(value)
+                valueEdit.valueChanged.connect(parm.setValueInt)
+
+            elif parm_type is parameter.CompyParmFloat:
+                # float
+                valueEdit = QtGui.QLineEdit(str(value)) 
+                valueEdit.textChanged.connect(parm.setValueFloat)
             
             elif parm_type is parameter.CompyParmButton:
                 # button
@@ -90,20 +109,41 @@ class ParamsWidget(QtGui.QWidget):
                 valueEdit = OpPathWidget(str(value))      
             
             elif parm_type is parameter.CompyParmOrderedMenu:
+                # menu
                 valueEdit = QtGui.QComboBox(self)
                 for item_name in parm.__menu_items__:
                     valueEdit.addItem(parm.__menu_items__[item_name])
-                valueEdit.setCurrentIndex(parm.evalAsInt())            
+                valueEdit.setCurrentIndex(parm.evalAsInt())
+ 
+            elif parm_type is parameter.CompyParmFile:
+                # file path
+                valueEdit = QtGui.QHBoxLayout()
+                filePath = QtGui.QLineEdit(str(value))
+                filePath.textChanged.connect(parm.setValueStr)           
+                fileDialog = QtGui.QPushButton("Choose", self)
+                fileDialog.clicked.connect(lambda: self.BrowseFile(filePath))
+                valueEdit.addWidget(filePath)
+                valueEdit.addWidget(fileDialog)
+
             else:    
                 # all other
                 valueEdit = QtGui.QLineEdit(str(value))
+                valueEdit.textChanged.connect(parm.setValue)  
             
             # highlight animated parameter
             if parm.animated():
                 valueEdit.setStyleSheet("background-color: rgb(128,255,128)")    
 
             label = QtGui.QLabel(parm.label())
-            label.setStatusTip(parm.name())
+            label.setStatusTip(parm.name)
+
             self.grid.addWidget(label, i, 0)
-            self.grid.addWidget(valueEdit, i, 1)
+
+            if isinstance(valueEdit, QtGui.QLayout):
+                self.grid.addLayout(valueEdit, i, 1)
+            else:
+                self.grid.addWidget(valueEdit, i, 1)
+
             i+=1
+
+        print "Total widgets: %s" % self.grid.count()

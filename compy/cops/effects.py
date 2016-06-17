@@ -26,22 +26,20 @@ class CLC_Effect_FastBlur(COP_Node):
 			exec_evt = self.program.fast_blur_h(self.engine.queue, self.size, None, 
 				self.input(0).getOutDevBuffer(),     
 				self.devTmpBuffer, 
-				numpy.float32(self.parm("blursize").eval()),
-				numpy.float32(self.parm("blursizey").eval()),
+				numpy.float32(self.parm("blursize").evalAsFloat()),
 				numpy.int32(self.input(0).width),
 				numpy.int32(self.input(0).height),
-				numpy.int32(self.parms("useindepy").eval()),
+				numpy.int32(self.parm("useindepy").evalAsInt()),
 			)
 			exec_evt.wait()
 			
 			exec_evt = self.program.fast_blur_v(self.engine.queue, self.size, None, 
 				self.devTmpBuffer,     
 				self.devOutBuffer, 
-				numpy.float32(self.parm("blursize").eval()),
-				numpy.float32(self.parm("blursizey").eval()),
+				numpy.float32(self.parm("blursizey").evalAsFloat()),
 				numpy.int32(self.input(0).width),
 				numpy.int32(self.input(0).height),
-				numpy.int32(self.parms("useindepy").eval()),
+				numpy.int32(self.parm("useindepy").evalAsInt()),
 			)
 			exec_evt.wait()
 			del self.devTmpBuffer

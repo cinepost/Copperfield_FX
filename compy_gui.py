@@ -25,7 +25,7 @@ class Workarea(QtGui.QWidget):
         self.img_view   = ImageviewWidget(self, engine = self.engine)
         self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine, viewer = self.img_view, params = self.parm_view)
         self.node_view  = NodeViewerWidget(self)
-        self.python_view = PythonWidget(self, engine = self.engine)
+        #self.python_view = PythonWidget(self, engine = self.engine)
 
         # Now init our UI 
         self.initUI()
@@ -38,7 +38,7 @@ class Workarea(QtGui.QWidget):
         tabs = QtGui.QTabWidget()
         tabs.addTab(self.node_view, "Node view")
         tabs.addTab(self.tree_view, "Tree view")
-        tabs.addTab(self.python_view, "Interactive shell")
+        #tabs.addTab(self.python_view, "Interactive shell")
 
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
         VSplitter.addWidget(self.img_view)

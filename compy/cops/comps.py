@@ -1,7 +1,7 @@
 from compy.cops.cop_node import COP_Node
 import pyopencl as cl
 import numpy
-from PIL import Image
+from PIL import Image 
 
 class CLC_Comp_Add(COP_Node):
 	'''

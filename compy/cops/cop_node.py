@@ -71,22 +71,15 @@ class COP_Node(OP_Manager):
 	def bypass_node(self):
 		return None			
 
-	def cook(self, force=False, frame_range=(), software=False):
+	def cook(self, force=False, frame_range=()):
 		if any(node.cooked is False for node in self.inputs()):
 			self.log("Cooking inputs: %s" % [inp.name() for inp in self.inputs()])
 			for node in self.inputs():
-				node.cook(software=software)
+				node.cook()
 
 		if self.cooked != True:
 			try:
-				if software:
-					self.log("SW computing started.")
-					self.compute_sw()
-					self.log("SW computing done.")
-				else:
-					self.log("CL computing started.")
-					self.compute()
-					self.log("CL computing done.")
+				self.compute()
 			except:
 				raise
 			else:	 

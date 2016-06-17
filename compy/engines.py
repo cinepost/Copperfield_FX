@@ -19,8 +19,6 @@ class CLC_Engine(OP_Manager):
 		self.__time__= 0
 		self.__frame__= 0
 		self.__fps__ = 25.0
-		self.sw_mode = False
-		self.cl_mode = False
 
 		print "Initializing engine of type %s" % device_type
 		devices = []
@@ -50,10 +48,10 @@ class CLC_Engine(OP_Manager):
 			self._mf 		= cl.mem_flags
 			self.cl_path 	= cl_path
 			self.cl_mode = True
-			self.log("USING OPEN_CL MODE !!!")	
+			self.log("Using Open_CL.")	
 		else:
-			self.sw_mode = True
-			self.log("USING SOFTWARE MODE !!!")		
+			self.log("NO OPEN_CL CAPABLE DEVICE FOUND !!!")
+			exit(1)		
 
 		self.ops = ops
 		print "Bundled with ops: %s \n Done." % self.ops
@@ -82,11 +80,8 @@ class CLC_Engine(OP_Manager):
 			self.network_cb()	 	
 
 	def load_program(self, filename):
-		if self.cl_mode:
-			of = open("%s/%s" % (os.path.expandvars(self.cl_path), filename), 'r')
-			return cl.Program(self.ctx, of.read()).build()
-		else:
-			return None
+		of = open("%s/%s" % (os.path.expandvars(self.cl_path), filename), 'r')
+		return cl.Program(self.ctx, of.read()).build()
 
 	@property 
 	def have_gl(self):
@@ -144,24 +139,9 @@ class CLC_Engine(OP_Manager):
 		self.setFrame(frame)	
 		render_file_name = CompyString(self.engine, filename).expandedString()	
 		
-		if self.cl_mode:
-			self.log("OpenCL. Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name))
-			buff = node.getOutHostBuffer()
-			image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
-		else:
-			self.log("Software. Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name))
-			planes = node.getCookedPlanes()
-			if 'C' in planes:
-				r = planes['C'].getChannel(component='r')
-				g = planes['C'].getChannel(component='g')
-				b = planes['C'].getChannel(component='b')
-				if 'A' in planes:
-					a = planes['A'].getChannel()
-					image = Image.merge('RGBA', [r, g, b, a])
-				else:	
-					image = Image,merge('RGB', [r, g, b])
-			else:
-				raise BaseException("No color plane to save in node %s !!!" % node_path)
+		self.log("OpenCL. Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name))
+		buff = node.getOutHostBuffer()
+		image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
 
 		if "lin" in sys.platform :
 			# Flip image vertically

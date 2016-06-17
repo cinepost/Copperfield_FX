@@ -2,6 +2,11 @@ import os
 os.environ["PYOPENCL_COMPILER_OUTPUT"] = "1"
 os.environ["PYOPENCL_NO_CACHE"] = "1"
 
+if not os.environ.get("COMPY_HOME"):
+	cwd = os.getcwd()
+	print "Using current directory %s as $COMPY_HOME !!!" % cwd
+	os.environ["COMPY_HOME"] = cwd
+
 import inspect
 import string
 from compy.engines import CLC_Engine as engine

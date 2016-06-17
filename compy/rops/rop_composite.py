@@ -13,6 +13,28 @@ class ROP_Composite(ROP_Base):
 	def execute(self):
 		self.render()	
 
+	def renderToFile(self, node_path, filename, frame = None):
+		node = self.node(node_path)
+		if frame:
+			render_frame = frame
+		else:
+			render_frame = self.frame()
+
+		self.setFrame(render_frame)	
+
+		self.setFrame(frame)	
+		render_file_name = CompyString(self.engine, filename).expandedString()	
+		
+		self.log("OpenCL. Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name))
+		buff = node.getOutHostBuffer()
+		image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
+
+		if "lin" in sys.platform :
+			# Flip image vertically
+			image = image.transpose(Image.FLIP_TOP_BOTTOM)
+
+		image.save(render_file_name, 'JPEG', quality=100)
+
 	def render(self, frame_range=(), res=(), output_file=None, output_format=None, to_flipbook=False):
 		f1 = self.parm("f1").evalAsInt()
 		f2 = self.parm("f2").evalAsInt()
@@ -25,5 +47,5 @@ class ROP_Composite(ROP_Base):
 		output_node = self.engine.node(self.parm("coppath").eval())
 
 		for frame in range(f1, f2, f3):
-			self.engine.renderToFile(output_node.path(), self.parm("copoutput").eval(), frame)
+			self.renderToFile(output_node.path(), self.parm("copoutput").eval(), frame)
             

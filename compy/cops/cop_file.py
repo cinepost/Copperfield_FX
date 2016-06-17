@@ -2,7 +2,7 @@ from compy.cops.cop_node import COP_Node
 from compy import parameter
 from compy.compy_string import CompyString
 import matplotlib.image
-import Image
+from PIL import Image
 import pyopencl as cl
 import numpy
 import os
@@ -104,42 +104,6 @@ class COP_File(COP_Node):
 		filename = CompyString(self.engine, self.parm("filename").eval())
 		image_frame = self.engine.frame() + self.parm("start").evalAsInt() - self.parm("startframe").evalAsInt()
 		return filename.expandedString(context={"frame": image_frame})
-
-	def compute_sw(self):
-		self.log("Computing using SW.")
-		imagefile = self.getImageFileName()
-		self.width = self.parm("width").eval()
-		self.height = self.parm("height").eval()
-
-		if os.path.isfile(imagefile):	 
-			ext = imagefile.split(".")[-1]
-			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:
-				img = Image.open(imagefile).convert("RGBA")
-				width, height = img.size
-				if self.width >  0 and self.height > 0 and any([self.width != width, self.height != height]):
-					self.log("Resizing image to %s %s resolition using SW." % (self.width, self.height))
-					img = img.resize((self.width, self.height), Image.ANTIALIAS)
-					width, height = img.size
-					self.width = width
-					self.height = height
-				else:
-					self.width = width
-					self.height = height	
-
-				color_plane = self.__planes__.get("C")	
-				alpha_plane = self.__planes__.get("A")
-
-				color_plane.setChannelFromString(img.size, img.tostring("raw", "R"), component="r")
-				color_plane.setChannelFromString(img.size, img.tostring("raw", "G"), component="g")
-				color_plane.setChannelFromString(img.size, img.tostring("raw", "B"), component="b")
-				alpha_plane.setChannelFromString(img.size, img.tostring("raw", "A"))
-
-		else:
-			if 0 in [self.width, self.height]:
-				raise BaseException("Image file %s does not exist !!!" % imagefile)
-
-			img = Image.new("RGB", (self.width, self.height), "black")
-			self.log("Image file %s does not found !!! Using BLACK frame instead." % imagefile)
 			
 	def compute(self):
 		self.log("Computing using CL.")

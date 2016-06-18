@@ -4,9 +4,11 @@ class OP_NetworkBoxItem(object):
 	""" Base class for nodes graph rendering """
 
 	def __init__(self):
-		self.x_pos = 0.0
-		self.y_pos = 0.0
-		self.color = (0.5, 1.0, 0.25,)
+		self.x_pos = 40.0
+		self.y_pos = 40.0
+		self.width = 120
+		self.height = 40
+		self.color = (0.4, 0.4, 0.4, 1.0,)
 		self.icon = None
 
 	def setPos(self, x, y):

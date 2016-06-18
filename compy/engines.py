@@ -193,3 +193,30 @@ class CLC_Engine(OP_Manager):
 
 		self.call_network_changed_callback()
 
+	def test_project(self):
+		#### ---- create simple scene for debug purposes
+		
+		## Create out composite node
+		out = self.node("out")
+
+		## Create composite output driver
+		out.createNode("composite")
+
+		## First get image network
+		img = self.node("img")
+		
+		## Create composition
+		comp = img.createNode("comp")
+
+		## Create file reading node 
+		file1 = comp.createNode("file")
+		file1.setPos(10, 10)
+		file1.setParms({"width": 1280, "height": 720, "filename": "/Users/max/Desktop/773dee750c33093fd74279637db1a38b.jpg"})
+
+		## Create blur node
+		blur1 = comp.createNode("fastblur")
+		blur1.setInput(0, file1)
+		blur1.setParms({"blursize":0.01, "blursizey": 0.5, "useindepy" : True}) 
+
+		print "Final childern %s" % [child.type() for child in comp.children()]
+

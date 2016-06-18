@@ -18,8 +18,8 @@ class COP_Node(OP_Manager):
 	def __init__(self, engine, parent, mask=None):
 		super(COP_Node, self).__init__(engine, parent, mask=mask)
 
-		self.width	= None	
-		self.height = None
+		self.image_width	= None	
+		self.image_height	= None
 		self.cooked	= False	
 
 		self.devOutBuffer = None # Device output buffer. This buffer holds thre result image array
@@ -33,19 +33,19 @@ class COP_Node(OP_Manager):
 			"A": COP_Plane(self, dtype=float)
 		}
 
-	def getWidth(self):
-		return self.width
+	def getImageWidth(self):
+		return self.image_width
 
-	def getHeight(self):
-		return self.height
+	def getImageHeight(self):
+		return self.image_height
 
 	@property
 	def size(self):
-		return (self.getWidth(), self.getHeight())
+		return (self.getImageWidth(), self.getImageHeight())
 		
 	@property	
 	def area(self):	
-		return self.getWidth() * self.getHeight()
+		return self.getImageWidth() * self.getImageHeight()
 		
 	@property	
 	def volume(self):	
@@ -105,8 +105,8 @@ class COP_Node(OP_Manager):
 		if bypass_node:
 
 			self.log("Getting bypass planes from node %s" % bypass_node.path())
-			self.width = bypass_node.getWidth()
-			self.height = bypass_node.getHeight()
+			self.width = bypass_node.getImageWidth()
+			self.height = bypass_node.getImageHeight()
 			return bypass_node.getCookedPlanes()
 
 		self.cooked = False

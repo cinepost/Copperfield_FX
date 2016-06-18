@@ -6,7 +6,7 @@ from render_dialog import RenderNodeDialog
 
 from widgets import TimelineWidget
 from widgets import ParamsWidget
-from widgets import NodeViewerWidget
+from widgets import NodeEditorWidget
 from widgets import ImageviewWidget
 from widgets import TreeNodeViewerWidget
 from widgets import PythonWidget
@@ -24,7 +24,8 @@ class Workarea(QtGui.QWidget):
         self.time_view  = TimelineWidget(self)
         self.img_view   = ImageviewWidget(self, engine = self.engine)
         self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine, viewer = self.img_view, params = self.parm_view)
-        self.node_view  = NodeViewerWidget(self)
+
+        self.node_view  = NodeEditorWidget(self, engine = self.engine)
         #self.python_view = PythonWidget(self, engine = self.engine)
 
         # Now init our UI 
@@ -62,13 +63,13 @@ class Workarea(QtGui.QWidget):
         RenderNodeDialog.render(self.engine, node_path)        
 
 class Window(QtGui.QMainWindow):
-    def __init__(self):
+    def __init__(self, engine):
         super(Window, self).__init__()
-        self.engine = compy.CreateEngine("GPU")
+        self.engine = engine
         if not self.engine.have_gl:
             print "OpecCL - OpenGL interoperability not supported !!! Abort."
             exit()
-            
+
         self.initUI()
 
     def close(self):
@@ -131,7 +132,19 @@ class Window(QtGui.QMainWindow):
         self.show()       
 
 if __name__ == '__main__':
+    #import qdarkstyle 
     app = QtGui.QApplication(sys.argv)
+    try:
+        import qdarkstyle
+    except:
+        pass
+    else:    
+        app.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
+
     app.setWindowIcon(QtGui.QIcon('icons/biohazard.png'))
-    win = Window()
+
+    engine = compy.CreateEngine("GPU")
+    engine.test_project()
+
+    win = Window(engine)
     sys.exit(app.exec_())

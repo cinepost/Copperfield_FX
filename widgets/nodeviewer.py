@@ -1,416 +1,359 @@
-from PyQt4 import QtGui, QtCore, Qt
+from PyQt4 import QtGui, QtCore, QtOpenGL, Qt
+from OpenGL.GL import *
+from OpenGL import GL
+from OpenGL.GLU import *
+import numpy
 import compy
+import math 
 
-class NodeViewerWidget(QtGui.QWidget):
+def glCircle(x,y, radius, segments=10):
+    glBegin(GL_TRIANGLE_FAN)
+    glVertex2f(x,y)
+    t = 0.0
+    for i in range(segments+1):
+        glVertex2f(x+math.sin(t)*radius, y+math.cos(t)*radius)
+        t += math.pi/segments
+    glEnd()
 
-    def __init__(self, parent):
-        super(NodeViewerWidget, self).__init__(parent=parent)
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        self.makeScene()
-        self.addBlock(10, 10, 'Block1', (70, 70, 170), {})
+class Draggable:
+    def isInShape(self, x,y):
+        raise NotImplementedError()
+        
+    def startDrag(self, dragObject):
+        pass
+        
+    def updateDrag(self, dragObject):
+        pass
+        
+    def drawDrag(self, dragObject):
+        pass
+        
+    def dropDrag(self, dragObject):
+        pass
 
-        ## Create out composite node
-        out = parent.engine.node("out").createNode("composite")
+class FlowNode(QtCore.QObject, Draggable):
+    nodeFont = None # initialized on first construction
 
-        ## First get image network
-        img = parent.engine.node("img")
-        ## Create composition
-        comp = img.createNode("comp")
-        img.createNode("comp")
-        ## Create source layer
-        file1 = comp.createNode("file")
-        file1.setPos(10, 10)
-        file1.setParms({"width": 1280, "height": 720, "filename": "/Users/max/Desktop/773dee750c33093fd74279637db1a38b.jpg"})
-
-        blur1 = comp.createNode("fastblur")
-        blur1.setInput(0, file1)
-        blur1.setParms({"blursize":0.01, "blursizey": 0.5, "useindepy" : True}) 
-
-        self.makeBlockFromNode(file1)
-
-
-    def makeScene(self):
-        self.scene = BlockScene(0, 0, self.minimumWidth(), self.minimumHeight(), self)
-        self.view = QtGui.QGraphicsView(self.scene)
-        self.view.setAlignment(QtCore.Qt.AlignAbsolute)
-        layout = QtGui.QHBoxLayout(self)
-        layout.addWidget(self.view)
-        self.setLayout(layout)
-
-    def addBlock(self, x, y, title, color, params):
-
-        self.scene.addBlock(x=x, y=y, text=title, color=color, params=params)
-
-    def makeBlockFromNode(self, node):
-        print node
-        print node.__dict__
-        self.addBlock(node.x_pos, node.y_pos, node.name(), node.color, params=node.parms)
-
-
-class BlockScene(QtGui.QGraphicsScene):
-
-    def __init__(self, *args, **kwargs):
-        super(BlockScene, self).__init__(*args)
-        self.setBackgroundBrush(QtGui.QColor(0, 0, 0))
-        self.selected_blocks = []
-        self.move_mode = False
-
-    def addBlock(self, x, y, text='', color=(70, 70, 70), params={}):
-        Block(x=x, y=y, w=70, h=50, text=text, color=color, params=params, scene=self)
-
-    def mouseReleaseEvent(self, event):
-        for item in self.items():
-            if isinstance(item, Connection):
-                print item
-        super(BlockScene, self).mouseReleaseEvent(event)
-
-
-class Block(QtGui.QGraphicsItemGroup):
-
-    def __init__(self, **kwargs):
-
-        super(Block, self).__init__(scene=kwargs['scene'])
-
-        self.setPos(kwargs['x'], kwargs['y'])
-        self.setFlags(QtGui.QGraphicsItem.ItemIsMovable | QtGui.QGraphicsItem.ItemIsSelectable | QtGui.QGraphicsItem.ItemIsFocusable)
-        self.w = kwargs['w']
-        self.h = kwargs['h']
-        self.properties = kwargs.get('params')
-        self.text = kwargs['text']
-
+    def __init__(self, node, parent=None):
+        QtCore.QObject.__init__(self, parent)
+        self.fontLineHeight = 8
+        self.node = node
         self.selected = False
-        self.inputs = []
-        self.outputs = []
-        self.head_height = 20
-        self.socket_number = 5
-        self.arrows = {}
-        self.sockets = {}
-        print kwargs['color']
-        self.head_color = QtGui.QColor(*kwargs['color']) if 'color' in kwargs else QtGui.QColor(70, 70, 70)
-        self.head_selected_color = QtGui.QColor(70, 200, 70)
-        self.body_color = QtGui.QColor(200, 0, 0)
-        self.border_color = QtGui.QColor(100, 50, 20)
-        self.text_font = QtGui.QFont('Decorative', 10)
-        self.triangle_pen = QtGui.QPen(QtGui.QColor(70, 200, 70), 2)
+        self.knobs = []
+        
+        #if not self.isOutput():
+        #    self.knobs.append(FlowKnob(self, FlowKnob.knobTypeOutput, "Output"))
+        
+        self.properties = {}
 
+        if self.node:
+            self.title = self.node.name()
+        else:
+            self.title = "untitled" 
 
-        self.head = QtGui.QGraphicsRectItem(0, 0, self.w, self.head_height,  parent=self, scene=self.scene())
-        self.head.setBrush(self.head_color)
+        #if self.node:
+        #    for parameter in signature.parameters.values():
+        #        property = Property(name=parameter.name, type=parameter.annotation, value=parameter.default)
+        #        
+        #        if property.type == SynthParameters:
+        #            property = property._replace(hasKnob=False, hasEditable=False)
+        #        else:
+        #            property = property._replace(hasKnob=property.type.hasKnob, hasEditable=property.type.hasEditable)
+        #            
+        #        if property.hasKnob:
+        #            knob = FlowKnob(self, FlowKnob.knobTypeInput, property.name, self.getInputKnobCount())
+        #            self.knobs.append(knob)
+        #            property = property._replace(knob=knob)
+        #        
+        #        self.properties[parameter.name] = property
+             
+    def path(self):
+        return self.node.path()
 
+    def setPos(self, x=20, y=20):
+        if self.node:
+            self.node.setPos(x, y)   
 
-        self.title = QtGui.QGraphicsSimpleTextItem(self.text, scene=self.scene(), parent=self)
-        self.title.setFont(self.text_font)
-        self.title.setPos(3, 5)
+    def select(self):
+        self.selected = True
 
-        self.property_text = ''
+    def unselect(self):
+        self.selected = False
 
-        self.body = QtGui.QGraphicsRectItem(0, self.head_height, self.w, self.h, parent=self, scene=self.scene())
-        self.body.setBrush(self.body_color)
+    def draw(self, selected=False, zoom=1.0):
+        textOffset = 3
+        x = self.node.x_pos * zoom
+        y = self.node.y_pos * zoom
+        dw = x + self.node.width * zoom
+        dh = y + self.node.height * zoom
 
-        self.pop_text = QtGui.QGraphicsSimpleTextItem(self.property_text, scene=self.scene(), parent=self)
-        self.pop_text.setFont(self.text_font)
-        self.pop_text.setPos(3, self.head_height+5)
+        # node shadow
+        if self.selected:
+            glColor4f(1.0, 0.7, 0.1, 1.0)
+            glRectf(x - 2.0, y - 2.0, dw + 2.0, dh + 2.0)
+        else:
+            glColor4f(0.0, 0.0, 0.0, 0.5)
+            glRectf(x - 1.0, y - 1.0, dw + 1.0, dh + 1.0)
+        
+        # node border
+        glColor4f(0.5, 0.5, 0.5, 1.0)
+        glRectf(x, y, dw, dh)
+        
+        # node
+        if self.selected:
+            glColor4f(0.6, 0.6, 0.6, 1.0)
+        else:
+            glColor4f(0.5, 0.5, 0.5, 1.0)
+        glRectf(x + 1.0, y + 1.0, dw - 1.0, dh - 1.0)
+        
+        for knob in self.knobs:
+            knob.draw(textOffset=textOffset)
+        
+        glColor4f(0.85, 0.85, 0.85, 1.0)
+        #self.nodeFont.setBold(True)
+        self.parent().renderText(x + textOffset, y - (self.fontLineHeight)/2, self.title) # works only if parent is qglWidget ;)
+        #self.nodeFont.setBold(False)
 
-        self.rect = QtGui.QGraphicsRectItem(0, 0, self.w, self.h+self.head_height, parent=self, scene=self.scene())
-        self.rect.setPen(self.border_color)
+    def isInShape(self, xpos, ypos, zoom=1.0):
+        x = self.node.x_pos * zoom
+        y = self.node.y_pos * zoom
+        dw = x + self.node.width * zoom
+        dh = y + self.node.height * zoom
+        return x <= xpos <= dw and y <= ypos <= dh
+        
+    def startDrag(self, dragObject):
+        dragObject.custom = (dragObject.startX - self.node.x_pos, dragObject.startY - self.node.y_pos)
+        
+    def updateDrag(self, dragObject):
+        self.node.x_pos = dragObject.x - dragObject.custom[0]
+        self.node.y_pos = dragObject.y - dragObject.custom[1]
 
-        self.addToGroup(self.head)
-        self.addToGroup(self.title)
-        self.addToGroup(self.body)
-        self.addToGroup(self.rect)
+    def drawDrag(self, dragObject):
+        pass
 
-        self.generate_sockets()
+    def __str__(self):
+        return "FlowNode '%s'" % self.title
+        
+    def __repr__(self):
+        return "<FlowNode '%s'>" % self.title
 
+class NodeEditorWidget(QtGui.QWidget):
+    def __init__(self, parent, engine):      
+        super(NodeEditorWidget, self).__init__(parent)
+        self.engine = engine
+        self.initUI()
+        
+    def initUI(self):
+        vbox = QtGui.QVBoxLayout(self)
 
-    @property
-    def connections(self):
-        return self.inputs + self.outputs
+        path = QtGui.QLineEdit("/")
+        node_editor = NodeEditorWorkareaWidget(self, self.engine)
 
-    def find_connection(self, block):
-        for conn in self.connections:
-            if conn.output == block or conn.input == block:
-                return True
-        return False
+        vbox.addWidget(path)
+        vbox.addWidget(node_editor)
+        
+        self.setLayout(vbox)
 
+class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
+    
+    dragModeDraggingEmpty = 0
+    dragModeDraggingNode = 1
+    dragModeDraggingConnectionInToOut = 2
+    dragModeDraggingConnectionOutToIn = 3
+    
+    class DragObject:
+        def __init__(self, startX, startY, draggable, zoom):
+            self.startX = startX / zoom
+            self.startY = startY / zoom
+            self.zoom = zoom
+            self.draggable = draggable
+            self.custom = None
+            self.x = startX
+            self.y = startY
+            self.draggable.startDrag(self)
+            
+        def update(self, currentX, currentY):
+            self.x = currentX / self.zoom
+            self.y = currentY / self.zoom
+            self.draggable.updateDrag(self)
+            
+        def drop(self):
+            self.draggable.dropDrag(self)
+            
+        def draw(self):
+            self.draggable.drawDrag(self)
 
-    def generate_sockets(self):
+    def __init__(self, parent, engine, path="/"):
+        format = QtOpenGL.QGLFormat.defaultFormat()
+        format.setSampleBuffers(True)
+        format.setSamples(16)
+        QtOpenGL.QGLWidget.__init__(self, format, parent)
+        if not self.isValid():
+            raise OSError("OpenGL not supported.")
 
-        w = self.w
-        h = self.h+self.head_height
-        dw = w / (self.socket_number + 1)
-        dh = h / (self.socket_number + 1)
+        self.engine = engine
+        self.setMinimumWidth(1280)
+        self.setMinimumHeight(360)
+        self.zoom = 1.0
+        self.zoomWheelResolution = 12.0
+        self.zoomWheelCounter = self.zoomWheelResolution
+        self.zoomMin = 0.05
+        self.zoomMax = 5.0
+        self.network_label = None
+        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        self.overlayFont = QtGui.QFont("Helvetica", 20, 100, False)
 
-        if not self.arrows:
-            self.arrows['head'] = [None for i in xrange(1, self.socket_number+1)]
-            self.arrows['bottom'] = [None for i in xrange(1, self.socket_number+1)]
-            self.arrows['left'] = [None for i in xrange(1, self.socket_number+1)]
-            self.arrows['right'] = [None for i in xrange(1, self.socket_number+1)]
+        #self.functions = functions
+        #self.outputFunctions = outputFunctions
+        self.nodes = []
+        self.connections = []
+        
+        self.dragObject = None
+        self.selectedNode = None
+        
+        self.buildNodeGraph(path)
 
-        if not self.sockets:
-            self.sockets['head'] = [{'coord': (self.x() + dw * i, self.y()-5), 'connections': 0} for i in xrange(1, self.socket_number+1)]
-            self.sockets['bottom'] = [{'coord': (self.x() + dw * i, self.y()+h+5), 'connections': 0} for i in xrange(1, self.socket_number+1)]
-            self.sockets['left'] = [{'coord': (self.x()-5, self.y() + dh * i), 'connections': 0} for i in xrange(1, self.socket_number+1)]
-            self.sockets['right'] = [{'coord': (self.x()+w+5, self.y() + dh * i), 'connections': 0} for i in xrange(1, self.socket_number+1)]
+    def buildNodeGraph(self, path="/"):
+        self.nodes = []
+        self.connections = []
+        
+        try:
+            self.network_label = self.engine.node(path).__network_label__
+        except:
+            self.network_label = None
 
-        for side in self.sockets:
-            for index in range(0, self.socket_number):
-                self.remove_arrow(side, index)
+        i = 0
+        dx = 130
+        dy = 50
+        for node in self.engine.node(path).children():
+            self.addNode(node, dx * i, dy * i)
+            i += 1
 
-    def rebind_sockets(self):
-        w = self.w
-        h = self.h+self.head_height
-        dw = w / (self.socket_number + 1)
-        dh = h / (self.socket_number + 1)
+        self.updateGL()
 
+    def initializeGL(self):
+        glEnable(GL_MULTISAMPLE)
+        glEnable(GL_LINE_SMOOTH)
+        
+    def resizeGL(self, w, h):
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        gluOrtho2D(0, w, h, 0)
+        
+    def paintGL(self):
+        glClearColor(0.12, 0.12, 0.12, 1.0)
+        glClear(GL.GL_COLOR_BUFFER_BIT)
 
-        self.sockets['head'] = [{'coord': (self.x() + dw * i, self.y()-5), 'connections': self.sockets['head'][i-1]['connections']} for i in xrange(1, self.socket_number+1)]
-        self.sockets['bottom'] = [{'coord': (self.x() + dw * i, self.y()+h+5), 'connections': self.sockets['bottom'][i-1]['connections']} for i in xrange(1, self.socket_number+1)]
-        self.sockets['left'] = [{'coord': (self.x()-5, self.y() + dh * i), 'connections': self.sockets['left'][i-1]['connections']} for i in xrange(1, self.socket_number+1)]
-        self.sockets['right'] = [{'coord': (self.x()+w+5, self.y() + dh * i), 'connections': self.sockets['right'][i-1]['connections']} for i in xrange(1, self.socket_number+1)]
+        for node in reversed(self.nodes):
+            node.draw(selected=(node is self.selectedNode), zoom=self.zoom)
+        
+        #for connection in self.connections:
+        #    connection.draw()
+            
+        #if self.dragObject:
+        #    self.dragObject.draw()
 
-    def add_arrow(self, side, index):
-        if side == 'left':
-            p1 = Qt.QPointF(self.sockets[side][index]['coord'][0], self.sockets[side][index]['coord'][1]-4)
-            p2 = Qt.QPointF(self.sockets[side][index]['coord'][0]+5, self.sockets[side][index]['coord'][1])
-            p3 = Qt.QPointF(self.sockets[side][index]['coord'][0], self.sockets[side][index]['coord'][1]+4)
-        elif side == 'right':
-            p1 = Qt.QPointF(self.sockets[side][index]['coord'][0], self.sockets[side][index]['coord'][1]-4)
-            p2 = Qt.QPointF(self.sockets[side][index]['coord'][0]-5, self.sockets[side][index]['coord'][1])
-            p3 = Qt.QPointF(self.sockets[side][index]['coord'][0], self.sockets[side][index]['coord'][1]+4)
-        elif side == 'head':
-            p1 = Qt.QPointF(self.sockets[side][index]['coord'][0]-4, self.sockets[side][index]['coord'][1])
-            p2 = Qt.QPointF(self.sockets[side][index]['coord'][0], self.sockets[side][index]['coord'][1]+5)
-            p3 = Qt.QPointF(self.sockets[side][index]['coord'][0]+4, self.sockets[side][index]['coord'][1])
-        elif side == 'bottom':
-            p1 = Qt.QPointF(self.sockets[side][index]['coord'][0]-4, self.sockets[side][index]['coord'][1])
-            p2 = Qt.QPointF(self.sockets[side][index]['coord'][0], self.sockets[side][index]['coord'][1]-5)
-            p3 = Qt.QPointF(self.sockets[side][index]['coord'][0]+4, self.sockets[side][index]['coord'][1])
+        if self.network_label:
+            glColor4f(1, 1, 1, 0.25)
+            self.renderText(10, 160, 0, self.network_label, QtGui.QFont("Helvetica", 120, 1, False))
 
-        triangle = QtGui.QGraphicsPolygonItem(QtGui.QPolygonF([p1, p2, p3, p1]),  scene=self.scene())
-        triangle.setPen(self.triangle_pen)
-        self.addToGroup(triangle)
-        return triangle
+    def addNode(self, node, x, y):
+        node = FlowNode(node, self)
+        node.setPos(x, y)
+        self.nodes.append(node)
+        #self.selectNode(node)
 
-    def remove_arrow(self, side, index):
-        if self.arrows[side][index]:
-            self.removeFromGroup(self.arrows[side][index])
-            self.scene().removeItem(self.arrows[side][index])
-            self.arrows[side][index] = None
-            self.arrows[side][index] = None
+    def selectNode(self, node):
+        self.selectedNode = node
+        self.updateGL()
 
-    def decrease_socket_connection(self, side, index):
+    def pickKnob(self, x, y):
+        for node in self.nodes:
+            for knob in node.knobs:
+                if knob.isInShape(x,y):
+                    return knob
+                    
+    def pickNode(self, x, y):
+        for node in self.nodes:
+            if node.isInShape(x,y, zoom=self.zoom):
+                for n in self.nodes:
+                    n.unselect()
 
-        self.sockets[side][index]['connections'] -= 1
-        if self.sockets[side][index]['connections'] < 1:
-            self.remove_arrow(side, index)
+                node.select()
+                return node
 
-    def select_socket(self, side):
+    def mousePressEvent(self, event):
+        x, y = event.x(), event.y() 
+        if event.button() & QtCore.Qt.LeftButton:
+            node = self.pickNode(x,y)
+            if node:
+                self.dragObject = self.DragObject(x, y, node, self.zoom)
+                i = self.nodes.index(node)
+                self.nodes[0], self.nodes[i] = self.nodes[i], self.nodes[0]
+                self.selectNode(node)
+                self.updateGL() # updateGL because z-order has changed
+                return
+            
+            knob = self.pickKnob(x,y)
+            if knob:
+                self.dragObject = self.DragObject(x, y, knob, self.zoom)
+                return
+                
+            self.selectNode(None)
+                
+        elif event.button() & QtCore.Qt.RightButton:
+            knob = self.pickKnob(x,y)
+            if knob:
+                connections = list(self.findConnections(knob))
+                if knob.type == FlowKnob.knobTypeOutput and len(connections) > 1:
+                    if QtWidgets.QMessageBox.question(self.parent(), "Delete Connection", "Do you really want to delete all connections from this output?", QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No) == QtWidgets.QMessageBox.No:
+                        return
+                for connection in connections:
+                    self.connections.remove(connection)
+                    del connection
+                self.updateGL()
 
-        self.rebind_sockets()
+    def contextMenuEvent(self, event):
+        menu = QtWidgets.QMenu(parent=self.parent())
+        
+        x,y = event.x(), event.y()
+        node = self.pickNode(x,y)
+        if node:
+            action = menu.addAction("Delete node")
+            action.triggered.connect(functools.partial(self.deleteNode, node))
+        elif self.pickKnob(x,y) is None:
+            for i, func in enumerate(self.functions):
+                if func not in self.outputFunctions:
+                    action = menu.addAction(camelCaseToWords(func.__name__))
+                    action.triggered.connect(functools.partial(self.addNode, func, x, y)) # lambda does not work in this case!! 
+        menu.popup(event.globalPos())
 
-        min_connections = (None, 99999)
-        index = -1
-        min_index = 0
-        for socket in self.sockets[side]:
-            index += 1
-            if socket['connections'] < min_connections[1]:
-                min_connections = (socket['coord'], socket['connections'])
-                min_index = index
+    def wheelEvent(self,event):
+        counter_max = self.zoomWheelResolution * (self.zoomMax - .5) / 2
+        self.zoomWheelCounter += event.delta() / 120.0
+        self.zoomWheelCounter = numpy.clip(self.zoomWheelCounter, 0, counter_max)
+        z = float(self.zoomWheelCounter) / float(self.zoomWheelResolution)
+        self.zoom = numpy.clip(z * z, self.zoomMin, self.zoomMax)
+        self.updateGL()
 
-        self.sockets[side][min_index]['connections'] += 1
-        return min_connections[0], min_index
-
-
+    def mouseDoubleClickEvent(self, event):
+        x, y = event.x(), event.y()
+        node = self.pickNode(x,y)
+        self.buildNodeGraph(node.path())
 
     def mouseReleaseEvent(self, event):
-
-        scene = self.scene()
-
-        if scene.move_mode:
-            scene.move_mode = False
-        else:
-            self.select()
-            if self not in scene.selected_blocks:
-                scene.selected_blocks.append(self)
-            else:
-                scene.selected_blocks.remove(self)
-
-            blocks = scene.selected_blocks
-
-            if len(blocks) > 1:
-                other_block = blocks[0] if blocks[0] != self else blocks[1]
-                if not self.find_connection(other_block):
-                    output = blocks[0]
-                    input = blocks[1]
-                    connection = Connection(output = output,
-                                            input = input,
-                                            scene=self.scene())
-                    scene.addItem(connection)
-                    scene.selected_blocks = []
-                    output.connections.append(connection)
-
-                    if other_block == input:
-                        other_block.inputs.append(connection)
-                        self.outputs.append(connection)
-                    else:
-                        other_block.outputs.append(connection)
-                        self.inputs.append(connection)
-
-                    output.select()
-                    input.select()
-
-        super(Block, self).mouseReleaseEvent(event)
-
-
-    def unconnect(self, connection):
-        if connection in self.inputs:
-            self.inputs.remove(connection)
-        elif connection in self.outputs:
-            self.outputs.remove(connection)
-
+        if self.dragObject:
+            try:
+                self.dragObject.update(event.x(), event.y())
+                self.dragObject.drop()
+            finally:
+                self.dragObject = None
+                self.updateGL()
 
     def mouseMoveEvent(self, event):
-        scene = self.scene()
-        scene.move_mode = True
-        super(Block, self).mouseMoveEvent(event)
-        self.selected = False
-        self.head.setBrush(self.head_color)
-        self.generate_sockets()
+        if self.dragObject:
+            self.dragObject.update(event.x(), event.y())
+            self.updateGL()
 
-        for conn in self.connections:
-            conn.setLine(conn.x1, conn.y1, conn.x2, conn.y2)
-
-    def select(self):
-        if not self.selected:
-            self.selected = True
-            self.setSelected(True)
-            self.head.setBrush(self.head_selected_color)
-        else:
-            self.selected = False
-            self.setSelected(False)
-            self.head.setBrush(self.head_color)
-
-    def keyReleaseEvent(self, event):
-        if event.matches(Qt.QKeySequence.Delete) or event.matches(Qt.QKeySequence.Back):
-            self.hide()
-            for conn in self.connections:
-                self.scene().removeItem(conn)
-            self.scene().selected_blocks = []
-            self.scene().removeItem(self)
-
-
-class Connection(QtGui.QGraphicsLineItem):
-
-    def __init__(self, output, input, parent=None, scene=None):
-        self.output = output
-        self.input = input
-        self.index_input = None
-        self.index_output = None
-        self.x2 = None
-        self.y2 = None
-        self.side_input = None
-        self.selected = False
-        self.color = QtGui.QColor(70, 200, 70)
-        self.selected_color = QtGui.QColor(150, 90, 70)
-
-        self.calc_coordinates()
-        super(Connection, self).__init__(self.x1, self.y1, self.x2, self.y2, parent=parent, scene=scene)
-        self.setFlags(QtGui.QGraphicsItem.ItemIsSelectable | QtGui.QGraphicsItem.ItemIsFocusable)
-        self.setPen(QtGui.QPen(self.color, 2))
-
-
-    def setLine(self, *__args):
-        self.calc_coordinates()
-        super(Connection, self).setLine(*__args)
-
-
-    def calc_coordinates(self):
-
-        side_input, side_output = None, None
-
-        if self.output.x() > self.input.x() + self.input.w:
-            side_input = 'right'
-        elif self.output.x() > self.input.x() and self.output.x() <= self.input.x() + self.input.w:
-            if self.output.y() + self.output.h + self.output.head_height < self.input.y():
-                side_input = 'head'
-            else:
-                side_input = 'bottom'
-        else:
-            side_input = 'left'
-
-
-        if self.output.x() > self.input.x() + self.input.w:
-            side_output = 'left'
-        elif self.output.x() > self.input.x() and self.output.x() <= self.input.x() + self.input.w:
-            if self.output.y() + self.output.h + self.output.head_height < self.input.y():
-                side_output = 'bottom'
-            else:
-                side_output = 'head'
-        else:
-            side_output = 'right'
-
-
-        # inputs
-
-        if self.index_input is not None and self.side_input is not None:
-
-            if self.input.sockets[self.side_input][self.index_input]['connections'] > 0:
-                self.input.decrease_socket_connection(self.side_input, self.index_input)
-
-        coords, index_input = self.input.select_socket(side_input)
-
-        if self.side_input and self.index_input is not None:
-            if self.side_input != side_input or self.index_input != index_input:
-                if self.input.sockets[self.side_input][self.index_input]['connections'] > 0:
-                    self.input.decrease_socket_connection(self.side_input, self.index_input)
-
-
-        self.x2 = coords[0]
-        self.y2 = coords[1]
-        self.side_input = side_input
-        self.index_input = index_input
-
-        if not self.input.arrows[self.side_input][self.index_input]:
-            self.input.arrows[self.side_input][self.index_input] = self.input.add_arrow(self.side_input, self.index_input)
-
-        # outputs
-
-        if self.index_output is not None:
-            if self.output.sockets[self.side_output][self.index_output]['connections'] > 0:
-                self.output.decrease_socket_connection(self.side_output, self.index_output)
-
-        coords, index_output = self.output.select_socket(side_output)
-        self.x1 = coords[0]
-        if side_output == 'right':
-            self.x1 -= 4
-        if side_output == 'left':
-            self.x1 += 4
-        self.y1 = coords[1]
-        if side_output == 'head':
-            self.y1 += 4
-        if side_output == 'bottom':
-            self.y1 -= 4
-        self.side_output = side_output
-        self.index_output = index_output
-
-    def select(self):
-        if not self.selected:
-            self.selected = True
-            self.setSelected(True)
-            self.setPen(QtGui.QPen(self.selected_color, 2))
-        else:
-            self.selected = False
-            self.setSelected(False)
-            self.setPen(QtGui.QPen(self.color, 2))
-
-    def mouseReleaseEvent(self, event):
-        self.select()
-        super(Connection, self).mouseReleaseEvent(event)
-
-    def keyReleaseEvent(self, event):
-        if event.matches(Qt.QKeySequence.Delete) or event.matches(Qt.QKeySequence.Back):
-            self.input.decrease_socket_connection(self.side_input, self.index_input)
-            self.output.decrease_socket_connection(self.side_output, self.index_output)
-            self.output.unconnect(self)
-            self.input.unconnect(self)
-            self.scene().removeItem(self)
+    def keyPressEvent(self, event):
+        self.parent().keyPressEvent(event)

@@ -1,7 +1,7 @@
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtOpenGL import *
+from PyQt4 import QtOpenGL
 from OpenGL.GL import *
-#from OpenGL.GLU import *
+from OpenGL.GLU import *
 
 from OpenGL.raw.GL.VERSION.GL_1_5 import glBufferData as rawGlBufferData
 
@@ -10,12 +10,18 @@ from PIL import Image
 
 import pyopencl as cl
 
-class ImageviewWidget(QGLWidget):
+class ImageviewWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None, engine = None):
-        super(ImageviewWidget, self).__init__(parent)
+        format = QtOpenGL.QGLFormat.defaultFormat()
+        format.setSampleBuffers(True)
+        format.setSamples(16)
+        QtOpenGL.QGLWidget.__init__(self, format, parent)
+        if not self.isValid():
+            raise OSError("OpenGL not supported.")
+
         self.engine = engine
-        self.setMinimumWidth(640)
-        self.setMinimumHeight(360)
+        self.setMinimumWidth(1280)
+        self.setMinimumHeight(480)
         self.setMouseTracking(True)
         self.isPressed = False
         self.oldx = self.oldy = 0
@@ -72,7 +78,8 @@ class ImageviewWidget(QGLWidget):
         if not self.isValid():
             return
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glClear(GL_COLOR_BUFFER_BIT)
 
         glLoadIdentity()
         glTranslated (0.0 + self.pivot_x, 0.0 - self.pivot_y, -10.0)
@@ -98,18 +105,17 @@ class ImageviewWidget(QGLWidget):
         glFlush()
 
     def resizeGL(self, width, height):
-        self.width, self.height = width, height
-
-        glViewport (0, 0, width, height)
-        glMatrixMode (GL_PROJECTION)
+        glViewport(0, 0, width, height)
+        glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glOrtho (-width/2.0, width/2.0, -height/2.0, height/2.0, -10000.0, 10000.0)
-        glMatrixMode (GL_MODELVIEW)
+        glOrtho(-width/2.0, width/2.0, -height/2.0, height/2.0, -100.0, 100.0)
+        glMatrixMode(GL_MODELVIEW)
 
     def initializeGL(self):
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        #glEnable(GL_DEPTH_TEST)
+        glEnable(GL_MULTISAMPLE)
+        glEnable(GL_LINE_SMOOTH)
+        #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_DEPTH_TEST)
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
         # bind default texture here  

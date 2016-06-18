@@ -20,6 +20,7 @@ class OP_Manager(OP_Node):
 		self.__parent__ = parent
 		self.__inputs__ = []
 		self.__input_names__ = []
+		self.__network_label__ = None
 
 	def __increment__(self, s):
 		""" look for the last sequence of number(s) in a string and increment """
@@ -54,7 +55,6 @@ class OP_Manager(OP_Node):
 	def type(self):
 		return self.type_name
 
-	@property 
 	def nodes(self):
 		return [self.__node_dict__[node_name] for node_name in self.__node_dict__]
 

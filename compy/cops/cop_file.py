@@ -36,14 +36,14 @@ class COP_File(COP_Node):
 		self.source_height = img.shape[0]
 		
 		if self.parm("width").eval() != 0:
-			self.width = self.parm("width").eval()
+			self.image_width = self.parm("width").eval()
 		else:
-			self.width = self.source_width
+			self.image_width = self.source_width
 					
 		if self.parm("height").eval() != 0:
-			self.height = self.parm("height").eval() 
+			self.image_height = self.parm("height").eval() 
 		else:
-			self.height = self.source_height
+			self.image_height = self.source_height
 			
 		r = numpy.array(img[:,:,0],dtype=numpy.int8)
 		g = numpy.array(img[:,:,1],dtype=numpy.int8)
@@ -109,14 +109,14 @@ class COP_File(COP_Node):
 		self.log("Computing using CL.")
 		imagefile = self.getImageFileName()
 		print "READING IMAGE %s" % imagefile
-		self.width = self.parm("width").eval()
-		self.height = self.parm("height").eval()
+		self.image_width = self.parm("width").eval()
+		self.image_height = self.parm("height").eval()
 
 		if os.path.isfile(imagefile):	 
 			ext = imagefile.split(".")[-1]
 			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:
 				self.loadJPG(imagefile)
-				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))
+				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
 				exec_evt = self.program.run_jpg(self.engine.queue, self.size, None, 
 					self.devInBufferR, # red channel buffer
 					self.devInBufferG, # green channel buffer
@@ -130,7 +130,7 @@ class COP_File(COP_Node):
 				exec_evt.wait()
 			elif ext in ["exr", "EXR"]:
 				self.loadEXR(imagefile)
-				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.width, self.height))
+				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
 				exec_evt = self.program.run_exr(self.engine.queue, self.size, None, 
 					self.devInBufferR, # red channel buffer
 					self.devInBufferG, # green channel buffer
@@ -150,12 +150,12 @@ class COP_File(COP_Node):
 				# try to find sequence to get resolution frame resolution if
 				file_name_pattern = self.parm("filename").eval()
 
-				self.width = self.parm("width").eval()
-				self.height = self.parm("height").eval()
+				self.image_width = self.parm("width").eval()
+				self.image_height = self.parm("height").eval()
 				if 0 in [self.width, self.height]:
 					raise BaseException("Image file %s does not exist !!!" % imagefile)
 
 				self.log("Image file %s does not found !!! Using BLACK frame instead." % imagefile)	
-				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.width, self.height), hostbuf=numpy.zeros(self.width * self.height * 4, dtype = numpy.float32))
+				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.image_width, self.image_height), hostbuf=numpy.zeros(self.image_width * self.image_height * 4, dtype = numpy.float32))
 				
 

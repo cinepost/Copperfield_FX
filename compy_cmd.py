@@ -33,12 +33,12 @@ def main():
 
 		exit(True)
 				
-	import compy
+	import copper
 	eng = "GPU"
 	dev = None
 	if args.engine: eng = args.engine
 	if args.device: dev = int(args.device)
-	engine = compy.CreateEngine(device_type = eng, device_index = dev)
+	engine = copper.CreateEngine(device_type = eng, device_index = dev)
 	engine.open_project(args.project)
 
 	if args.convert:

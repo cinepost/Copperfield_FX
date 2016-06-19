@@ -1,15 +1,16 @@
 import sys, os
 from PyQt4 import QtGui, QtCore, QtOpenGL
 
-import compy
-from render_dialog import RenderNodeDialog
+import copper
+from gui.dialogs import RenderNodeDialog
 
-from widgets import TimelineWidget
-from widgets import ParamsWidget
-from widgets import NodeEditorWidget
-from widgets import ImageviewWidget
-from widgets import TreeNodeViewerWidget
-from widgets import PythonWidget
+from gui.widgets import TabbedPanelWidget
+from gui.widgets import TimeLineWidget
+from gui.widgets import ParametersEditorWidget
+from gui.widgets import NodeFlowEditorWidget
+from gui.widgets import NodeTreeEditorWidget
+from gui.widgets import CompositeViewerWidget
+from gui.widgets import PythonShellWidget
 
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 
@@ -18,14 +19,14 @@ class Workarea(QtGui.QWidget):
         super(Workarea, self).__init__(parent)
         self.engine = engine
         self.engine.set_network_change_callback(self.rebuild_widgets)
+        self.setObjectName("Workarea")
 
         # Init out engine and widgets first
-        self.parm_view  = ParamsWidget(self, engine = self.engine)
-        self.time_view  = TimelineWidget(self)
-        self.img_view   = ImageviewWidget(self, engine = self.engine)
-        self.tree_view  = TreeNodeViewerWidget(self, engine = self.engine, viewer = self.img_view, params = self.parm_view)
-
-        self.node_view  = NodeEditorWidget(self, engine = self.engine)
+        self.parmetersEditor    = ParametersEditorWidget(self, engine = self.engine)
+        self.timeLine           = TimeLineWidget(self)
+        self.imageViewer        = CompositeViewerWidget(self, engine = self.engine)
+        self.nodeTree           = NodeTreeEditorWidget(self, engine = self.engine, viewer = self.imageViewer, params = self.parmetersEditor)
+        self.nodeFlow           = NodeFlowEditorWidget(self, engine = self.engine)
         #self.python_view = PythonWidget(self, engine = self.engine)
 
         # Now init our UI 
@@ -33,25 +34,35 @@ class Workarea(QtGui.QWidget):
         
     def initUI(self): 
 
-        # Create layout and place widgets     
-        HBox = QtGui.QHBoxLayout(self)
-        
-        tabs = QtGui.QTabWidget()
-        tabs.addTab(self.node_view, "Node view")
-        tabs.addTab(self.tree_view, "Tree view")
+        # Create layout and place widgets
+        VBox = QtGui.QVBoxLayout()    
+        VBox.setContentsMargins(0, 0, 0, 0)
+        HBox = QtGui.QHBoxLayout()
+        HBox.setContentsMargins(0, 0, 0, 0)
+        VBox.addLayout(HBox)
+        VBox.addWidget(self.timeLine)
+
+        panel1 = TabbedPanelWidget()
+        panel1.addPaneTab(self.imageViewer, "Composite View")
+
+        panel2 = TabbedPanelWidget()
+        panel2.addPaneTab(self.parmetersEditor, "Parameters")
+
+        panel3 = TabbedPanelWidget()
+        panel3.addPaneTab(self.nodeFlow, "Node view")
+        panel3.addPaneTab(self.nodeTree, "Tree view")
         #tabs.addTab(self.python_view, "Interactive shell")
 
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
-        VSplitter.addWidget(self.img_view)
-        VSplitter.addWidget(self.time_view)
-        VSplitter.addWidget(tabs)
+        VSplitter.addWidget(panel2)
+        VSplitter.addWidget(panel3)
 
         HSplitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        HSplitter.addWidget(VSplitter)
-        HSplitter.addWidget(self.parm_view)        
+        HSplitter.addWidget(panel1)
+        HSplitter.addWidget(VSplitter)       
 
         HBox.addWidget(HSplitter)
-        self.setLayout(HBox)
+        self.setLayout(VBox)
         self.show()
        
     def rebuild_widgets(self):
@@ -88,7 +99,12 @@ class Window(QtGui.QMainWindow):
         if fname:
             self.engine.save_project(fname)
 
-    def initUI(self):      
+    def load_style(self):
+        sqq_filename="media/copper.stylesheet.qss"
+        with open(sqq_filename,"r") as fh:
+            self.setStyleSheet(fh.read())
+
+    def initUI(self):
         self.workarea = Workarea(self, engine=self.engine)
         self.setCentralWidget(self.workarea)
 
@@ -108,9 +124,16 @@ class Window(QtGui.QMainWindow):
         saveAction.setStatusTip('Save project')
         saveAction.triggered.connect(self.save_project)
 
+
+        reloadStylAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_082_roundabout.png'), 'Reload QSS', self)
+        reloadStylAction.setShortcut('Ctrl+R')
+        reloadStylAction.setStatusTip('Reload style')
+        reloadStylAction.triggered.connect(self.load_style)
+
         menubar = self.menuBar()
 
         fileMenu = menubar.addMenu('&File')
+        fileMenu.addAction(reloadStylAction)
         fileMenu.addAction(openAction)
         fileMenu.addAction(saveAction)
         fileMenu.addAction(exitAction)
@@ -120,31 +143,26 @@ class Window(QtGui.QMainWindow):
         helpManu = menubar.addMenu('&Help')
         
         toolbar = self.addToolBar('Toolbar')
+        toolbar.addAction(reloadStylAction)
         toolbar.addAction(openAction)
         toolbar.addAction(saveAction)
         toolbar.addAction(exitAction)
-
-        QtGui.QApplication.setStyle(QtGui.QStyleFactory.create('Cleanlooks'))
         
         #self.setGeometry(300, 300, 900, 600)
-        self.setWindowTitle("Bare Metal Composer")
+        self.setWindowTitle("Copperfield")
         self.statusBar().showMessage('Ready...')
         self.show()       
 
 if __name__ == '__main__':
     #import qdarkstyle 
     app = QtGui.QApplication(sys.argv)
-    try:
-        import qdarkstyle
-    except:
-        pass
-    else:    
-        app.setStyleSheet(qdarkstyle.load_stylesheet(pyside=False))
+    app.setStyle(QtGui.QStyleFactory.create('Plastique'))
 
     app.setWindowIcon(QtGui.QIcon('icons/biohazard.png'))
 
-    engine = compy.CreateEngine("GPU")
+    engine = copper.CreateEngine("GPU")
     engine.test_project()
 
     win = Window(engine)
+    win.load_style()
     sys.exit(app.exec_())

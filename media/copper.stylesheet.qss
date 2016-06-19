@@ -1,0 +1,269 @@
+
+/* Main Window */
+QMainWindow {
+	background-color: #333;
+}
+
+QWidget {
+	font-family: "DejaVu Sans";
+	font-size: 11px;
+	color: #aaa;
+}
+
+QToolButton, QPushButton {
+	border: none;
+	padding: 2px;
+}
+
+QToolButton:hover, QPushButton:hover {
+	background-color: #888;
+}
+
+QToolButton:pressed , QPushButton:pressed{
+	border-left: 1px solid #641;
+	border-top: 1px solid #641;
+    background-color: #972;
+}
+
+/* Splitters */
+QSplitter::handle {
+	width: 4px;
+}
+
+QSplitter::handle:horizontal {
+    border-top: 1px solid #000;
+    border-left: 1px solid #000;
+    border-right: 1px solid #222;
+    background-color: #444;
+    width: 4px;
+}
+
+QSplitter::handle:horizontal:hover {
+    background-color: #654;
+}
+
+QSplitter::handle:vertical {
+    border-top: 1px solid #666;
+    border-left: 1px solid #666;
+    border-bottom: 1px solid #222;
+    background-color: #444;
+    height: 4px;
+}
+
+QSplitter::handle:vertical:hover {
+    background-color: #654;
+}
+
+
+/* Pane Tabs Editor side widget "Plus" button */
+QPushButton#plusButton {
+    background: none;
+    image: url("icons/fa/white/svg/plus.svg");
+    border: none;
+    color: #fff;
+    font-weight: bold;
+    width: 12px;
+    height: 12px;
+    padding: 2px;
+}
+
+QPushButton#plusButton::menu-indicator {
+    image: none;
+    width: 0;
+    height: 0;
+}
+
+QPushButton#plusButton:hover {
+	background-color: #888;
+}
+
+QPushButton#plusButton:pressed {
+	border-left: 1px solid #641;
+	border-top: 1px solid #641;
+	background-color: #972;
+}
+
+
+/* QFrame */
+QFrame#tabbedPanel {
+	border: none;
+	border-top: 1px solid #000;
+	background-color: #262626;
+}
+
+/* Path bar */
+QFrame#pathBar {
+	background-color: #444;
+	border-bottom: 1px solid #000;
+}
+
+QFrame#pathBar QToolButton {
+	background: none;
+	border: none;
+	width: 10px;
+	height: 10px;
+	padding: 4px;
+}
+
+QFrame#pathBar QToolButton:hover {
+    background-color: #666;
+}
+
+QFrame#pathBar QToolButton:pressed {
+	border-left: 1px solid #641;
+	border-top: 1px solid #641;
+    background-color: #972;
+}
+
+QFrame#pathBar QToolButton#back {
+	image: url("icons/fa/white/svg/arrow-left.svg");
+	color: rgba(255, 255, 255, 10);
+}
+
+QFrame#pathBar QToolButton#fwd {
+	image: url("icons/fa/white/svg/arrow-right.svg");
+}
+
+/* Pane Tab Editor tabs */
+QTabWidget::pane {
+	background-color: #333;
+	border: 1px solid #222;
+	border: none;
+}
+
+QTabWidget::tab-bar {
+    alignment: left;
+    border: none;
+}
+
+QTabBar::close-button { 
+	image: url("icons/fa/white/svg/close.svg");
+	padding: 4px;
+	margin: 8px;
+	subcontrol-position: right;
+}
+
+QTabBar::close-button:hover { 
+	background-color: #888;
+}
+
+QTabBar::close-button:pressed { 
+	border-left: 1px solid #641;
+	border-top: 1px solid #641;
+    background-color: #972;
+}
+
+QTabBar::tab {
+	font-size: 10px;
+	color: #aaa;
+    border-top: 1px solid #111;
+    border-right: 1px solid #111;
+    min-width: 8ex;
+    padding: 0;
+    height: 18px;
+}
+
+QTabBar::tab:selected {
+	background-color: #444;
+    border-top: 1px solid #333;
+    border-right: 1px solid #333;
+}
+
+/* Tree view */
+
+QTreeView {
+	font-size: 10px;
+	border: none;
+	background-color: #262626;
+    alternate-background-color: #303030;
+    outline: 0;
+}
+
+QTreeView::item {
+	padding-top: 4px;
+	padding-bottom: 4px;
+	text-decoration: 0;
+}
+
+
+QTreeView::branch:has-siblings:!adjoins-item {
+	image: url("icons/treeview/vline.png");
+}
+
+QTreeView::branch:has-siblings:adjoins-item {
+	image: url("icons/treeview/branch-more.png");
+}
+
+QTreeView::branch:!has-children:!has-siblings:adjoins-item {
+    image: url("icons/treeview/branch-end.png");
+}
+
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+        border-image: none;
+        image: url("icons/fa/white/png/16/plus-square.png");
+        padding: 4px;
+}
+
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings  {
+        border-image: none;
+        image: url("icons/fa/white/png/16/minus-square.png");
+        padding: 4px;
+}
+
+QTreeView::branch:has-children:!has-siblings:closed:selected,
+QTreeView::branch:closed:has-children:has-siblings:selected {
+        padding: 3px;
+}
+
+QTreeView::branch:open:has-children:!has-siblings:selected,
+QTreeView::branch:open:has-children:has-siblings:selected  {
+        padding: 3px;
+}
+
+QTreeView::item:selected {
+    border: 1px solid #972;
+    border-left: none;
+    border-right: none;
+    background-color: #641;
+}
+
+QTreeView::branch:selected {
+    border-top: 1px solid #972;
+    border-bottom: 1px solid #972;
+    background-color: #641;
+}
+
+/* Parameters */
+QLabel {
+	line-height: 10px;
+	padding: 0;
+	margin: 0;
+	height: 16px;
+}
+
+QLabel:hover {
+	border: 1px solid #000;
+	background-color: #666;
+}
+
+/* Menu */
+QMenu {
+	font-size: 12px;
+	border-left: 1px solid #666;
+	border-top: 1px solid #666;
+	border-right: 1px solid #222;
+	border-bottom: 1px solid #222;
+	background-color: #333;
+}
+
+QMenu::separator {
+    border-top: 1px solid #666;
+}
+
+
+QMenu::item:selected {
+	color: #fff;
+	background-color: #555;
+}

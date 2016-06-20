@@ -10,7 +10,27 @@ from PIL import Image
 
 import pyopencl as cl
 
-class CompositeViewerWidget(QtOpenGL.QGLWidget):
+from path_bar_widget import PathBarWidget
+
+class CompositeViewerWidget(QtGui.QFrame):
+    def __init__(self, parent, engine = None):
+        super(CompositeViewerWidget, self).__init__(parent)
+        self.engine = engine
+        vbox = QtGui.QVBoxLayout()
+        vbox.setSpacing(0)
+        vbox.setContentsMargins(0, 0, 0, 0)
+
+        path_bar = PathBarWidget(self)
+        image_viewer = CompositeViewerWorkareaWidget(self, engine)
+
+        vbox.addWidget(path_bar)
+        vbox.addWidget(image_viewer)
+        self.setLayout(vbox)
+
+    def copy(self):
+        return CompositeViewerWidget(None, engine=self.engine)
+
+class CompositeViewerWorkareaWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None, engine = None):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)
@@ -20,8 +40,6 @@ class CompositeViewerWidget(QtOpenGL.QGLWidget):
             raise OSError("OpenGL not supported.")
 
         self.engine = engine
-        self.setMinimumWidth(960)
-        self.setMinimumHeight(480)
         self.setMouseTracking(True)
         self.isPressed = False
         self.oldx = self.oldy = 0
@@ -105,11 +123,12 @@ class CompositeViewerWidget(QtOpenGL.QGLWidget):
         glFlush()
 
     def resizeGL(self, width, height):
-        glViewport(0, 0, width, height)
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        glOrtho(-width/2.0, width/2.0, -height/2.0, height/2.0, -100.0, 100.0)
-        glMatrixMode(GL_MODELVIEW)
+        if self.isValid() and width > 0 and height > 0:
+            glViewport(0, 0, width, height)
+            glMatrixMode(GL_PROJECTION)
+            glLoadIdentity()
+            glOrtho(-width/2.0, width/2.0, -height/2.0, height/2.0, -100.0, 100.0)
+            glMatrixMode(GL_MODELVIEW)
 
     def initializeGL(self):
         glEnable(GL_MULTISAMPLE)

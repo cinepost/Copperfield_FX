@@ -8,10 +8,11 @@ class PathBarWidget(QtGui.QFrame, CopperWidget):
     def __init__(self, parent, engine=None):      
         super(PathBarWidget, self).__init__(parent)
         self.engine = engine
-        self.setObjectName("pathBar");
         self.initUI()
         
     def initUI(self):
+        self.setObjectName("pathBar");
+        
         layout = QtGui.QHBoxLayout()
         layout.setSpacing(2)
         layout.setContentsMargins(0, 4, 0, 4)
@@ -21,8 +22,10 @@ class PathBarWidget(QtGui.QFrame, CopperWidget):
         btn_frwd = QtGui.QToolButton(self)
         btn_frwd.setObjectName("fwd")
 
+
         self.path = QtGui.QHBoxLayout()
         self.path.setContentsMargins(0, 0, 0, 0)
+        self.path.addStretch(1)
 
         layout.addWidget(btn_back)
         layout.addWidget(btn_frwd)
@@ -30,3 +33,4 @@ class PathBarWidget(QtGui.QFrame, CopperWidget):
 
         self.setLayout(layout)
         self.setAcceptDrops(True)
+        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)

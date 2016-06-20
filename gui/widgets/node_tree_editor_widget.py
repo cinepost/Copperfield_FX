@@ -4,6 +4,7 @@ from path_bar_widget import PathBarWidget
 class NodeTreeEditorWidget(QtGui.QFrame):
     def __init__(self, parent, engine=None, viewer=None, params=None):      
         super(NodeTreeEditorWidget, self).__init__(parent)
+        self.engine = engine
         vbox = QtGui.QVBoxLayout(self)
         vbox.setContentsMargins(0, 0, 0, 0)
         pathBar = PathBarWidget(self, engine=engine)
@@ -11,6 +12,9 @@ class NodeTreeEditorWidget(QtGui.QFrame):
         vbox.addWidget(pathBar)
         vbox.addWidget(nodeTreeEditor)
         self.setLayout(vbox)
+
+    def copy(self):
+        return NodeTreeEditorWidget(None, engine=self.engine)
 
 class NodeTreeEditor(QtGui.QTreeWidget):
   
@@ -38,9 +42,6 @@ class NodeTreeEditor(QtGui.QTreeWidget):
         #self.setHeaderItem(header)
         self.header().close()
         self.createNodeLevel(self.engine, self) 
-
-    def copy(self):
-        return NodeTreeEditorWidget(engine=self.engine, params=self.params)
 
     def createNodeLevel(self, node, parent_widget):
         for cur_node in node.children():

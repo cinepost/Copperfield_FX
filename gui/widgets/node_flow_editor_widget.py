@@ -3,7 +3,6 @@ from OpenGL.GL import *
 from OpenGL import GL
 from OpenGL.GLU import *
 
-from copper_widget import CopperWidget
 from path_bar_widget import PathBarWidget
 
 import numpy
@@ -141,10 +140,9 @@ class FlowNode(QtCore.QObject, Draggable):
     def __repr__(self):
         return "<FlowNode '%s'>" % self.title
 
-class NodeFlowEditorWidget(QtGui.QWidget, CopperWidget):
+class NodeFlowEditorWidget(QtGui.QWidget):
     def __init__(self, parent, engine=None):      
-        QtGui.QWidget.__init__(self, parent)
-        CopperWidget.__init__(self)
+        super(NodeFlowEditorWidget, self).__init__(parent)
         self.engine = engine
         self.initUI()
 
@@ -161,8 +159,11 @@ class NodeFlowEditorWidget(QtGui.QWidget, CopperWidget):
         
         self.setLayout(vbox)
 
+    def copy(self):
+        return NodeFlowEditorWidget(None, engine=self.engine)
 
-class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
+
+class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
     
     dragModeDraggingEmpty = 0
     dragModeDraggingNode = 1
@@ -197,12 +198,13 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
         format.setSampleBuffers(True)
         format.setSamples(16)
         QtOpenGL.QGLWidget.__init__(self, format, parent)
-        CopperWidget.__init__(self)
         if not self.isValid():
             raise OSError("OpenGL not supported.")
 
         self.origin_x = 0.0
         self.origin_y = 0.0
+        self.cursor_x = 0.0
+        self.cursor_y = 0.0
         self.panningMode = False
         self.engine = engine
         self.zoom = 1.0
@@ -244,13 +246,14 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
         glEnable(GL_LINE_SMOOTH)
         glEnable(GL_BLEND)
         
-    def resizeGL(self, w, h):
-        self.work_area_width = w
-        self.work_area_height = h
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        gluOrtho2D(0, w, h, 0)
-        glViewport(0, 0, w, h)
+    def resizeGL(self, width, height):
+        if self.isValid() and width > 0 and height > 0:        
+            self.viewport_width = width
+            self.viewport_height = height
+            glMatrixMode(GL_PROJECTION)
+            glLoadIdentity()
+            gluOrtho2D(-width/2, width/2, height/2, -height/2)
+            glViewport(0, 0, width, height)
         
     def paintGL(self):
         glEnable(GL_MULTISAMPLE)
@@ -266,11 +269,11 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
             glBegin(GL_LINES)
             for x in range(10):
                 glVertex3f(x * 170 * self.zoom + self.origin_x, 0, 0)
-                glVertex3f(x * 170 * self.zoom + self.origin_x, self.work_area_height, 0)
+                glVertex3f(x * 170 * self.zoom + self.origin_x, self.viewport_height, 0)
 
             for y in range(10):
                 glVertex3f(0, y * 80 * self.zoom + self.origin_y, 0)
-                glVertex3f(self.work_area_width, y * 80 * self.zoom + self.origin_y, 0)
+                glVertex3f(self.viewport_width, y * 80 * self.zoom + self.origin_y, 0)
             
             glEnd()
 
@@ -314,9 +317,9 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
         self.selectedNode = None
 
     def mousePressEvent(self, event):
-        x, y = event.x(), event.y() 
+        self.cursor_x, self.cursor_y = x, y =  event.x(), event.y() 
         if event.button() & QtCore.Qt.LeftButton:
-            node = self.pickNode(x,y)
+            node = self.pickNode(x, y)
             if node:
                 self.dragObject = self.DragObject(x, y, node, self.zoom)
                 i = self.nodes.index(node)
@@ -325,7 +328,7 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
                 self.updateGL() # updateGL because z-order has changed
                 return
             
-            knob = self.pickKnob(x,y)
+            knob = self.pickKnob(x, y)
             if knob:
                 self.dragObject = self.DragObject(x, y, knob, self.zoom)
                 return
@@ -337,7 +340,7 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
             self.selectNode(None)
                 
         elif event.button() & QtCore.Qt.RightButton:
-            knob = self.pickKnob(x,y)
+            knob = self.pickKnob(x, y)
             if knob:
                 connections = list(self.findConnections(knob))
                 if knob.type == FlowKnob.knobTypeOutput and len(connections) > 1:
@@ -364,11 +367,27 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
         menu.popup(event.globalPos())
 
     def wheelEvent(self,event):
+        old_zoom = self.zoom
         counter_max = self.zoomWheelResolution * (self.zoomMax - .5) / 2
         self.zoomWheelCounter += event.delta() / 120.0
         self.zoomWheelCounter = numpy.clip(self.zoomWheelCounter, 0, counter_max)
         z = float(self.zoomWheelCounter) / float(self.zoomWheelResolution)
-        self.zoom = numpy.clip(z * z, self.zoomMin, self.zoomMax)
+        zoom = numpy.clip(z * z, self.zoomMin, self.zoomMax)
+
+        zoom_delta = zoom - old_zoom
+        x,y = event.x(), event.y()
+
+        old_origin_x = self.origin_x
+        old_origin_y = self.origin_y
+
+        print "Cursor relateive %s %s" %  (x*old_zoom - self.origin_x, y*old_zoom - self.origin_y)
+
+        self.origin_x -= (x * old_zoom- old_origin_x) * zoom_delta
+        self.origin_y -= (y * old_zoom- old_origin_y) * zoom_delta 
+
+
+        self.zoom = zoom
+
         self.updateGL()
 
     def mouseDoubleClickEvent(self, event):
@@ -394,8 +413,9 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
             self.dragObject.update(event.x(), event.y())
             self.updateGL()
         elif self.panningMode:
-            self.origin_x = event.x()
-            self.origin_y = event.y()
+            self.origin_x -= self.cursor_x - event.x()
+            self.origin_y -= self.cursor_y - event.y()
+            self.cursor_x, self.cursor_y = event.x(), event.y()
             self.updateGL()
 
     def keyPressEvent(self, event):

@@ -57,12 +57,15 @@ class Workarea(QtGui.QWidget, CopperWidget):
         #tabs.addTab(self.python_view, "Interactive shell")
 
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
+        VSplitter.setMinimumWidth(370)
         VSplitter.addWidget(panel2)
         VSplitter.addWidget(panel3)
 
         HSplitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
         HSplitter.addWidget(panel1)
-        HSplitter.addWidget(VSplitter)       
+        HSplitter.addWidget(VSplitter)
+        HSplitter.setStretchFactor (0, 1)
+        HSplitter.setStretchFactor (1, 0)   
 
         HBox.addWidget(HSplitter)
         self.setLayout(VBox)
@@ -108,6 +111,9 @@ class Window(QtGui.QMainWindow):
             self.setStyleSheet(fh.read())
 
     def initUI(self):
+        self.setMinimumWidth(740)
+        self.setMinimumHeight(540)
+        self.resize(1400, 900)
         self.workarea = Workarea(self, engine=self.engine)
         self.setCentralWidget(self.workarea)
 

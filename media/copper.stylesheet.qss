@@ -177,7 +177,7 @@ QTabBar::tab:selected {
 /* Tree view */
 
 QTreeView {
-	font-size: 10px;
+	font-size: 12px;
 	border: none;
 	background-color: #262626;
     alternate-background-color: #303030;
@@ -185,8 +185,8 @@ QTreeView {
 }
 
 QTreeView::item {
-	padding-top: 4px;
-	padding-bottom: 4px;
+	padding-top: 3px;
+	padding-bottom: 3px;
 	text-decoration: 0;
 }
 

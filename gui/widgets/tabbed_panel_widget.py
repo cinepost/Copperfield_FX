@@ -1,14 +1,21 @@
 from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
+
+from copper_widget import CopperWidget
 from path_bar_widget import PathBarWidget
 
-class TabbedPanelWidget(QtGui.QFrame):
+class CopperQTabWidget(QtGui.QTabWidget, CopperWidget):
+    def __init__(self, parent):      
+        QtGui.QFrame.__init__(self, parent)
+        CopperWidget.__init__(self)
+
+class TabbedPanelWidget(QtGui.QFrame, CopperWidget):
   
     def __init__(self, parent=None, engine=None):      
-        super(TabbedPanelWidget, self).__init__(parent)
+        QtGui.QFrame.__init__(self, parent)
+        CopperWidget.__init__(self)
         self.engine = engine
         self.setObjectName("tabbedPanel")
-        self.connect(self, QtCore.SIGNAL("node_selected"), self.setNode)
         self.initUI()
         
     def initUI(self):
@@ -16,7 +23,7 @@ class TabbedPanelWidget(QtGui.QFrame):
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        self.tabs = QtGui.QTabWidget()
+        self.tabs = CopperQTabWidget(self)
         self.tabs.setTabsClosable(True)
         self.tabs.setMovable(True)
 
@@ -33,16 +40,12 @@ class TabbedPanelWidget(QtGui.QFrame):
         layout.addWidget(self.tabs)
         self.setLayout(layout)
 
-    @QtCore.pyqtSlot()   
-    def setNode(self, node_path = None):
-        pass
 
-    @QtCore.pyqtSlot()
     def addPaneTab(self, widget, pane_title="Untitled"):
         tab = self.tabs.addTab(widget, pane_title)
         self.buildPlusButtonMenu()
 
-    @QtCore.pyqtSlot()
+
     def addNewPaneTab(self):
         currentTabIndex = self.tabs.currentIndex()
         widget = self.tabs.widget(currentTabIndex)
@@ -50,12 +53,10 @@ class TabbedPanelWidget(QtGui.QFrame):
         self.tabs.addTab(widget.copy(), pane_title)
         self.buildPlusButtonMenu()
 
-    @QtCore.pyqtSlot()
     def setActive(self, index):
         print "Setting active tab to: %s" % index
         self.tabs.setCurrentIndex(index)
 
-    @QtCore.pyqtSlot()
     def buildPlusButtonMenu(self):
         if not self.menu.isEmpty():
             self.menu.clear()

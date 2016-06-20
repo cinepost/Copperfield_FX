@@ -3,6 +3,7 @@ from OpenGL.GL import *
 from OpenGL import GL
 from OpenGL.GLU import *
 
+from copper_widget import CopperWidget
 from path_bar_widget import PathBarWidget
 
 import numpy
@@ -140,12 +141,13 @@ class FlowNode(QtCore.QObject, Draggable):
     def __repr__(self):
         return "<FlowNode '%s'>" % self.title
 
-class NodeFlowEditorWidget(QtGui.QWidget):
-    def __init__(self, parent, engine):      
-        super(NodeFlowEditorWidget, self).__init__(parent)
+class NodeFlowEditorWidget(QtGui.QWidget, CopperWidget):
+    def __init__(self, parent, engine=None):      
+        QtGui.QWidget.__init__(self, parent)
+        CopperWidget.__init__(self)
         self.engine = engine
         self.initUI()
-        
+
     def initUI(self):
         vbox = QtGui.QVBoxLayout(self)
         vbox.setSpacing(0)
@@ -159,7 +161,8 @@ class NodeFlowEditorWidget(QtGui.QWidget):
         
         self.setLayout(vbox)
 
-class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
+
+class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget, CopperWidget):
     
     dragModeDraggingEmpty = 0
     dragModeDraggingNode = 1
@@ -194,6 +197,7 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
         format.setSampleBuffers(True)
         format.setSamples(16)
         QtOpenGL.QGLWidget.__init__(self, format, parent)
+        CopperWidget.__init__(self)
         if not self.isValid():
             raise OSError("OpenGL not supported.")
 
@@ -208,7 +212,6 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
         self.zoomMax = 5.0
         self.network_label = None
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
-        #self.overlayFont = QtGui.QFont("Helvetica", 20, 100, False)
 
         self.nodes = []
         self.connections = []
@@ -372,6 +375,7 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
         x, y = event.x(), event.y()
         node = self.pickNode(x,y)
         if node:
+            self.emit( QtCore.SIGNAL( "signalCopperNodeSelected( PyQt_PyObject )" ), node.path() )
             self.buildNodeGraph(node.path())
 
     def mouseReleaseEvent(self, event):

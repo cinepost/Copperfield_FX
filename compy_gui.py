@@ -12,11 +12,14 @@ from gui.widgets import NodeTreeEditorWidget
 from gui.widgets import CompositeViewerWidget
 from gui.widgets import PythonShellWidget
 
+from gui.widgets.copper_widget import CopperWidget
+
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 
-class Workarea(QtGui.QWidget):
+class Workarea(QtGui.QWidget, CopperWidget):
     def __init__(self, parent=None, engine=None):
-        super(Workarea, self).__init__(parent)
+        QtGui.QWidget.__init__(self, parent)
+        CopperWidget.__init__(self)
         self.engine = engine
         self.engine.set_network_change_callback(self.rebuild_widgets)
         self.setObjectName("Workarea")

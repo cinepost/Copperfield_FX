@@ -13,8 +13,8 @@ import pyopencl as cl
 from path_bar_widget import PathBarWidget
 
 class CompositeViewerWidget(QtGui.QFrame):
-    def __init__(self, parent, engine = None):
-        super(CompositeViewerWidget, self).__init__(parent)
+    def __init__(self, parent=None, engine=None):
+        QtGui.QFrame.__init__(self, parent)
         self.engine = engine
         vbox = QtGui.QVBoxLayout()
         vbox.setSpacing(0)
@@ -30,8 +30,12 @@ class CompositeViewerWidget(QtGui.QFrame):
     def copy(self):
         return CompositeViewerWidget(None, engine=self.engine)
 
+    @classmethod
+    def panelTypeName(cls):
+        return "Composite View"
+
 class CompositeViewerWorkareaWidget(QtOpenGL.QGLWidget):
-    def __init__(self, parent=None, engine = None):
+    def __init__(self, parent=None, engine=None):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)
         format.setSamples(16)

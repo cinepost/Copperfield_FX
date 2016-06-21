@@ -26,10 +26,10 @@ class Workarea(QtGui.QWidget, CopperWidget):
 
         # Init out engine and widgets first
         self.parmetersEditor    = ParametersEditorWidget(self, engine = self.engine)
-        self.timeLine           = TimeLineWidget(self)
         self.imageViewer        = CompositeViewerWidget(self, engine = self.engine)
         self.nodeTree           = NodeTreeEditorWidget(self, engine = self.engine, viewer = self.imageViewer, params = self.parmetersEditor)
         self.nodeFlow           = NodeFlowEditorWidget(self, engine = self.engine)
+        self.timeLine           = TimeLineWidget(self)
         #self.python_view = PythonWidget(self, engine = self.engine)
 
         # Now init our UI 
@@ -45,15 +45,18 @@ class Workarea(QtGui.QWidget, CopperWidget):
         VBox.addLayout(HBox)
         VBox.addWidget(self.timeLine)
 
-        panel1 = TabbedPanelWidget()
-        panel1.addPaneTab(self.imageViewer, "Composite View")
+        panel1 = TabbedPanelWidget(engine=self.engine)
+        panel1.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewerWidget, NodeTreeEditorWidget, NodeFlowEditorWidget])
+        panel1.addPaneTab(self.imageViewer)
 
-        panel2 = TabbedPanelWidget()
-        panel2.addPaneTab(self.parmetersEditor, "Parameters")
+        panel2 = TabbedPanelWidget(engine=self.engine)
+        panel2.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewerWidget, NodeTreeEditorWidget, NodeFlowEditorWidget])
+        panel2.addPaneTab(self.parmetersEditor)
 
-        panel3 = TabbedPanelWidget()
-        panel3.addPaneTab(self.nodeFlow, "Node view")
-        panel3.addPaneTab(self.nodeTree, "Tree view")
+        panel3 = TabbedPanelWidget(engine=self.engine)
+        panel3.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewerWidget, NodeTreeEditorWidget, NodeFlowEditorWidget])
+        panel3.addPaneTab(self.nodeFlow)
+        panel3.addPaneTab(self.nodeTree)
         #tabs.addTab(self.python_view, "Interactive shell")
 
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
@@ -157,13 +160,11 @@ class Window(QtGui.QMainWindow):
         toolbar.addAction(saveAction)
         toolbar.addAction(exitAction)
         
-        #self.setGeometry(300, 300, 900, 600)
         self.setWindowTitle("Copperfield")
         self.statusBar().showMessage('Ready...')
         self.show()       
 
 if __name__ == '__main__':
-    #import qdarkstyle 
     app = QtGui.QApplication(sys.argv)
     app.setStyle(QtGui.QStyleFactory.create('Plastique'))
 

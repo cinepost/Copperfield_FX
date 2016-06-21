@@ -22,8 +22,8 @@ class OpPathWidget(QtGui.QLineEdit):
         print "Drop!"
 
 class ParametersEditorWidget(QtGui.QFrame):
-    def __init__(self, parent=None, engine=None):      
-        super(ParametersEditorWidget, self).__init__(parent)
+    def __init__(self, parent=None, engine=None):     
+        QtGui.QFrame.__init__(self, parent) 
         self.engine = engine
         self.connect(self, QtCore.SIGNAL("node_selected"), self.setNode)
         self.default_icon = QtGui.QIcon('icons/glyphicons_461_saw_blade.png')
@@ -64,12 +64,19 @@ class ParametersEditorWidget(QtGui.QFrame):
         self.setLayout(vbox)
         self.setAcceptDrops(True)
 
+    @classmethod
+    def panelTypeName(cls):
+        return "Parameters"
+
+
     def copy(self):
         return ParametersEditorWidget(None, engine=self.engine)
+
 
     def BrowseFile(self, lineEdit):
         fname = QtGui.QFileDialog.getOpenFileName()
         lineEdit.setText(fname)
+
 
     @QtCore.pyqtSlot()   
     def setNode(self, node_path = None):

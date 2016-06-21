@@ -2,8 +2,8 @@ from PyQt4 import QtGui, QtCore
 from path_bar_widget import PathBarWidget
 
 class NodeTreeEditorWidget(QtGui.QFrame):
-    def __init__(self, parent, engine=None, viewer=None, params=None):      
-        super(NodeTreeEditorWidget, self).__init__(parent)
+    def __init__(self, parent=None, engine=None, viewer=None, params=None):      
+        QtGui.QFrame.__init__(self, parent)
         self.engine = engine
         vbox = QtGui.QVBoxLayout(self)
         vbox.setContentsMargins(0, 0, 0, 0)
@@ -16,11 +16,14 @@ class NodeTreeEditorWidget(QtGui.QFrame):
     def copy(self):
         return NodeTreeEditorWidget(None, engine=self.engine)
 
+    @classmethod
+    def panelTypeName(cls):
+        return "Tree View"
+
 class NodeTreeEditor(QtGui.QTreeWidget):
-  
-    def __init__(self, parent, engine=None, viewer=None, params=None):      
-        super(NodeTreeEditor, self).__init__(parent)
-        self.parent = parent
+    def __init__(self, parent=None, engine=None, viewer=None, params=None):      
+        QtGui.QTreeWidget.__init__(self, parent)
+
         self.engine = engine
         self.viewer = viewer
         self.params = params
@@ -38,8 +41,6 @@ class NodeTreeEditor(QtGui.QTreeWidget):
         vbox = QtGui.QVBoxLayout(self)
         vbox.setContentsMargins(0, 0, 0, 0)
         
-        #header=QtGui.QTreeWidgetItem(["Name", "Path","Type"])
-        #self.setHeaderItem(header)
         self.header().close()
         self.createNodeLevel(self.engine, self) 
 

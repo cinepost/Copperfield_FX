@@ -38,9 +38,9 @@ class NodeItem(QtGui.QGraphicsItem):
         return QtCore.QRectF(-20,-10,40,10)
 
 
-    def itemChangeZ(self, change, value):
+    def itemChange(self, change, value):
         if change == QtGui.QGraphicsItem.ItemSelectedChange:
-            print "Value %s" % value
+            print "Node selection changed"
             if value == True:
                 # do stuff if selected
                 pass
@@ -67,7 +67,9 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         self.setSceneRect(-100000,-100000,200000,200000)
         
         # Test node
-        self.addItem(NodeItem())
+        node = NodeItem()
+        node.setSelected(True)
+        self.addItem(node)
         
 
     def scale(self, scaleSize):

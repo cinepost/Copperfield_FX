@@ -234,9 +234,7 @@ class CompositeViewerWorkareaWidget(QtOpenGL.QGLWidget):
         print "double click"
 
     def mousePressEvent(self, e):
-        print "mouse press"
         self.isPressed = True
 
     def mouseReleaseEvent(self, e):
-        print "mouse release"
         self.isPressed = False

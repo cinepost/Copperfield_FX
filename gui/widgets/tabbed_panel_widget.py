@@ -1,19 +1,12 @@
 from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
-from copper_widget import CopperWidget
 from path_bar_widget import PathBarWidget
 
-class CopperQTabWidget(QtGui.QTabWidget, CopperWidget):
-    def __init__(self, parent):      
-        QtGui.QFrame.__init__(self, parent)
-        CopperWidget.__init__(self)
-
-class TabbedPanelWidget(QtGui.QFrame, CopperWidget):
+class TabbedPanelWidget(QtGui.QFrame):
   
     def __init__(self, parent=None, engine=None):      
-        QtGui.QFrame.__init__(self, parent)
-        CopperWidget.__init__(self)
+        super(TabbedPanelWidget, self).__init__(parent)
         self.engine = engine
         self.setObjectName("tabbedPanel")
         self.initUI()
@@ -23,15 +16,12 @@ class TabbedPanelWidget(QtGui.QFrame, CopperWidget):
         layout.setSpacing(0)
         layout.setContentsMargins(0, 0, 0, 0)
 
-        self.tabs = CopperQTabWidget(self)
+        self.tabs = QtGui.QTabWidget(self)
         self.tabs.setTabsClosable(True)
         self.tabs.setMovable(True)
 
         self.tabButton = QtGui.QPushButton(self)
         self.tabButton.setObjectName("plusButton")
-        #font = self.tabButton.font()
-        #font.setBold(True)
-        #self.tabButton.setFont(font)
 
         self.menu = QtGui.QMenu(self)
         self.tabButton.setMenu(self.menu)
@@ -42,7 +32,8 @@ class TabbedPanelWidget(QtGui.QFrame, CopperWidget):
 
 
     def addPaneTab(self, widget, pane_title="Untitled"):
-        tab = self.tabs.addTab(widget, pane_title)
+        tab_index = self.tabs.addTab(widget, pane_title)
+        self.tabs.tabBar().tabButton(tab_index, QtGui.QTabBar.RightSide).resize(12,12)
         self.buildPlusButtonMenu()
 
 

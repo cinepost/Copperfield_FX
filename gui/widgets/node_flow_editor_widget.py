@@ -9,6 +9,114 @@ import numpy
 import copper
 import math 
 
+class NodeItem(QtGui.QGraphicsItem):
+    def __init__(self, parent = None, scene = None):      
+        super(NodeItem, self).__init__(parent, scene)
+        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+
+    def paint(self, painter, option, widget=None):
+        painter.drawRoundedRect(-20,-10,40,10, 1, 1);
+
+    def boundingRect(self):
+        return QtCore.QRectF(-20,-10,40,10)
+
+class NodeFlowScene(QtGui.QGraphicsScene):
+    gridSizeWidth = 180
+    gridSizeHeight = 80 
+    scaleSize = 1.0
+    def __init__(self, parent, engine=None):      
+        super(NodeFlowScene, self).__init__(parent)
+        self.initUI()
+
+    def initUI(self):
+        self.setSceneRect(-100000,-100000,200000,200000)
+        self.addItem(NodeItem())
+
+    def scale(self, scaleSize):
+        self.scaleSize *= scaleSize
+
+    def drawBackground(self, painter, rect):
+        if self.scaleSize < 0.1:
+            # Gris size is too small to display
+            painter.fillRect(rect, QtGui.QColor(32, 32, 32))
+
+        else:
+            # Draw grid
+            left = rect.left() - (rect.left() % self.gridSizeWidth)
+            top = rect.top() - (rect.top() % self.gridSizeHeight)
+     
+            lines = []
+     
+            x = left
+            while x < rect.right():
+                lines.append( QtCore.QLineF(x, rect.top(), x, rect.bottom()) )
+                x += self.gridSizeWidth
+
+            y = top
+            while y < rect.bottom():
+                lines.append( QtCore.QLineF(rect.left(), y, rect.right(), y) )
+                y += self.gridSizeHeight
+
+            painter.fillRect(rect, QtGui.QColor(32, 32, 32))
+            pen = QtGui.QPen(QtGui.QColor(64, 64, 64), 1)
+            pen.setCosmetic(True)
+            painter.setPen(pen)
+            painter.drawLines(lines)
+
+class NodeFlowEditorWidget(QtGui.QGraphicsView):
+    def __init__(self, parent, engine=None):      
+        super(NodeFlowEditorWidget, self).__init__(parent)
+        self.initUI()
+
+    def initUI(self):
+        self.scene = NodeFlowScene(self)
+        text = self.scene.addText("GraphicsView rotated clockwise")
+        text.setPos(0,0)
+        self.setScene(self.scene)
+        self.setMouseTracking(True)
+        self.setInteractive(True) 
+
+        ## No need to see scroll bars in flow editor
+        self.setHorizontalScrollBarPolicy ( QtCore.Qt.ScrollBarAlwaysOff )
+        self.setVerticalScrollBarPolicy ( QtCore.Qt.ScrollBarAlwaysOff )
+
+        format = QtOpenGL.QGLFormat.defaultFormat()
+        format.setSampleBuffers(True)
+        format.setSamples(16)
+        self.setViewport( QtOpenGL.QGLWidget(format) ) # Force OpenGL rendering mode.
+        self.setViewportUpdateMode( QtGui.QGraphicsView.FullViewportUpdate )
+        self.setDragMode( QtGui.QGraphicsView.ScrollHandDrag )
+        #self.setSceneRect(-2000,-2000,2000,2000)
+
+    def wheelEvent(self, event):
+         # Zoom Factor
+        zoomInFactor = 1.05
+        zoomOutFactor = 1 / zoomInFactor
+
+        # Set Anchors
+        self.setTransformationAnchor(QtGui.QGraphicsView.NoAnchor)
+        self.setResizeAnchor(QtGui.QGraphicsView.NoAnchor)
+
+        # Save the scene pos
+        oldPos = self.mapToScene(event.pos())
+
+        # Zoom
+        if event.delta() > 0:
+            zoomFactor = zoomInFactor
+        else:
+            zoomFactor = zoomOutFactor
+        self.scale(zoomFactor, zoomFactor)
+
+        # Get the new position
+        newPos = self.mapToScene(event.pos())
+
+        # Move scene to old position
+        delta = newPos - oldPos
+        self.translate(delta.x(), delta.y())
+
+###############
+
+
 def glCircle(x,y, radius, segments=10):
     glBegin(GL_TRIANGLE_FAN)
     glVertex2f(x,y)
@@ -37,9 +145,10 @@ class Draggable:
 class FlowNode(QtCore.QObject, Draggable):
     nodeFont = None # initialized on first construction
 
-    def __init__(self, node, parent=None):
+    def __init__(self, parent, node, viewPort, pos_x=0.0, pos_y=0.0):
         QtCore.QObject.__init__(self, parent)
         self.fontLineHeight = 8
+        self.viewPort = viewPort
         self.node = node
         self.inputs = []
         
@@ -47,15 +156,16 @@ class FlowNode(QtCore.QObject, Draggable):
 
         if self.node:
             self.title = self.node.name()
+            self.node.setPos(pos_x, pos_y) 
         else:
             self.title = "untitled" 
              
     def path(self):
         return self.node.path()
 
-    def setPos(self, x=20, y=20):
+    def setPos(self, pos_x, pos_y):
         if self.node:
-            self.node.setPos(x, y)   
+            self.node.setPos(pos_x, pos_y)   
 
     def select(self):
         self.selected = True
@@ -63,13 +173,13 @@ class FlowNode(QtCore.QObject, Draggable):
     def unselect(self):
         self.selected = False
 
-    def draw(self, selected=False, offset=(0,0), zoom=1.0):
-        x1 = self.node.x_pos * zoom + offset[0]
-        y1 = self.node.y_pos * zoom + offset[1]
-        width = self.node.width * zoom
-        height = self.node.height * zoom
-        x2 = x1 + width
-        y2 = y1 + height
+    def draw(self, selected=False):
+        half_width = self.node.width / 2.0
+        half_height = self.node.height / 2.0
+        x1 = ( self.node.x_pos - half_width ) * self.viewPort.zoom + self.viewPort.pos_x
+        y1 = ( self.node.y_pos - half_height ) * self.viewPort.zoom + self.viewPort.pos_y
+        x2 = ( self.node.x_pos + half_width ) * self.viewPort.zoom + self.viewPort.pos_x
+        y2 = ( self.node.y_pos + half_height ) * self.viewPort.zoom + self.viewPort.pos_y
 
         # node shadow
         if selected:
@@ -91,7 +201,7 @@ class FlowNode(QtCore.QObject, Draggable):
         glRectf(x1 + 1.0, y1 + 1.0, x2 - 1.0, y2 - 1.0)
         
         # draw inputs
-        if zoom > 0.2:
+        if self.viewPort.zoom > 0.2 and 1 < 0:
             i = 0
             inputs = self.node.inputs()
             inputs_area_width = width * 0.8
@@ -114,22 +224,24 @@ class FlowNode(QtCore.QObject, Draggable):
         
         glColor4f(0.85, 0.85, 0.85, 1.0)
         #self.nodeFont.setBold(True)
-        self.parent().renderText(x2 + 4, y2 - height / 2.0, self.title) # works only if parent is qglWidget ;)
+        self.parent().renderText(x2 + 4, y2, self.title) # works only if parent is qglWidget ;)
         #self.nodeFont.setBold(False)
 
-    def isInShape(self, xpos, ypos, offset=(0,0), zoom=1.0):
-        x = self.node.x_pos * zoom + offset[0]
-        y = self.node.y_pos * zoom + offset[1]
-        dw = x + self.node.width * zoom
-        dh = y + self.node.height * zoom
-        return x <= xpos <= dw and y <= ypos <= dh
+    def isInShape(self, cursor_pos_x, cursor_pos_y):
+        half_width = self.node.width / 2.0
+        half_height = self.node.height / 2.0
+        x1 = ( self.node.x_pos - half_width ) * self.viewPort.zoom + self.viewPort.pos_x
+        y1 = ( self.node.y_pos - half_height ) * self.viewPort.zoom + self.viewPort.pos_y
+        x2 = ( self.node.x_pos + half_width ) * self.viewPort.zoom + self.viewPort.pos_x
+        y2 = ( self.node.y_pos + half_height ) * self.viewPort.zoom + self.viewPort.pos_y
+        return x1 <= cursor_pos_x <= x2 and y1 <= cursor_pos_y <= y2
         
     def startDrag(self, dragObject):
-        dragObject.custom = (dragObject.startX - self.node.x_pos, dragObject.startY - self.node.y_pos)
+        dragObject.custom = (dragObject.startX / self.viewPort.zoom - self.node.x_pos + self.viewPort.pos_x, dragObject.startY / self.viewPort.zoom - self.node.y_pos + self.viewPort.pos_y)
         
     def updateDrag(self, dragObject):
-        self.node.x_pos = dragObject.x - dragObject.custom[0]
-        self.node.y_pos = dragObject.y - dragObject.custom[1]
+        self.node.x_pos = (dragObject.x - dragObject.custom[0]) / self.viewPort.zoom
+        self.node.y_pos = (dragObject.y - dragObject.custom[1]) / self.viewPort.zoom
 
     def drawDrag(self, dragObject):
         pass
@@ -140,9 +252,9 @@ class FlowNode(QtCore.QObject, Draggable):
     def __repr__(self):
         return "<FlowNode '%s'>" % self.title
 
-class NodeFlowEditorWidget(QtGui.QWidget):
+class NodeFlowEditorWidgetZ(QtGui.QWidget):
     def __init__(self, parent, engine=None):      
-        super(NodeFlowEditorWidget, self).__init__(parent)
+        super(NodeFlowEditorWidgetZ, self).__init__(parent)
         self.engine = engine
         self.initUI()
 
@@ -172,10 +284,9 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
     dragModeDraggingConnectionOutToIn = 3
     
     class DragObject:
-        def __init__(self, startX, startY, draggable, zoom):
-            self.startX = startX / zoom
-            self.startY = startY / zoom
-            self.zoom = zoom
+        def __init__(self, startX, startY, draggable):
+            self.startX = startX
+            self.startY = startY
             self.draggable = draggable
             self.custom = None
             self.x = startX
@@ -183,8 +294,8 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
             self.draggable.startDrag(self)
             
         def update(self, currentX, currentY):
-            self.x = currentX / self.zoom
-            self.y = currentY / self.zoom
+            self.x = currentX
+            self.y = currentY
             self.draggable.updateDrag(self)
             
         def drop(self):
@@ -192,6 +303,23 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
             
         def draw(self):
             self.draggable.drawDrag(self)
+
+    class ViewPort:
+        def __init__(self, pos_x=0.0, pos_y=0.0, width=100, height=100, zoom=1.0):
+            self.pos_x = pos_x
+            self.pos_y = pos_y
+            self.width = width
+            self.height = height
+            self.zoom = zoom
+
+        def setSize(self, width, height):
+            self.width = width
+            self.height = height
+
+    class Pointer:
+        def __init__(self):
+            self.x = 0.0
+            self.y = 0.0
 
     def __init__(self, parent, engine, path="/"):
         format = QtOpenGL.QGLFormat.defaultFormat()
@@ -201,10 +329,8 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
         if not self.isValid():
             raise OSError("OpenGL not supported.")
 
-        self.origin_x = 0.0
-        self.origin_y = 0.0
-        self.cursor_x = 0.0
-        self.cursor_y = 0.0
+        self.viewPort = self.ViewPort()
+        self.pointer = self.Pointer()
         self.panningMode = False
         self.engine = engine
         self.zoom = 1.0
@@ -233,8 +359,8 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
             self.network_label = None
 
         i = 0
-        dx = 130
-        dy = 50
+        dx = 170
+        dy = 80
         for node in self.engine.node(path).children():
             self.addNode(node, dx * i, dy * i)
             i += 1
@@ -248,11 +374,10 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
         
     def resizeGL(self, width, height):
         if self.isValid() and width > 0 and height > 0:        
-            self.viewport_width = width
-            self.viewport_height = height
+            self.viewPort.setSize(width, height)
             glMatrixMode(GL_PROJECTION)
             glLoadIdentity()
-            gluOrtho2D(-width/2, width/2, height/2, -height/2)
+            gluOrtho2D(0, width, height, 0)
             glViewport(0, 0, width, height)
         
     def paintGL(self):
@@ -265,21 +390,21 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
 
         # draw grid
         if self.zoom > 0.1:
-            glColor4f(0.2, 0.24, 0.30, numpy.clip(self.zoom * self.zoom, 0.0, 1.0))
+            glColor4f(0.2, 0.24, 0.30, numpy.clip(self.viewPort.zoom * self.viewPort.zoom, 0.0, 1.0))
             glBegin(GL_LINES)
             for x in range(10):
-                glVertex3f(x * 170 * self.zoom + self.origin_x, 0, 0)
-                glVertex3f(x * 170 * self.zoom + self.origin_x, self.viewport_height, 0)
+                glVertex3f(x * 170, 0, 0)
+                glVertex3f(x * 170, self.viewPort.height, 0)
 
             for y in range(10):
-                glVertex3f(0, y * 80 * self.zoom + self.origin_y, 0)
-                glVertex3f(self.viewport_width, y * 80 * self.zoom + self.origin_y, 0)
+                glVertex3f(0, y * 80 , 0)
+                glVertex3f(self.viewPort.width, y * 80, 0)
             
             glEnd()
 
 
         for node in reversed(self.nodes):
-            node.draw(selected=(node is self.selectedNode), offset=(self.origin_x, self.origin_y), zoom=self.zoom)
+            node.draw(selected=(node is self.selectedNode))
         
         #for connection in self.connections:
         #    connection.draw()
@@ -291,11 +416,10 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
             glColor4f(1, 1, 1, 0.25)
             self.renderText(10, 160, 0, self.network_label, QtGui.QFont("Helvetica", 120, 1, False))
 
-    def addNode(self, node, x, y):
-        node = FlowNode(node, self)
+    def addNode(self, node, x=0.0, y=0.0):
+        node = FlowNode(self, node, self.viewPort)
         node.setPos(x, y)
         self.nodes.append(node)
-        #self.selectNode(node)
 
     def selectNode(self, node):
         self.selectedNode = node
@@ -310,18 +434,20 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
                     
     def pickNode(self, x, y):
         for node in self.nodes:
-            if node.isInShape(x, y, offset=(self.origin_x, self.origin_y), zoom=self.zoom):
+            if node.isInShape(x, y):
                 self.selectedNode = node
                 return node
 
         self.selectedNode = None
 
     def mousePressEvent(self, event):
-        self.cursor_x, self.cursor_y = x, y =  event.x(), event.y() 
+        x, y =  event.x(), event.y() 
+        self.pointer.x = x
+        self.pointer.y = y
         if event.button() & QtCore.Qt.LeftButton:
             node = self.pickNode(x, y)
             if node:
-                self.dragObject = self.DragObject(x, y, node, self.zoom)
+                self.dragObject = self.DragObject(x, y, node)
                 i = self.nodes.index(node)
                 self.nodes[0], self.nodes[i] = self.nodes[i], self.nodes[0]
                 self.selectNode(node)
@@ -330,7 +456,7 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
             
             knob = self.pickKnob(x, y)
             if knob:
-                self.dragObject = self.DragObject(x, y, knob, self.zoom)
+                self.dragObject = self.DragObject(x, y, knob)
                 return
             
             else:
@@ -374,20 +500,7 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
         z = float(self.zoomWheelCounter) / float(self.zoomWheelResolution)
         zoom = numpy.clip(z * z, self.zoomMin, self.zoomMax)
 
-        zoom_delta = zoom - old_zoom
-        x,y = event.x(), event.y()
-
-        old_origin_x = self.origin_x
-        old_origin_y = self.origin_y
-
-        print "Cursor relateive %s %s" %  (x*old_zoom - self.origin_x, y*old_zoom - self.origin_y)
-
-        self.origin_x -= (x * old_zoom- old_origin_x) * zoom_delta
-        self.origin_y -= (y * old_zoom- old_origin_y) * zoom_delta 
-
-
-        self.zoom = zoom
-
+        self.viewPort.zoom = zoom
         self.updateGL()
 
     def mouseDoubleClickEvent(self, event):
@@ -413,9 +526,9 @@ class NodeEditorWorkareaWidget(QtOpenGL.QGLWidget):
             self.dragObject.update(event.x(), event.y())
             self.updateGL()
         elif self.panningMode:
-            self.origin_x -= self.cursor_x - event.x()
-            self.origin_y -= self.cursor_y - event.y()
-            self.cursor_x, self.cursor_y = event.x(), event.y()
+            self.viewPort.pos_x += event.x() - self.viewPort.pos_x
+            self.viewPort.pos_y += event.y() - self.viewPort.pos_y
+            #self.resizeGL(self.viewPort.width, self.viewPort.height)
             self.updateGL()
 
     def keyPressEvent(self, event):

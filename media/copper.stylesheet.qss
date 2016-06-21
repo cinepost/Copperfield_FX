@@ -143,10 +143,11 @@ QTabWidget::tab-bar {
 
 QTabBar::close-button { 
 	image: url("icons/fa/white/svg/close.svg");
-	padding: 2px;
-	margin: 2px;
 	subcontrol-position: right;
+	margin: 0px;
+	padding: 2px;
 }
+
 
 QTabBar::close-button:hover { 
 	background-color: #888;

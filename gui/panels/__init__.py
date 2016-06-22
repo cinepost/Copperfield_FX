@@ -1,0 +1,2 @@
+from composite_viewer_panel import CompositeViewPanel
+from python_shell_panel import PythonShellPanel

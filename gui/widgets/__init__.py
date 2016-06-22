@@ -1,7 +1,4 @@
-from tabbed_panel_widget import TabbedPanelWidget
-from composite_viewer_widget import CompositeViewerWidget
 from node_flow_editor_widget import NodeFlowEditorWidget
 from node_tree_editor_widget import NodeTreeEditorWidget
 from parameters_editor_widget import ParametersEditorWidget
-from python_shell_widget import PythonShellWidget
 from time_line_widget import TimeLineWidget

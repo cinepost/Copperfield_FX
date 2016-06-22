@@ -4,33 +4,32 @@ from PyQt4 import QtGui, QtCore, QtOpenGL
 import copper
 from gui.dialogs import RenderNodeDialog
 
-from gui.widgets import TabbedPanelWidget
+from gui import TabbedPanelManager
+
 from gui.widgets import TimeLineWidget
 from gui.widgets import ParametersEditorWidget
 from gui.widgets import NodeFlowEditorWidget
 from gui.widgets import NodeTreeEditorWidget
-from gui.widgets import CompositeViewerWidget
-from gui.widgets import PythonShellWidget
 
-from gui.widgets.copper_widget import CopperWidget
+from gui.panels import CompositeViewPanel
+from gui.panels import PythonShellPanel
 
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 
-class Workarea(QtGui.QWidget, CopperWidget):
+class Workarea(QtGui.QWidget):
     def __init__(self, parent=None, engine=None):
         QtGui.QWidget.__init__(self, parent)
-        CopperWidget.__init__(self)
         self.engine = engine
         self.engine.set_network_change_callback(self.rebuild_widgets)
         self.setObjectName("Workarea")
 
         # Init out engine and widgets first
         self.parmetersEditor    = ParametersEditorWidget(self, engine = self.engine)
-        self.imageViewer        = CompositeViewerWidget(self, engine = self.engine)
+        self.imageViewer        = CompositeViewPanel(self, engine = self.engine)
         self.nodeTree           = NodeTreeEditorWidget(self, engine = self.engine, viewer = self.imageViewer, params = self.parmetersEditor)
         self.nodeFlow           = NodeFlowEditorWidget(self, engine = self.engine)
         self.timeLine           = TimeLineWidget(self)
-        self.pythonShell        = PythonShellWidget(self, engine = self.engine)
+        #self.pythonShell        = PythonShellPanel(self, engine = self.engine)
 
         # Now init our UI 
         self.initUI()
@@ -45,27 +44,27 @@ class Workarea(QtGui.QWidget, CopperWidget):
         VBox.addLayout(HBox)
         VBox.addWidget(self.timeLine)
 
-        panel1 = TabbedPanelWidget(engine=self.engine)
-        panel1.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewerWidget, NodeTreeEditorWidget, NodeFlowEditorWidget])
-        panel1.addPaneTab(self.imageViewer)
+        panelMgr1 = TabbedPanelManager(engine=self.engine)
+        panelMgr1.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewPanel, NodeTreeEditorWidget, NodeFlowEditorWidget, PythonShellPanel])
+        panelMgr1.addPaneTab(self.imageViewer)
 
-        panel2 = TabbedPanelWidget(engine=self.engine)
-        panel2.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewerWidget, NodeTreeEditorWidget, NodeFlowEditorWidget])
-        panel2.addPaneTab(self.parmetersEditor)
+        panelMgr2 = TabbedPanelManager(engine=self.engine)
+        panelMgr2.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewPanel, NodeTreeEditorWidget, NodeFlowEditorWidget, PythonShellPanel])
+        panelMgr2.addPaneTab(self.parmetersEditor)
 
-        panel3 = TabbedPanelWidget(engine=self.engine)
-        panel3.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewerWidget, NodeTreeEditorWidget, NodeFlowEditorWidget])
-        panel3.addPaneTab(self.nodeFlow)
-        panel3.addPaneTab(self.nodeTree)
-        panel3.addPaneTab(self.pythonShell)
+        panelMgr3 = TabbedPanelManager(engine=self.engine)
+        panelMgr3.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewPanel, NodeTreeEditorWidget, NodeFlowEditorWidget, PythonShellPanel])
+        panelMgr3.addPaneTab(self.nodeFlow)
+        panelMgr3.addPaneTab(self.nodeTree)
+        #panelMgr3.addPaneTab(self.pythonShell)
 
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
         VSplitter.setMinimumWidth(370)
-        VSplitter.addWidget(panel2)
-        VSplitter.addWidget(panel3)
+        VSplitter.addWidget(panelMgr2)
+        VSplitter.addWidget(panelMgr3)
 
         HSplitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        HSplitter.addWidget(panel1)
+        HSplitter.addWidget(panelMgr1)
         HSplitter.addWidget(VSplitter)
         HSplitter.setStretchFactor (0, 1)
         HSplitter.setStretchFactor (1, 0)   

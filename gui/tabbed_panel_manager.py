@@ -1,12 +1,9 @@
 from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
-from path_bar_widget import PathBarWidget
-
-class TabbedPanelWidget(QtGui.QFrame):
-  
+class TabbedPanelManager(QtGui.QWidget):
     def __init__(self, parent=None, engine=None):      
-        super(TabbedPanelWidget, self).__init__(parent)
+        QtGui.QWidget.__init__(self, parent)
         self.engine = engine
         self.allowedPanelTypesList = None
         self.setObjectName("tabbedPanel")

@@ -7,8 +7,9 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
+from base_panel import BasePanel
 
-class PythonShellWidget(QtGui.QTextEdit):
+class PythonShellPanel(BasePanel, QtGui.QTextEdit):
 
     class InteractiveInterpreter(code.InteractiveInterpreter):
         def __init__(self, locals):
@@ -17,9 +18,9 @@ class PythonShellWidget(QtGui.QTextEdit):
             code.InteractiveInterpreter.runsource(self, command)
 
     def __init__(self,  parent, engine=None):
-        super(PythonShellWidget,  self).__init__(parent)
-        self.engine = engine
-        self.setObjectName("PythonShell")
+        BasePanel.__init__(self, engine)
+        QtGui.QTextEdit.__init__(self, parent)
+        self.setObjectName("PythonShellWidget")
 
         sys.stdout              = self
         sys.stderr              = self
@@ -33,14 +34,15 @@ class PythonShellWidget(QtGui.QTextEdit):
         self.interpreterLocals  = {}
 
         # initilize interpreter with self locals
-        self.initInterpreter(locals())  
+        self.initInterpreter(locals())
 
     @classmethod
     def panelTypeName(cls):
         return "Python Shell"
 
-    def copy(self):
-        return PythonShellWidget(None, engine=self.engine)
+    @classmethod
+    def hasNetworkControls(cls):
+        return False
 
     def printBanner(self):
         self.write(sys.version)
@@ -48,7 +50,6 @@ class PythonShellWidget(QtGui.QTextEdit):
         self.write('Copper python interpreter on PyQt ' + PYQT_VERSION_STR + '\n')
         msg = 'Type !hist for a history view and !hist(n) history index recall'
         self.write(msg + '\n')
-
 
     def marker(self):
         if self.multiLine:
@@ -224,4 +225,4 @@ class PythonShellWidget(QtGui.QTextEdit):
                 return None
 
         # allow all other key events
-        super(PyInterp, self).keyPressEvent(event)
+        super(PythonShellPanel, self).keyPressEvent(event)

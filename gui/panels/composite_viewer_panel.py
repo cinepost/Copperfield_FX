@@ -10,31 +10,34 @@ from PIL import Image
 
 import pyopencl as cl
 
-from path_bar_widget import PathBarWidget
+from gui.widgets.path_bar_widget import PathBarWidget
+from base_panel import BasePanel
 
-class CompositeViewerWidget(QtGui.QFrame):
+class CompositeViewPanel(BasePanel, QtGui.QWidget):
     def __init__(self, parent=None, engine=None):
-        QtGui.QFrame.__init__(self, parent)
-        self.engine = engine
+        BasePanel.__init__(self, engine)
+        QtGui.QWidget.__init__(self, parent)
+
         vbox = QtGui.QVBoxLayout()
         vbox.setSpacing(0)
         vbox.setContentsMargins(0, 0, 0, 0)
 
         path_bar = PathBarWidget(self)
-        image_viewer = CompositeViewerWorkareaWidget(self, engine)
+        image_viewer = CompositeViewWidget(self, engine)
 
         vbox.addWidget(path_bar)
         vbox.addWidget(image_viewer)
         self.setLayout(vbox)
 
-    def copy(self):
-        return CompositeViewerWidget(None, engine=self.engine)
-
     @classmethod
     def panelTypeName(cls):
         return "Composite View"
 
-class CompositeViewerWorkareaWidget(QtOpenGL.QGLWidget):
+    @classmethod
+    def hasNetworkControls(cls):
+        return True
+
+class CompositeViewWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None, engine=None):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)

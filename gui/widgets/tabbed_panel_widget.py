@@ -47,6 +47,7 @@ class TabbedPanelWidget(QtGui.QFrame):
         tab_index = self.tabs.addTab(widget, panelTitle)
         self.tabs.tabBar().tabButton(tab_index, QtGui.QTabBar.RightSide).resize(12,12)
         self.buildPlusButtonMenu() # Rebuild menu
+        return tab_index
 
 
     def addNewPaneTab(self):
@@ -58,7 +59,8 @@ class TabbedPanelWidget(QtGui.QFrame):
 
     def addNewPaneTabByType(self, panelType):
         panelWidget = panelType(self, engine=self.engine)
-        self.addPaneTab(panelWidget, panelType.panelTypeName())
+        tab_index = self.addPaneTab(panelWidget, panelType.panelTypeName())
+        self.tabs.tabBar().setCurrentIndex(tab_index)
 
 
     def setActive(self, index):

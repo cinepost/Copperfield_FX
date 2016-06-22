@@ -419,6 +419,7 @@ QTextEdit {
 	font-family: "Arial";
 	color:	#aaa;
 	background-color: #080808;
+	border: none;
 }
 
 

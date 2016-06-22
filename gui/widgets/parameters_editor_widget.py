@@ -21,9 +21,9 @@ class OpPathWidget(QtGui.QLineEdit):
     def dropEvent(self, event):
         print "Drop!"
 
-class ParametersEditorWidget(QtGui.QFrame):
+class ParametersEditorWidget(QtGui.QWidget):
     def __init__(self, parent=None, engine=None):     
-        QtGui.QFrame.__init__(self, parent) 
+        QtGui.QWidget.__init__(self, parent) 
         self.engine = engine
         self.connect(self, QtCore.SIGNAL("node_selected"), self.setNode)
         self.default_icon = QtGui.QIcon('icons/glyphicons_461_saw_blade.png')

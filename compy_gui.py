@@ -30,7 +30,7 @@ class Workarea(QtGui.QWidget, CopperWidget):
         self.nodeTree           = NodeTreeEditorWidget(self, engine = self.engine, viewer = self.imageViewer, params = self.parmetersEditor)
         self.nodeFlow           = NodeFlowEditorWidget(self, engine = self.engine)
         self.timeLine           = TimeLineWidget(self)
-        #self.python_view = PythonWidget(self, engine = self.engine)
+        self.pythonShell        = PythonShellWidget(self, engine = self.engine)
 
         # Now init our UI 
         self.initUI()
@@ -57,7 +57,7 @@ class Workarea(QtGui.QWidget, CopperWidget):
         panel3.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewerWidget, NodeTreeEditorWidget, NodeFlowEditorWidget])
         panel3.addPaneTab(self.nodeFlow)
         panel3.addPaneTab(self.nodeTree)
-        #tabs.addTab(self.python_view, "Interactive shell")
+        panel3.addPaneTab(self.pythonShell)
 
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
         VSplitter.setMinimumWidth(370)

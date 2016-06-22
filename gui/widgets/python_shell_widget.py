@@ -7,33 +7,8 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-class PythonShellWidget(QtGui.QWidget):
 
-    def __init__(self, parent, engine=None):
-        super(PythonShellWidget, self).__init__(parent)
-        self.engine = engine
-        hBox = QHBoxLayout()
-
-        self.setLayout(hBox)
-        self.textEdit = PyInterp(self)
-
-        # this is how you pass in locals to the interpreter
-        self.textEdit.initInterpreter(locals())
-        
-        self.resize(650, 300)
-        self.centerOnScreen()
-
-        hBox.addWidget(self.textEdit)
-        hBox.setMargin(0)
-        hBox.setSpacing(0)
-
-    def centerOnScreen(self):
-        # center the widget on the screen
-        resolution = QDesktopWidget().screenGeometry()
-        self.move((resolution.width()  / 2) - (self.frameSize().width()  / 2),
-                  (resolution.height() / 2) - (self.frameSize().height() / 2))
-
-class PyInterp(QTextEdit):
+class PythonShellWidget(QtGui.QTextEdit):
 
     class InteractiveInterpreter(code.InteractiveInterpreter):
         def __init__(self, locals):
@@ -41,8 +16,10 @@ class PyInterp(QTextEdit):
         def runIt(self, command):
             code.InteractiveInterpreter.runsource(self, command)
 
-    def __init__(self,  parent):
-        super(PyInterp,  self).__init__(parent)
+    def __init__(self,  parent, engine=None):
+        super(PythonShellWidget,  self).__init__(parent)
+        self.engine = engine
+        self.setObjectName("PythonShell")
 
         sys.stdout              = self
         sys.stderr              = self
@@ -55,20 +32,20 @@ class PyInterp(QTextEdit):
         self.historyIndex       = -1
         self.interpreterLocals  = {}
 
-        # setting the color for bg and text
-        palette = QPalette()
-        palette.setColor(QPalette.Base, QColor(0, 0, 0))
-        palette.setColor(QPalette.Text, QColor(0, 255, 0))
-        self.setPalette(palette)
-        self.setFont(QFont('Courier', 12))
-
         # initilize interpreter with self locals
         self.initInterpreter(locals())  
+
+    @classmethod
+    def panelTypeName(cls):
+        return "Python Shell"
+
+    def copy(self):
+        return PythonShellWidget(None, engine=self.engine)
 
     def printBanner(self):
         self.write(sys.version)
         self.write(' on ' + sys.platform + '\n')
-        self.write('PyQt4 ' + PYQT_VERSION_STR + '\n')
+        self.write('Copper python interpreter on PyQt ' + PYQT_VERSION_STR + '\n')
         msg = 'Type !hist for a history view and !hist(n) history index recall'
         self.write(msg + '\n')
 

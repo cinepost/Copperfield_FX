@@ -413,3 +413,14 @@ QScrollBar::up-arrow:vertical:hover {
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
     background: none;
 }
+
+/* PythonShell */
+QTextEdit {
+	font-family: "Arial";
+	color:	#aaa;
+	background-color: #080808;
+}
+
+
+
+

@@ -19,17 +19,16 @@ class NodeItem(QtGui.QGraphicsItem):
         pen = QtGui.QPen()
         pen.setCosmetic(True)
 
-        if option.state == QtGui.QStyle.State_Selected:
-            pen.setWidth(2)
+        if option.state & QtGui.QStyle.State_Selected:
+            pen.setWidth(3)
             painter.fillRect(QtCore.QRectF(-20,-10,40,10), QtGui.QColor(196, 196, 196))
-            painter.setPen(QtGui.QColor(250, 250, 128))
+            painter.setPen(QtGui.QColor(250, 200, 128))
             painter.drawRect(-20,-10,40,10)
         else:
             pen.setWidth(1)
             painter.fillRect(QtCore.QRectF(-20,-10,40,10), QtGui.QColor(160, 160, 160))
             painter.setPen(QtGui.QColor(128, 128, 128))
             painter.drawRect(-20,-10,40,10)
-
 
         painter.setPen(QtGui.QColor(128, 128, 128))
         painter.drawText(24, 0, "Nodename1")
@@ -40,7 +39,6 @@ class NodeItem(QtGui.QGraphicsItem):
 
     def itemChange(self, change, value):
         if change == QtGui.QGraphicsItem.ItemSelectedChange:
-            print "Node selection changed"
             if value == True:
                 # do stuff if selected
                 pass
@@ -50,33 +48,35 @@ class NodeItem(QtGui.QGraphicsItem):
 
         elif change == QtGui.QGraphicsItem.ItemPositionChange:
             # snap to grid code here
-            pass
+            print "Item moved"
 
         return QtGui.QGraphicsItem.itemChange(self, change, value)
 
 
 class NodeFlowScene(QtGui.QGraphicsScene):
-    gridSizeWidth = 180
-    gridSizeHeight = 80 
-    scaleSize = 1.0
     def __init__(self, parent=None, engine=None):      
         QtGui.QGraphicsScene.__init__(self, parent) 
+        self.gridSizeWidth = 180
+        self.gridSizeHeight = 80 
+        self.zoomLevel = 1.0
         self.initUI()
 
     def initUI(self):
-        self.setSceneRect(-100000,-100000,200000,200000)
+        self.setSceneRect(-100000, -100000, 200000, 200000)
         
         # Test node
-        node = NodeItem()
-        node.setSelected(True)
-        self.addItem(node)
-        
+        self.addNode()
+        self.addNode()
 
-    def scale(self, scaleSize):
-        self.scaleSize *= scaleSize
+    def addNode(self):
+        node = NodeItem()
+        self.addItem(node)
+
+    def zoom(self, zoomFactor):
+        self.zoomLevel *= zoomFactor
 
     def drawBackground(self, painter, rect):
-        if self.scaleSize < 0.1:
+        if self.zoomLevel < 0.1:
             # Gris size is too small to display
             painter.fillRect(rect, QtGui.QColor(32, 32, 32))
 
@@ -103,6 +103,18 @@ class NodeFlowScene(QtGui.QGraphicsScene):
             painter.setPen(pen)
             painter.drawLines(lines)
 
+    def mousePressEvent(self, event):
+        picked_item = self.itemAt(event.scenePos())
+
+        # Bring picked items to front
+        if picked_item:
+            for item in self.items():
+                item.setZValue(0)
+
+            picked_item.setZValue(1)
+
+        super(NodeFlowScene, self).mousePressEvent(event) # propogate event to items
+
 class NodeFlowEditorWidget(QtGui.QGraphicsView):
     def __init__(self, parent=None, engine=None):      
         QtGui.QGraphicsView.__init__(self, parent) 
@@ -111,8 +123,6 @@ class NodeFlowEditorWidget(QtGui.QGraphicsView):
 
     def initUI(self):
         self.scene = NodeFlowScene(self)
-        text = self.scene.addText("GraphicsView rotated clockwise")
-        text.setPos(0,0)
         self.setScene(self.scene)
         self.setMouseTracking(True)
         self.setInteractive(True) 
@@ -127,7 +137,6 @@ class NodeFlowEditorWidget(QtGui.QGraphicsView):
         self.setViewport( QtOpenGL.QGLWidget(format) ) # Force OpenGL rendering mode.
         self.setViewportUpdateMode( QtGui.QGraphicsView.FullViewportUpdate )
         self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
-        #self.setDragMode( QtGui.QGraphicsView.ScrollHandDrag )
 
     def copy(self):
         return NodeFlowEditorWidget(None, engine=self.engine)
@@ -135,6 +144,7 @@ class NodeFlowEditorWidget(QtGui.QGraphicsView):
     @classmethod
     def panelTypeName(cls):
         return "Network View"
+
 
     def wheelEvent(self, event):
          # Zoom Factor
@@ -154,6 +164,7 @@ class NodeFlowEditorWidget(QtGui.QGraphicsView):
         else:
             zoomFactor = zoomOutFactor
         self.scale(zoomFactor, zoomFactor)
+        self.scene.zoom(zoomFactor) # This is used by scene view to determine current viewport zoom
 
         # Get the new position
         newPos = self.mapToScene(event.pos())

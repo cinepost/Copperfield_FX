@@ -8,14 +8,14 @@ from copper.translators import CopperNullTranslator, boomShotTranslator
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
 
-class CLC_Engine(OP_Manager):
+class Copper_Engine(OP_Manager):
 	programs 	= {}
 	app 		= None
 	filters		= {}
 	network_cb  = None
 
 	def __init__(self, device_type="GPU", device_index=None, ops={}, cl_path=""): # "cpu" or "gpu" here or "ALL"
-		super(CLC_Engine, self).__init__(self, None, ["comp"]) # only CLC_Composition class nodes allowed to be created at the root/engine level
+		super(Copper_Engine, self).__init__(self, None, ["comp"]) # only CLC_Composition class nodes allowed to be created at the root/engine level
 		self.__time__= 0
 		self.__frame__= 0
 		self.__fps__ = 25.0

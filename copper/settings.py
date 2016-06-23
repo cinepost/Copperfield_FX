@@ -9,4 +9,4 @@ out_modules = (
 	'copper.rops.rop_composite'
 ),
 
-cl_path = "$COMPY_HOME/copper/cl"
+cl_path = "$COPPER_HOME/copper/cl"

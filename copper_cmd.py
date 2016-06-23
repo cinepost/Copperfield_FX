@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
+
 import argparse
 
 def main():

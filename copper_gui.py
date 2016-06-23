@@ -1,3 +1,5 @@
+#!/usr/local/bin/python
+
 import sys, os
 from PyQt4 import QtGui, QtCore, QtOpenGL
 
@@ -122,7 +124,8 @@ class Window(QtGui.QMainWindow):
         self.setCentralWidget(self.workarea)
 
 
-        exitAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_388_exit.png'), 'Exit', self)
+        exitAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_358_file_import.png'), 'Exit', self)
+        exitAction.setObjectName("ActionExitApp")
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(self.close)

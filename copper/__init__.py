@@ -2,14 +2,14 @@ import os
 os.environ["PYOPENCL_COMPILER_OUTPUT"] = "1"
 os.environ["PYOPENCL_NO_CACHE"] = "1"
 
-if not os.environ.get("COMPY_HOME"):
+if not os.environ.get("COPPER_HOME"):
 	cwd = os.getcwd()
-	print "Using current directory %s as $COMPY_HOME !!!" % cwd
-	os.environ["COMPY_HOME"] = cwd
+	print "Using current directory %s as $COPPER_HOME !!!" % cwd
+	os.environ["COPPER_HOME"] = cwd
 
 import inspect
 import string
-from op_engine import CLC_Engine as engine
+from op_engine import Copper_Engine as engine
 import settings
 
 print "Loading operators..."

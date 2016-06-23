@@ -169,7 +169,7 @@ if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
     app.setStyle(QtGui.QStyleFactory.create('Plastique'))
 
-    app.setWindowIcon(QtGui.QIcon('icons/biohazard.png'))
+    app.setWindowIcon(QtGui.QIcon('icons/copper_icon.png'))
 
     engine = copper.CreateEngine("GPU")
     engine.test_project()

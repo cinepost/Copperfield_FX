@@ -124,24 +124,24 @@ class Window(QtGui.QMainWindow):
         self.setCentralWidget(self.workarea)
 
 
-        exitAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_358_file_import.png'), 'Exit', self)
+        exitAction = QtGui.QAction(QtGui.QIcon('icons/main/exit.svg'), 'Exit', self)
         exitAction.setObjectName("ActionExitApp")
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(self.close)
 
-        openAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_358_file_import.png'), 'Open project', self)
+        openAction = QtGui.QAction(QtGui.QIcon('icons/main/document_open.svg'), 'Open project', self)
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open project')
         openAction.triggered.connect(self.open_project)
 
-        saveAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_359_file_export.png'), 'Save project', self)
+        saveAction = QtGui.QAction(QtGui.QIcon('icons/main/document_save.svg'), 'Save project', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.setStatusTip('Save project')
         saveAction.triggered.connect(self.save_project)
 
 
-        reloadStylAction = QtGui.QAction(QtGui.QIcon('icons/glyphicons_082_roundabout.png'), 'Reload QSS', self)
+        reloadStylAction = QtGui.QAction(QtGui.QIcon('icons/main/reload.svg'), 'Reload QSS', self)
         reloadStylAction.setShortcut('Ctrl+R')
         reloadStylAction.setStatusTip('Reload style')
         reloadStylAction.triggered.connect(self.load_style)
@@ -166,7 +166,7 @@ class Window(QtGui.QMainWindow):
         
         self.setWindowTitle("Copperfield")
         self.statusBar().showMessage('Ready...')
-        self.show()       
+
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
@@ -177,6 +177,9 @@ if __name__ == '__main__':
     engine = copper.CreateEngine("GPU")
     engine.test_project()
 
-    win = Window(engine)
-    win.load_style()
+    window = Window(engine)
+    window.load_style()
+    window.show()    
+    window.raise_() 
+    window.activateWindow()
     sys.exit(app.exec_())

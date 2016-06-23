@@ -48,7 +48,14 @@ class ParametersWidget(QtGui.QWidget):
         self.parm_box = QtGui.QVBoxLayout(self)
         self.parm_box.setSpacing(2)
         self.parm_box.setContentsMargins(0, 0, 0, 0)
+        no_op_label = QtGui.QLabel("No Operator Selected")
+        no_op_label.setObjectName("info")
+        no_op_label.setSizePolicy( QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum ))
+        no_op_label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
+        self.parm_box.addStretch(1)
+        self.parm_box.addWidget(no_op_label)
+        self.parm_box.addStretch(1)
 
         #Container Widget        
         widget = QtGui.QWidget(self)
@@ -58,7 +65,6 @@ class ParametersWidget(QtGui.QWidget):
 
         scroll = QtGui.QScrollArea()
         scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        scroll.setStyleSheet("QScrollArea {background-color: #f00; border: none;}")
         scroll.setWidgetResizable(True)
         scroll.setWidget(widget)
 

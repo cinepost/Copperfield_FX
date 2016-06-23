@@ -185,3 +185,14 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         delta = newPos - oldPos
         self.translate(delta.x(), delta.y())
 
+    def keyPressEvent(self, event):
+        if event.modifiers() == QtCore.Qt.AltModifier:
+            self.setInteractive(False)
+            self.setDragMode( QtGui.QGraphicsView.ScrollHandDrag )
+
+    def keyReleaseEvent(self, event):
+        self.setInteractive(True)
+        self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
+
+
+

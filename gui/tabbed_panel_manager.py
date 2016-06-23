@@ -7,26 +7,44 @@ class TabbedPanelManager(QtGui.QFrame):
         self.engine = engine
         self.allowedPanelTypesList = None
         self.setObjectName("tabbedPanel")
-        self.initUI()
-        
-    def initUI(self):
-        layout = QtGui.QVBoxLayout()
-        layout.setSpacing(0)
-        layout.setContentsMargins(0, 0, 0, 0)
+
+        self.layout = QtGui.QVBoxLayout()
+        self.layout.setSpacing(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
 
         self.tabs = QtGui.QTabWidget(self)
         self.tabs.setTabsClosable(True)
         self.tabs.setMovable(True)
 
-        self.tabButton = QtGui.QPushButton(self)
-        self.tabButton.setObjectName("plusButton")
+        ### Corner widget
 
-        self.plusButtonMenu = QtGui.QMenu(self)
-        self.tabButton.setMenu(self.plusButtonMenu)
-        self.tabs.setCornerWidget(self.tabButton)
+        self.corner_widget = QtGui.QWidget(self)
+        self.corner_widget_layout = QtGui.QHBoxLayout()
+        self.corner_widget_layout.setSpacing(0)
+        self.corner_widget_layout.setContentsMargins(0, 0, 0, 0)
+        self.corner_widget.setLayout(self.corner_widget_layout) 
 
-        layout.addWidget(self.tabs)
-        self.setLayout(layout)
+        self.plus_button = QtGui.QPushButton(self)
+        self.plus_button.setObjectName("plusButton")
+
+        self.plus_button_menu = QtGui.QMenu(self)
+        self.plus_button.setMenu(self.plus_button_menu)
+
+        self.arrow_button = QtGui.QPushButton(self)
+        self.arrow_button.setObjectName("arrowButton")
+
+        self.corner_widget_layout.addWidget(self.plus_button)
+        self.corner_widget_layout.addStretch(100)
+        self.corner_widget_layout.addWidget(self.arrow_button)
+
+        self.corner_widget.setSizePolicy( QtGui.QSizePolicy( QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Preferred ))
+
+        self.tabs.setCornerWidget(self.corner_widget)
+
+        ###
+
+        self.layout.addWidget(self.tabs)
+        self.setLayout(self.layout)
         self.buildPlusButtonMenu() # Rebuild menu
 
 
@@ -65,22 +83,22 @@ class TabbedPanelManager(QtGui.QFrame):
 
 
     def buildPlusButtonMenu(self):
-        if not self.plusButtonMenu.isEmpty():
-            self.plusButtonMenu.clear()
+        if not self.plus_button_menu.isEmpty():
+            self.plus_button_menu.clear()
 
-        action_new_tab = self.plusButtonMenu.addAction("New Pane Tab")
+        action_new_tab = self.plus_button_menu.addAction("New Pane Tab")
         action_new_tab.triggered.connect(self.addNewPaneTab)
 
-        new_tab_type_submenu = self.plusButtonMenu.addMenu("New Pane Tab Type")
+        new_tab_type_submenu = self.plus_button_menu.addMenu("New Pane Tab Type")
         if self.allowedPanelTypesList:
             for panel_type in self.allowedPanelTypesList:
                 action = new_tab_type_submenu.addAction(panel_type.panelTypeName())
                 action.triggered[()].connect(lambda arg=panel_type: self.addNewPaneTabByType(arg))
 
-        self.plusButtonMenu.addSeparator()
+        self.plus_button_menu.addSeparator()
         currentTabIndex = self.tabs.currentIndex()
         for index in range(self.tabs.count()):
-            action = self.plusButtonMenu.addAction(self.tabs.tabText(index))
+            action = self.plus_button_menu.addAction(self.tabs.tabText(index))
             action.setCheckable(True)
             if index is currentTabIndex:
                 action.setChecked(True)

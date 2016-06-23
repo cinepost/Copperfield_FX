@@ -43,7 +43,7 @@ QLineEdit {
 
 QLineEdit[readOnly="true"] { background-color: gray; }
 
-QGraphicsView {
+QGraphicsView, QScrollArea{
 	border: none;
 }
 
@@ -76,17 +76,31 @@ QSplitter::handle:vertical:hover {
     background-color: #654;
 }
 
+QLabel#info, QLabel#info:hover {
+	color: #aaa;
+	border: none;
+	background: none;
+}
 
 /* Pane Tabs Editor side widget "Plus" button */
 QPushButton#plusButton {
-    background: none;
     image: url("icons/fa/white/svg/plus.svg");
     border: none;
-    color: #fff;
     font-weight: bold;
     width: 12px;
     height: 12px;
     padding: 2px;
+    outline: 0;
+}
+
+QPushButton#arrowButton {
+    image: url("icons/tango/arrow_down.svg");
+    border: none;
+    font-weight: bold;
+    width: 14px;
+    height: 14px;
+    padding: 1px;
+    outline: 0;
 }
 
 QPushButton#plusButton::menu-indicator {
@@ -95,15 +109,6 @@ QPushButton#plusButton::menu-indicator {
     height: 0;
 }
 
-QPushButton#plusButton:hover {
-	background-color: #888;
-}
-
-QPushButton#plusButton:pressed {
-	border-left: 1px solid #641;
-	border-top: 1px solid #641;
-	background-color: #972;
-}
 
 
 /* QFrame */

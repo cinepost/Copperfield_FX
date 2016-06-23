@@ -1,2 +1,5 @@
-from composite_viewer_panel import CompositeViewPanel
+from parameters_panel import ParametersPanel
+from network_view_panel import NetworkViewPanel
+from tree_view_panel import TreeViewPanel
+from composite_view_panel import CompositeViewPanel
 from python_shell_panel import PythonShellPanel

@@ -1,6 +1,8 @@
 from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
-from path_bar_widget import PathBarWidget
+
+from gui.widgets import PathBarWidget
+from base_panel import BasePanel
 
 def clearParametersLayout(layout):
     pass
@@ -11,18 +13,28 @@ def clearParametersLayout(layout):
         elif child.layout() is not None:
             clearParametersLayout(child.layout())
 
+class ParametersPanel(BasePanel):
+    def __init__(self, parent=None, engine=None):  
+        BasePanel.__init__(self, parent)    
+        self.initUI()
 
-class OpPathWidget(QtGui.QLineEdit):
-    def __init__(self, contents, parent=None):
-        super(OpPathWidget, self).__init__(contents, parent)
-        print "OpPathWidget"
-        self.setAcceptDrops(True)
+    def initUI(self):
+        self.path_bar_widget = PathBarWidget(self)
+        self.parameters_widget = ParametersWidget(self)
 
-    def dropEvent(self, event):
-        print "Drop!"
+        self.setNetworkControlsWidget(self.path_bar_widget)
+        self.addWidget(self.parameters_widget)
 
-class ParametersEditorWidget(QtGui.QWidget):
-    def __init__(self, parent=None, engine=None):     
+    @classmethod
+    def panelTypeName(cls):
+        return "Parameters"
+
+    @classmethod
+    def hasNetworkControls(cls):
+        return True
+
+class ParametersWidget(QtGui.QWidget):
+    def __init__(self, parent=None, engine=None):    
         QtGui.QWidget.__init__(self, parent) 
         self.engine = engine
         self.connect(self, QtCore.SIGNAL("node_selected"), self.setNode)
@@ -40,7 +52,6 @@ class ParametersEditorWidget(QtGui.QWidget):
 
         #Container Widget        
         widget = QtGui.QWidget(self)
-        #widget.setStyleSheet("QWidget {background-color: #0f0; border: none;}")
 
         widget.setLayout(self.parm_box)
         widget.setObjectName("Parameters")
@@ -51,26 +62,16 @@ class ParametersEditorWidget(QtGui.QWidget):
         scroll.setWidgetResizable(True)
         scroll.setWidget(widget)
 
-        self.path_bar = PathBarWidget(self)
         self.header_bar = QtGui.QHBoxLayout()
 
         vbox = QtGui.QVBoxLayout()
         vbox.setContentsMargins(0, 0, 0, 0)
 
-        vbox.addWidget(self.path_bar)
         vbox.addLayout(self.header_bar)
         vbox.addWidget(scroll)
 
         self.setLayout(vbox)
         self.setAcceptDrops(True)
-
-    @classmethod
-    def panelTypeName(cls):
-        return "Parameters"
-
-
-    def copy(self):
-        return ParametersEditorWidget(None, engine=self.engine)
 
 
     def BrowseFile(self, lineEdit):

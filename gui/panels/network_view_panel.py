@@ -3,11 +3,32 @@ from OpenGL.GL import *
 from OpenGL import GL
 from OpenGL.GLU import *
 
-from path_bar_widget import PathBarWidget
-
 import numpy
 import copper
-import math 
+import math
+
+from gui.widgets import PathBarWidget
+from base_panel import BasePanel
+
+class NetworkViewPanel(BasePanel):
+    def __init__(self, parent=None, engine=None):  
+        BasePanel.__init__(self, parent) 
+        self.initUI()
+
+    def initUI(self):
+        self.path_bar_widget = PathBarWidget(self)
+        self.network_view_widget = NetworkViewWidget(self)
+
+        self.setNetworkControlsWidget(self.path_bar_widget)
+        self.addWidget(self.network_view_widget)
+
+    @classmethod
+    def panelTypeName(cls):
+        return "Network View"
+
+    @classmethod
+    def hasNetworkControls(cls):
+        return True
 
 class NodeItem(QtGui.QGraphicsItem):
     def __init__(self, parent=None, scene=None):      
@@ -115,10 +136,9 @@ class NodeFlowScene(QtGui.QGraphicsScene):
 
         super(NodeFlowScene, self).mousePressEvent(event) # propogate event to items
 
-class NodeFlowEditorWidget(QtGui.QGraphicsView):
-    def __init__(self, parent=None, engine=None):      
+class NetworkViewWidget(QtGui.QGraphicsView):
+    def __init__(self, parent=None, engine=None):  
         QtGui.QGraphicsView.__init__(self, parent) 
-        self.engine = engine
         self.initUI()
 
     def initUI(self):
@@ -137,14 +157,6 @@ class NodeFlowEditorWidget(QtGui.QGraphicsView):
         self.setViewport( QtOpenGL.QGLWidget(format) ) # Force OpenGL rendering mode.
         self.setViewportUpdateMode( QtGui.QGraphicsView.FullViewportUpdate )
         self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
-
-    def copy(self):
-        return NodeFlowEditorWidget(None, engine=self.engine)
-
-    @classmethod
-    def panelTypeName(cls):
-        return "Network View"
-
 
     def wheelEvent(self, event):
          # Zoom Factor

@@ -1,4 +1,2 @@
-from node_flow_editor_widget import NodeFlowEditorWidget
-from node_tree_editor_widget import NodeTreeEditorWidget
-from parameters_editor_widget import ParametersEditorWidget
 from time_line_widget import TimeLineWidget
+from path_bar_widget import PathBarWidget

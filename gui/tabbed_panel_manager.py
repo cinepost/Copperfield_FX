@@ -1,9 +1,9 @@
 from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
-class TabbedPanelManager(QtGui.QWidget):
+class TabbedPanelManager(QtGui.QFrame):
     def __init__(self, parent=None, engine=None):      
-        QtGui.QWidget.__init__(self, parent)
+        QtGui.QFrame.__init__(self, parent)
         self.engine = engine
         self.allowedPanelTypesList = None
         self.setObjectName("tabbedPanel")

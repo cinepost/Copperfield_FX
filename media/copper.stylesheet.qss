@@ -31,6 +31,22 @@ QToolButton:pressed , QPushButton:pressed{
     background-color: #972;
 }
 
+QLineEdit {
+	color: #fff;
+	border: 2px solid #222;
+	border-style: groove;
+	margin: 1px;
+	height: 20px;
+	background-color: #101010;
+	outline: 0;
+}
+
+QLineEdit[readOnly="true"] { background-color: gray; }
+
+QGraphicsView {
+	border: none;
+}
+
 /* Splitters */
 QSplitter::handle {
     width: 4px;
@@ -91,7 +107,7 @@ QPushButton#plusButton:pressed {
 
 
 /* QFrame */
-QFrame#tabbedPanel {
+QWidget#tabbedPanel {
 	border: none;
 	background-color: #262626;
 }
@@ -100,19 +116,21 @@ QFrame#tabbedPanel {
 QFrame#pathBar {
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #444, stop:1 #363636);
 	border-bottom: 1px solid #000;
+	margin: 0;
+	padding: 0;
 }
 
 QFrame#pathBar QToolButton {
 	background: none;
 	border: none;
-	width: 10px;
-	height: 10px;
-	padding: 6px;
+	padding: 4px;
+	width: 16px;
+	height: 16px;
 	margin: 1px;
 }
 
 QFrame#pathBar QToolButton:hover {
-    background-color: #666;
+    background-color: #888;
 }
 
 QFrame#pathBar QToolButton:pressed {
@@ -122,17 +140,23 @@ QFrame#pathBar QToolButton:pressed {
 }
 
 QFrame#pathBar QToolButton#back {
-	image: url("icons/fa/white/svg/arrow-left.svg");
-	color: rgba(255, 255, 255, 10);
+	image: url("icons/tango/go-previous.svg");
+	padding: 4px;
+	width: 16px;
+	height: 16px;
 }
 
 QFrame#pathBar QToolButton#fwd {
-	image: url("icons/fa/white/svg/arrow-right.svg");
+	image: url("icons/tango/go-next.svg");
 }
 
 /* Pane Tab Editor tabs */
+QFrame#tabbedPanel {
+	background-color: #282828;
+}
+
 QTabWidget::pane {
-	background-color: #333;
+	background-color: #f33;
 	border: none;
 }
 
@@ -140,7 +164,6 @@ QTabWidget::tab-bar {
     alignment: left;
     border: none;
 }
-
 
 QTabBar::close-button { 
 	image: url("icons/fa/white/svg/close.svg");
@@ -166,7 +189,7 @@ QTabBar::tab {
     border-right: 1px solid #222;
     border-left: 1px solid #222;
     border-bottom: 1px solid #222;
-    height: 20px;
+    height: 18px;
 }
 
 QTabBar::tab:selected {
@@ -267,18 +290,6 @@ QWidget#Parameters QLabel:hover {
 	border: 1px solid #000;
 	background-color: #666;
 }
-
-QWidget#Parameters QLineEdit {
-	color: #fff;
-	border: 2px solid #222;
-	border-style: groove;
-	margin: 1px;
-	height: 20px;
-	background-color: #101010;
-	outline: 0;
-}
-
-QWidget#Parameters QLineEdit[readOnly="true"] { background-color: gray; }
 
 QWidget#Parameters QCheckBox {
 	outline: 0;

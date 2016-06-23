@@ -1,26 +1,30 @@
 from PyQt4 import QtGui, QtCore
-from path_bar_widget import PathBarWidget
 
-class NodeTreeEditorWidget(QtGui.QFrame):
+from gui.widgets import PathBarWidget
+from base_panel import BasePanel
+
+class TreeViewPanel(BasePanel):
     def __init__(self, parent=None, engine=None, viewer=None, params=None):      
-        QtGui.QFrame.__init__(self, parent)
+        BasePanel.__init__(self, parent)
         self.engine = engine
-        vbox = QtGui.QVBoxLayout(self)
-        vbox.setContentsMargins(0, 0, 0, 0)
-        pathBar = PathBarWidget(self, engine=engine)
-        nodeTreeEditor=NodeTreeEditor(self, engine=engine, viewer=viewer, params=params)
-        vbox.addWidget(pathBar)
-        vbox.addWidget(nodeTreeEditor)
-        self.setLayout(vbox)
+        self.initUI()
 
-    def copy(self):
-        return NodeTreeEditorWidget(None, engine=self.engine)
+    def initUI(self):
+        self.path_bar_widget = PathBarWidget(self, engine=self.engine)
+        self.tree_view_widget = TreeViewWidget(self, engine=self.engine)
+
+        self.setNetworkControlsWidget(self.path_bar_widget)
+        self.addWidget(self.tree_view_widget)
 
     @classmethod
     def panelTypeName(cls):
         return "Tree View"
 
-class NodeTreeEditor(QtGui.QTreeWidget):
+    @classmethod
+    def hasNetworkControls(cls):
+        return True
+
+class TreeViewWidget(QtGui.QTreeWidget):
     def __init__(self, parent=None, engine=None, viewer=None, params=None):      
         QtGui.QTreeWidget.__init__(self, parent)
 

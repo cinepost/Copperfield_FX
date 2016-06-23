@@ -1,8 +1,14 @@
 from PyQt4 import QtGui
 
-class BasePanel(object):    
-    def __init__(self, engine=None):
+class BasePanel(QtGui.QFrame):    
+    def __init__(self, parent=None, engine=None):
+        QtGui.QFrame.__init__(self, parent)
         self.engine = engine
+        self.network_controls_widget = None
+        self.panel_layout = QtGui.QVBoxLayout()
+        self.panel_layout.setSpacing(0)
+        self.panel_layout.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(self.panel_layout)
 
     def copyPanel(self):
         '''
@@ -24,3 +30,23 @@ class BasePanel(object):
         This method is used to determine particular panel type implements network navigation control aka path bar
         '''
         raise NotImplementedError
+
+    def getNetworkControlsWidget(self):
+        '''
+        This method is used by UI to get control of network_controls_widget (whether it path bar or anything else) to hide and unhide it. Just mimiking dad's beheavior
+        '''
+        return self.network_controls_widget
+
+    def setNetworkControlsWidget(self, widget):
+        if not self.network_controls_widget:
+            ### Add network controls widget
+            self.network_controls_widget = widget
+            self.panel_layout.insertWidget(0, self.network_controls_widget)
+        else:
+            raise BaseException("%s network controls widget already set !!!" % self.__class__)
+
+    def addLayout(self, layout):
+        self.panel_layout.addLayout(layout)
+
+    def addWidget(self, widget):
+        self.panel_layout.addWidget(widget)

@@ -7,10 +7,10 @@ from gui.dialogs import RenderNodeDialog
 from gui import TabbedPanelManager
 
 from gui.widgets import TimeLineWidget
-from gui.widgets import ParametersEditorWidget
-from gui.widgets import NodeFlowEditorWidget
-from gui.widgets import NodeTreeEditorWidget
 
+from gui.panels import ParametersPanel
+from gui.panels import NetworkViewPanel
+from gui.panels import TreeViewPanel
 from gui.panels import CompositeViewPanel
 from gui.panels import PythonShellPanel
 
@@ -23,13 +23,15 @@ class Workarea(QtGui.QWidget):
         self.engine.set_network_change_callback(self.rebuild_widgets)
         self.setObjectName("Workarea")
 
-        # Init out engine and widgets first
-        self.parmetersEditor    = ParametersEditorWidget(self, engine = self.engine)
+        # Basic UI panels
+        self.parmetersEditor    = ParametersPanel(self, engine = self.engine)
+        self.nodeFlow           = NetworkViewPanel(self, engine = self.engine)
         self.imageViewer        = CompositeViewPanel(self, engine = self.engine)
-        self.nodeTree           = NodeTreeEditorWidget(self, engine = self.engine, viewer = self.imageViewer, params = self.parmetersEditor)
-        self.nodeFlow           = NodeFlowEditorWidget(self, engine = self.engine)
-        self.timeLine           = TimeLineWidget(self)
+        self.nodeTree           = TreeViewPanel(self, engine = self.engine, viewer = self.imageViewer, params = self.parmetersEditor)
         #self.pythonShell        = PythonShellPanel(self, engine = self.engine)
+
+        # TimeLine widget
+        self.timeLine           = TimeLineWidget(self)
 
         # Now init our UI 
         self.initUI()
@@ -45,15 +47,15 @@ class Workarea(QtGui.QWidget):
         VBox.addWidget(self.timeLine)
 
         panelMgr1 = TabbedPanelManager(engine=self.engine)
-        panelMgr1.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewPanel, NodeTreeEditorWidget, NodeFlowEditorWidget, PythonShellPanel])
+        panelMgr1.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr1.addPaneTab(self.imageViewer)
 
         panelMgr2 = TabbedPanelManager(engine=self.engine)
-        panelMgr2.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewPanel, NodeTreeEditorWidget, NodeFlowEditorWidget, PythonShellPanel])
+        panelMgr2.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr2.addPaneTab(self.parmetersEditor)
 
         panelMgr3 = TabbedPanelManager(engine=self.engine)
-        panelMgr3.setAllowedPanelTypes([ParametersEditorWidget, CompositeViewPanel, NodeTreeEditorWidget, NodeFlowEditorWidget, PythonShellPanel])
+        panelMgr3.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr3.addPaneTab(self.nodeFlow)
         panelMgr3.addPaneTab(self.nodeTree)
         #panelMgr3.addPaneTab(self.pythonShell)

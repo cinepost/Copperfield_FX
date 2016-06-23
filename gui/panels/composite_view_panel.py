@@ -10,24 +10,18 @@ from PIL import Image
 
 import pyopencl as cl
 
-from gui.widgets.path_bar_widget import PathBarWidget
+from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
-class CompositeViewPanel(BasePanel, QtGui.QWidget):
+class CompositeViewPanel(BasePanel):
     def __init__(self, parent=None, engine=None):
-        BasePanel.__init__(self, engine)
-        QtGui.QWidget.__init__(self, parent)
+        BasePanel.__init__(self, parent)
 
-        vbox = QtGui.QVBoxLayout()
-        vbox.setSpacing(0)
-        vbox.setContentsMargins(0, 0, 0, 0)
+        self.path_bar_widget = PathBarWidget(self)
+        self.image_view_widget = CompositeViewWidget(self, engine)
 
-        path_bar = PathBarWidget(self)
-        image_viewer = CompositeViewWidget(self, engine)
-
-        vbox.addWidget(path_bar)
-        vbox.addWidget(image_viewer)
-        self.setLayout(vbox)
+        self.setNetworkControlsWidget(self.path_bar_widget)
+        self.addWidget(self.image_view_widget)
 
     @classmethod
     def panelTypeName(cls):
@@ -54,7 +48,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
         self.setCursor(QtCore.Qt.CrossCursor)
 
-        self.scale = 1.0 
+        self.zoom = 1.0 
         self.pivot_x = 0.0
         self.pivot_y = 0.0
 
@@ -103,12 +97,17 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         if not self.isValid():
             return
 
+        #glMatrixMode(GL_PROJECTION)
+        #glLoadIdentity()
+        #glOrtho(-self.width/2.0, self.width/2.0, -self.height/2.0, self.height/2.0, -100.0, 100.0)
+        #glMatrixMode(GL_MODELVIEW)
+
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glClear(GL_COLOR_BUFFER_BIT)
 
         glLoadIdentity()
         glTranslated (0.0 + self.pivot_x, 0.0 - self.pivot_y, -10.0)
-        glScaled (1.0 * self.scale, 1.0 * self.scale, 1.0)
+        glScaled (1.0 * self.zoom, 1.0 * self.zoom, 1.0)
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
         self.drawCopNodeImageData()
@@ -130,6 +129,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glFlush()
 
     def resizeGL(self, width, height):
+        self.width = width
+        self.height = height
         if self.isValid() and width > 0 and height > 0:
             glViewport(0, 0, width, height)
             glMatrixMode(GL_PROJECTION)
@@ -146,13 +147,21 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
         # bind default texture here  
         self.texid_gl = self.bindTexture(QtGui.QImage("media/deftex_02.jpg"), GL_TEXTURE_2D, GL_RGBA) 
+        glBindTexture(GL_TEXTURE_2D, self.texid_gl)
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
+        glBindTexture(GL_TEXTURE_2D, 0)
+
         self.texid_cl = glGenTextures(1)
 
         glBindTexture(GL_TEXTURE_2D, self.texid_cl)
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glBindTexture(GL_TEXTURE_2D, 0)
 
@@ -217,6 +226,19 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.img_half_height = self.image_height / 2.0
         self.updateGL()        
 
+    def wheelEvent(self, event):
+         # Zoom Factor
+        zoomInFactor = 1.05
+        zoomOutFactor = 1 / zoomInFactor
+
+        # Zoom
+        if event.delta() > 0:
+            zoomFactor = zoomInFactor
+        else:
+            zoomFactor = zoomOutFactor
+
+        self.zoom *= zoomFactor
+        self.updateGL()
 
     def mouseMoveEvent(self, mouseEvent):
         if int(mouseEvent.buttons()) != QtCore.Qt.NoButton :

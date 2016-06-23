@@ -9,7 +9,22 @@ from PyQt4.QtCore import *
 
 from base_panel import BasePanel
 
-class PythonShellPanel(BasePanel, QtGui.QTextEdit):
+class PythonShellPanel(BasePanel):
+    def __init__(self, parent=None, engine=None, viewer=None, params=None):      
+        BasePanel.__init__(self, parent)
+        self.engine = engine
+        self.python_shell_widget = PythonShellWidget(self, engine=self.engine)
+        self.addWidget(self.python_shell_widget)
+
+    @classmethod
+    def panelTypeName(cls):
+        return "Python Shell"
+
+    @classmethod
+    def hasNetworkControls(cls):
+        return False
+
+class PythonShellWidget(QtGui.QTextEdit):
 
     class InteractiveInterpreter(code.InteractiveInterpreter):
         def __init__(self, locals):
@@ -18,7 +33,6 @@ class PythonShellPanel(BasePanel, QtGui.QTextEdit):
             code.InteractiveInterpreter.runsource(self, command)
 
     def __init__(self,  parent, engine=None):
-        BasePanel.__init__(self, engine)
         QtGui.QTextEdit.__init__(self, parent)
         self.setObjectName("PythonShellWidget")
 
@@ -35,14 +49,6 @@ class PythonShellPanel(BasePanel, QtGui.QTextEdit):
 
         # initilize interpreter with self locals
         self.initInterpreter(locals())
-
-    @classmethod
-    def panelTypeName(cls):
-        return "Python Shell"
-
-    @classmethod
-    def hasNetworkControls(cls):
-        return False
 
     def printBanner(self):
         self.write(sys.version)

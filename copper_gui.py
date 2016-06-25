@@ -18,27 +18,26 @@ from gui.panels import PythonShellPanel
 
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 
+
 class Workarea(QtGui.QWidget):
     def __init__(self, parent=None, engine=None):
         QtGui.QWidget.__init__(self, parent)
         self.engine = engine
-        self.engine.set_network_change_callback(self.rebuild_widgets)
+        self.panels = []
+        #self.engine.set_network_change_callback(self.rebuild_widgets)
         self.setObjectName("Workarea")
 
         # Basic UI panels
-        self.parmetersEditor    = ParametersPanel(self, engine = self.engine)
-        self.nodeFlow           = NetworkViewPanel(self, engine = self.engine)
-        self.imageViewer        = CompositeViewPanel(self, engine = self.engine)
-        self.nodeTree           = TreeViewPanel(self, engine = self.engine, viewer = self.imageViewer, params = self.parmetersEditor)
+        self.parmeters_panel = ParametersPanel(engine=self.engine, gui=self)
+        self.network_panel = NetworkViewPanel(parent=self)
+        self.compositing_panel = CompositeViewPanel()
+        self.treeview_panel = TreeViewPanel(engine=self.engine, gui=self)
         #self.pythonShell        = PythonShellPanel(self, engine = self.engine)
 
-        # TimeLine widget
-        self.timeLine           = TimeLineWidget(self)
+        self.panels += [self.parmeters_panel, self.network_panel, self.compositing_panel]
 
-        # Now init our UI 
-        self.initUI()
-        
-    def initUI(self): 
+        # Basic widgets
+        self.timeline_widget = TimeLineWidget()
 
         # Create layout and place widgets
         VBox = QtGui.QVBoxLayout()    
@@ -46,22 +45,24 @@ class Workarea(QtGui.QWidget):
         HBox = QtGui.QHBoxLayout()
         HBox.setContentsMargins(0, 0, 0, 0)
         VBox.addLayout(HBox)
-        VBox.addWidget(self.timeLine)
+        VBox.addWidget(self.timeline_widget)
 
+        # Add initial panels
         panelMgr1 = TabbedPanelManager(engine=self.engine)
         panelMgr1.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
-        panelMgr1.addPaneTab(self.imageViewer)
+        panelMgr1.addPaneTab(self.compositing_panel)
 
         panelMgr2 = TabbedPanelManager(engine=self.engine)
         panelMgr2.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
-        panelMgr2.addPaneTab(self.parmetersEditor)
+        panelMgr2.addPaneTab(self.parmeters_panel)
 
         panelMgr3 = TabbedPanelManager(engine=self.engine)
         panelMgr3.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
-        panelMgr3.addPaneTab(self.nodeFlow)
-        panelMgr3.addPaneTab(self.nodeTree)
+        panelMgr3.addPaneTab(self.network_panel)
+        panelMgr3.addPaneTab(self.treeview_panel)
         #panelMgr3.addPaneTab(self.pythonShell)
 
+        # Set Up inital splitters layout
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
         VSplitter.setMinimumWidth(370)
         VSplitter.addWidget(panelMgr2)
@@ -75,15 +76,20 @@ class Workarea(QtGui.QWidget):
 
         HBox.addWidget(HSplitter)
         self.setLayout(VBox)
+
+        self.connect(self, QtCore.SIGNAL("copperNodeSelected"), self.copperNodeSelected)
+
         self.show()
-       
-    def rebuild_widgets(self):
-        print "Network change callback called by engine..."
-        self.tree_view.emit(QtCore.SIGNAL('network_changed'))
 
     @QtCore.pyqtSlot()   
     def renderNode(self, node_path):
-        RenderNodeDialog.render(self.engine, node_path)        
+        RenderNodeDialog.render(self.engine, node_path)
+
+    @QtCore.pyqtSlot()   
+    def copperNodeSelected(self, node_path):
+        print "GUI node selected: %s" % node_path  
+        for panel in self.panels:
+            panel.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)    
 
 class Window(QtGui.QMainWindow):
     def __init__(self, engine):
@@ -124,24 +130,24 @@ class Window(QtGui.QMainWindow):
         self.setCentralWidget(self.workarea)
 
 
-        exitAction = QtGui.QAction(QtGui.QIcon('icons/main/exit.svg'), 'Exit', self)
+        exitAction = QtGui.QAction(QtGui.QIcon('icons/main/system-log-out.svg'), 'Exit', self)
         exitAction.setObjectName("ActionExitApp")
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(self.close)
 
-        openAction = QtGui.QAction(QtGui.QIcon('icons/main/document_open.svg'), 'Open project', self)
+        openAction = QtGui.QAction(QtGui.QIcon('icons/main/document-open.svg'), 'Open project', self)
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open project')
         openAction.triggered.connect(self.open_project)
 
-        saveAction = QtGui.QAction(QtGui.QIcon('icons/main/document_save.svg'), 'Save project', self)
+        saveAction = QtGui.QAction(QtGui.QIcon('icons/main/document-save.svg'), 'Save project', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.setStatusTip('Save project')
         saveAction.triggered.connect(self.save_project)
 
 
-        reloadStylAction = QtGui.QAction(QtGui.QIcon('icons/main/reload.svg'), 'Reload QSS', self)
+        reloadStylAction = QtGui.QAction(QtGui.QIcon('icons/main/view-refresh.svg'), 'Reload QSS', self)
         reloadStylAction.setShortcut('Ctrl+R')
         reloadStylAction.setStatusTip('Reload style')
         reloadStylAction.triggered.connect(self.load_style)

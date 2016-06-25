@@ -1,14 +1,25 @@
-from PyQt4 import QtGui
+from PyQt4 import QtCore, QtGui
+
 
 class BasePanel(QtGui.QFrame):    
-    def __init__(self, parent=None, engine=None):
-        QtGui.QFrame.__init__(self, parent)
-        self.engine = engine
+    def __init__(self, *args, **kwargs):
+        if 'parent' in kwargs.keys():
+            print "Creating %s with parent!" % self.__class__
+            QtGui.QFrame.__init__(self, parent=kwargs['parent'])
+        else:
+            QtGui.QFrame.__init__(self)
+
+        for name, value in kwargs.items():
+            setattr(self, name, value)
+
         self.network_controls_widget = None
         self.panel_layout = QtGui.QVBoxLayout()
         self.panel_layout.setSpacing(0)
         self.panel_layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.panel_layout)
+
+        ''' connect signals '''
+        QtCore.QObject.connect(self, QtCore.SIGNAL('copperNodeSelected'), self.copperNodeSelected)  
 
     def copyPanel(self):
         '''
@@ -50,3 +61,8 @@ class BasePanel(QtGui.QFrame):
 
     def addWidget(self, widget):
         self.panel_layout.addWidget(widget)
+
+    @QtCore.pyqtSlot()   
+    def copperNodeSelected(self, node_path = None):
+        print "copperNodeSelected not implemented in %s" % self.__class__
+

@@ -1,3 +1,4 @@
+from PyQt4 import Qt, QtGui
 from copper.cops.cop_node import COP_Node
 from copper import parameter
 from copper.string import CopperString
@@ -10,6 +11,7 @@ import os
 class COP_File(COP_Node):
 	type_name = "file"
 	category = "sources"
+	icon = QtGui.QIcon('icons/nodes/file-open.svg')
 	def __init__(self, engine, parent):
 		super(COP_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")

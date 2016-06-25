@@ -2,6 +2,7 @@ from copper.op_parameters import OP_Parameters
 
 class OP_NetworkBoxItem(object):
 	""" Base class for nodes graph rendering """
+	icon = None
 
 	def __init__(self):
 		self.x_pos = 40.0
@@ -9,7 +10,6 @@ class OP_NetworkBoxItem(object):
 		self.width = 120
 		self.height = 32
 		self.color = (0.4, 0.4, 0.4, 1.0,)
-		self.icon = None
 
 	def setPos(self, x, y):
 		self.x_pos = x
@@ -18,8 +18,9 @@ class OP_NetworkBoxItem(object):
 	def getPos(self):
 		return (self.x_pos, self.y_pos,)
 
-	def getIcon(self):
-		return self.icon
+	@classmethod
+	def getIcon(cls):
+		return cls.icon
 
 
 

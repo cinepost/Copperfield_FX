@@ -14,13 +14,11 @@ def clearParametersLayout(layout):
             clearParametersLayout(child.layout())
 
 class ParametersPanel(BasePanel):
-    def __init__(self, parent=None, engine=None):  
-        BasePanel.__init__(self, parent)    
-        self.initUI()
+    def __init__(self, engine=None, gui=None):  
+        BasePanel.__init__(self, engine=None, gui=None)    
 
-    def initUI(self):
         self.path_bar_widget = PathBarWidget(self)
-        self.parameters_widget = ParametersWidget(self)
+        self.parameters_widget = ParametersWidget(self, engine=engine, gui=gui)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.parameters_widget)
@@ -33,15 +31,18 @@ class ParametersPanel(BasePanel):
     def hasNetworkControls(cls):
         return True
 
+    @QtCore.pyqtSlot()   
+    def copperNodeSelected(self, node_path = None):
+        self.path_bar_widget.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)
+        self.parameters_widget.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)
+
 class ParametersWidget(QtGui.QWidget):
-    def __init__(self, parent=None, engine=None):    
+    def __init__(self, parent=None, engine=None, gui=None):    
         QtGui.QWidget.__init__(self, parent) 
         self.engine = engine
-        self.connect(self, QtCore.SIGNAL("node_selected"), self.setNode)
+        self.gui = gui
         self.default_icon = QtGui.QIcon('icons/glyphicons_461_saw_blade.png')
-        self.initUI()
-        
-    def initUI(self):
+
         self.setMinimumWidth(320)
         self.setMinimumHeight(160)
 
@@ -79,6 +80,9 @@ class ParametersWidget(QtGui.QWidget):
         self.setLayout(vbox)
         self.setAcceptDrops(True)
 
+        ### Connect GUI signals
+        self.connect(self, QtCore.SIGNAL("copperNodeSelected"), self.nodeSelected)
+
 
     def BrowseFile(self, lineEdit):
         fname = QtGui.QFileDialog.getOpenFileName()
@@ -86,7 +90,7 @@ class ParametersWidget(QtGui.QWidget):
 
 
     @QtCore.pyqtSlot()   
-    def setNode(self, node_path = None):
+    def nodeSelected(self, node_path = None):
         node = self.engine.node(node_path)
         
         # remove old parms widgets
@@ -94,8 +98,7 @@ class ParametersWidget(QtGui.QWidget):
         clearParametersLayout(self.parm_box)
 
         # build header
-        #icon = node.getIcon()
-        icon = None
+        icon = node.getIcon()
         if not icon:
             icon = self.default_icon
 

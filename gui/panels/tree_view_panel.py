@@ -4,14 +4,11 @@ from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class TreeViewPanel(BasePanel):
-    def __init__(self, parent=None, engine=None, viewer=None, params=None):      
-        BasePanel.__init__(self, parent)
-        self.engine = engine
-        self.initUI()
+    def __init__(self, *arg, **kwargs):      
+        BasePanel.__init__(self, *arg, **kwargs)
 
-    def initUI(self):
         self.path_bar_widget = PathBarWidget(self, engine=self.engine)
-        self.tree_view_widget = TreeViewWidget(self, engine=self.engine)
+        self.tree_view_widget = TreeViewWidget(self, engine=self.engine, gui=self.gui)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.tree_view_widget)
@@ -24,50 +21,58 @@ class TreeViewPanel(BasePanel):
     def hasNetworkControls(cls):
         return True
 
+
 class TreeViewWidget(QtGui.QTreeWidget):
-    def __init__(self, parent=None, engine=None, viewer=None, params=None):      
+    def __init__(self, parent, engine=None, gui=None):      
         QtGui.QTreeWidget.__init__(self, parent)
 
         self.engine = engine
-        self.viewer = viewer
-        self.params = params
+        self.gui = gui
+
         self.current_node = None
 
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.connect(self, QtCore.SIGNAL("network_changed"), self.rebuild)
-        self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextTree)
-        self.itemClicked.connect(self.handleItemClicked)
         self.setDragEnabled(True)
-        self.initUI()
-        
-    def initUI(self):
+
         self.setAlternatingRowColors(True)
         vbox = QtGui.QVBoxLayout(self)
         vbox.setContentsMargins(0, 0, 0, 0)
         
         self.header().close()
-        self.createNodeLevel(self.engine, self) 
+        self.createNodeTree(self, self.engine) 
 
-    def createNodeLevel(self, node, parent_widget):
-        for cur_node in node.children():
-            item = QtGui.QTreeWidgetItem(parent_widget)
-            item.setExpanded(True)
-            item.setText(0, cur_node.name())
-            item.setText(1, cur_node.path())
-            #item.setText(2, str(cur_node))
-            if cur_node.children():
-                self.createNodeLevel(cur_node, item)  
+        ### Connect signals from UI
+        self.connect(self, QtCore.SIGNAL("copperNetworkChanged"), self.rebuildNodeTree)
+
+        ### Connect internal signals
+        self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
+        self.itemClicked.connect(self.handleItemClicked)
+
+
+    def createNodeTree(self, parent, node=None):
+        if node:
+            for cur_node in node.children():
+                item = QtGui.QTreeWidgetItem(parent)
+                item.setExpanded(True)
+                if cur_node.icon:
+                    item.setIcon(0, cur_node.icon)
+                item.setText(0, cur_node.name())
+                item.setText(1, cur_node.path())
+                if cur_node.children():
+                    self.createNodeTree(item, cur_node)  
 
     def handleItemClicked(self, item, column):
-        self.params.emit(QtCore.SIGNAL('node_selected'), str(item.text(1)))              
+        print "handleItemClicked"
+        selected_node_path = str(item.text(1))
+        self.gui.emit(QtCore.SIGNAL('copperNodeSelected'), selected_node_path)              
 
     @QtCore.pyqtSlot()   
-    def rebuild(self):
+    def rebuildNodeTree(self):
         self.clear()
-        self.createNodeLevel(self.engine, self)
+        self.createNodeTree(self.engine, self)
 
     @QtCore.pyqtSlot()   
-    def menuContextTree(self, point):
+    def menuContextMenu(self, point):
         # Infos about the node selected.     
         index = self.indexAt(point)
 
@@ -86,8 +91,8 @@ class TreeViewWidget(QtGui.QTreeWidget):
         action_1=menu.addAction("Show in viewer")
         action_1.triggered.connect(lambda: self.viewer.setNode(node_path))
 
-        action_1=menu.addAction("Render")
-        action_1.triggered.connect(lambda: self.parent.renderNode(node_path))
+        action_2=menu.addAction("Render")
+        action_2.triggered.connect(lambda: self.parent.renderNode(node_path))
 
         action_3=menu.addAction("Delete")
 

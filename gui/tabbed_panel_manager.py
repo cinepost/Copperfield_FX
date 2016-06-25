@@ -73,7 +73,7 @@ class TabbedPanelManager(QtGui.QFrame):
 
 
     def addNewPaneTabByType(self, panelType):
-        panelWidget = panelType(self, engine=self.engine)
+        panelWidget = panelType(self)
         tab_index = self.addPaneTab(panelWidget, panelType.panelTypeName())
         self.tabs.tabBar().setCurrentIndex(tab_index)
 

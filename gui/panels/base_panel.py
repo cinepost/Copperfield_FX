@@ -1,17 +1,11 @@
 from PyQt4 import QtCore, QtGui
 
 
-class BasePanel(QtGui.QFrame):    
-    def __init__(self, *args, **kwargs):
-        if 'parent' in kwargs.keys():
-            print "Creating %s with parent!" % self.__class__
-            QtGui.QFrame.__init__(self, parent=kwargs['parent'])
-        else:
-            QtGui.QFrame.__init__(self)
-
-        for name, value in kwargs.items():
-            setattr(self, name, value)
-
+class BasePanel(QtGui.QFrame):
+    def __init__(self, workspace=None, engine=None):
+        QtGui.QFrame.__init__(self)
+        self.engine = engine
+        self.workspace = workspace
         self.network_controls_widget = None
         self.panel_layout = QtGui.QVBoxLayout()
         self.panel_layout.setSpacing(0)

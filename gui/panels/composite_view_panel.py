@@ -14,8 +14,8 @@ from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class CompositeViewPanel(BasePanel):
-    def __init__(self, engine=None):
-        BasePanel.__init__(self, engine=None)
+    def __init__(self, workspace=None, engine=None):
+        BasePanel.__init__(self, workspace=None, engine=None)
 
         self.path_bar_widget = PathBarWidget(self)
         self.image_view_widget = CompositeViewWidget(self, engine)

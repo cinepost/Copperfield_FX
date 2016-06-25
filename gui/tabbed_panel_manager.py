@@ -2,9 +2,10 @@ from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
 class TabbedPanelManager(QtGui.QFrame):
-    def __init__(self, parent=None, engine=None):      
+    def __init__(self, parent, workspace=None, engine=None):      
         QtGui.QFrame.__init__(self, parent)
         self.engine = engine
+        self.workspace = workspace
         self.allowedPanelTypesList = None
         self.setObjectName("tabbedPanel")
 
@@ -53,28 +54,35 @@ class TabbedPanelManager(QtGui.QFrame):
         self.buildPlusButtonMenu() # Rebuild menu
 
 
-    def addPaneTab(self, widget, pane_title=None):
+    def _addPanel(self, panel, pane_title=None):
         if pane_title:
             panelTitle = pane_title
         else:
-            panelTitle = widget.panelTypeName()
+            panelTitle = panel.panelTypeName()
 
-        tab_index = self.tabs.addTab(widget, panelTitle)
+        tab_index = self.tabs.addTab(panel, panelTitle)
         self.tabs.tabBar().tabButton(tab_index, QtGui.QTabBar.RightSide).resize(12,12)
         self.buildPlusButtonMenu() # Rebuild menu
         return tab_index
 
+    def panels(self):
+        panels = []
+        for index in range(self.tabs.count()):
+            panels += [self.tabs.widget(index)]
 
+        return panels
+
+    @QtCore.pyqtSlot()
     def addNewPaneTab(self):
         currentTabIndex = self.tabs.currentIndex()
-        widget = self.tabs.widget(currentTabIndex)
-        pane_title = widget.panelTypeName()
-        self.addPaneTab(widget.copy(), pane_title)
+        panel = self.tabs.widget(currentTabIndex)
+        pane_title = panel.panelTypeName()
+        self._addPanel(panel.copy(), pane_title)
 
-
+    @QtCore.pyqtSlot()
     def addNewPaneTabByType(self, panelType):
-        panelWidget = panelType(self)
-        tab_index = self.addPaneTab(panelWidget, panelType.panelTypeName())
+        panelWidget = panelType(workspace=self.workspace, engine=self.engine)
+        tab_index = self._addPanel(panelWidget, panelType.panelTypeName())
         self.tabs.tabBar().setCurrentIndex(tab_index)
 
 

@@ -14,11 +14,11 @@ def clearParametersLayout(layout):
             clearParametersLayout(child.layout())
 
 class ParametersPanel(BasePanel):
-    def __init__(self, engine=None, gui=None):  
-        BasePanel.__init__(self, engine=None, gui=None)    
+    def __init__(self, workspace=None, engine=None):      
+        BasePanel.__init__(self, workspace=workspace, engine=engine)   
 
         self.path_bar_widget = PathBarWidget(self)
-        self.parameters_widget = ParametersWidget(self, engine=engine, gui=gui)
+        self.parameters_widget = ParametersWidget(self, engine=self.engine, workspace=self.workspace)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.parameters_widget)
@@ -37,10 +37,10 @@ class ParametersPanel(BasePanel):
         self.parameters_widget.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)
 
 class ParametersWidget(QtGui.QWidget):
-    def __init__(self, parent=None, engine=None, gui=None):    
+    def __init__(self, parent=None, engine=None, workspace=None):    
         QtGui.QWidget.__init__(self, parent) 
         self.engine = engine
-        self.gui = gui
+        self.workspace = workspace
         self.default_icon = QtGui.QIcon('icons/glyphicons_461_saw_blade.png')
 
         self.setMinimumWidth(320)
@@ -98,8 +98,9 @@ class ParametersWidget(QtGui.QWidget):
         clearParametersLayout(self.parm_box)
 
         # build header
-        icon = node.getIcon()
-        if not icon:
+        if node.icon_name:
+            icon = QtGui.QIcon(node.icon_name)
+        else:
             icon = self.default_icon
 
         node_btn = QtGui.QToolButton()

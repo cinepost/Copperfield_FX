@@ -23,18 +23,13 @@ class Workarea(QtGui.QWidget):
     def __init__(self, parent=None, engine=None):
         QtGui.QWidget.__init__(self, parent)
         self.engine = engine
-        self.panels = []
+        self.panel_managers = []
         #self.engine.set_network_change_callback(self.rebuild_widgets)
         self.setObjectName("Workarea")
 
         # Basic UI panels
-        self.parmeters_panel = ParametersPanel(engine=self.engine, gui=self)
-        self.network_panel = NetworkViewPanel(parent=self)
-        self.compositing_panel = CompositeViewPanel()
-        self.treeview_panel = TreeViewPanel(engine=self.engine, gui=self)
-        #self.pythonShell        = PythonShellPanel(self, engine = self.engine)
 
-        self.panels += [self.parmeters_panel, self.network_panel, self.compositing_panel]
+        #self.pythonShell        = PythonShellPanel(self, engine = self.engine)
 
         # Basic widgets
         self.timeline_widget = TimeLineWidget()
@@ -48,19 +43,22 @@ class Workarea(QtGui.QWidget):
         VBox.addWidget(self.timeline_widget)
 
         # Add initial panels
-        panelMgr1 = TabbedPanelManager(engine=self.engine)
+        panelMgr1 = TabbedPanelManager(self, workspace=self, engine=self.engine)
         panelMgr1.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
-        panelMgr1.addPaneTab(self.compositing_panel)
+        panelMgr1.addNewPaneTabByType(CompositeViewPanel)
+        self.panel_managers += [panelMgr1]
 
-        panelMgr2 = TabbedPanelManager(engine=self.engine)
+        panelMgr2 = TabbedPanelManager(self, workspace=self, engine=self.engine)
         panelMgr2.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
-        panelMgr2.addPaneTab(self.parmeters_panel)
+        panelMgr2.addNewPaneTabByType(ParametersPanel)
+        self.panel_managers += [panelMgr2]
 
-        panelMgr3 = TabbedPanelManager(engine=self.engine)
+        panelMgr3 = TabbedPanelManager(self, workspace=self, engine=self.engine)
         panelMgr3.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
-        panelMgr3.addPaneTab(self.network_panel)
-        panelMgr3.addPaneTab(self.treeview_panel)
+        panelMgr3.addNewPaneTabByType(NetworkViewPanel)
+        panelMgr3.addNewPaneTabByType(TreeViewPanel)
         #panelMgr3.addPaneTab(self.pythonShell)
+        self.panel_managers += [panelMgr3]
 
         # Set Up inital splitters layout
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
@@ -88,8 +86,9 @@ class Workarea(QtGui.QWidget):
     @QtCore.pyqtSlot()   
     def copperNodeSelected(self, node_path):
         print "GUI node selected: %s" % node_path  
-        for panel in self.panels:
-            panel.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)    
+        for panel_manager in self.panel_managers:
+            for panel in panel_manager.panels():
+                panel.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)    
 
 class Window(QtGui.QMainWindow):
     def __init__(self, engine):

@@ -11,7 +11,7 @@ import os
 class COP_File(COP_Node):
 	type_name = "file"
 	category = "sources"
-	icon = QtGui.QIcon('icons/nodes/file-open.svg')
+	icon_name = 'icons/nodes/file-open.svg'
 	def __init__(self, engine, parent):
 		super(COP_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")

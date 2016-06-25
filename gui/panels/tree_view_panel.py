@@ -4,11 +4,11 @@ from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class TreeViewPanel(BasePanel):
-    def __init__(self, *arg, **kwargs):      
-        BasePanel.__init__(self, *arg, **kwargs)
+    def __init__(self, workspace=None, engine=None):      
+        BasePanel.__init__(self, workspace=workspace, engine=engine) 
 
         self.path_bar_widget = PathBarWidget(self, engine=self.engine)
-        self.tree_view_widget = TreeViewWidget(self, engine=self.engine, gui=self.gui)
+        self.tree_view_widget = TreeViewWidget(self, engine=self.engine, workspace=self.workspace)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.tree_view_widget)
@@ -23,11 +23,11 @@ class TreeViewPanel(BasePanel):
 
 
 class TreeViewWidget(QtGui.QTreeWidget):
-    def __init__(self, parent, engine=None, gui=None):      
+    def __init__(self, parent, engine=None, workspace=None):      
         QtGui.QTreeWidget.__init__(self, parent)
 
         self.engine = engine
-        self.gui = gui
+        self.workspace = workspace
 
         self.current_node = None
 
@@ -54,8 +54,10 @@ class TreeViewWidget(QtGui.QTreeWidget):
             for cur_node in node.children():
                 item = QtGui.QTreeWidgetItem(parent)
                 item.setExpanded(True)
-                if cur_node.icon:
-                    item.setIcon(0, cur_node.icon)
+
+                #if cur_node.icon:
+                #    item.setIcon(0, cur_node.icon)
+
                 item.setText(0, cur_node.name())
                 item.setText(1, cur_node.path())
                 if cur_node.children():
@@ -64,7 +66,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
     def handleItemClicked(self, item, column):
         print "handleItemClicked"
         selected_node_path = str(item.text(1))
-        self.gui.emit(QtCore.SIGNAL('copperNodeSelected'), selected_node_path)              
+        self.workspace.emit(QtCore.SIGNAL('copperNodeSelected'), selected_node_path)              
 
     @QtCore.pyqtSlot()   
     def rebuildNodeTree(self):

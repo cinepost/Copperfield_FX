@@ -11,8 +11,8 @@ from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class NetworkViewPanel(BasePanel):
-    def __init__(self, parent=None, engine=None):  
-        BasePanel.__init__(self, parent) 
+    def __init__(self, workspace=None, engine=None):  
+        BasePanel.__init__(self, workspace=None, engine=None) 
         self.initUI()
 
     def initUI(self):

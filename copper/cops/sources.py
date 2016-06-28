@@ -1,6 +1,5 @@
 from copper.cops.cop_node import COP_Node
 from copper import parameter
-from copper.string import CopperString
 import matplotlib.image
 import pyopencl as cl
 import numpy

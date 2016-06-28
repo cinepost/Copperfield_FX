@@ -2,10 +2,9 @@ from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
 class TabbedPanelManager(QtGui.QFrame):
-    def __init__(self, parent, workspace=None, engine=None):      
+    def __init__(self, parent, engine=None):      
         QtGui.QFrame.__init__(self, parent)
         self.engine = engine
-        self.workspace = workspace
         self.allowedPanelTypesList = None
         self.setObjectName("tabbedPanel")
 
@@ -81,7 +80,7 @@ class TabbedPanelManager(QtGui.QFrame):
 
     @QtCore.pyqtSlot()
     def addNewPaneTabByType(self, panelType):
-        panelWidget = panelType(workspace=self.workspace, engine=self.engine)
+        panelWidget = panelType(engine=self.engine)
         tab_index = self._addPanel(panelWidget, panelType.panelTypeName())
         self.tabs.tabBar().setCurrentIndex(tab_index)
 

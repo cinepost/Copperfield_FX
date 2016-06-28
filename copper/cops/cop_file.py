@@ -1,7 +1,6 @@
 from PyQt4 import Qt, QtGui
 from copper.cops.cop_node import COP_Node
 from copper import parameter
-from copper.string import CopperString
 import matplotlib.image
 from PIL import Image 
 import pyopencl as cl
@@ -103,7 +102,7 @@ class COP_File(COP_Node):
 			self.devInBufferA = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=numpy.ones(self.source_width * self.source_height, dtype = numpy.float16))
 	
 	def getImageFileName(self):
-		filename = CopperString(self.engine, self.parm("filename").eval())
+		filename = self.parm("filename").eval()
 		image_frame = self.engine.frame() + self.parm("start").evalAsInt() - self.parm("startframe").evalAsInt()
 		return filename.expandedString(context={"frame": image_frame})
 			

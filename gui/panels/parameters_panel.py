@@ -1,6 +1,7 @@
 from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
+from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
@@ -14,11 +15,11 @@ def clearParametersLayout(layout):
             clearParametersLayout(child.layout())
 
 class ParametersPanel(BasePanel):
-    def __init__(self, workspace=None, engine=None):      
-        BasePanel.__init__(self, workspace=workspace, engine=engine)   
+    def __init__(self, engine=None):      
+        BasePanel.__init__(self, engine=engine)   
 
         self.path_bar_widget = PathBarWidget(self)
-        self.parameters_widget = ParametersWidget(self, engine=self.engine, workspace=self.workspace)
+        self.parameters_widget = ParametersWidget(engine=self.engine)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.parameters_widget)
@@ -31,16 +32,11 @@ class ParametersPanel(BasePanel):
     def hasNetworkControls(cls):
         return True
 
-    @QtCore.pyqtSlot()   
-    def copperNodeSelected(self, node_path = None):
-        self.path_bar_widget.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)
-        self.parameters_widget.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)
 
 class ParametersWidget(QtGui.QWidget):
-    def __init__(self, parent=None, engine=None, workspace=None):    
+    def __init__(self, parent=None, engine=None):    
         QtGui.QWidget.__init__(self, parent) 
         self.engine = engine
-        self.workspace = workspace
         self.default_icon = QtGui.QIcon('icons/glyphicons_461_saw_blade.png')
 
         self.setMinimumWidth(320)
@@ -81,7 +77,7 @@ class ParametersWidget(QtGui.QWidget):
         self.setAcceptDrops(True)
 
         ### Connect GUI signals
-        self.connect(self, QtCore.SIGNAL("copperNodeSelected"), self.nodeSelected)
+        signals.copperNodeSelected.connect(self.nodeSelected)
 
 
     def BrowseFile(self, lineEdit):
@@ -89,9 +85,9 @@ class ParametersWidget(QtGui.QWidget):
         lineEdit.setText(fname)
 
 
-    @QtCore.pyqtSlot()   
+    @QtCore.pyqtSlot(str)   
     def nodeSelected(self, node_path = None):
-        node = self.engine.node(node_path)
+        node = self.engine.node(str(node_path))
         
         # remove old parms widgets
         clearParametersLayout(self.header_bar)

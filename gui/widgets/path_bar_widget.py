@@ -2,9 +2,9 @@ from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
 class PathBarWidget(QtGui.QFrame):
-  
-    def __init__(self, parent, engine=None): 
-        QtGui.QFrame.__init__(self, parent)     
+    def __init__(self, workspace=None, engine=None): 
+        QtGui.QFrame.__init__(self)     
+        self.workspace = workspace
         self.engine = engine
         self.initUI()
         

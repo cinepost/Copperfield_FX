@@ -10,15 +10,16 @@ from PIL import Image
 
 import pyopencl as cl
 
+from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class CompositeViewPanel(BasePanel):
-    def __init__(self, workspace=None, engine=None):
-        BasePanel.__init__(self, workspace=None, engine=None)
+    def __init__(self, engine=None):
+        BasePanel.__init__(self, engine=engine)
 
         self.path_bar_widget = PathBarWidget(self)
-        self.image_view_widget = CompositeViewWidget(self, engine)
+        self.image_view_widget = CompositeViewWidget(self, engine=self.engine)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.image_view_widget)
@@ -32,7 +33,7 @@ class CompositeViewPanel(BasePanel):
         return True
 
 class CompositeViewWidget(QtOpenGL.QGLWidget):
-    def __init__(self, parent=None, engine=None):
+    def __init__(self, parent, engine=None):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)
         format.setSamples(16)
@@ -55,6 +56,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.node = None
         self.node_path = None
         self.draw_new_node = False
+
+        signals.copperSetCompositeViewNode.connect(self.setNode)
 
     def drawCopNodeImageData(self):
         glDisable( GL_LIGHTING )
@@ -202,11 +205,11 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
             glBindTexture(GL_TEXTURE_2D, 0)
             print "Binding done"
 
-    @QtCore.pyqtSlot()    
+    @QtCore.pyqtSlot(str)    
     def setNode(self, node_path = None):
         if node_path:
             print "Showing node %s" % node_path
-            
+            node_path = str(node_path)
             if self.node_path != node_path:
                 self.node = self.engine.node(node_path)
                 self.node_path = node_path

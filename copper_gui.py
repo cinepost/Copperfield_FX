@@ -43,17 +43,17 @@ class Workarea(QtGui.QWidget):
         VBox.addWidget(self.timeline_widget)
 
         # Add initial panels
-        panelMgr1 = TabbedPanelManager(self, workspace=self, engine=self.engine)
+        panelMgr1 = TabbedPanelManager(self, engine=self.engine)
         panelMgr1.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr1.addNewPaneTabByType(CompositeViewPanel)
         self.panel_managers += [panelMgr1]
 
-        panelMgr2 = TabbedPanelManager(self, workspace=self, engine=self.engine)
+        panelMgr2 = TabbedPanelManager(self, engine=self.engine)
         panelMgr2.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr2.addNewPaneTabByType(ParametersPanel)
         self.panel_managers += [panelMgr2]
 
-        panelMgr3 = TabbedPanelManager(self, workspace=self, engine=self.engine)
+        panelMgr3 = TabbedPanelManager(self, engine=self.engine)
         panelMgr3.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr3.addNewPaneTabByType(NetworkViewPanel)
         panelMgr3.addNewPaneTabByType(TreeViewPanel)
@@ -75,20 +75,11 @@ class Workarea(QtGui.QWidget):
         HBox.addWidget(HSplitter)
         self.setLayout(VBox)
 
-        self.connect(self, QtCore.SIGNAL("copperNodeSelected"), self.copperNodeSelected)
-
         self.show()
 
     @QtCore.pyqtSlot()   
     def renderNode(self, node_path):
         RenderNodeDialog.render(self.engine, node_path)
-
-    @QtCore.pyqtSlot()   
-    def copperNodeSelected(self, node_path):
-        print "GUI node selected: %s" % node_path  
-        for panel_manager in self.panel_managers:
-            for panel in panel_manager.panels():
-                panel.emit(QtCore.SIGNAL('copperNodeSelected'), node_path)    
 
 class Window(QtGui.QMainWindow):
     def __init__(self, engine):
@@ -127,7 +118,6 @@ class Window(QtGui.QMainWindow):
         self.resize(1400, 900)
         self.workarea = Workarea(self, engine=self.engine)
         self.setCentralWidget(self.workarea)
-
 
         exitAction = QtGui.QAction(QtGui.QIcon('icons/main/system-log-out.svg'), 'Exit', self)
         exitAction.setObjectName("ActionExitApp")

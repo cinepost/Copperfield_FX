@@ -8,7 +8,6 @@ if not os.environ.get("COPPER_HOME"):
 	os.environ["COPPER_HOME"] = cwd
 
 import inspect
-import string
 from op_engine import Copper_Engine as engine
 import settings
 

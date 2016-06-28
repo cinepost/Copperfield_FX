@@ -3,7 +3,7 @@ import pyopencl as cl
 import pickle
 import numpy
 from copper.op_manager import OP_Manager
-from copper.string import CopperString
+from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image

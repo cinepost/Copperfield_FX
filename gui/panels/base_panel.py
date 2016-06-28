@@ -2,10 +2,9 @@ from PyQt4 import QtCore, QtGui
 
 
 class BasePanel(QtGui.QFrame):
-    def __init__(self, workspace=None, engine=None):
+    def __init__(self, engine=None):
         QtGui.QFrame.__init__(self)
         self.engine = engine
-        self.workspace = workspace
         self.network_controls_widget = None
         self.panel_layout = QtGui.QVBoxLayout()
         self.panel_layout.setSpacing(0)

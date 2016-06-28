@@ -1,4 +1,4 @@
-import string
+from string import Template
 import os
 
 class CopperString(object):
@@ -7,11 +7,14 @@ class CopperString(object):
 		self.engine = engine
 		self.string_val = str(string_val)
 	
+	def __str__(self):
+		return self.string_val
+
 	def unexpandedString(self):
 		return self.string_val	
 
 	def expandedString(self, context = {}):
-		string_template = string.Template( os.path.expandvars(self.string_val) )
+		string_template = Template( os.path.expandvars(self.string_val) )
 		if "frame" in context:
 			frame = context["frame"]
 		else:	

@@ -6,7 +6,6 @@ import numpy
 
 import threading
 from copper.parameter import CopperParameter
-from copper.string import CopperString
 from copper.op_manager import OP_Manager
 from copper.cops.cop_plane import COP_Plane    				
 

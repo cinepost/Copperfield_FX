@@ -1,14 +1,15 @@
 from PyQt4 import QtGui, QtCore
 
+from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class TreeViewPanel(BasePanel):
-    def __init__(self, workspace=None, engine=None):      
-        BasePanel.__init__(self, workspace=workspace, engine=engine) 
+    def __init__(self, engine=None):      
+        BasePanel.__init__(self, engine=engine) 
 
         self.path_bar_widget = PathBarWidget(self, engine=self.engine)
-        self.tree_view_widget = TreeViewWidget(self, engine=self.engine, workspace=self.workspace)
+        self.tree_view_widget = TreeViewWidget(self, engine=self.engine)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.tree_view_widget)
@@ -23,11 +24,10 @@ class TreeViewPanel(BasePanel):
 
 
 class TreeViewWidget(QtGui.QTreeWidget):
-    def __init__(self, parent, engine=None, workspace=None):      
+    def __init__(self, parent, engine=None):      
         QtGui.QTreeWidget.__init__(self, parent)
 
         self.engine = engine
-        self.workspace = workspace
 
         self.current_node = None
 
@@ -48,7 +48,6 @@ class TreeViewWidget(QtGui.QTreeWidget):
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
         self.itemClicked.connect(self.handleItemClicked)
 
-
     def createNodeTree(self, parent, node=None):
         if node:
             for cur_node in node.children():
@@ -63,10 +62,12 @@ class TreeViewWidget(QtGui.QTreeWidget):
                 if cur_node.children():
                     self.createNodeTree(item, cur_node)  
 
-    def handleItemClicked(self, item, column):
-        print "handleItemClicked"
+    def handleItemClicked(self, item):
         selected_node_path = str(item.text(1))
-        self.workspace.emit(QtCore.SIGNAL('copperNodeSelected'), selected_node_path)              
+        signals.copperNodeSelected[str].emit(selected_node_path)              
+
+    def handleShowInViewer(self, node_path):
+        signals.copperSetCompositeViewNode[str].emit(node_path)
 
     @QtCore.pyqtSlot()   
     def rebuildNodeTree(self):
@@ -91,11 +92,12 @@ class TreeViewWidget(QtGui.QTreeWidget):
         menu.addSeparator()
 
         action_1=menu.addAction("Show in viewer")
-        action_1.triggered.connect(lambda: self.viewer.setNode(node_path))
+        action_1.triggered.connect(lambda: self.handleShowInViewer(node_path))
 
         action_2=menu.addAction("Render")
-        action_2.triggered.connect(lambda: self.parent.renderNode(node_path))
+        #action_2.triggered.connect(lambda: self.workspace.copperRenderNode(node_path))
 
         action_3=menu.addAction("Delete")
+        #action_3.triggered.connect(lambda: self.workspace.copperDeleteNode(node_path))
 
         menu.exec_(QtGui.QCursor.pos())  

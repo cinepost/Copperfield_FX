@@ -11,13 +11,11 @@ from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class NetworkViewPanel(BasePanel):
-    def __init__(self, workspace=None, engine=None):  
-        BasePanel.__init__(self, workspace=None, engine=None) 
-        self.initUI()
+    def __init__(self, engine=None):  
+        BasePanel.__init__(self, engine=engine) 
 
-    def initUI(self):
-        self.path_bar_widget = PathBarWidget(self)
-        self.network_view_widget = NetworkViewWidget(self)
+        self.path_bar_widget = PathBarWidget(self, engine=self.engine)
+        self.network_view_widget = NetworkViewWidget(self, engine=self.engine)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.network_view_widget)
@@ -31,8 +29,9 @@ class NetworkViewPanel(BasePanel):
         return True
 
 class NodeItem(QtGui.QGraphicsItem):
-    def __init__(self, parent=None, scene=None):      
-        QtGui.QGraphicsItem.__init__(self, parent, scene) 
+    def __init__(self, node):      
+        QtGui.QGraphicsItem.__init__(self)
+        self.node = node 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 
@@ -52,7 +51,7 @@ class NodeItem(QtGui.QGraphicsItem):
             painter.drawRect(-20,-10,40,10)
 
         painter.setPen(QtGui.QColor(128, 128, 128))
-        painter.drawText(24, 0, "Nodename1")
+        painter.drawText(24, 0, self.node.name())
 
     def boundingRect(self):
         return QtCore.QRectF(-20,-10,40,10)
@@ -75,23 +74,24 @@ class NodeItem(QtGui.QGraphicsItem):
 
 
 class NodeFlowScene(QtGui.QGraphicsScene):
-    def __init__(self, parent=None, engine=None):      
-        QtGui.QGraphicsScene.__init__(self, parent) 
+    def __init__(self, engine=None):      
+        QtGui.QGraphicsScene.__init__(self) 
+        self.engine = engine
         self.gridSizeWidth = 180
         self.gridSizeHeight = 80 
         self.zoomLevel = 1.0
-        self.initUI()
 
-    def initUI(self):
         self.setSceneRect(-100000, -100000, 200000, 200000)
-        
-        # Test node
-        self.addNode()
-        self.addNode()
 
-    def addNode(self):
-        node = NodeItem()
-        self.addItem(node)
+    @QtCore.pyqtSlot()
+    def addNode(self, node):
+        node_item= NodeItem(node)
+        self.addItem(node_item)
+
+    def buildNetworkLevel(self, node):
+        nodes = node.nodes()
+        for node in nodes:
+            self.addNode(node)
 
     def zoom(self, zoomFactor):
         self.zoomLevel *= zoomFactor
@@ -139,9 +139,8 @@ class NodeFlowScene(QtGui.QGraphicsScene):
 class NetworkViewWidget(QtGui.QGraphicsView):
     def __init__(self, parent=None, engine=None):  
         QtGui.QGraphicsView.__init__(self, parent) 
-        self.initUI()
 
-    def initUI(self):
+        self.engine = engine
         self.scene = NodeFlowScene(self)
         self.setScene(self.scene)
         self.setMouseTracking(True)
@@ -157,6 +156,12 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         self.setViewport( QtOpenGL.QGLWidget(format) ) # Force OpenGL rendering mode.
         self.setViewportUpdateMode( QtGui.QGraphicsView.FullViewportUpdate )
         self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
+
+        ## As a debug we always set new panel widget to "/"
+        self.setNetworkLevel(self.engine)
+
+    def setNetworkLevel(self, node):
+        self.scene.buildNetworkLevel(node)
 
     def wheelEvent(self, event):
          # Zoom Factor

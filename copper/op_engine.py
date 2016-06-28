@@ -3,6 +3,7 @@ import pyopencl as cl
 import pickle
 import numpy
 from copper.op_manager import OP_Manager
+from copper.obj_network import OBJ_Network
 from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
 from pyopencl.tools import get_gl_sharing_context_properties
@@ -63,11 +64,15 @@ class Copper_Engine(OP_Manager):
 			self.translators[translator.registerExtension()] = translator
 
 		# create base network managers
+		obj = OBJ_Network(self, self)
+		obj.setName("obj")
+		self.__node_dict__["obj"] = obj
+
 		img = OP_Manager(self, self, ["comp"])
 		img.setName("img")
 		self.__node_dict__["img"] = img
 
-		out = OP_Manager(self, self, ["composite"])
+		out = OP_Manager(self, self, mask=None)
 		out.setName("out")
 		self.__node_dict__["out"] = out		
 	

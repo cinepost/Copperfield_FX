@@ -2,18 +2,14 @@ from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
 class PathBarWidget(QtGui.QFrame):
-    def __init__(self, workspace=None, engine=None): 
-        QtGui.QFrame.__init__(self)     
-        self.workspace = workspace
-        self.engine = engine
-        self.initUI()
-        
-    def initUI(self):
+    def __init__(self, parent=None): 
+        QtGui.QFrame.__init__(self, parent)     
+
         self.setObjectName("pathBar");
         
         layout = QtGui.QHBoxLayout()
         layout.setSpacing(2)
-        layout.setContentsMargins(0, 4, 0, 4)
+        layout.setContentsMargins(0, 2, 0, 2)
 
         btn_back = QtGui.QToolButton(self)
         btn_back.setObjectName("back")

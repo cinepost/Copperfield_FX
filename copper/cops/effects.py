@@ -6,6 +6,7 @@ import numpy
 class CLC_Effect_FastBlur(COP_Node):
 	type_name = "fastblur"
 	category = "effects"
+	icon_name = 'icons/nodes/cop-blur.svg'
 	def __init__(self, engine, parent):
 		super(CLC_Effect_FastBlur, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_blur.cl")

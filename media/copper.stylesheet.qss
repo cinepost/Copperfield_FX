@@ -161,7 +161,6 @@ QFrame#tabbedPanel {
 }
 
 QTabWidget::pane {
-	background-color: #f33;
 	border: none;
 }
 
@@ -211,7 +210,6 @@ QTabBar::tab:!selected {
 }
 
 /* Tree view */
-
 QTreeView {
 	font-size: 12px;
 	border: none;
@@ -221,9 +219,10 @@ QTreeView {
 }
 
 QTreeView::item {
-	padding-top: 3px;
-	padding-bottom: 3px;
+	padding-top: 1px;
+	padding-bottom: 1px;
 	text-decoration: 0;
+	height: 16px;
 }
 
 

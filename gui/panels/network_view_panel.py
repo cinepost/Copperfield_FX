@@ -7,15 +7,16 @@ import numpy
 import copper
 import math
 
+from copper import engine
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class NetworkViewPanel(BasePanel):
-    def __init__(self, engine=None):  
-        BasePanel.__init__(self, engine=engine) 
+    def __init__(self):  
+        BasePanel.__init__(self) 
 
-        self.path_bar_widget = PathBarWidget(self, engine=self.engine)
-        self.network_view_widget = NetworkViewWidget(self, engine=self.engine)
+        self.path_bar_widget = PathBarWidget(self)
+        self.network_view_widget = NetworkViewWidget(self)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.network_view_widget)
@@ -74,9 +75,8 @@ class NodeItem(QtGui.QGraphicsItem):
 
 
 class NodeFlowScene(QtGui.QGraphicsScene):
-    def __init__(self, engine=None):      
-        QtGui.QGraphicsScene.__init__(self) 
-        self.engine = engine
+    def __init__(self, parent=None):      
+        QtGui.QGraphicsScene.__init__(self, parent) 
         self.gridSizeWidth = 180
         self.gridSizeHeight = 80 
         self.zoomLevel = 1.0
@@ -137,10 +137,9 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         super(NodeFlowScene, self).mousePressEvent(event) # propogate event to items
 
 class NetworkViewWidget(QtGui.QGraphicsView):
-    def __init__(self, parent=None, engine=None):  
+    def __init__(self, parent=None):  
         QtGui.QGraphicsView.__init__(self, parent) 
 
-        self.engine = engine
         self.scene = NodeFlowScene(self)
         self.setScene(self.scene)
         self.setMouseTracking(True)
@@ -158,7 +157,7 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
 
         ## As a debug we always set new panel widget to "/"
-        self.setNetworkLevel(self.engine)
+        self.setNetworkLevel(engine.node("/"))
 
     def setNetworkLevel(self, node):
         self.scene.buildNetworkLevel(node)

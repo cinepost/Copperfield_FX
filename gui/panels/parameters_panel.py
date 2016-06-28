@@ -1,6 +1,7 @@
 from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
+from copper import engine
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
@@ -15,11 +16,11 @@ def clearParametersLayout(layout):
             clearParametersLayout(child.layout())
 
 class ParametersPanel(BasePanel):
-    def __init__(self, engine=None):      
-        BasePanel.__init__(self, engine=engine)   
+    def __init__(self):      
+        BasePanel.__init__(self)   
 
-        self.path_bar_widget = PathBarWidget(self)
-        self.parameters_widget = ParametersWidget(engine=self.engine)
+        self.path_bar_widget = PathBarWidget()
+        self.parameters_widget = ParametersWidget()
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.parameters_widget)
@@ -34,9 +35,8 @@ class ParametersPanel(BasePanel):
 
 
 class ParametersWidget(QtGui.QWidget):
-    def __init__(self, parent=None, engine=None):    
+    def __init__(self, parent=None):    
         QtGui.QWidget.__init__(self, parent) 
-        self.engine = engine
         self.default_icon = QtGui.QIcon('icons/glyphicons_461_saw_blade.png')
 
         self.setMinimumWidth(320)
@@ -87,7 +87,7 @@ class ParametersWidget(QtGui.QWidget):
 
     @QtCore.pyqtSlot(str)   
     def nodeSelected(self, node_path = None):
-        node = self.engine.node(str(node_path))
+        node = engine.node(str(node_path))
         
         # remove old parms widgets
         clearParametersLayout(self.header_bar)

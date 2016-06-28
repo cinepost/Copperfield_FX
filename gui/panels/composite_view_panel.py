@@ -15,11 +15,11 @@ from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class CompositeViewPanel(BasePanel):
-    def __init__(self, engine=None):
-        BasePanel.__init__(self, engine=engine)
+    def __init__(self):
+        BasePanel.__init__(self)
 
-        self.path_bar_widget = PathBarWidget(self)
-        self.image_view_widget = CompositeViewWidget(self, engine=self.engine)
+        self.path_bar_widget = PathBarWidget()
+        self.image_view_widget = CompositeViewWidget()
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.image_view_widget)
@@ -33,7 +33,7 @@ class CompositeViewPanel(BasePanel):
         return True
 
 class CompositeViewWidget(QtOpenGL.QGLWidget):
-    def __init__(self, parent, engine=None):
+    def __init__(self, parent=None):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)
         format.setSamples(16)
@@ -41,7 +41,6 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         if not self.isValid():
             raise OSError("OpenGL not supported.")
 
-        self.engine = engine
         self.setMouseTracking(True)
         self.isPressed = False
         self.oldx = self.oldy = 0

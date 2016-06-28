@@ -1,15 +1,16 @@
 from PyQt4 import QtGui, QtCore
 
+from copper import engine
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
 class TreeViewPanel(BasePanel):
-    def __init__(self, engine=None):      
-        BasePanel.__init__(self, engine=engine) 
+    def __init__(self):      
+        BasePanel.__init__(self) 
 
-        self.path_bar_widget = PathBarWidget(self, engine=self.engine)
-        self.tree_view_widget = TreeViewWidget(self, engine=self.engine)
+        self.path_bar_widget = PathBarWidget()
+        self.tree_view_widget = TreeViewWidget()
 
         self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.tree_view_widget)
@@ -24,13 +25,11 @@ class TreeViewPanel(BasePanel):
 
 
 class TreeViewWidget(QtGui.QTreeWidget):
-    def __init__(self, parent, engine=None):      
+    def __init__(self, parent=None):      
         QtGui.QTreeWidget.__init__(self, parent)
-
-        self.engine = engine
-
+        self.setObjectName("QTreeView")
         self.current_node = None
-
+        self.setIconSize(QtCore.QSize(16,16))
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.setDragEnabled(True)
 
@@ -39,7 +38,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
         vbox.setContentsMargins(0, 0, 0, 0)
         
         self.header().close()
-        self.createNodeTree(self, self.engine) 
+        self.createNodeTree(self, engine.node("/")) 
 
         ### Connect signals from UI
         self.connect(self, QtCore.SIGNAL("copperNetworkChanged"), self.rebuildNodeTree)
@@ -54,8 +53,9 @@ class TreeViewWidget(QtGui.QTreeWidget):
                 item = QtGui.QTreeWidgetItem(parent)
                 item.setExpanded(True)
 
-                #if cur_node.icon:
-                #    item.setIcon(0, cur_node.icon)
+                if cur_node.icon_name:
+                    print "Icon for node %s" % cur_node
+                    item.setIcon(0, QtGui.QIcon(cur_node.icon_name))
 
                 item.setText(0, cur_node.name())
                 item.setText(1, cur_node.path())

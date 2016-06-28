@@ -3,7 +3,7 @@
 import sys, os
 from PyQt4 import QtGui, QtCore, QtOpenGL
 
-import copper
+from copper import engine
 from gui.dialogs import RenderNodeDialog
 
 from gui import TabbedPanelManager
@@ -20,9 +20,9 @@ os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 
 
 class Workarea(QtGui.QWidget):
-    def __init__(self, parent=None, engine=None):
+    def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-        self.engine = engine
+
         self.panel_managers = []
         #self.engine.set_network_change_callback(self.rebuild_widgets)
         self.setObjectName("Workarea")
@@ -43,17 +43,17 @@ class Workarea(QtGui.QWidget):
         VBox.addWidget(self.timeline_widget)
 
         # Add initial panels
-        panelMgr1 = TabbedPanelManager(self, engine=self.engine)
+        panelMgr1 = TabbedPanelManager(self)
         panelMgr1.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr1.addNewPaneTabByType(CompositeViewPanel)
         self.panel_managers += [panelMgr1]
 
-        panelMgr2 = TabbedPanelManager(self, engine=self.engine)
+        panelMgr2 = TabbedPanelManager(self)
         panelMgr2.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr2.addNewPaneTabByType(ParametersPanel)
         self.panel_managers += [panelMgr2]
 
-        panelMgr3 = TabbedPanelManager(self, engine=self.engine)
+        panelMgr3 = TabbedPanelManager(self)
         panelMgr3.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr3.addNewPaneTabByType(NetworkViewPanel)
         panelMgr3.addNewPaneTabByType(TreeViewPanel)
@@ -82,11 +82,10 @@ class Workarea(QtGui.QWidget):
         RenderNodeDialog.render(self.engine, node_path)
 
 class Window(QtGui.QMainWindow):
-    def __init__(self, engine):
+    def __init__(self):
         super(Window, self).__init__()
-        self.engine = engine
-        if not self.engine.have_gl:
-            print "OpecCL - OpenGL interoperability not supported !!! Abort."
+        if not engine.have_gl:
+            print "OpenCL - OpenGL interoperability not supported !!! Abort."
             exit()
 
         self.initUI()
@@ -100,12 +99,12 @@ class Window(QtGui.QMainWindow):
         except:
             raise
         if fname:    
-            self.engine.open_project(str(fname))   
+            engine.open_project(str(fname))   
 
     def save_project(self):
         fname = QtGui.QFileDialog.getSaveFileName(self, 'Save file', "/Users")    
         if fname:
-            self.engine.save_project(fname)
+            engine.save_project(fname)
 
     def load_style(self):
         sqq_filename="media/copper.stylesheet.qss"
@@ -116,7 +115,7 @@ class Window(QtGui.QMainWindow):
         self.setMinimumWidth(740)
         self.setMinimumHeight(540)
         self.resize(1400, 900)
-        self.workarea = Workarea(self, engine=self.engine)
+        self.workarea = Workarea(self)
         self.setCentralWidget(self.workarea)
 
         exitAction = QtGui.QAction(QtGui.QIcon('icons/main/system-log-out.svg'), 'Exit', self)
@@ -169,10 +168,10 @@ if __name__ == '__main__':
 
     app.setWindowIcon(QtGui.QIcon('icons/copper_icon.png'))
 
-    engine = copper.CreateEngine("GPU")
+    #engine = copper.CreateEngine("GPU")
     engine.test_project()
 
-    window = Window(engine)
+    window = Window()
     window.load_style()
     window.show()    
     window.raise_() 

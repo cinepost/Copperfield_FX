@@ -10,6 +10,7 @@ from PIL import Image
 
 import pyopencl as cl
 
+from copper import engine
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
@@ -210,7 +211,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
             print "Showing node %s" % node_path
             node_path = str(node_path)
             if self.node_path != node_path:
-                self.node = self.engine.node(node_path)
+                self.node = engine.node(node_path)
                 self.node_path = node_path
                 self.node.cook()
                 self.image_width = self.node.getWidth()

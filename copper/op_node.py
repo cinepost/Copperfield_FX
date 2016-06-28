@@ -5,18 +5,18 @@ class OP_NetworkBoxItem(object):
 	icon_name = None
 
 	def __init__(self):
-		self.x_pos = 40.0
-		self.y_pos = 40.0
+		self.pos_x = None
+		self.pos_y = None
 		self.width = 120
 		self.height = 32
 		self.color = (0.4, 0.4, 0.4, 1.0,)
 
 	def setPos(self, x, y):
-		self.x_pos = x
-		self.y_pos = y
+		self.pos_x = x
+		self.pos_y = y
 
 	def getPos(self):
-		return (self.x_pos, self.y_pos,)
+		return (self.pos_x, self.pos_y,)
 
 	@classmethod
 	def getIcon(cls):

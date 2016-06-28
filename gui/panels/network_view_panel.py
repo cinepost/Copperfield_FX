@@ -32,7 +32,11 @@ class NetworkViewPanel(BasePanel):
 class NodeItem(QtGui.QGraphicsItem):
     def __init__(self, node):      
         QtGui.QGraphicsItem.__init__(self)
-        self.node = node 
+        self.node = node
+        if self.node.pos_x is None or self.node.pos_y is None:
+            self.node.pos_x = 40
+            self.node.pos_y = 40 
+             
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 

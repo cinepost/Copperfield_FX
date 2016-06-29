@@ -10,7 +10,7 @@ import os
 class COP2_File(COP2_Node):
 	type_name = "file"
 	category = "sources"
-	icon_name = 'icons/nodes/file-open.svg'
+	icon_name = 'icons/nodes/cop2-file.svg'
 	def __init__(self, engine, parent):
 		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")

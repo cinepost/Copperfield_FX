@@ -8,6 +8,7 @@ import copper
 import math
 
 from copper import engine
+from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
 
@@ -76,7 +77,7 @@ class NodeItem(QtGui.QGraphicsItem):
         if change == QtGui.QGraphicsItem.ItemSelectedChange:
             if value == True:
                 # do stuff if selected
-                pass
+                signals.copperNodeSelected[str].emit(self.node.path()) 
             else:
                 # do stuff if not selected
                 pass
@@ -103,6 +104,7 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         self.addItem(node_item)
 
     def buildNetworkLevel(self, node):
+        self.clear()
         nodes = node.nodes()
         for node in nodes:
             self.addNode(node)
@@ -149,6 +151,11 @@ class NodeFlowScene(QtGui.QGraphicsScene):
             picked_item.setZValue(1)
 
         super(NodeFlowScene, self).mousePressEvent(event) # propogate event to items
+
+    def mouseDoubleClickEvent(self, event):
+        picked_item = self.itemAt(event.scenePos())
+        self.buildNetworkLevel(picked_item.node)
+
 
 class NetworkViewWidget(QtGui.QGraphicsView):
     def __init__(self, parent=None):  

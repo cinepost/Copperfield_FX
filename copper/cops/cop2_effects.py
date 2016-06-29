@@ -7,7 +7,7 @@ class COP2_Blur(COP2_Node):
 	type_name = "blur"
 	type_label = "Blur"
 	category = "effects"
-	icon_name = 'icons/nodes/cop-blur.svg'
+	icon_name = 'icons/nodes/cop2-blur.svg'
 	def __init__(self, engine, parent):
 		super(COP2_Blur, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_blur.cl")

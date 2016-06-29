@@ -5,8 +5,6 @@ class ROP_Node(OP_Manager):
 	'''
 		Base output operator class
 	'''
-	__op__			= True # Indicated that this is OP node
-	type_name		= None # This is a TYPE name for the particular output OP...
 
 	def __init__(self, engine, parent):
 		super(ROP_Node, self).__init__(engine, parent)
@@ -16,4 +14,4 @@ class ROP_Node(OP_Manager):
 		self.addParameter("f3", int, 1)
 
 	def execute(self):
-		raise BaseException("Unimplemented execute() for %s" % self)	
+		raise NotImplementedError	

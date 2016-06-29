@@ -20,13 +20,16 @@ for module_name in settings.op_paths:
 	for name in dir(module):
 		obj = getattr(module, name)
 		if inspect.isclass(obj):
-			if hasattr(obj,"__op__"):
-				if obj.type_name:
-					ops[obj.type_name] = obj
-					print "Operator %s loaded..." % obj
-			elif hasattr(obj, "__mgr__"):
-					ops[obj.type_name] = obj
-					print "Network manager %s loaded..." % obj
+			print "Loading operator: %s" % obj
+			print "Operator type: %s" % obj.type()
+			ops[obj.type()] = obj
+		#	if hasattr(obj,"__op__"):
+		#		if obj.type_name:
+		#			ops[obj.type_name] = obj
+		#			print "Operator %s loaded..." % obj
+		#	elif hasattr(obj, "__mgr__"):
+		#			ops[obj.type_name] = obj
+		#			print "Network manager %s loaded..." % obj
 								
 
 

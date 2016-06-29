@@ -1,10 +1,10 @@
 from copper.op_manager import OP_Manager
 
-class ROP_Network(OP_Manager):
-	icon_name = 'icons/nodes/rop-network.svg'
+class OBJ_Geo(OP_Manager):
+	icon_name = 'icons/nodes/OBJ_geo.svg'
 
 	def __init__(self, engine, parent):
-		super(ROP_Network, self).__init__(engine, parent, mask=None)
+		super(OBJ_Geo, self).__init__(engine, parent, mask=None)
 
 	@classmethod
 	def isNetwork(cls):
@@ -12,7 +12,7 @@ class ROP_Network(OP_Manager):
 
 	@classmethod
 	def type(cls):
-		return "out"
+		return "geo"
 
 	@classmethod
 	def isOp(cls):
@@ -20,4 +20,4 @@ class ROP_Network(OP_Manager):
 
 	@classmethod
 	def label(cls):
-		return "Output"
+		return "Geometry"

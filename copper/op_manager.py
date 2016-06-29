@@ -13,7 +13,6 @@ class OP_Manager(OP_Node):
 		# mask is a list with node type names that are allowed to be created by this NetworkManager instance e.d ["img","comp"] If mask is None than any node type can be used
 		super(OP_Manager, self).__init__()
 		self.__engine__ = engine
-		self.__mask__ = mask
 		self.__name__ = None
 		self.__parms__ = collections.OrderedDict()
 		self.__node_dict__ = {}
@@ -21,6 +20,22 @@ class OP_Manager(OP_Node):
 		self.__inputs__ = []
 		self.__input_names__ = []
 		self.__network_label__ = None
+
+	@classmethod
+	def isNetwork(cls):
+		raise NotImplementedError
+
+	@classmethod
+	def isOp(cls):
+		raise NotImplementedError
+
+	@classmethod
+	def label(cls):
+		raise NotImplementedError
+
+	@classmethod
+	def type(cls):
+		raise NotImplementedError
 
 	def __increment__(self, s):
 		""" look for the last sequence of number(s) in a string and increment """
@@ -51,9 +66,6 @@ class OP_Manager(OP_Node):
 		self.cooked = False
 		for parm_name in parameters:
 			self.__parms__[parm_name].set(parameters[parm_name])
-
-	def type(self):
-		return self.type_name
 
 	def nodes(self):
 		return [self.__node_dict__[node_name] for node_name in self.__node_dict__]
@@ -99,11 +111,14 @@ class OP_Manager(OP_Node):
 		
 
 	def createNode(self, node_type_name, node_name=None):
+		#if self.isNetwork():
+	#		raise BaseException("Unable to create node of type %s. %s is not a network manager !!!" % (node_type_name, self))
+
 		print "Creating node %s inside %s" % (node_type_name, self.__class__.__name__)
 
-		if self.__mask__ and node_type_name not in self.__mask__:
-			print "Creating node of type %s not allowed by this manager." % node_type_name
-			return None
+		#if self.__mask__ and node_type_name not in self.__mask__:
+		#	print "Creating node of type %s not allowed by this manager." % node_type_name
+		#	return None
 
 		if node_name:
 			name = node_name

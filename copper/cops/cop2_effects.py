@@ -4,10 +4,8 @@ import pyopencl as cl
 import numpy
 
 class COP2_Blur(COP2_Node):
-	type_name = "blur"
-	type_label = "Blur"
 	category = "effects"
-	icon_name = 'icons/nodes/cop2-blur.svg'
+	icon_name = 'icons/nodes/COP2_blur.svg'
 	def __init__(self, engine, parent):
 		super(COP2_Blur, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_blur.cl")
@@ -16,8 +14,24 @@ class COP2_Blur(COP2_Node):
 
 		self.addParameter("blursize", float, 0.05)
 		self.addParameter("blursizey", float, 0.05)
-		self.addParameter("useindepy", bool, True)	
-			
+		self.addParameter("useindepy", bool, True)
+
+	@classmethod
+	def isNetwork(cls):
+		return False
+
+	@classmethod
+	def type(cls):
+		return "blur"
+
+	@classmethod
+	def isOp(cls):
+		return True
+
+	@classmethod
+	def label(cls):
+		return "Blur"
+
 	def compute(self):	
 		if self.has_inputs():
 			self.devTmpBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.input(0).size)

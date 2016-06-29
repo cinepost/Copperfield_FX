@@ -103,7 +103,7 @@ class ParametersWidget(QtGui.QWidget):
         node_btn.setIcon(icon)
         node_btn.setIconSize(QtCore.QSize(24,24))
 
-        node_type = QtGui.QLabel(node.type_name)
+        node_type = QtGui.QLabel(node.label())
         node_type.setStyleSheet("font-weight: bold")
    
         node_name = QtGui.QLineEdit(node.name())

@@ -8,9 +8,8 @@ import numpy
 import os
 			
 class COP2_File(COP2_Node):
-	type_name = "file"
 	category = "sources"
-	icon_name = 'icons/nodes/cop2-file.svg'
+	icon_name = 'icons/nodes/COP2_file.svg'
 	def __init__(self, engine, parent):
 		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
@@ -29,7 +28,23 @@ class COP2_File(COP2_Node):
 			("black", "Use Black Frame"),
 			("error", "Report Error")
 		])
-		
+
+	@classmethod
+	def isNetwork(cls):
+		return False
+
+	@classmethod
+	def type(cls):
+		return "file"
+
+	@classmethod
+	def isOp(cls):
+		return True
+
+	@classmethod
+	def label(cls):
+		return "File"
+
 	def loadJPG(self, filename):
 		img = matplotlib.image.imread(filename)
 		

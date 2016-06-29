@@ -205,13 +205,17 @@ class Copper_Engine(OP_Manager):
 		out = self.node("out")
 
 		## Create composite output driver
-		out.createNode("composite")
+		out.createNode("comp")
 
 		## First get image network
 		img = self.node("img")
 		
 		## Create composition
 		comp = img.createNode("img")
+
+		obj = self.node("obj")
+
+		geo = obj.createNode("geo")
 
 		## Create file reading node 
 		file1 = comp.createNode("file")

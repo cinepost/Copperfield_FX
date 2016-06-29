@@ -1,3 +1,4 @@
+from scene_view_panel import SceneViewPanel
 from parameters_panel import ParametersPanel
 from network_view_panel import NetworkViewPanel
 from tree_view_panel import TreeViewPanel

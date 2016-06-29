@@ -10,6 +10,7 @@ from gui import TabbedPanelManager
 
 from gui.widgets import TimeLineWidget
 
+from gui.panels import SceneViewPanel
 from gui.panels import ParametersPanel
 from gui.panels import NetworkViewPanel
 from gui.panels import TreeViewPanel
@@ -23,7 +24,6 @@ class Workarea(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
 
-        self.panel_managers = []
         #self.engine.set_network_change_callback(self.rebuild_widgets)
         self.setObjectName("Workarea")
 
@@ -44,21 +44,19 @@ class Workarea(QtGui.QWidget):
 
         # Add initial panels
         panelMgr1 = TabbedPanelManager(self)
-        panelMgr1.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
+        panelMgr1.setAllowedPanelTypes([SceneViewPanel, ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
+        panelMgr1.addNewPaneTabByType(SceneViewPanel)
         panelMgr1.addNewPaneTabByType(CompositeViewPanel)
-        self.panel_managers += [panelMgr1]
 
         panelMgr2 = TabbedPanelManager(self)
-        panelMgr2.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
+        panelMgr2.setAllowedPanelTypes([SceneViewPanel, ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr2.addNewPaneTabByType(ParametersPanel)
-        self.panel_managers += [panelMgr2]
 
         panelMgr3 = TabbedPanelManager(self)
-        panelMgr3.setAllowedPanelTypes([ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
+        panelMgr3.setAllowedPanelTypes([SceneViewPanel, ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr3.addNewPaneTabByType(NetworkViewPanel)
         panelMgr3.addNewPaneTabByType(TreeViewPanel)
         #panelMgr3.addPaneTab(self.pythonShell)
-        self.panel_managers += [panelMgr3]
 
         # Set Up inital splitters layout
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)

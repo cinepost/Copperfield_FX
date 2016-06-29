@@ -1,6 +1,6 @@
-from PyQt4 import QtGui, QtCore
-from PyQt4 import QtOpenGL
+from PyQt4 import QtGui, QtCore, QtOpenGL
 from OpenGL.GL import *
+from OpenGL import GL
 from OpenGL.GLU import *
 
 from OpenGL.raw.GL.VERSION.GL_1_5 import glBufferData as rawGlBufferData
@@ -106,7 +106,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         #glMatrixMode(GL_MODELVIEW)
 
         glClearColor(0.0, 0.0, 0.0, 1.0)
-        glClear(GL_COLOR_BUFFER_BIT)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glLoadIdentity()
         glTranslated (0.0 + self.pivot_x, 0.0 - self.pivot_y, -10.0)

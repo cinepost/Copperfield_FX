@@ -1,1 +1,1 @@
-import rop_composite
+from rop_composite import ROP_Composite

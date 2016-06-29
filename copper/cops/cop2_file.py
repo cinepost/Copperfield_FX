@@ -1,5 +1,5 @@
 from PyQt4 import Qt, QtGui
-from copper.cops.cop_node import COP_Node
+from copper.cops.cop2_node import COP2_Node
 from copper import parameter
 import matplotlib.image
 from PIL import Image 
@@ -7,12 +7,12 @@ import pyopencl as cl
 import numpy
 import os
 			
-class COP_File(COP_Node):
+class COP2_File(COP2_Node):
 	type_name = "file"
 	category = "sources"
 	icon_name = 'icons/nodes/file-open.svg'
 	def __init__(self, engine, parent):
-		super(COP_File, self).__init__(engine, parent)
+		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
 
 		self.addParameter("filename", parameter.CopperParmFile, None)

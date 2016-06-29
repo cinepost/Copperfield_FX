@@ -15,7 +15,7 @@ print "Loading operators..."
 
 ops = {}
 
-for module_name in settings.cop_modules + settings.out_modules:
+for module_name in settings.op_paths:
 	module = __import__(module_name, fromlist="*")
 	for name in dir(module):
 		obj = getattr(module, name)

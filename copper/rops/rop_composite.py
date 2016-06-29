@@ -1,7 +1,7 @@
-from copper.rops.rop_base import ROP_Base
+from copper.rops.rop_node import ROP_Node
 from copper import parameter
 
-class ROP_Composite(ROP_Base):
+class ROP_Composite(ROP_Node):
 	type_name = "composite"
 	category = "image"
 

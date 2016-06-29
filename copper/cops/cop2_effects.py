@@ -1,14 +1,15 @@
-from copper.cops.cop_node import COP_Node
+from copper.cops.cop2_node import COP2_Node
 from copper import parameter
 import pyopencl as cl
 import numpy
 
-class CLC_Effect_FastBlur(COP_Node):
-	type_name = "fastblur"
+class COP2_Blur(COP2_Node):
+	type_name = "blur"
+	type_label = "Blur"
 	category = "effects"
 	icon_name = 'icons/nodes/cop-blur.svg'
 	def __init__(self, engine, parent):
-		super(CLC_Effect_FastBlur, self).__init__(engine, parent)
+		super(COP2_Blur, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_blur.cl")
 		self.__inputs__ = [None]
 		self.__input_names__ = ["Input 1"]
@@ -48,11 +49,11 @@ class CLC_Effect_FastBlur(COP_Node):
 			raise BaseException("No input specified !!!")	
 
 
-class CLC_Effect_PressRaster(COP_Node):
+class COP2_PressRaster(COP2_Node):
 	type_name	= "press_raster"
 	category = "effects"
 	def __init__(self, engine, parent):
-		super(CLC_Effect_PressRaster, self).__init__(engine, parent)
+		super(COP2_PressRaster, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_press_raster.cl")
 		self.__inputs__ = [None]
 		self.__input_names__ = ["Input 1"]	

@@ -9,13 +9,13 @@ from copper.parameter import CopperParameter
 from copper.op_manager import OP_Manager
 from copper.cops.cop_plane import COP_Plane    				
 
-class COP_Node(OP_Manager):
+class COP2_Node(OP_Manager):
 	# Base class for OPs
-	__op__			= True # Indicated that this is OP node
-	type_name		= None # This is a TYPE name for the particular compositing OP ...
+	__op__ = True # Indicated that this is OP node
+	type_name = None # This is a TYPE name for the particular compositing OP ...
 	
 	def __init__(self, engine, parent, mask=None):
-		super(COP_Node, self).__init__(engine, parent, mask=mask)
+		super(COP2_Node, self).__init__(engine, parent, mask=mask)
 
 		self.image_width	= None	
 		self.image_height	= None

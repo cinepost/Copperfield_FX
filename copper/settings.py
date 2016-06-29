@@ -1,8 +1,7 @@
-cop_modules = (
-	'copper.cops.cop_network',
-	'copper.cops.cop_file',
-	'copper.cops.effects',
-	'copper.cops.comps',
+op_paths = (
+	'copper.managers',
+	'copper.cops',
+	'copper.rops',
 )
 
 out_modules = (

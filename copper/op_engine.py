@@ -3,7 +3,7 @@ import pyopencl as cl
 import pickle
 import numpy
 from copper.op_manager import OP_Manager
-from copper.obj_network import OBJ_Network
+from copper.managers import OBJ_Network, COP_Network, ROP_Network
 from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
 from pyopencl.tools import get_gl_sharing_context_properties
@@ -68,11 +68,11 @@ class Copper_Engine(OP_Manager):
 		obj.setName("obj")
 		self.__node_dict__["obj"] = obj
 
-		img = OP_Manager(self, self, ["comp"])
+		img = COP_Network(self, self)
 		img.setName("img")
 		self.__node_dict__["img"] = img
 
-		out = OP_Manager(self, self, mask=None)
+		out = ROP_Network(self, self)
 		out.setName("out")
 		self.__node_dict__["out"] = out		
 	
@@ -211,7 +211,7 @@ class Copper_Engine(OP_Manager):
 		img = self.node("img")
 		
 		## Create composition
-		comp = img.createNode("comp")
+		comp = img.createNode("img")
 
 		## Create file reading node 
 		file1 = comp.createNode("file")
@@ -219,7 +219,7 @@ class Copper_Engine(OP_Manager):
 		file1.setParms({"width": 1280, "height": 720, "filename": "/Users/max/Desktop/773dee750c33093fd74279637db1a38b.jpg"})
 
 		## Create blur node
-		blur1 = comp.createNode("fastblur")
+		blur1 = comp.createNode("blur")
 		blur1.setInput(0, file1)
 		blur1.setParms({"blursize":0.01, "blursizey": 0.5, "useindepy" : True}) 
 

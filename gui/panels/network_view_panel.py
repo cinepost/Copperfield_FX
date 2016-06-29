@@ -37,6 +37,11 @@ class NodeItem(QtGui.QGraphicsItem):
             self.node.pos_x = 40
             self.node.pos_y = 40 
              
+        if self.node.icon_name:
+            self.icon = QtGui.QIcon(self.node.icon_name)
+        else:
+            self.icon = None
+
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 
@@ -46,20 +51,25 @@ class NodeItem(QtGui.QGraphicsItem):
 
         if option.state & QtGui.QStyle.State_Selected:
             pen.setWidth(3)
-            painter.fillRect(QtCore.QRectF(-20,-10,40,10), QtGui.QColor(196, 196, 196))
+            painter.fillRect(QtCore.QRectF(-20,-5,40,10), QtGui.QColor(196, 196, 196))
             painter.setPen(QtGui.QColor(250, 200, 128))
-            painter.drawRect(-20,-10,40,10)
+            painter.drawRect(-20,-5,40,10)
         else:
             pen.setWidth(1)
-            painter.fillRect(QtCore.QRectF(-20,-10,40,10), QtGui.QColor(160, 160, 160))
+            painter.fillRect(QtCore.QRectF(-20,-5,40,10), QtGui.QColor(160, 160, 160))
             painter.setPen(QtGui.QColor(128, 128, 128))
-            painter.drawRect(-20,-10,40,10)
+            painter.drawRect(-20,-5,40,10)
+
+        ## Paint icon if there is one
+        if self.icon:
+            painter.drawPixmap(-4, -4, 8, 8, self.icon.pixmap(QtCore.QSize(64,64)));
+            #self.icon.paint(painter, QtCore.QRect(-8,-8,8,8))
 
         painter.setPen(QtGui.QColor(128, 128, 128))
         painter.drawText(24, 0, self.node.name())
 
     def boundingRect(self):
-        return QtCore.QRectF(-20,-10,40,10)
+        return QtCore.QRectF(-20,-5,40,10)
 
 
     def itemChange(self, change, value):

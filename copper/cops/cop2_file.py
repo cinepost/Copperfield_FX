@@ -15,8 +15,8 @@ class COP2_File(COP2_Node):
 		self.program = self.engine.load_program("source_image.cl")
 
 		self.addParameter("filename", parameter.CopperParmFile, None, label="File")
-		self.addParameter("width", parameter.CopperParmInt, 0)
-		self.addParameter("height", parameter.CopperParmInt, 0)
+		self.addParameter("width", parameter.CopperParmInt, 0, label="Width")
+		self.addParameter("height", parameter.CopperParmInt, 0, label="Height")
 		self.addParameter("flipx", parameter.CopperParmBool, False)
 		self.addParameter("flipy", parameter.CopperParmBool, False)
 		self.addParameter("startframe", parameter.CopperParmInt, 0, label="Shift to Start Frame")

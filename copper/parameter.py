@@ -67,13 +67,12 @@ class CopperParameter(object):
 		if self.__label__:
 			return self.__label__
 		else:
-			return self.name		
+			return self.name()		
 
 	@property
 	def node(self):
 		return self.__node__	
 
-	@property
 	def name(self):
 		return self.__name__
 
@@ -132,6 +131,9 @@ class CopperParameter(object):
 
 	def evalAsFloat(self):
 		return float(self.eval())	
+
+	def evalAsBool(self):
+		return bool(self.eval())
 
 	def evalAtTime(self, time):
 		lesser_keys = sorted([k for k in self.__keyframes__ if k.t <= time], key=lambda x: x.t)

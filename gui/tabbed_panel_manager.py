@@ -36,7 +36,7 @@ class TabbedPanelManager(QtGui.QFrame):
         self.corner_widget_layout.addStretch(100)
         self.corner_widget_layout.addWidget(self.arrow_button)
 
-        self.corner_widget.setSizePolicy( QtGui.QSizePolicy( QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Preferred ))
+        self.corner_widget.setSizePolicy( QtGui.QSizePolicy( QtGui.QSizePolicy.Ignored, QtGui.QSizePolicy.Preferred ))
 
         self.tabs.setCornerWidget(self.corner_widget)
 

@@ -1,11 +1,18 @@
 from collections import OrderedDict
+from copper_types import *
 
 CopperLinear = 0
 CopperBezier = 2
 
 CopperParmInt = int
+CopperParmInt2 = CopperInt2
+CopperParmInt3 = CopperInt3
+CopperParmInt4 = CopperInt4
 CopperParmBool = bool
 CopperParmFloat = float 
+CopperParmFloat2 = CopperFloat2
+CopperParmFloat3 = CopperFloat3
+CopperParmFloat4 = CopperFloat4
 CopperParmString = str
 CopperParmOpPath = "oppath"
 CopperParmFile = str

@@ -14,7 +14,7 @@ class COP2_File(COP2_Node):
 		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
 
-		self.addParameter("filename", parameter.CopperParmFile, None)
+		self.addParameter("filename", parameter.CopperParmFile, None, label="File")
 		self.addParameter("width", parameter.CopperParmInt, 0)
 		self.addParameter("height", parameter.CopperParmInt, 0)
 		self.addParameter("flipx", parameter.CopperParmBool, False)

@@ -23,13 +23,7 @@ os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 class Workarea(QtGui.QWidget):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
-
-        #self.engine.set_network_change_callback(self.rebuild_widgets)
         self.setObjectName("Workarea")
-
-        # Basic UI panels
-
-        #self.pythonShell        = PythonShellPanel(self, engine = self.engine)
 
         # Basic widgets
         self.timeline_widget = TimeLineWidget()
@@ -39,24 +33,26 @@ class Workarea(QtGui.QWidget):
         VBox.setContentsMargins(0, 0, 0, 0)
         HBox = QtGui.QHBoxLayout()
         HBox.setContentsMargins(0, 0, 0, 0)
-        VBox.addLayout(HBox)
-        VBox.addWidget(self.timeline_widget)
+    
 
         # Add initial panels
         panelMgr1 = TabbedPanelManager(self)
         panelMgr1.setAllowedPanelTypes([SceneViewPanel, ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr1.addNewPaneTabByType(SceneViewPanel)
         panelMgr1.addNewPaneTabByType(CompositeViewPanel)
+        panelMgr1.setSizePolicy(QtGui.QSizePolicy( QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Expanding))
 
         panelMgr2 = TabbedPanelManager(self)
         panelMgr2.setAllowedPanelTypes([SceneViewPanel, ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr2.addNewPaneTabByType(ParametersPanel)
+        panelMgr2.setSizePolicy(QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding))
 
         panelMgr3 = TabbedPanelManager(self)
         panelMgr3.setAllowedPanelTypes([SceneViewPanel, ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr3.addNewPaneTabByType(NetworkViewPanel)
         panelMgr3.addNewPaneTabByType(TreeViewPanel)
         #panelMgr3.addPaneTab(self.pythonShell)
+        panelMgr3.setSizePolicy(QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding))
 
         # Set Up inital splitters layout
         VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
@@ -70,7 +66,8 @@ class Workarea(QtGui.QWidget):
         HSplitter.setStretchFactor (0, 1)
         HSplitter.setStretchFactor (1, 0)   
 
-        HBox.addWidget(HSplitter)
+        VBox.addWidget(HSplitter)
+        VBox.addWidget(self.timeline_widget)
         self.setLayout(VBox)
 
         self.show()

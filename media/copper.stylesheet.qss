@@ -18,7 +18,24 @@ QWidget {
 
 QToolButton, QPushButton {
 	border: none;
-	padding: 2px;
+	width: 16px;
+	height: 16px;
+	padding: 4px;
+}
+
+QToolBar{
+	spacing: 8px;
+}
+
+QToolBar QToolButton, QToolBar QPushButton {
+	width: 24px;
+	height: 24px;
+	padding: 0px;
+	margin: 4px;
+}
+
+QToolBar QToolButton:hover, QToolBar QPushButton:hover {
+	background-color: #444;
 }
 
 QToolButton:hover, QPushButton:hover {
@@ -122,12 +139,12 @@ QPushButton#plusButton {
 }
 
 QPushButton#arrowButton {
-    image: url("icons/tango/arrow_down.svg");
+    image: url("icons/main/arrow_down.svg");
     border: none;
     font-weight: bold;
-    width: 14px;
-    height: 14px;
-    padding: 1px;
+    width: 12px;
+    height: 12px;
+    padding: 2px;
     outline: 0;
 }
 
@@ -156,10 +173,6 @@ QFrame#pathBar {
 QFrame#pathBar QToolButton {
 	background: none;
 	border: none;
-	padding: 4px;
-	width: 16px;
-	height: 16px;
-	margin: 1px;
 }
 
 QFrame#pathBar QToolButton:hover {
@@ -173,14 +186,11 @@ QFrame#pathBar QToolButton:pressed {
 }
 
 QFrame#pathBar QToolButton#back {
-	image: url("icons/tango/go-previous.svg");
-	padding: 4px;
-	width: 16px;
-	height: 16px;
+	image: url("icons/main/go-previous.svg");
 }
 
 QFrame#pathBar QToolButton#fwd {
-	image: url("icons/tango/go-next.svg");
+	image: url("icons/main/go-next.svg");
 }
 
 /* Pane Tab Editor tabs */
@@ -333,7 +343,6 @@ QWidget#Parameters QPushButton {
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #555, stop:1 #363636);
 	border: 1px solid #111;
 	border-radius: 1px;
-	height: 16px;
 }
 
 QWidget#Parameters QPushButton:pressed {

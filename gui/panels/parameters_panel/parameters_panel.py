@@ -81,11 +81,6 @@ class ParametersWidget(QtGui.QWidget):
         signals.copperNodeSelected.connect(self.nodeSelected)
 
 
-    def BrowseFile(self, lineEdit):
-        fname = QtGui.QFileDialog.getOpenFileName()
-        lineEdit.setText(fname)
-
-
     @QtCore.pyqtSlot(str)   
     def nodeSelected(self, node_path = None):
         node = engine.node(str(node_path))
@@ -149,13 +144,7 @@ class ParametersWidget(QtGui.QWidget):
  
             elif parm_type is parameter.CopperParmFile:
                 # file path
-                widget = QtGui.QHBoxLayout()
-                filePath = QtGui.QLineEdit(str(value))
-                filePath.returnPressed.connect(parm.setValueStr)           
-                fileDialog = QtGui.QPushButton("Choose", self)
-                fileDialog.clicked.connect(lambda: self.BrowseFile(filePath))
-                widget.addWidget(filePath)
-                widget.addWidget(fileDialog)
+                widget = ParameterFilePathWidget(self, parm)
 
             else:    
                 # all other

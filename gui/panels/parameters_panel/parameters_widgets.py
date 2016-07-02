@@ -2,113 +2,104 @@ from PyQt4 import QtCore, QtGui
 
 from gui.signals import signals
 
-class ParameterFloatWidget(QtGui.QWidget):
+class ParameterBaseWidget(QtGui.QWidget):
 	def __init__(self, parent, parm):
 		QtGui.QWidget.__init__(self, parent)
-		self.parm = parm
+		self.parm = parm 
+		self.layout = QtGui.QHBoxLayout(self)
+		self.layout.setSpacing(2)
+		self.layout.setContentsMargins(0, 0, 0, 0)
+		self.setLayout(self.layout)
 
-		layout = QtGui.QHBoxLayout()
-		layout.setSpacing(2)
-		layout.setContentsMargins(0, 0, 0, 0)
+	def setParmValue(self):
+		#self.parm.setValueFloat(float(self.line_edit.text()))
+		pass
+
+class ParameterFloatWidget(ParameterBaseWidget):
+	def __init__(self, parent, parm):
+		ParameterBaseWidget.__init__(self, parent, parm)
 
 		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsFloat())) 
 		self.line_edit.setMinimumWidth(60)
 		self.line_edit.setMaximumWidth(140)
 		self.line_edit.editingFinished.connect(self.setParmValue)
 
-		valueSlider = QtGui.QSlider()
-		valueSlider.setOrientation(QtCore.Qt.Horizontal)
-		valueSlider.setMinimum(0)
-		valueSlider.setMaximum(100)
-		valueSlider.setTracking(True)
+		self.slider = QtGui.QSlider(self)
+		self.slider.setOrientation(QtCore.Qt.Horizontal)
+		self.slider.setMinimum(0)
+		self.slider.setMaximum(100)
+		self.slider.setTracking(True)
 
-		layout.addWidget(self.line_edit)
-		layout.addWidget(valueSlider)
-
-		self.setLayout(layout)
-
-	def setParmValue(self):
-		self.parm.setValueFloat(float(self.line_edit.text()))
+		self.layout.addWidget(self.line_edit)
+		self.layout.addWidget(self.slider)
 
 
-class ParameterIntWidget(QtGui.QWidget):
+class ParameterIntWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
-		QtGui.QWidget.__init__(self, parent)
-		self.parm = parm
-
-		layout = QtGui.QHBoxLayout()
-		layout.setSpacing(2)
-		layout.setContentsMargins(0, 0, 0, 0)
+		ParameterBaseWidget.__init__(self, parent, parm)
 
 		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsInt())) 
 		self.line_edit.setMinimumWidth(60)
 		self.line_edit.setMaximumWidth(140)
 		self.line_edit.editingFinished.connect(self.setParmValue)
 
-		valueSlider = QtGui.QSlider()
-		valueSlider.setOrientation(QtCore.Qt.Horizontal)
-		valueSlider.setMinimum(0)
-		valueSlider.setMaximum(100)
-		valueSlider.setTracking(True)
+		self.slider = QtGui.QSlider(self)
+		self.slider.setOrientation(QtCore.Qt.Horizontal)
+		self.slider.setMinimum(0)
+		self.slider.setMaximum(100)
+		self.slider.setTracking(True)
 
-		layout.addWidget(self.line_edit)
-		layout.addWidget(valueSlider)
-
-		self.setLayout(layout)
-
-	def setParmValue(self):
-		self.parm.setValueInt(int(self.line_edit.text()))
+		self.layout.addWidget(self.line_edit)
+		self.layout.addWidget(self.slider)
 
 
-class ParameterBoolWidget(QtGui.QWidget):
+class ParameterBoolWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
-		QtGui.QWidget.__init__(self, parent)
-		self.parm = parm
+		ParameterBaseWidget.__init__(self, parent, parm)
 
-		layout = QtGui.QHBoxLayout()
-		layout.setSpacing(2)
-		layout.setContentsMargins(0, 0, 0, 0)
+		self.checkbox = QtGui.QCheckBox(self)
+		self.checkbox.setCheckState(self.parm.evalAsBool())
+		self.checkbox.stateChanged.connect(self.setParmValue)
 
-		checkbox = QtGui.QCheckBox()
-		checkbox.setCheckState(self.parm.evalAsBool())
-		checkbox.stateChanged.connect(self.setParmValue)
+		self.label = QtGui.QLabel(parm.label())
+		self.label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
+		self.label.setStatusTip(parm.name())
 
-		label = QtGui.QLabel(parm.label())
-		label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
-		label.setStatusTip(parm.name())
+		self.layout.addWidget(self.checkbox)
+		self.layout.addWidget(self.label)
+		self.layout.addStretch(1)
 
-		layout.addWidget(checkbox)
-		layout.addWidget(label)
-		layout.addStretch(1)
 
-		self.setLayout(layout)
-
-	def setParmValue(self):
-		pass
-
-class ParameterChoiceWidget(QtGui.QWidget):
+class ParameterChoiceWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
-		QtGui.QWidget.__init__(self, parent)
-		self.parm = parm
+		ParameterBaseWidget.__init__(self, parent, parm)
 
-		layout = QtGui.QHBoxLayout()
-		layout.setSpacing(2)
-		layout.setContentsMargins(0, 0, 0, 0)
-
-		combobox = QtGui.QComboBox()
+		combobox = QtGui.QComboBox(self)
 		for item_name in self.parm.__menu_items__:
 			combobox.addItem(parm.__menu_items__[item_name])
 
 		combobox.setCurrentIndex(parm.evalAsInt())
 
-		layout.addWidget(combobox)
-		layout.addStretch(1)
+		self.layout.addWidget(combobox)
+		self.layout.addStretch(1)
 
-		self.setLayout(layout)
 
-	def setParmValue(self):
-		pass
+class ParameterFilePathWidget(ParameterBaseWidget):
+	def __init__(self, parent, parm):
+		ParameterBaseWidget.__init__(self, parent, parm)
 
+		self.file_path_widget = QtGui.QLineEdit(parm.evalAsStr())
+		self.file_path_widget.editingFinished.connect(self.setParmValue)           
+		self.file_button = QtGui.QToolButton(self)
+		self.file_button.setObjectName("file")
+		self.file_button.clicked.connect(lambda: self.BrowseFile(self.file_path_widget))
+		
+		self.layout.addWidget(self.file_path_widget)
+		self.layout.addWidget(self.file_button)
+
+	def BrowseFile(self, lineEdit):
+		file_name = QtGui.QFileDialog.getOpenFileName()
+		self.file_path_widget.setText(file_name)
 
 
 

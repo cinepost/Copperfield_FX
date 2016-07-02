@@ -135,6 +135,9 @@ class CopperParameter(object):
 	def evalAsBool(self):
 		return bool(self.eval())
 
+	def evalAsStr(self):
+		return str(self.eval())
+
 	def evalAtTime(self, time):
 		lesser_keys = sorted([k for k in self.__keyframes__ if k.t <= time], key=lambda x: x.t)
 		greater_keys = sorted([k for k in self.__keyframes__ if k.t >= time], key=lambda x: x.t)

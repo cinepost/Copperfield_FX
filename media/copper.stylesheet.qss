@@ -92,6 +92,11 @@ QGraphicsView, QScrollArea{
 	border: none;
 }
 
+/* Buttons */
+QToolButton#file {
+	image: url("icons/main/file-dialog.svg");
+}
+
 /* Splitters */
 QSplitter::handle {
     width: 4px;
@@ -185,11 +190,11 @@ QFrame#pathBar QToolButton:pressed {
     background-color: #972;
 }
 
-QFrame#pathBar QToolButton#back {
+QToolButton#back {
 	image: url("icons/main/go-previous.svg");
 }
 
-QFrame#pathBar QToolButton#fwd {
+QToolButton#fwd {
 	image: url("icons/main/go-next.svg");
 }
 

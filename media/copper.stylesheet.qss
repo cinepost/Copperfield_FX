@@ -97,6 +97,10 @@ QToolButton#file {
 	image: url("icons/main/file-dialog.svg");
 }
 
+QToolButton#op_path {
+	image: url("icons/main/op-dialog.svg");
+}
+
 /* Splitters */
 QSplitter::handle {
     width: 4px;

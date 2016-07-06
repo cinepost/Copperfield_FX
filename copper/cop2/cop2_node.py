@@ -13,8 +13,8 @@ class COP2_Node(OP_Network):
 	__base__ = True
 	type_name = None # This is a TYPE name for the particular compositing OP ...
 	
-	def __init__(self, engine, parent, mask=None):
-		super(COP2_Node, self).__init__(engine, parent, mask=mask)
+	def __init__(self, engine, parent):
+		super(COP2_Node, self).__init__(engine, parent)
 
 		self.image_width	= None	
 		self.image_height	= None

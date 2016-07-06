@@ -11,7 +11,7 @@ class OP_Network(OP_Node):
 	"""
 	__base__ = True
 
-	def __init__(self, engine, parent, mask=None):
+	def __init__(self, engine, parent):
 		# mask is a list with node type names that are allowed to be created by this NetworkManager instance e.d ["img","comp"] If mask is None than any node type can be used
 		super(OP_Network, self).__init__()
 		self.__engine__ = engine
@@ -26,6 +26,10 @@ class OP_Network(OP_Node):
 	@classmethod
 	def isNetwork(cls):
 		return True
+
+	@classmethod
+	def allowedChildTypeCategory(cls):
+		raise NotImplementedError
 
 	@classmethod
 	def label(cls):
@@ -103,27 +107,23 @@ class OP_Network(OP_Node):
 	def flush(self):
 		self.__node_dict__ = {}
 		
-
 	def createNode(self, node_type_name, node_name=None):
-		#if self.isNetwork():
-	#		raise BaseException("Unable to create node of type %s. %s is not a network manager !!!" % (node_type_name, self))
-
-		print "Creating node %s inside %s" % (node_type_name, self.__class__.__name__)
-
-		#if self.__mask__ and node_type_name not in self.__mask__:
-		#	print "Creating node of type %s not allowed by this manager." % node_type_name
-		#	return None
+		if not self.isNetwork():
+			raise BaseException("Unable to create node of type %s. %s is not a network manager !!!" % (node_type_name, self))
 
 		if node_name:
 			name = node_name
 		else:
 			name = node_type_name	
 
-		if node_type_name in OpRegistry._registry:
-			node = OpRegistry[node_type_name](self.engine, self)	
+		node_type_name_with_category = '%s/%s' % (self.allowedChildTypeCategory(), node_type_name)
+		print "Creating node %s inside %s" % (node_type_name_with_category, self.__class__.__name__)
+
+		if node_type_name_with_category in OpRegistry._registry:
+			node = OpRegistry[node_type_name_with_category](self.engine, self)	
 			node.setName(name)
 		else:
-			raise BaseException("Unknown node type \"%s\". Abort." % node_type_name)	
+			raise BaseException("Unknown node type \"%s\". Abort." % node_type_name_with_category)	
 
 		self.__node_dict__[node.name()] = node
 		if self.engine.network_cb:
@@ -180,6 +180,9 @@ class OP_Network(OP_Node):
 
 	# return node object by it's path	
 	def node(self, path):
+		if not path:
+			return None
+			
 		if path == "/":
 			return self.root()
 

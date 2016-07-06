@@ -35,27 +35,27 @@ class CompositeViewPanel(BasePanel):
 
 class CompositeViewWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
-        format = QtOpenGL.QGLFormat.defaultFormat()
-        format.setSampleBuffers(True)
-        format.setSamples(16)
-        QtOpenGL.QGLWidget.__init__(self, format, parent)
+        #format = QtOpenGL.QGLFormat.defaultFormat()
+        #format.setSampleBuffers(True)
+        #format.setSamples(16)
+        #QtOpenGL.QGLWidget.__init__(self, format, parent)
+        super(CompositeViewWidget, self).__init__(parent)
         if not self.isValid():
             raise OSError("OpenGL not supported.")
 
         self.setMouseTracking(True)
         self.isPressed = False
-        self.oldx = self.oldy = 0
-        self.setNode()
+        self.oldx = 0
+        self.oldy = 0
 
         self.setCursor(QtCore.Qt.CrossCursor)
 
         self.zoom = 1.0 
-        self.pivot_x = 0.0
-        self.pivot_y = 0.0
 
         self.node = None
         self.node_path = None
         self.draw_new_node = False
+        self.setNode()
 
         signals.copperSetCompositeViewNode.connect(self.setNode)
 
@@ -100,16 +100,11 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         if not self.isValid():
             return
 
-        #glMatrixMode(GL_PROJECTION)
-        #glLoadIdentity()
-        #glOrtho(-self.width/2.0, self.width/2.0, -self.height/2.0, self.height/2.0, -100.0, 100.0)
-        #glMatrixMode(GL_MODELVIEW)
-
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glLoadIdentity()
-        glTranslated (0.0 + self.pivot_x, 0.0 - self.pivot_y, -10.0)
+        glTranslated (0.0, 0.0, -10.0)
         glScaled (1.0 * self.zoom, 1.0 * self.zoom, 1.0)
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
@@ -142,6 +137,9 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
             glMatrixMode(GL_MODELVIEW)
 
     def initializeGL(self):
+        glClearDepth(1.0)              
+        glDepthFunc(GL_LESS)
+        glEnable(GL_DEPTH_TEST)
         glEnable(GL_MULTISAMPLE)
         glEnable(GL_LINE_SMOOTH)
         #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)

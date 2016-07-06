@@ -10,8 +10,7 @@ class OBJ_Geometry(OP_Network):
 		category = ObjectNodeTypeCategory
 
 	def __init__(self, engine, parent):
-		super(OBJ_Geometry, self).__init__(engine, parent, mask=None)
-
+		super(OBJ_Geometry, self).__init__(engine, parent)
 
 	@classmethod
 	def label(cls):

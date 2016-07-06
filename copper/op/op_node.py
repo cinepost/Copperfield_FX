@@ -5,36 +5,14 @@ from copper.op.op_parameters import OP_Parameters
 
 @six.add_metaclass(RegistryMeta)
 class OpRegistry(type):
-    _registry = {}
+	_registry = {}
 
-    def __new__(meta, name, bases, clsdict):
-        cls = super(OpRegistry, meta).__new__(meta, name, bases, clsdict)
-        if not clsdict.pop('__base__', False):
-            meta._registry[name] = cls
-            if cls.type():
-                meta._registry[cls.type().name()] = cls
-        return cls
-
-
-class NodeType(object):
-	__name__ = None
-	__category__ = None
-	__icon_name__ = None
-
-	def __init__(self):
-		pass
-
-	@classmethod
-	def name(cls):
-		return cls.__name__
-
-	@classmethod
-	def category(cls):
-		return cls.__category__
-
-	@classmethod
-	def icon(clas):
-		return cls.__icon_name__
+	def __new__(meta, name, bases, clsdict):
+		cls = super(OpRegistry, meta).__new__(meta, name, bases, clsdict)
+		if not clsdict.pop('__base__', False):
+			meta._registry[name] = cls
+			meta._registry[cls.type().nameWithCategory()] = cls # this is used to find a proper node by it's type name like "file", "blur" and so in cojunction with category
+		return cls
 
 
 @six.add_metaclass(OpRegistry)
@@ -68,6 +46,9 @@ class OP_Node(OP_Parameters):
 	def isNetwork(cls):
 		raise NotImplementedError
 
+	@classmethod
+	def isManager(cls):
+		raise NotImplementedError
 
 	@classmethod
 	def iconName(cls):

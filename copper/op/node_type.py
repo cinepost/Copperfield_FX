@@ -34,6 +34,10 @@ class NodeTypeBase(object):
 		return cls.type_name
 
 	@classmethod
+	def nameWithCategory(cls):
+		return "%s/%s" % (cls.category.name(), cls.name())
+
+	@classmethod
 	def category(cls):
 		return cls.category
 

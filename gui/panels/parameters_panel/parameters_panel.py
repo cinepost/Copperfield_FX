@@ -128,15 +128,11 @@ class ParametersWidget(QtGui.QWidget):
             
             elif parm_type is parameter.CopperParmButton:
                 # button
-                widget = QtGui.QPushButton(parm.label(), self)
-                widget.setMinimumWidth(60)
-                widget.setMaximumWidth(140)
-                widget.clicked.connect(parm.getCallback())
+                widget = ParameterButtonWidget(self, parm)
 
             elif parm_type is parameter.CopperParmOpPath:
                 # op path
-                #widget = OpPathWidget(str(value))      
-                pass
+                widget = ParameterOpPathWidget(self, parm)
 
             elif parm_type is parameter.CopperParmOrderedMenu:
                 # menu

@@ -1,8 +1,8 @@
 from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import CopNetNodeTypeCategory
+from copper.op.node_type_category import CopNetNodeTypeCategory, Cop2NodeTypeCategory
 from copper.op.op_network import OP_Network
 
-class COP2_Network(OP_Network):
+class COPNET_Network(OP_Network):
 
 	class NodeType(NodeTypeBase):
 		icon_name = 'cop2-network'
@@ -10,7 +10,11 @@ class COP2_Network(OP_Network):
 		category = CopNetNodeTypeCategory
 	
 	def __init__(self, engine, parent):
-		super(COP2_Network, self).__init__(engine, parent)
+		super(COPNET_Network, self).__init__(engine, parent)
+
+	@classmethod
+	def allowedChildTypeCategory(cls):
+		return Cop2NodeTypeCategory.name()
 
 	@classmethod
 	def label(cls):

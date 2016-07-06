@@ -2,6 +2,7 @@ import sys, os
 import pyopencl as cl
 import pickle
 import numpy
+from copper.op.node_type_category import ManagerNodeTypeCategory
 from copper.op.op_node import OpRegistry
 from copper.op.op_network import OP_Network
 from copper.managers import OBJ_Network, COP_Network, ROP_Network
@@ -18,7 +19,7 @@ class Copper_Engine(OP_Network):
 	network_cb  = None
 
 	def __init__(self, device_type="GPU", device_index=None, cl_path=""): # "cpu" or "gpu" here or "ALL"
-		super(Copper_Engine, self).__init__(self, None, ["comp"]) # only CLC_Composition class nodes allowed to be created at the root/engine level
+		super(Copper_Engine, self).__init__(self, None) # base node is the engine itself, therefore it has no parent
 		self.__time__= 0
 		self.__frame__= 0
 		self.__fps__ = 25.0
@@ -128,6 +129,10 @@ class Copper_Engine(OP_Network):
 	@property	
 	def engine(self):
 		return self
+
+	@classmethod
+	def allowedChildTypeCategory(cls):
+		return ManagerNodeTypeCategory.name()
 
 	def flush(self):
 		for net_name in self.__node_dict__:

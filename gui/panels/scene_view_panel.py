@@ -17,10 +17,10 @@ class SceneViewPanel(BasePanel):
         BasePanel.__init__(self) 
 
         self.path_bar_widget = PathBarWidget()
-        self.network_view_widget = SceneViewWidget()
+        self.scene_view_widget = SceneViewWidget()
 
         self.setNetworkControlsWidget(self.path_bar_widget)
-        self.addWidget(self.network_view_widget)
+        self.addWidget(self.scene_view_widget)
 
     @classmethod
     def panelTypeName(cls):
@@ -136,6 +136,9 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glEnd()
 
     def paintGL(self):
+        if not self.isValid():
+            return
+
         glClearColor(0.5, 0.5, 0.5, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 

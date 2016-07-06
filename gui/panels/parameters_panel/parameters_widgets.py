@@ -84,6 +84,20 @@ class ParameterChoiceWidget(ParameterBaseWidget):
 		self.layout.addStretch(1)
 
 
+class ParameterButtonWidget(ParameterBaseWidget):
+	def __init__(self, parent, parm):
+		ParameterBaseWidget.__init__(self, parent, parm)
+
+		button = QtGui.QPushButton(parm.label(), self)
+		button.setMinimumWidth(60)
+		button.setMaximumWidth(140)
+
+		button.clicked.connect(parm.getCallback())
+
+		self.layout.addWidget(button)
+		self.layout.addStretch(1)
+
+
 class ParameterFilePathWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
@@ -100,6 +114,27 @@ class ParameterFilePathWidget(ParameterBaseWidget):
 	def BrowseFile(self, lineEdit):
 		file_name = QtGui.QFileDialog.getOpenFileName()
 		self.file_path_widget.setText(file_name)
+
+
+class ParameterOpPathWidget(ParameterBaseWidget):
+	def __init__(self, parent, parm):
+		ParameterBaseWidget.__init__(self, parent, parm)
+
+		self.op_path_widget = QtGui.QLineEdit(parm.evalAsStr())
+		self.op_path_widget.editingFinished.connect(self.setParmValue)           
+		self.op_button = QtGui.QToolButton(self)
+		self.op_button.setObjectName("op_path")
+		self.op_button.clicked.connect(lambda: self.BrowseOp(self.op_path_widget))
+		
+		self.layout.addWidget(self.op_path_widget)
+		self.layout.addWidget(self.op_button)
+
+	def BrowseOp(self, lineEdit):
+		op_path = QtGui.QFileDialog.getOpenFileName()
+		self.op_path_widget.setText(op_path)
+
+
+
 
 
 

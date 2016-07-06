@@ -47,10 +47,6 @@ class ManagerNodeTypeCategory(NodeTypeCategory):
 	cat_name = 'Manager'
 	type_name = 'MGR'
 
-class CopNetNodeTypeCategory(NodeTypeCategory):
-	cat_name = 'CopNet'
-	type_name = 'IMG'
-
 class DriverNodeTypeCategory(NodeTypeCategory):
 	cat_name = 'Driver'
 	type_name = 'ROP'
@@ -58,6 +54,10 @@ class DriverNodeTypeCategory(NodeTypeCategory):
 class ObjectNodeTypeCategory(NodeTypeCategory):
 	cat_name = 'Object'
 	type_name = 'OBJ'
+
+class CopNetNodeTypeCategory(NodeTypeCategory):
+	cat_name = 'CopNet'
+	type_name = 'IMG'
 
 class Cop2NodeTypeCategory(NodeTypeCategory):
 	cat_name = 'Cop2'

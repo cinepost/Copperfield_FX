@@ -8,33 +8,20 @@ if not os.environ.get("COPPER_HOME"):
 	os.environ["COPPER_HOME"] = cwd
 
 import inspect
-from op_engine import Copper_Engine as engine
+from op.op_engine import Copper_Engine as engine
 import settings
 
-print "Loading operators..."
+from rop import *
+from obj import *
+from cop2 import *
 
-ops = {}
+from copper.op.node_type_category import NodeTypeCategoryRegistry
 
-for module_name in settings.op_paths:
-	module = __import__(module_name, fromlist="*")
-	for name in dir(module):
-		obj = getattr(module, name)
-		if inspect.isclass(obj):
-			print "Loading operator: %s" % obj
-			print "Operator type: %s" % obj.type()
-			ops[obj.type()] = obj
-		#	if hasattr(obj,"__op__"):
-		#		if obj.type_name:
-		#			ops[obj.type_name] = obj
-		#			print "Operator %s loaded..." % obj
-		#	elif hasattr(obj, "__mgr__"):
-		#			ops[obj.type_name] = obj
-		#			print "Network manager %s loaded..." % obj
-								
-
+def nodeTypeCategories():
+	print NodeTypeCategoryRegistry._registry_aliases
 
 def CreateEngine(device_type = None, device_index=None):
 	print "Creating engine instance of type: %s" % device_type
-	return engine(device_type = device_type, device_index=device_index, ops=ops, cl_path=settings.cl_path)
+	return engine(device_type = device_type, device_index=device_index, cl_path=settings.cl_path)
 
 engine = CreateEngine("GPU")

@@ -53,9 +53,8 @@ class TreeViewWidget(QtGui.QTreeWidget):
                 item = QtGui.QTreeWidgetItem(parent)
                 item.setExpanded(True)
 
-                if cur_node.icon_name:
-                    print "Icon for node %s" % cur_node
-                    item.setIcon(0, QtGui.QIcon(cur_node.icon_name))
+                if cur_node.iconName():
+                    item.setIcon(0, QtGui.QIcon(cur_node.iconName()))
 
                 item.setText(0, cur_node.name())
                 item.setText(1, cur_node.path())

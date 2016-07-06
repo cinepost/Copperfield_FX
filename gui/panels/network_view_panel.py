@@ -38,8 +38,8 @@ class NodeItem(QtGui.QGraphicsItem):
             self.node.pos_x = 40
             self.node.pos_y = 40 
              
-        if self.node.icon_name:
-            self.icon = QtGui.QIcon(self.node.icon_name)
+        if self.node.iconName():
+            self.icon = QtGui.QIcon(self.node.iconName())
         else:
             self.icon = None
 

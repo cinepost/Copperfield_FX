@@ -127,15 +127,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="7.9242445"
-     inkscape:cx="70.927315"
-     inkscape:cy="101.26973"
+     inkscape:cx="62.598445"
+     inkscape:cy="65.935131"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1155"
-     inkscape:window-x="4"
-     inkscape:window-y="0"
+     inkscape:window-x="41"
+     inkscape:window-y="38"
      inkscape:window-maximized="0" />
   <metadata
      id="metadata7">
@@ -155,6 +155,12 @@
      id="layer1"
      transform="translate(0,-882.28346)">
     <path
+       sodipodi:nodetypes="sccsccs"
+       inkscape:connector-curvature="0"
+       id="path4960"
+       d="m 42.206743,903.22949 c -21.475499,0 -38.8848512,7.1794 -38.8848512,16.03626 l 0,85.56315 c 0,8.8568 17.4093522,16.037 38.8848512,16.037 21.475509,0 38.884861,-7.1802 38.884861,-16.037 l 0,-85.56315 c 0,-8.85686 -17.409352,-16.03626 -38.884861,-16.03626 z"
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+    <path
        style="fill:url(#linearGradient4210);fill-opacity:1;stroke:none;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 42.206743,903.22949 c -21.475499,0 -38.8848512,7.1794 -38.8848512,16.03626 l 0,85.56315 c 0,8.8568 17.4093522,16.037 38.8848512,16.037 21.475509,0 38.884861,-7.1802 38.884861,-16.037 l 0,-85.56315 c 0,-8.85686 -17.409352,-16.03626 -38.884861,-16.03626 z"
        id="path3336"
@@ -163,10 +169,10 @@
     <ellipse
        transform="scale(1,-1)"
        style="fill:#cae0f7;fill-opacity:1;stroke:none;stroke-width:4;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       ry="18.39802"
-       rx="40.270561"
-       cy="-920.22839"
-       cx="42.027225"
+       ry="19.092093"
+       rx="40.649147"
+       cy="-920.54388"
+       cx="42.153423"
        id="ellipse4232" />
     <ellipse
        id="ellipse4216"

@@ -40,6 +40,9 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.width = 1902
         self.height = 1200
         self.setMinimumSize(640, 360)
+        self.orbit_mode = False
+        self.orbit_angle_h = 0
+        self.orbit_angle_w = 0
 
     def drawBackground(self):
         glDisable(GL_DEPTH_TEST)
@@ -152,7 +155,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         gluPerspective(45.0,float(self.width)/float(self.height),0.1, 1000.0)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        gluLookAt(5, 5, 5, 0, 0, 0, 0, 1, 0)
+        gluLookAt(5, 5+self.orbit_angle_h, 5, 0, 0, 0, 0, 1, 0)
 
         # Grid
         self.drawSceneGrid()
@@ -185,5 +188,17 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         ##lLoadIdentity()                    
         #gluPerspective(45.0,1.33,0.1, 100.0) 
         #glMatrixMode(GL_MODELVIEW)
+
+    def mousePressEvent(self, event):
+        self.orbit_mode = True
+        self.setCursor(QtCore.Qt.ClosedHandCursor)
+
+    def mouseReleaseEvent(self, event):
+        self.orbit_mode = False
+        self.setCursor(QtCore.Qt.OpenHandCursor)
+
+    def mouseMoveEvent(self, event):
+        self.orbit_angle_h += 1
+        self.updateGL()
 
 

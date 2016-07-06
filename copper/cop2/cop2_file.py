@@ -1,15 +1,22 @@
 from PyQt4 import Qt, QtGui
-from copper.cops.cop2_node import COP2_Node
-from copper import parameter
 import matplotlib.image
 from PIL import Image 
 import pyopencl as cl
 import numpy
 import os
-			
+	
+from copper.op.node_type import NodeTypeBase
+from copper.op.node_type_category import Cop2NodeTypeCategory
+from copper.cop2.cop2_node import COP2_Node
+from copper import parameter
+
 class COP2_File(COP2_Node):
-	category = "sources"
-	icon_name = 'icons/nodes/COP2_file.svg'
+	
+	class NodeType(NodeTypeBase):
+		icon_name = 'COP2_file'
+		type_name = 'file'
+		category = Cop2NodeTypeCategory
+
 	def __init__(self, engine, parent):
 		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
@@ -28,18 +35,6 @@ class COP2_File(COP2_Node):
 			("black", "Use Black Frame"),
 			("error", "Report Error")
 		])
-
-	@classmethod
-	def isNetwork(cls):
-		return False
-
-	@classmethod
-	def type(cls):
-		return "file"
-
-	@classmethod
-	def isOp(cls):
-		return True
 
 	@classmethod
 	def label(cls):

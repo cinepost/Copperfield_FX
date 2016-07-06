@@ -90,8 +90,8 @@ class ParametersWidget(QtGui.QWidget):
         clearParametersLayout(self.parm_box)
 
         # build header
-        if node.icon_name:
-            icon = QtGui.QIcon(node.icon_name)
+        if node.iconName():
+            icon = QtGui.QIcon(node.iconName())
         else:
             icon = self.default_icon
 

@@ -1,17 +1,19 @@
-from copper.op_node import OP_Node
+from copper.op.op_node import OpRegistry, OP_Node
 from copper.parameter import CopperParameter
 import re, collections
 lastNum = re.compile(r'(?:[^\d]*(\d+)[^\d]*)+')
 
-class OP_Manager(OP_Node):
+class OP_Network(OP_Node):
 	"""
 	This class implements all the network related methods to be used with Compy nodes. It handles child/parent relations, node creation, manipulation methods
 	and tree traversal.
 
 	"""
+	__base__ = True
+
 	def __init__(self, engine, parent, mask=None):
 		# mask is a list with node type names that are allowed to be created by this NetworkManager instance e.d ["img","comp"] If mask is None than any node type can be used
-		super(OP_Manager, self).__init__()
+		super(OP_Network, self).__init__()
 		self.__engine__ = engine
 		self.__name__ = None
 		self.__parms__ = collections.OrderedDict()
@@ -23,18 +25,10 @@ class OP_Manager(OP_Node):
 
 	@classmethod
 	def isNetwork(cls):
-		raise NotImplementedError
-
-	@classmethod
-	def isOp(cls):
-		raise NotImplementedError
+		return True
 
 	@classmethod
 	def label(cls):
-		raise NotImplementedError
-
-	@classmethod
-	def type(cls):
 		raise NotImplementedError
 
 	def __increment__(self, s):
@@ -125,11 +119,11 @@ class OP_Manager(OP_Node):
 		else:
 			name = node_type_name	
 
-		if node_type_name in self.engine.ops:
-			node = self.engine.ops[node_type_name](self.engine, self)	
+		if node_type_name in OpRegistry._registry:
+			node = OpRegistry[node_type_name](self.engine, self)	
 			node.setName(name)
 		else:
-			raise BaseException("Unsupported node type \"%s\". Abort." % node_type_name)	
+			raise BaseException("Unknown node type \"%s\". Abort." % node_type_name)	
 
 		self.__node_dict__[node.name()] = node
 		if self.engine.network_cb:

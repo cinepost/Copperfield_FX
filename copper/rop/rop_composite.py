@@ -1,26 +1,19 @@
-from copper.rops.rop_node import ROP_Node
+from copper.op.node_type import NodeTypeBase
+from copper.op.node_type_category import DriverNodeTypeCategory
+from copper.rop.rop_node import ROP_Node
 from copper import parameter
 
 class ROP_Composite(ROP_Node):
-	icon_name = 'icons/nodes/ROP_comp.svg'
-	category = "image"
+	
+	class NodeType(NodeTypeBase):
+		icon_name = 'ROP_comp'
+		type_name = 'comp'
+		category = DriverNodeTypeCategory
 
 	def __init__(self, engine, parent):
 		super(ROP_Composite, self).__init__(engine, parent)
 		self.addParameter("coppath", parameter.CopperParmOpPath, "", label="COP Name")
 		self.addParameter("copoutput", parameter.CopperParmFile, "", label="Output Picture")
-
-	@classmethod
-	def isNetwork(cls):
-		return False
-
-	@classmethod
-	def type(cls):
-		return "comp"
-
-	@classmethod
-	def isOp(cls):
-		return True
 
 	@classmethod
 	def label(cls):

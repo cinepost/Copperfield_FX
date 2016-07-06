@@ -6,12 +6,11 @@ import numpy
 
 import threading
 from copper.parameter import CopperParameter
-from copper.op_manager import OP_Manager
-from copper.cops.cop_plane import COP_Plane    				
+from copper.op.op_network import OP_Network
+from copper.cop2.cop_plane import COP_Plane
 
-class COP2_Node(OP_Manager):
-	# Base class for OPs
-	__op__ = True # Indicated that this is OP node
+class COP2_Node(OP_Network):
+	__base__ = True
 	type_name = None # This is a TYPE name for the particular compositing OP ...
 	
 	def __init__(self, engine, parent, mask=None):

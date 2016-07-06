@@ -1,11 +1,18 @@
-from copper.cops.cop2_node import COP2_Node
-from copper import parameter
 import pyopencl as cl
 import numpy
 
+from copper.op.node_type import NodeTypeBase
+from copper.op.node_type_category import Cop2NodeTypeCategory
+from copper.cop2.cop2_node import COP2_Node
+from copper import parameter
+
 class COP2_Blur(COP2_Node):
-	category = "effects"
-	icon_name = 'icons/nodes/COP2_blur.svg'
+
+	class NodeType(NodeTypeBase):
+		icon_name = 'COP2_blur'
+		type_name = 'blur'
+		category = Cop2NodeTypeCategory
+
 	def __init__(self, engine, parent):
 		super(COP2_Blur, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_blur.cl")
@@ -15,18 +22,6 @@ class COP2_Blur(COP2_Node):
 		self.addParameter("blursize", float, 0.05)
 		self.addParameter("blursizey", float, 0.05)
 		self.addParameter("useindepy", bool, True)
-
-	@classmethod
-	def isNetwork(cls):
-		return False
-
-	@classmethod
-	def type(cls):
-		return "blur"
-
-	@classmethod
-	def isOp(cls):
-		return True
 
 	@classmethod
 	def label(cls):
@@ -64,8 +59,12 @@ class COP2_Blur(COP2_Node):
 
 
 class COP2_PressRaster(COP2_Node):
-	type_name	= "press_raster"
-	category = "effects"
+
+	class NodeType(NodeTypeBase):
+		icon_name = 'COP2_press'
+		type_name = 'press'
+		category = Cop2NodeTypeCategory
+
 	def __init__(self, engine, parent):
 		super(COP2_PressRaster, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_press_raster.cl")

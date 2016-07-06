@@ -2,20 +2,22 @@ import sys, os
 import pyopencl as cl
 import pickle
 import numpy
-from copper.op_manager import OP_Manager
+from copper.op.op_node import OpRegistry
+from copper.op.op_network import OP_Network
 from copper.managers import OBJ_Network, COP_Network, ROP_Network
 from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
 
-class Copper_Engine(OP_Manager):
+class Copper_Engine(OP_Network):
+	__base__ = True
 	programs 	= {}
 	app 		= None
 	filters		= {}
 	network_cb  = None
 
-	def __init__(self, device_type="GPU", device_index=None, ops={}, cl_path=""): # "cpu" or "gpu" here or "ALL"
+	def __init__(self, device_type="GPU", device_index=None, cl_path=""): # "cpu" or "gpu" here or "ALL"
 		super(Copper_Engine, self).__init__(self, None, ["comp"]) # only CLC_Composition class nodes allowed to be created at the root/engine level
 		self.__time__= 0
 		self.__frame__= 0
@@ -49,13 +51,12 @@ class Copper_Engine(OP_Manager):
 			self._mf 		= cl.mem_flags
 			self.cl_path 	= cl_path
 			self.cl_mode = True
-			self.log("Using Open_CL.")	
+			print "Using Open_CL."
 		else:
-			self.log("NO OPEN_CL CAPABLE DEVICE FOUND !!!")
+			print "NO OPEN_CL CAPABLE DEVICE FOUND !!!"
 			exit(1)		
 
-		self.ops = ops
-		print "Bundled with ops: %s \n Done." % self.ops
+		print "Bundled with ops: %s \n Done." % OpRegistry._registry
 
 		# register translators
 		self.translators = {}

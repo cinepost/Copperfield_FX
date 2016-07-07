@@ -7,13 +7,14 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
+from copper import engine
 from base_panel import BasePanel
 
 class PythonShellPanel(BasePanel):
-    def __init__(self, parent=None, engine=None, viewer=None, params=None):      
+    def __init__(self, parent=None):
+        print "Python Panel hou is %s" % engine      
         BasePanel.__init__(self, parent)
-        self.engine = engine
-        self.python_shell_widget = PythonShellWidget(self, engine=self.engine)
+        self.python_shell_widget = PythonShellWidget(self)
         self.addWidget(self.python_shell_widget)
 
     @classmethod
@@ -32,7 +33,8 @@ class PythonShellWidget(QtGui.QTextEdit):
         def runIt(self, command):
             code.InteractiveInterpreter.runsource(self, command)
 
-    def __init__(self,  parent, engine=None):
+    def __init__(self,  parent):
+        print "Python hou is: %s" % engine
         QtGui.QTextEdit.__init__(self, parent)
         self.setObjectName("PythonShellWidget")
 
@@ -45,7 +47,7 @@ class PythonShellWidget(QtGui.QTextEdit):
         self.marker()                   # make the >>> or ... marker        
         self.history            = []    # list of commands entered
         self.historyIndex       = -1
-        self.interpreterLocals  = {}
+        self.interpreterLocals  = {"hou": engine}
 
         # initilize interpreter with self locals
         self.initInterpreter(locals())
@@ -231,4 +233,4 @@ class PythonShellWidget(QtGui.QTextEdit):
                 return None
 
         # allow all other key events
-        super(PythonShellPanel, self).keyPressEvent(event)
+        super(PythonShellWidget, self).keyPressEvent(event)

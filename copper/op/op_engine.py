@@ -66,17 +66,9 @@ class Copper_Engine(OP_Network):
 			self.translators[translator.registerExtension()] = translator
 
 		# create base network managers
-		obj = OBJ_Network(self, self)
-		obj.setName("obj")
-		self.__node_dict__["obj"] = obj
-
-		img = COP_Network(self, self)
-		img.setName("img")
-		self.__node_dict__["img"] = img
-
-		out = ROP_Network(self, self)
-		out.setName("out")
-		self.__node_dict__["out"] = out		
+		self.createNode("out")
+		self.createNode("img")
+		self.createNode("obj")	
 	
 	def set_network_change_callback(self, callback):
 		self.network_cb = callback
@@ -211,17 +203,17 @@ class Copper_Engine(OP_Network):
 		out = self.node("out")
 
 		## Create composite output driver
-		out.createNode("comp")
+		out.createNode("comp", "comp1")
 
 		## First get image network
 		img = self.node("img")
 		
 		## Create composition
-		comp = img.createNode("img")
+		comp = img.createNode("img", "comp1")
 
 		obj = self.node("obj")
 
-		geo = obj.createNode("geo")
+		geo = obj.createNode("geo", "geo1")
 
 		## Create file reading node 
 		file1 = comp.createNode("file")

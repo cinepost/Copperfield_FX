@@ -72,10 +72,7 @@ class OP_Network(OP_Node):
 		return self.__parent__	
 
 	def children(self):
-		if self.__node_dict__:
-			return [self.__node_dict__.get(node_name) for node_name in self.__node_dict__]	
-		
-		return []
+		return self.nodes()
 
 	def inputs(self):
 		return self.__inputs__
@@ -106,6 +103,29 @@ class OP_Network(OP_Node):
 
 	def flush(self):
 		self.__node_dict__ = {}
+
+	def asCode(self, brief=False, recurse=False):
+		code = ""
+		if self.parent() is None:
+			# We are the root or base manager, so lets skip them
+			pass
+
+		elif self.parent() is self.engine:
+			# We are base manager, so here it is
+			code += '# Code for %s\n' % self.path()
+			code += 'hou_node = hou.node(\"%s\")\n' % self.path()
+		else:
+			# We are node
+			if recurse:
+				code += self.parent().asCode()
+				code += "hou_parent = hou_node\n"
+			else:
+				code += 'hou_parent = hou.node(\"%s\")\n' % self.parent().path()
+			
+			code += '# Code for %s\n' % self.path()
+			code += 'hou_node = hou_parent.createNode(\"%s\", \"%s\")\n' % ( self.type().name(), self.name() )
+		
+		return code
 		
 	def createNode(self, node_type_name, node_name=None):
 		if not self.isNetwork():

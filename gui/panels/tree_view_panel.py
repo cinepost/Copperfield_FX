@@ -27,11 +27,11 @@ class TreeViewPanel(BasePanel):
 class TreeViewWidget(QtGui.QTreeWidget):
     def __init__(self, parent=None):      
         QtGui.QTreeWidget.__init__(self, parent)
+        self.setDragEnabled(True)
         self.setObjectName("QTreeView")
         self.current_node = None
         self.setIconSize(QtCore.QSize(16,16))
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        self.setDragEnabled(True)
 
         self.setAlternatingRowColors(True)
         vbox = QtGui.QVBoxLayout(self)
@@ -99,4 +99,13 @@ class TreeViewWidget(QtGui.QTreeWidget):
         action_3=menu.addAction("Delete")
         #action_3.triggered.connect(lambda: self.workspace.copperDeleteNode(node_path))
 
-        menu.exec_(QtGui.QCursor.pos())  
+        menu.exec_(QtGui.QCursor.pos())
+
+    def mimeData(self, items):
+        mime_data = QtCore.QMimeData()
+        mime_data.setText(items[0].text(1))
+        return mime_data
+
+
+
+

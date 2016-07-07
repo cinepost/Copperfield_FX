@@ -42,10 +42,10 @@ QToolButton:hover, QPushButton:hover {
 	background-color: #888;
 }
 
-QToolButton:pressed , QPushButton:pressed{
-	border-left: 1px solid #641;
-	border-top: 1px solid #641;
-    background-color: #972;
+QToolButton:pressed , QPushButton:pressed {
+	border: 1px solid #751;
+	border-style: groove;
+    background-color: #a72;
 }
 
 QCheckBox {
@@ -99,6 +99,10 @@ QToolButton#file {
 
 QToolButton#op_path {
 	image: url("icons/main/op-dialog.svg");
+}
+
+QToolButton#op_jump {
+	image: url("icons/main/go-jump.svg");
 }
 
 /* Splitters */
@@ -163,8 +167,6 @@ QPushButton#plusButton::menu-indicator {
     height: 0;
 }
 
-
-
 /* QFrame */
 QWidget#tabbedPanel {
 	border: none;
@@ -200,6 +202,15 @@ QToolButton#back {
 
 QToolButton#fwd {
 	image: url("icons/main/go-next.svg");
+}
+
+QToolButton#pin {
+	image: url("icons/main/pin.svg");
+}
+
+QToolButton#pin:checked {
+	image: url("icons/main/pin-pressed.svg");
+	background-color: #972;
 }
 
 /* Pane Tab Editor tabs */

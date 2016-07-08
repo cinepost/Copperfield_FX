@@ -26,6 +26,9 @@ class CompositeViewPanel(BasePanel):
     def panelTypeName(cls):
         return "Composite View"
 
+    def nodeSelected(self, node_path = None):
+        pass
+
 
 class CompositeViewWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):

@@ -26,6 +26,9 @@ class NetworkViewPanel(BasePanel):
     def panelTypeName(cls):
         return "Network View"
 
+    def nodeSelected(self, node_path = None):
+        pass
+
 
 class NetworkViewControls(CollapsableWidget):
     def __init__(self, parent=None):

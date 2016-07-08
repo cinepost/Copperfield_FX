@@ -23,6 +23,9 @@ class SceneViewPanel(BasePanel):
     def panelTypeName(cls):
         return "Scene View"
 
+    def nodeSelected(self, node_path = None):
+        pass
+
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):

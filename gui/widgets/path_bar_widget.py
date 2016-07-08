@@ -1,4 +1,6 @@
 from PyQt4 import Qt, QtGui, QtCore
+
+from copper import engine
 from copper import parameter
 
 class PathBarWidget(QtGui.QFrame):
@@ -23,19 +25,23 @@ class PathBarWidget(QtGui.QFrame):
         self.btn_pin.pressed.connect(self.pinPressed)
 
         self.path_layout = QtGui.QHBoxLayout()
+        self.path_layout.setSpacing(0)
         self.path_layout.setContentsMargins(0, 0, 0, 0)
-        self.path_layout.addStretch(1)
+
+        self.path_bar = QtGui.QFrame()
+        self.path_bar.setObjectName("bar")
+        self.path_bar.setLayout(self.path_layout)
 
         layout.addWidget(self.btn_back)
         layout.addWidget(self.btn_frwd)
-        layout.addLayout(self.path_layout)
+        layout.addWidget(self.path_bar)
         layout.addWidget(self.btn_pin)
 
         self.setLayout(layout)
         self.setAcceptDrops(True)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
 
-        self.buildPathBar()
+        self.buildPathBar(node_path="/obj/geo1")
 
     def pinPressed(self):
         if self.pinned == False:
@@ -43,19 +49,29 @@ class PathBarWidget(QtGui.QFrame):
         else:
             self.pinned = False
 
-    def buildPathBar(self):
-        btn = QtGui.QToolButton()
-        btn.setText("file1")
-        self.path_layout.addWidget(btn)
+    def isPinned(self):
+        return self.pinned
 
-        btn = QtGui.QToolButton()
-        btn.setText("file1")
-        self.path_layout.addWidget(btn)
+    def nodeSelected(self, node_path=None):
+        self.buildPathBar(node_path)
 
-        btn = QtGui.QToolButton()
-        btn.setText("file1")
-        self.path_layout.addWidget(btn)
+    def buildPathBar(self, node_path=None):
+        node = engine.node(node_path)
 
-        btn = QtGui.QToolButton()
-        btn.setText("file1")
-        self.path_layout.addWidget(btn)
+        if not node:
+            return
+
+        for i in reversed(range(self.path_layout.count())): 
+            self.path_layout.itemAt(i).widget().deleteLater()
+
+        parent = node.parent()
+        while parent:
+            if parent is not engine:
+                btn = QtGui.QPushButton()
+                btn.setText(parent.name())
+                self.path_layout.addWidget(btn)
+            
+            parent = parent.parent()
+
+        btn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        #self.path_layout.setStretchFactor (btn, 1)

@@ -1,6 +1,7 @@
 from PyQt4 import QtCore, QtGui
 
 from gui.widgets import PathBarWidget
+from gui.signals import signals
 
 class BasePanel(QtGui.QFrame):
     def __init__(self, network_controls=False):
@@ -19,7 +20,7 @@ class BasePanel(QtGui.QFrame):
         self.setLayout(self.panel_layout)
 
         ''' connect signals '''
-        QtCore.QObject.connect(self, QtCore.SIGNAL('copperNodeSelected'), self.copperNodeSelected)  
+        signals.copperNodeSelected.connect(self.copperNodeSelected)  
 
     def copyPanel(self):
         '''
@@ -47,13 +48,21 @@ class BasePanel(QtGui.QFrame):
         '''
         return self.path_bar_widget
 
+    def nodeSelected(self, node_path = None):
+        raise NotImplementedError
+
     def addLayout(self, layout):
         self.panel_layout.addLayout(layout)
 
     def addWidget(self, widget):
         self.panel_layout.addWidget(widget)
 
-    @QtCore.pyqtSlot()   
+    @QtCore.pyqtSlot(str)   
     def copperNodeSelected(self, node_path = None):
-        print "copperNodeSelected not implemented in %s" % self.__class__
+        if self.hasNetworkControls():
+            if not self.path_bar_widget.isPinned():
+                self.path_bar_widget.nodeSelected(str(node_path))
+                self.nodeSelected(str(node_path))
+            else:
+                print "pinned"
 

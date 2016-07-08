@@ -27,6 +27,9 @@ class ParametersPanel(BasePanel):
     def panelTypeName(cls):
         return "Parameters"
 
+    def nodeSelected(self, node_path=None):
+        self.parameters_widget.nodeSelected(node_path)
+
 
 class ParametersWidget(QtGui.QWidget):
     def __init__(self, parent=None):    
@@ -70,11 +73,7 @@ class ParametersWidget(QtGui.QWidget):
         self.setLayout(vbox)
         self.setAcceptDrops(True)
 
-        ### Connect GUI signals
-        signals.copperNodeSelected.connect(self.nodeSelected)
-
-
-    @QtCore.pyqtSlot(str)   
+  
     def nodeSelected(self, node_path = None):
         node = engine.node(str(node_path))
         

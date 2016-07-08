@@ -16,6 +16,9 @@ class TreeViewPanel(BasePanel):
     def panelTypeName(cls):
         return "Tree View"
 
+    def nodeSelected(self, node_path = None):
+        pass
+
 
 class TreeViewWidget(QtGui.QTreeWidget):
     def __init__(self, parent=None):      

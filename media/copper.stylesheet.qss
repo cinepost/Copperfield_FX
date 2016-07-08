@@ -96,7 +96,6 @@ QGraphicsView, QScrollArea{
 QPushButton#btn_min {
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #444, stop:1 #363636);
 	text-align: left;
-	align: top;
 	icon-size: 6px;
 	width: 6px;
 	height: 6px;
@@ -214,6 +213,37 @@ QFrame#pathBar QToolButton:pressed {
 	border-left: 1px solid #641;
 	border-top: 1px solid #641;
     background-color: #972;
+}
+
+QFrame#bar {
+	border: 1px solid black;
+	border-radius: 2px;
+	margin: 2px;
+}
+
+QFrame#bar QPushButton{
+	text-align: left;
+	background-color: #333;
+	border-top: 1px solid #555;
+	border-left: 1px solid #555;
+	border-bottom: 1px solid #363636;
+	border-right: 1px solid #363636;
+	padding-left: 6px;
+	padding-right: 6px;
+	height: 10px;
+	outline: 0;
+}
+
+QFrame#bar QPushButton:hover{
+	background-color: #333;
+}
+
+QFrame#bar QPushButton:pressed{
+	border-top: 1px solid #876;
+	border-left: 1px solid #a96;
+	border-bottom: 1px solid #654;
+	border-right: 1px solid #654;
+	background-color: #543;
 }
 
 QToolButton#back {

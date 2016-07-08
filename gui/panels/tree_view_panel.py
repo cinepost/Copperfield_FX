@@ -7,21 +7,14 @@ from base_panel import BasePanel
 
 class TreeViewPanel(BasePanel):
     def __init__(self):      
-        BasePanel.__init__(self) 
+        BasePanel.__init__(self, network_controls=True) 
 
-        self.path_bar_widget = PathBarWidget()
         self.tree_view_widget = TreeViewWidget()
-
-        self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.tree_view_widget)
 
     @classmethod
     def panelTypeName(cls):
         return "Tree View"
-
-    @classmethod
-    def hasNetworkControls(cls):
-        return True
 
 
 class TreeViewWidget(QtGui.QTreeWidget):

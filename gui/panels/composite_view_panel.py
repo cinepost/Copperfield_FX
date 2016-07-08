@@ -17,21 +17,15 @@ from base_panel import BasePanel
 
 class CompositeViewPanel(BasePanel):
     def __init__(self):
-        BasePanel.__init__(self)
+        BasePanel.__init__(self, network_controls=True)
 
-        self.path_bar_widget = PathBarWidget()
         self.image_view_widget = CompositeViewWidget()
-
-        self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.image_view_widget)
 
     @classmethod
     def panelTypeName(cls):
         return "Composite View"
 
-    @classmethod
-    def hasNetworkControls(cls):
-        return True
 
 class CompositeViewWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):

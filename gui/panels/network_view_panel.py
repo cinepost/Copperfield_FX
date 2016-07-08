@@ -14,13 +14,11 @@ from base_panel import BasePanel
 
 class NetworkViewPanel(BasePanel):
     def __init__(self):  
-        BasePanel.__init__(self) 
+        BasePanel.__init__(self, network_controls = True) 
 
-        self.path_bar_widget = PathBarWidget(self)
         self.network_view_widget = NetworkViewWidget(self)
         self.network_view_controls = NetworkViewControls(self)
 
-        self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.network_view_controls)
         self.addWidget(self.network_view_widget)
 
@@ -28,9 +26,6 @@ class NetworkViewPanel(BasePanel):
     def panelTypeName(cls):
         return "Network View"
 
-    @classmethod
-    def hasNetworkControls(cls):
-        return True
 
 class NetworkViewControls(CollapsableWidget):
     def __init__(self, parent=None):
@@ -42,9 +37,6 @@ class NodeItem(QtGui.QGraphicsItem):
     def __init__(self, node):      
         QtGui.QGraphicsItem.__init__(self)
         self.node = node
-        if self.node.pos_x is None or self.node.pos_y is None:
-            self.node.pos_x = 40
-            self.node.pos_y = 40 
              
         if self.node.iconName():
             self.icon = QtGui.QIcon(self.node.iconName())
@@ -53,6 +45,16 @@ class NodeItem(QtGui.QGraphicsItem):
 
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+
+    def autoPlace(self):
+        scene = self.scene()
+        items_rect = scene.itemsBoundingRect()
+
+        if self.node.pos_x is None or self.node.pos_y is None:
+            self.node.pos_x = items_rect.right() + 20
+            self.node.pos_y = items_rect.bottom() + 20
+
+        self.setPos(self.node.pos_x, self.node.pos_y)
 
     def paint(self, painter, option, widget=None):
         pen = QtGui.QPen()
@@ -110,6 +112,7 @@ class NodeFlowScene(QtGui.QGraphicsScene):
     def addNode(self, node):
         node_item= NodeItem(node)
         self.addItem(node_item)
+        node_item.autoPlace()
 
     def buildNetworkLevel(self, node):
         self.clear()
@@ -121,11 +124,9 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         self.zoomLevel *= zoomFactor
 
     def drawBackground(self, painter, rect):
-        if self.zoomLevel < 0.1:
-            # Gris size is too small to display
-            painter.fillRect(rect, QtGui.QColor(32, 32, 32))
+        painter.fillRect(rect, QtGui.QColor(48, 48, 48))
 
-        else:
+        if self.zoomLevel > 0.1:
             # Draw grid
             left = rect.left() - (rect.left() % self.gridSizeWidth)
             top = rect.top() - (rect.top() % self.gridSizeHeight)
@@ -142,7 +143,6 @@ class NodeFlowScene(QtGui.QGraphicsScene):
                 lines.append( QtCore.QLineF(rect.left(), y, rect.right(), y) )
                 y += self.gridSizeHeight
 
-            painter.fillRect(rect, QtGui.QColor(32, 32, 32))
             pen = QtGui.QPen(QtGui.QColor(64, 64, 64), 1)
             pen.setCosmetic(True)
             painter.setPen(pen)
@@ -167,7 +167,9 @@ class NodeFlowScene(QtGui.QGraphicsScene):
 
 class NetworkViewWidget(QtGui.QGraphicsView):
     def __init__(self, parent=None):  
-        QtGui.QGraphicsView.__init__(self, parent) 
+        QtGui.QGraphicsView.__init__(self, parent)
+
+        self.setObjectName("network_widget")
 
         self.scene = NodeFlowScene(self)
         self.setScene(self.scene)

@@ -1,14 +1,21 @@
 from PyQt4 import QtCore, QtGui
 
+from gui.widgets import PathBarWidget
 
 class BasePanel(QtGui.QFrame):
-    def __init__(self, engine=None):
+    def __init__(self, network_controls=False):
         QtGui.QFrame.__init__(self)
-        self.engine = engine
-        self.network_controls_widget = None
+        self.network_controls = network_controls
         self.panel_layout = QtGui.QVBoxLayout()
         self.panel_layout.setSpacing(0)
         self.panel_layout.setContentsMargins(0, 0, 0, 0)
+
+        if self.hasNetworkControls():
+            self.path_bar_widget = PathBarWidget(self)
+            self.panel_layout.addWidget(self.path_bar_widget)
+        else:
+            self.path_bar_widget = None
+
         self.setLayout(self.panel_layout)
 
         ''' connect signals '''
@@ -28,26 +35,17 @@ class BasePanel(QtGui.QFrame):
         '''
         raise NotImplementedError
 
-    @classmethod
-    def hasNetworkControls(cls):
+    def hasNetworkControls(self):
         '''
         This method is used to determine particular panel type implements network navigation control aka path bar
         '''
-        raise NotImplementedError
+        return self.network_controls
 
     def getNetworkControlsWidget(self):
         '''
         This method is used by UI to get control of network_controls_widget (whether it path bar or anything else) to hide and unhide it. Just mimiking dad's beheavior
         '''
-        return self.network_controls_widget
-
-    def setNetworkControlsWidget(self, widget):
-        if not self.network_controls_widget:
-            ### Add network controls widget
-            self.network_controls_widget = widget
-            self.panel_layout.insertWidget(0, self.network_controls_widget)
-        else:
-            raise BaseException("%s network controls widget already set !!!" % self.__class__)
+        return self.path_bar_widget
 
     def addLayout(self, layout):
         self.panel_layout.addLayout(layout)

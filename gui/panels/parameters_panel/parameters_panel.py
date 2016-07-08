@@ -18,21 +18,14 @@ def clearParametersLayout(layout):
 
 class ParametersPanel(BasePanel):
     def __init__(self):      
-        BasePanel.__init__(self)   
+        BasePanel.__init__(self, network_controls=True)   
 
-        self.path_bar_widget = PathBarWidget()
         self.parameters_widget = ParametersWidget()
-
-        self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.parameters_widget)
 
     @classmethod
     def panelTypeName(cls):
         return "Parameters"
-
-    @classmethod
-    def hasNetworkControls(cls):
-        return True
 
 
 class ParametersWidget(QtGui.QWidget):

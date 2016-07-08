@@ -11,9 +11,8 @@ from copper import engine
 from base_panel import BasePanel
 
 class PythonShellPanel(BasePanel):
-    def __init__(self, parent=None):
-        print "Python Panel hou is %s" % engine      
-        BasePanel.__init__(self, parent)
+    def __init__(self):
+        BasePanel.__init__(self)
         self.python_shell_widget = PythonShellWidget(self)
         self.addWidget(self.python_shell_widget)
 
@@ -34,7 +33,6 @@ class PythonShellWidget(QtGui.QTextEdit):
             code.InteractiveInterpreter.runsource(self, command)
 
     def __init__(self,  parent):
-        print "Python hou is: %s" % engine
         QtGui.QTextEdit.__init__(self, parent)
         self.setObjectName("PythonShellWidget")
 

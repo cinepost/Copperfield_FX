@@ -14,21 +14,14 @@ from base_panel import BasePanel
 
 class SceneViewPanel(BasePanel):
     def __init__(self):  
-        BasePanel.__init__(self) 
+        BasePanel.__init__(self, network_controls=True) 
 
-        self.path_bar_widget = PathBarWidget()
         self.scene_view_widget = SceneViewWidget()
-
-        self.setNetworkControlsWidget(self.path_bar_widget)
         self.addWidget(self.scene_view_widget)
 
     @classmethod
     def panelTypeName(cls):
         return "Scene View"
-
-    @classmethod
-    def hasNetworkControls(cls):
-        return True
 
 
 class SceneViewWidget(QtOpenGL.QGLWidget):

@@ -104,8 +104,8 @@ QPushButton#btn_min {
 	margin: 0;
 	border-top: 1px solid #555;
 	border-left: 1px solid #555;
-	border-bottom: 1px solid #111;
-	border-right: 1px solid #111;
+	border-bottom: none;
+	border-right: 1px solid #222;
 	outline: 0;
 }
 
@@ -187,6 +187,10 @@ QPushButton#plusButton::menu-indicator {
 QWidget#tabbedPanel {
 	border: none;
 	background-color: #262626;
+}
+
+QFrame#collapsable {
+	background-color: #303030;
 }
 
 /* Path bar */
@@ -510,6 +514,10 @@ QTextEdit {
 	border: none;
 }
 
+/* Network View */
+QGraphicsView#network_widget {
+	border-top: 1px solid black;
+}
 
 
 

@@ -13,8 +13,8 @@ class COP_Network(MGR_Node):
 		super(COP_Network, self).__init__(engine, parent)
 
 	@classmethod
-	def allowedChildTypeCategory(cls):
-		return CopNetNodeTypeCategory.name()
+	def childTypeCategory(cls):
+		return CopNetNodeTypeCategory
 
 	@classmethod
 	def label(cls):

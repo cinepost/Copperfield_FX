@@ -13,8 +13,8 @@ class OBJ_Network(MGR_Node):
 		super(OBJ_Network, self).__init__(engine, parent)
 
 	@classmethod
-	def allowedChildTypeCategory(cls):
-		return ObjectNodeTypeCategory.name()
+	def childTypeCategory(cls):
+		return ObjectNodeTypeCategory
 
 	@classmethod
 	def label(cls):

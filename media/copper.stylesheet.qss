@@ -93,6 +93,22 @@ QGraphicsView, QScrollArea{
 }
 
 /* Buttons */
+QPushButton#btn_min {
+	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #444, stop:1 #363636);
+	text-align: left;
+	align: top;
+	icon-size: 6px;
+	width: 6px;
+	height: 6px;
+	padding: 0;
+	margin: 0;
+	border-top: 1px solid #555;
+	border-left: 1px solid #555;
+	border-bottom: 1px solid #111;
+	border-right: 1px solid #111;
+	outline: 0;
+}
+
 QToolButton#file {
 	image: url("icons/main/file-dialog.svg");
 }

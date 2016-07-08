@@ -13,8 +13,8 @@ class COPNET_Network(OP_Network):
 		super(COPNET_Network, self).__init__(engine, parent)
 
 	@classmethod
-	def allowedChildTypeCategory(cls):
-		return Cop2NodeTypeCategory.name()
+	def childTypeCategory(cls):
+		return Cop2NodeTypeCategory
 
 	@classmethod
 	def label(cls):

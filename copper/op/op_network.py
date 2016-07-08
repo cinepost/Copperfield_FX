@@ -28,7 +28,7 @@ class OP_Network(OP_Node):
 		return True
 
 	@classmethod
-	def allowedChildTypeCategory(cls):
+	def childTypeCategory(cls):
 		raise NotImplementedError
 
 	@classmethod
@@ -136,7 +136,7 @@ class OP_Network(OP_Node):
 		else:
 			name = node_type_name	
 
-		node_type_name_with_category = '%s/%s' % (self.allowedChildTypeCategory(), node_type_name)
+		node_type_name_with_category = '%s/%s' % (self.childTypeCategory().name(), node_type_name)
 		print "Creating node %s inside %s" % (node_type_name_with_category, self.__class__.__name__)
 
 		if node_type_name_with_category in OpRegistry._registry:

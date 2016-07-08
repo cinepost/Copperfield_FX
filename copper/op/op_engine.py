@@ -123,8 +123,8 @@ class Copper_Engine(OP_Network):
 		return self
 
 	@classmethod
-	def allowedChildTypeCategory(cls):
-		return ManagerNodeTypeCategory.name()
+	def childTypeCategory(cls):
+		return ManagerNodeTypeCategory
 
 	def flush(self):
 		for net_name in self.__node_dict__:
@@ -214,6 +214,7 @@ class Copper_Engine(OP_Network):
 		obj = self.node("obj")
 
 		geo = obj.createNode("geo", "geo1")
+		ins = obj.createNode("instance", "instance1")
 
 		## Create file reading node 
 		file1 = comp.createNode("file")

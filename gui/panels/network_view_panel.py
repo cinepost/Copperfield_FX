@@ -9,7 +9,7 @@ import math
 
 from copper import engine
 from gui.signals import signals
-from gui.widgets import PathBarWidget
+from gui.widgets import PathBarWidget, CollapsableWidget
 from base_panel import BasePanel
 
 class NetworkViewPanel(BasePanel):
@@ -18,8 +18,10 @@ class NetworkViewPanel(BasePanel):
 
         self.path_bar_widget = PathBarWidget(self)
         self.network_view_widget = NetworkViewWidget(self)
+        self.network_view_controls = NetworkViewControls(self)
 
         self.setNetworkControlsWidget(self.path_bar_widget)
+        self.addWidget(self.network_view_controls)
         self.addWidget(self.network_view_widget)
 
     @classmethod
@@ -29,6 +31,12 @@ class NetworkViewPanel(BasePanel):
     @classmethod
     def hasNetworkControls(cls):
         return True
+
+class NetworkViewControls(CollapsableWidget):
+    def __init__(self, parent=None):
+        CollapsableWidget.__init__(self, parent)
+
+        self.addWidget(QtGui.QLabel("huypizda"))
 
 class NodeItem(QtGui.QGraphicsItem):
     def __init__(self, node):      
@@ -178,7 +186,7 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
 
         ## As a debug we always set new panel widget to "/"
-        self.setNetworkLevel(engine.node("/"))
+        self.setNetworkLevel(engine.node("/obj"))
 
     def setNetworkLevel(self, node):
         self.scene.buildNetworkLevel(node)

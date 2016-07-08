@@ -13,8 +13,8 @@ class ROP_Network(MGR_Node):
 		super(ROP_Network, self).__init__(engine, parent)
 
 	@classmethod
-	def allowedChildTypeCategory(cls):
-		return DriverNodeTypeCategory.name()
+	def childTypeCategory(cls):
+		return DriverNodeTypeCategory
 
 	@classmethod
 	def label(cls):

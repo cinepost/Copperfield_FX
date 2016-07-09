@@ -1,6 +1,10 @@
-from copper.op.op_node import OpRegistry, OP_Node
-from copper.parameter import CopperParameter
 import re, collections
+import logging 
+
+from copper.op.base import OpRegistry
+from copper.op.op_node import OP_Node
+from copper.parameter import CopperParameter
+
 lastNum = re.compile(r'(?:[^\d]*(\d+)[^\d]*)+')
 
 class OP_Network(OP_Node):
@@ -16,7 +20,6 @@ class OP_Network(OP_Node):
 		super(OP_Network, self).__init__()
 		self.__engine__ = engine
 		self.__name__ = None
-		self.__parms__ = collections.OrderedDict()
 		self.__node_dict__ = {}
 		self.__parent__ = parent
 		self.__inputs__ = []
@@ -35,6 +38,10 @@ class OP_Network(OP_Node):
 	def label(cls):
 		raise NotImplementedError
 
+	@classmethod
+	def parmTemplates(cls):
+		return []
+
 	def __increment__(self, s):
 		""" look for the last sequence of number(s) in a string and increment """
 		m = lastNum.search(s)
@@ -47,23 +54,7 @@ class OP_Network(OP_Node):
 
 	@property 
 	def engine(self):
-		return self.__engine__	
-
-	def addParameter(self, name, parm_type, value=None, label=None, callback=None, menu_items=[]):
-		parm = CopperParameter(self, name, parm_type, label=label, callback=callback, menu_items=menu_items)
-		if value != None: parm.set(value)
-		self.__parms__[name] = parm
-
-	def parm(self, parm_path):
-		return self.__parms__.get(parm_path)	
-
-	def parms(self):
-		return [self.__parms__[name] for name in self.__parms__]	
-
-	def setParms(self, parameters):
-		self.cooked = False
-		for parm_name in parameters:
-			self.__parms__[parm_name].set(parameters[parm_name])
+		return self.__engine__		
 
 	def nodes(self):
 		return [self.__node_dict__[node_name] for node_name in self.__node_dict__]
@@ -137,7 +128,7 @@ class OP_Network(OP_Node):
 			name = node_type_name	
 
 		node_type_name_with_category = '%s/%s' % (self.childTypeCategory().name(), node_type_name)
-		print "Creating node %s inside %s" % (node_type_name_with_category, self.__class__.__name__)
+		logging.debug("Creating node %s inside %s" % (node_type_name_with_category, self.__class__.__name__))
 
 		if node_type_name_with_category in OpRegistry._registry:
 			node = OpRegistry[node_type_name_with_category](self.engine, self)	
@@ -148,8 +139,6 @@ class OP_Network(OP_Node):
 		self.__node_dict__[node.name()] = node
 		if self.engine.network_cb:
 			self.engine.network_cb()
-
-		print "Created node %s childs is %s" % (node, node.children())	
 
 		return node
 

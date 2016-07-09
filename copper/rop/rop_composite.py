@@ -3,17 +3,27 @@ from copper.op.node_type_category import DriverNodeTypeCategory
 from copper.rop.rop_node import ROP_Node
 from copper import parameter
 
+from copper.parm_template import *
+
 class ROP_Composite(ROP_Node):
-	
+
 	class NodeType(NodeTypeBase):
 		icon_name = 'ROP_comp'
 		type_name = 'comp'
 		category = DriverNodeTypeCategory
 
+
 	def __init__(self, engine, parent):
 		super(ROP_Composite, self).__init__(engine, parent)
-		self.addParameter("coppath", parameter.CopperParmOpPath, "", label="COP Name")
-		self.addParameter("copoutput", parameter.CopperParmFile, "", label="Output Picture")
+
+	@classmethod
+	def parmTemplates(cls):
+		templates = super(ROP_Composite, cls).parmTemplates()
+		templates += [
+			StringParmTemplate(name="coppath", label="COP Name", string_type = StringParmType.NodeReference),
+			StringParmTemplate(name="copoutput", label="Output Picture", string_type = StringParmType.FileReference)
+		]
+		return templates
 
 	@classmethod
 	def label(cls):

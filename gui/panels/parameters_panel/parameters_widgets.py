@@ -1,6 +1,7 @@
 from PyQt4 import QtCore, QtGui
 
 from gui.signals import signals
+from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
 class ParameterBaseWidget(QtGui.QWidget):
 	def __init__(self, parent, parm):
@@ -22,15 +23,15 @@ class ParameterFloatWidget(ParameterBaseWidget):
 		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsFloat())) 
 		self.line_edit.setMinimumWidth(60)
 		self.line_edit.setMaximumWidth(140)
-
-		self.slider = QtGui.QSlider(self)
-		self.slider.setOrientation(QtCore.Qt.Horizontal)
-		self.slider.setMinimum(0)
-		self.slider.setMaximum(100)
-		self.slider.setTracking(True)
-
 		self.layout.addWidget(self.line_edit)
-		self.layout.addWidget(self.slider)
+
+		if parm.parmTemplate().numComponents() == 1:
+			self.slider = QtGui.QSlider(self)
+			self.slider.setOrientation(QtCore.Qt.Horizontal)
+			self.slider.setMinimum(0)
+			self.slider.setMaximum(100)
+			self.slider.setTracking(True)
+			self.layout.addWidget(self.slider)
 
 		# connect signals
 		self.line_edit.editingFinished.connect(self.setParmValue)
@@ -42,29 +43,29 @@ class ParameterIntWidget(ParameterBaseWidget):
 
 		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsInt())) 
 		self.line_edit.setMinimumWidth(60)
-		self.line_edit.setMaximumWidth(140)
-
-		self.slider = QtGui.QSlider(self)
-		self.slider.setOrientation(QtCore.Qt.Horizontal)
-		self.slider.setMinimum(0)
-		self.slider.setMaximum(100)
-		self.slider.setTracking(True)
-
 		self.layout.addWidget(self.line_edit)
-		self.layout.addWidget(self.slider)
+
+		if parm.parmTemplate().numComponents() == 1:
+			self.line_edit.setMaximumWidth(140)
+			self.slider = QtGui.QSlider(self)
+			self.slider.setOrientation(QtCore.Qt.Horizontal)
+			self.slider.setMinimum(0)
+			self.slider.setMaximum(100)
+			self.slider.setTracking(True)
+			self.layout.addWidget(self.slider)
 
 		# connect signals
 		self.line_edit.editingFinished.connect(self.setParmValue)
 
 
-class ParameterBoolWidget(ParameterBaseWidget):
+class ParameterToggleWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
 		self.checkbox = QtGui.QCheckBox(self)
 		self.checkbox.setCheckState(self.parm.evalAsBool())
 
-		self.label = QtGui.QLabel(parm.label())
+		self.label = QtGui.QLabel(parm.parmTemplate().label())
 		self.label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 		self.label.setStatusTip(parm.name())
 
@@ -76,83 +77,76 @@ class ParameterBoolWidget(ParameterBaseWidget):
 		self.checkbox.stateChanged.connect(self.setParmValue)
 
 
-class ParameterChoiceWidget(ParameterBaseWidget):
+class ParameterMenuWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
-		combobox = QtGui.QComboBox(self)
-		for item_name in self.parm.__menu_items__:
-			combobox.addItem(parm.__menu_items__[item_name])
+		self.combobox = QtGui.QComboBox(self)
+		for item_label in self.parm.menuLabels():
+			self.combobox.addItem(item_label)
 
-		combobox.setCurrentIndex(parm.evalAsInt())
+		self.combobox.setCurrentIndex(parm.evalAsInt())
 
-		self.layout.addWidget(combobox)
-		self.layout.addStretch(1)
+		self.layout.addWidget(self.combobox)
+
+		if parm.parmTemplate().numComponents() == 1:
+			self.layout.addStretch(1)
 
 
 class ParameterButtonWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
-		self.button = QtGui.QPushButton(parm.label(), self)
+		self.button = QtGui.QPushButton(parm.parmTemplate().label(), self)
 		self.button.setMinimumWidth(60)
-		self.button.setMaximumWidth(140)
 
 		self.layout.addWidget(self.button)
-		self.layout.addStretch(1)
+		
+		if parm.parmTemplate().numComponents() == 1:
+			self.button.setMaximumWidth(140)
+			self.layout.addStretch(1)
 
 		# connect signals
-		self.button.clicked.connect(parm.getCallback())
+		##self.button.clicked.connect(parm.getCallback())
 
 
-class ParameterFilePathWidget(ParameterBaseWidget):
+class ParameterStringWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
-		self.file_path_widget = QtGui.QLineEdit(parm.evalAsStr()) 
+		self.string_widget = QtGui.QLineEdit(parm.evalAsStr())
+		self.string_widget.setDragEnabled(True)
+		self.string_widget.setAcceptDrops(True)
+		self.string_widget.installEventFilter(self)
+		self.layout.addWidget(self.string_widget)
 
-		self.file_button = QtGui.QToolButton(self)
-		self.file_button.setObjectName("file")
-		
-		self.layout.addWidget(self.file_path_widget)
-		self.layout.addWidget(self.file_button)
+		if parm.parmTemplate().stringType() is StringParmType.FileReference:
+			self.file_button = QtGui.QToolButton(self)
+			self.file_button.setObjectName("file")
+			self.file_button.clicked.connect(self.BrowseFile)
+			self.layout.addWidget(self.file_button)
+		elif parm.parmTemplate().stringType() is StringParmType.NodeReference:
+			self.op_jump_button = QtGui.QToolButton(self)
+			self.op_jump_button.setObjectName("op_jump")
+
+			self.op_path_button = QtGui.QToolButton(self)
+			self.op_path_button.setObjectName("op_path")
+			self.op_path_button.clicked.connect(self.BrowseOp)
+
+			self.layout.addWidget(self.op_jump_button)
+			self.layout.addWidget(self.op_path_button)	
 
 		# connect signals
-		self.file_path_widget.editingFinished.connect(self.setParmValue)
-		self.file_button.clicked.connect(lambda: self.BrowseFile(self.file_path_widget))
+		self.string_widget.editingFinished.connect(self.setParmValue)
 
 	def BrowseFile(self, lineEdit):
 		file_name = QtGui.QFileDialog.getOpenFileName()
-		self.file_path_widget.setText(file_name)
-
-
-class ParameterOpPathWidget(ParameterBaseWidget):
-	def __init__(self, parent, parm):
-		ParameterBaseWidget.__init__(self, parent, parm)
-
-		self.op_path_widget = QtGui.QLineEdit(parm.evalAsStr())
-		self.op_path_widget.setDragEnabled(True)
-		self.op_path_widget.setAcceptDrops(True)
-		self.op_path_widget.installEventFilter(self)
-           
-
-		self.op_jump_button = QtGui.QToolButton(self)
-		self.op_jump_button.setObjectName("op_jump")
-
-		self.op_path_button = QtGui.QToolButton(self)
-		self.op_path_button.setObjectName("op_path")
-		
-		self.layout.addWidget(self.op_path_widget)
-		self.layout.addWidget(self.op_jump_button)
-		self.layout.addWidget(self.op_path_button)
-
-		# connect signals
-		self.op_path_widget.editingFinished.connect(self.setParmValue)
-		self.op_path_button.clicked.connect(lambda: self.BrowseOp(self.op_path_widget))
+		self.string_widget.setText(file_name)
 
 	def BrowseOp(self, lineEdit):
 		op_path = QtGui.QFileDialog.getOpenFileName()
-		self.op_path_widget.setText(op_path)
+		self.string_widget.setText(op_path)
+
 
 
 

@@ -2,14 +2,19 @@ import sys, os
 import pyopencl as cl
 import pickle
 import numpy
+
+from pyopencl.tools import get_gl_sharing_context_properties
+from PIL import Image
+
+from copper import settings
 from copper.op.node_type_category import ManagerNodeTypeCategory
-from copper.op.op_node import OpRegistry
+from copper.op.base import OpRegistry
 from copper.op.op_network import OP_Network
 from copper.managers import OBJ_Network, COP_Network, ROP_Network
 from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
-from pyopencl.tools import get_gl_sharing_context_properties
-from PIL import Image
+
+from copper.parm_template import *
 
 class Copper_Engine(OP_Network):
 	__base__ = True
@@ -17,6 +22,11 @@ class Copper_Engine(OP_Network):
 	app 		= None
 	filters		= {}
 	network_cb  = None
+
+	parmLook = ParmLookScheme
+	parmNamingScheme = ParmNamingScheme
+	parmTemplateType = ParmTemplateType
+	stringParmType = StringParmType
 
 	def __init__(self, device_type="GPU", device_index=None, cl_path=""): # "cpu" or "gpu" here or "ALL"
 		super(Copper_Engine, self).__init__(self, None) # base node is the engine itself, therefore it has no parent
@@ -219,12 +229,10 @@ class Copper_Engine(OP_Network):
 		## Create file reading node 
 		file1 = comp.createNode("file")
 		file1.setPos(10, 10)
-		file1.setParms({"width": 1280, "height": 720, "filename": "/Users/max/Desktop/773dee750c33093fd74279637db1a38b.jpg"})
+		file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/773dee750c33093fd74279637db1a38b.jpg"})
 
 		## Create blur node
-		blur1 = comp.createNode("blur")
-		blur1.setInput(0, file1)
-		blur1.setParms({"blursize":0.01, "blursizey": 0.5, "useindepy" : True}) 
-
-		print "Final childern %s" % [child.type() for child in comp.children()]
+		#blur1 = comp.createNode("blur")
+		#blur1.setInput(0, file1)
+		#blur1.setParms({"blursize":0.01, "blursizey": 0.5, "useindepy" : True}) 
 

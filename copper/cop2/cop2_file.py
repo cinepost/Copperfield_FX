@@ -4,14 +4,16 @@ from PIL import Image
 import pyopencl as cl
 import numpy
 import os
-	
+import logging 
+
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import Cop2NodeTypeCategory
 from copper.cop2.cop2_node import COP2_Node
 from copper import parameter
 
+from copper.parm_template import *
+
 class COP2_File(COP2_Node):
-	
 	class NodeType(NodeTypeBase):
 		icon_name = 'COP2_file'
 		type_name = 'file'
@@ -21,20 +23,21 @@ class COP2_File(COP2_Node):
 		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
 
-		self.addParameter("filename", parameter.CopperParmFile, None, label="File")
-		self.addParameter("width", parameter.CopperParmInt, 0, label="Width")
-		self.addParameter("height", parameter.CopperParmInt, 0, label="Height")
-		self.addParameter("flipx", parameter.CopperParmBool, False)
-		self.addParameter("flipy", parameter.CopperParmBool, False)
-		self.addParameter("startframe", parameter.CopperParmInt, 0, label="Shift to Start Frame")
-		self.addParameter("start", parameter.CopperParmInt, 0, label="File Range Start")
-		self.addParameter("missingfr", parameter.CopperParmOrderedMenu, 3, label="Missing Frames", menu_items=[
-			("closest", "Use Closest Frame"),
-			("previous", "Use Previous Frame"),
-			("next", "Use Next Frame"),
-			("black", "Use Black Frame"),
-			("error", "Report Error")
-		])
+
+	@classmethod
+	def parmTemplates(cls):
+		templates = super(COP2_File, cls).parmTemplates()
+		templates += [
+			StringParmTemplate(name="filename", label="File", string_type=StringParmType.FileReference),
+			IntParmTemplate(name="size", label="Size", length=2, default_value=(640,480), naming_scheme=ParmNamingScheme.Base1),
+			ToggleParmTemplate(name="flipy", label="Flip Image", default_value=False),
+			IntParmTemplate(name='startframe', label='Shift to Start Frame', length=1, naming_scheme=ParmNamingScheme.Base1, default_value=(1,)),
+			IntParmTemplate(name='start', label='File Range Start', length=1, naming_scheme=ParmNamingScheme.Base1, default_value=(1,)),
+			MenuParmTemplate(name='missingfr', label='Missing Frames', menu_items=('closest', 'previous', 'next', 'black', 'error'), menu_labels=('Use Closest Frame',
+ 				'Use Previous Frame', 'Use Next Frame', 'Use Black Frame', 'Report Error'), default_value=0),
+		]
+		
+		return templates
 
 	@classmethod
 	def label(cls):
@@ -113,13 +116,14 @@ class COP2_File(COP2_Node):
 	
 	def getImageFileName(self):
 		filename = self.parm("filename").eval()
-		image_frame = self.engine.frame() + self.parm("start").evalAsInt() - self.parm("startframe").evalAsInt()
-		return filename.expandedString(context={"frame": image_frame})
+		return filename
+		#image_frame = self.engine.frame() + self.parm("start").evalAsInt() - self.parm("startframe").evalAsInt()
+		#return filename.expandedString(context={"frame": image_frame})
 			
 	def compute(self):
-		self.log("Computing using CL.")
+		logging.debug("Computing using CL.")
 		imagefile = self.getImageFileName()
-		print "READING IMAGE %s" % imagefile
+		logging.debug("Reading image %s" % imagefile)
 		self.image_width = self.parm("width").eval()
 		self.image_height = self.parm("height").eval()
 
@@ -166,7 +170,7 @@ class COP2_File(COP2_Node):
 				if 0 in [self.width, self.height]:
 					raise BaseException("Image file %s does not exist !!!" % imagefile)
 
-				self.log("Image file %s does not found !!! Using BLACK frame instead." % imagefile)	
+				logging.warning("Image file %s does not found !!! Using BLACK frame instead." % imagefile)	
 				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.image_width, self.image_height), hostbuf=numpy.zeros(self.image_width * self.image_height * 4, dtype = numpy.float32))
 				
 

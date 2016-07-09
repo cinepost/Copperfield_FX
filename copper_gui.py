@@ -1,6 +1,9 @@
 #!/usr/local/bin/python
 
 import sys, os
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 from PyQt4 import QtGui, QtCore, QtOpenGL
 
 from copper import engine
@@ -18,7 +21,6 @@ from gui.panels import CompositeViewPanel
 from gui.panels import PythonShellPanel
 
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
-
 
 class Workarea(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -158,6 +160,7 @@ class Window(QtGui.QMainWindow):
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     app = QtGui.QApplication(sys.argv)
     app.setStyle(QtGui.QStyleFactory.create('Plastique'))
 

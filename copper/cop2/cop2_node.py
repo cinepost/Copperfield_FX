@@ -3,11 +3,14 @@ import Imath
 from PIL import Image
 import pyopencl as cl
 import numpy
-
+import logging
 import threading
+
 from copper.parameter import CopperParameter
 from copper.op.op_network import OP_Network
 from copper.cop2.cop_plane import COP_Plane
+
+from copper.parm_template import *
 
 class COP2_Node(OP_Network):
 	__base__ = True
@@ -25,11 +28,18 @@ class COP2_Node(OP_Network):
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
 		self.common_program = engine.load_program("common.cl")
 		
-		self.addParameter("effectamount", float, 1.0, label="Effect Amount")
 		self.__planes__ = {
 			"C": COP_Plane(self, channel_names=['r','g','b'], dtype=float),
 			"A": COP_Plane(self, dtype=float)
 		}
+
+	@classmethod
+	def parmTemplates(cls):
+		templates = super(COP2_Node, cls).parmTemplates()
+		templates += [
+			FloatParmTemplate(name="effectamount", label="Effect Amount", length=1, default_value=(1.0,), naming_scheme=ParmNamingScheme.Base1)
+		]
+		return templates
 
 	def getImageWidth(self):
 		return self.image_width
@@ -92,7 +102,7 @@ class COP2_Node(OP_Network):
 				raise
 			else:	 
 				self.cooked = True
-				self.log("Cooked.")
+				logging.debug("Cooked.")
 				return True
 		else:
 			self.log("Already cooked." )

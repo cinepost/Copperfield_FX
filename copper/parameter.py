@@ -1,5 +1,8 @@
 from collections import OrderedDict
 from copper_types import *
+from copper_string import CopperString
+
+from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
 CopperLinear = 0
 CopperBezier = 2
@@ -13,7 +16,7 @@ CopperParmFloat = float
 CopperParmFloat2 = CopperFloat2
 CopperParmFloat3 = CopperFloat3
 CopperParmFloat4 = CopperFloat4
-CopperParmString = str
+CopperParmString = CopperString
 CopperParmOpPath = "oppath"
 CopperParmFile = str
 CopperParmButton = "button"
@@ -50,26 +53,21 @@ class CopperKeyframe(object):
 
 		
 class CopperParameter(object):
-	def __init__(self, node, name, parm_type, label = None, callback = None, menu_items = []):
+	def __init__(self, node, name, parm_template, default_value=None, callback = None, spare=True):
 		self.__keyframes__ = []
-		self.value = None
+		self.value = default_value
 		self.__cb__ = callback
 		self.__node__ = node
 		self.__name__ = name
-		self.__label__ = label
-		self.__type__ = parm_type
-		self.__menu_items__ = OrderedDict(menu_items)
+		self.__parm_template__ = parm_template
+		self.__spare__ = spare
 
-	def log(self, text):
-		print "%s parm at frame %s: %s" % (self.path(), self.node().engine.frame(), text)	
+	def isSpare(self):
+		return self.__spare__
 
-	def label(self):
-		if self.__label__:
-			return self.__label__
-		else:
-			return self.name()		
+	def parmTemplate(self):
+		return self.__parm_template__
 
-	@property
 	def node(self):
 		return self.__node__	
 
@@ -85,8 +83,17 @@ class CopperParameter(object):
 		else:
 			return self.value			
 
-	def type(self):
-		return self.__type__
+	def menuItems(self):
+		if self.parmTemplate().type() is ParmTemplateType.Menu:
+			return self.parmTemplate().menuItems()
+		else:
+			raise BaseException("Cannot get menu items for a non-menu parm")
+
+	def menuLabels(self):
+		if self.parmTemplate().type() is ParmTemplateType.Menu:
+			return self.parmTemplate().menuLabels()
+		else:
+			raise BaseException("Cannot get menu values for a non-menu parm")
 
 	def invalidateNode(self):
 		self.node.invalidate()

@@ -63,6 +63,4 @@ class BasePanel(QtGui.QFrame):
             if not self.path_bar_widget.isPinned():
                 self.path_bar_widget.nodeSelected(str(node_path))
                 self.nodeSelected(str(node_path))
-            else:
-                print "pinned"
 

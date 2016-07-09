@@ -64,14 +64,17 @@ class PathBarWidget(QtGui.QFrame):
         for i in reversed(range(self.path_layout.count())): 
             self.path_layout.itemAt(i).widget().deleteLater()
 
-        parent = node.parent()
-        while parent:
-            if parent is not engine:
+        node = node.parent()
+        while node:
+            if node is not engine:
                 btn = QtGui.QPushButton()
-                btn.setText(parent.name())
+                btn.setIcon(QtGui.QIcon(node.iconName()))
+                btn.setText(node.name())
+                btn.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
                 self.path_layout.addWidget(btn)
-            
-            parent = parent.parent()
+
+            node = node.parent()
 
         btn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        #self.path_layout.setStretchFactor (btn, 1)
+
+

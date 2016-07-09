@@ -3,8 +3,7 @@ import os
 
 class CopperString(object):
 	
-	def __init__(self, engine, string_val):
-		self.engine = engine
+	def __init__(self, string_val):
 		self.string_val = str(string_val)
 	
 	def __str__(self):
@@ -17,8 +16,9 @@ class CopperString(object):
 		string_template = Template( os.path.expandvars(self.string_val) )
 		if "frame" in context:
 			frame = context["frame"]
-		else:	
-			frame = self.engine.frame()
+		else:
+			pass	
+			#frame = engine.frame()
 		
 		string_expanded = string_template.substitute({
 			'F': frame,

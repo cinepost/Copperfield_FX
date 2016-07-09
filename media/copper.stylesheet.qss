@@ -92,6 +92,25 @@ QGraphicsView, QScrollArea{
 	border: none;
 }
 
+/* QToolButton Menu */
+QMenu{
+	font-size: 12px;
+	border-left: 1px solid #666;
+	border-top: 1px solid #666;
+	border-right: 1px solid #222;
+	border-bottom: 1px solid #222;
+	background-color: #333;
+}
+
+QMenu::separator {
+    border-top: 1px solid #666;
+}
+
+QMenu::item:selected {
+	color: #fff;
+	background-color: #555;
+}
+
 /* Buttons */
 QPushButton#btn_min {
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #444, stop:1 #363636);
@@ -200,21 +219,6 @@ QFrame#pathBar {
 	padding: 0;
 }
 
-QFrame#pathBar QToolButton {
-	background: none;
-	border: none;
-}
-
-QFrame#pathBar QToolButton:hover {
-    background-color: #888;
-}
-
-QFrame#pathBar QToolButton:pressed {
-	border-left: 1px solid #641;
-	border-top: 1px solid #641;
-    background-color: #972;
-}
-
 QFrame#bar {
 	border: 1px solid black;
 	border-radius: 2px;
@@ -222,16 +226,20 @@ QFrame#bar {
 }
 
 QFrame#bar QPushButton{
-	text-align: left;
+	min-width: none;
+	text-align: center left;
 	background-color: #333;
 	border-top: 1px solid #555;
 	border-left: 1px solid #555;
 	border-bottom: 1px solid #363636;
 	border-right: 1px solid #363636;
+	padding: 0;
+	margin: 0;
 	padding-left: 6px;
 	padding-right: 6px;
-	height: 10px;
+	height: 21px;
 	outline: 0;
+	qproperty-iconSize: 16px;
 }
 
 QFrame#bar QPushButton:hover{
@@ -302,6 +310,7 @@ QTabBar::tab {
     border-left: 1px solid #222;
     border-bottom: 1px solid #222;
     height: 18px;
+    padding-left: 4px;
 }
 
 QTabBar::tab:selected {
@@ -460,26 +469,6 @@ QWidget#Parameters QSlider::sub-page:qlineargradient {
 	margin: 4px 0 5px 0;
 }
 
-/* Menu */
-QMenu {
-	font-size: 12px;
-	border-left: 1px solid #666;
-	border-top: 1px solid #666;
-	border-right: 1px solid #222;
-	border-bottom: 1px solid #222;
-	background-color: #333;
-}
-
-QMenu::separator {
-    border-top: 1px solid #666;
-}
-
-
-QMenu::item:selected {
-	color: #fff;
-	background-color: #555;
-}
-
 /* ScrollBar */
 QScrollBar:vertical {
 	border: 1px solid #333;
@@ -548,6 +537,5 @@ QTextEdit {
 QGraphicsView#network_widget {
 	border-top: 1px solid black;
 }
-
 
 

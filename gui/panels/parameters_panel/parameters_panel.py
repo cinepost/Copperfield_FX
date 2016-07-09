@@ -7,14 +7,15 @@ from gui.widgets import PathBarWidget
 from gui.panels.base_panel import BasePanel
 from parameters_widgets import *
 
-def clearParametersLayout(layout):
-    pass
+from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
+
+def clearLayout(layout):
     while layout.count():
         child = layout.takeAt(0)
         if child.widget() is not None:
             child.widget().deleteLater()
         elif child.layout() is not None:
-            clearParametersLayout(child.layout())
+            clearLayout(child.layout())
 
 class ParametersPanel(BasePanel):
     def __init__(self):      
@@ -34,7 +35,6 @@ class ParametersPanel(BasePanel):
 class ParametersWidget(QtGui.QWidget):
     def __init__(self, parent=None):    
         QtGui.QWidget.__init__(self, parent) 
-        self.default_icon = QtGui.QIcon('icons/glyphicons_461_saw_blade.png')
 
         self.setMinimumWidth(320)
         self.setMinimumHeight(160)
@@ -42,6 +42,7 @@ class ParametersWidget(QtGui.QWidget):
         self.parm_box = QtGui.QVBoxLayout(self)
         self.parm_box.setSpacing(2)
         self.parm_box.setContentsMargins(0, 0, 0, 0)
+
         no_op_label = QtGui.QLabel("No Operator Selected")
         no_op_label.setObjectName("info")
         no_op_label.setSizePolicy( QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum ))
@@ -57,20 +58,20 @@ class ParametersWidget(QtGui.QWidget):
         widget.setLayout(self.parm_box)
         widget.setObjectName("Parameters")
 
-        scroll = QtGui.QScrollArea()
-        scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
-        scroll.setWidgetResizable(True)
-        scroll.setWidget(widget)
+        self.scroll = QtGui.QScrollArea()
+        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
+        self.scroll.setWidgetResizable(True)
+        self.scroll.setWidget(widget)
 
         self.header_bar = QtGui.QHBoxLayout()
 
-        vbox = QtGui.QVBoxLayout()
-        vbox.setContentsMargins(0, 0, 0, 0)
+        self.vbox = QtGui.QVBoxLayout()
+        self.vbox.setContentsMargins(0, 0, 0, 0)
 
-        vbox.addLayout(self.header_bar)
-        vbox.addWidget(scroll)
+        self.vbox.addLayout(self.header_bar)
+        self.vbox.addWidget(self.scroll)
 
-        self.setLayout(vbox)
+        self.setLayout(self.vbox)
         self.setAcceptDrops(True)
 
   
@@ -78,8 +79,8 @@ class ParametersWidget(QtGui.QWidget):
         node = engine.node(str(node_path))
         
         # remove old parms widgets
-        clearParametersLayout(self.header_bar)
-        clearParametersLayout(self.parm_box)
+        clearLayout(self.header_bar)
+        clearLayout(self.parm_box)
 
         # build header
         if node.iconName():
@@ -102,63 +103,55 @@ class ParametersWidget(QtGui.QWidget):
         
         # build new parms widgets
         i = 1
-        for parm in node.parms():
-            value = parm.eval()
-            parm_type = parm.type()
+        for parm_template in node.parmGroups().keys():
+            parm_template_type = parm_template.type()
 
-            if parm_type is bool:
-                # check box
-                widget = ParameterBoolWidget(self, parm)
+            parms_layout = QtGui.QHBoxLayout()
+            parms_layout.setSpacing(0)
+            for parm in node.parmGroups()[parm_template]:
+                if parm_template_type is ParmTemplateType.Int:
+                    # Int
+                    widget = ParameterIntWidget(self, parm)
 
-            elif parm_type is parameter.CopperParmInt:
-                # integer
-                widget = ParameterIntWidget(self, parm)
+                elif parm_template_type is ParmTemplateType.Float:
+                    # Float
+                    widget = ParameterFloatWidget(self, parm)
+                
+                elif parm_template_type is ParmTemplateType.Button:
+                    # Button
+                    widget = ParameterButtonWidget(self, parm)
 
-            elif parm_type is parameter.CopperParmFloat:
-                # float
-                widget = ParameterFloatWidget(self, parm)
-            
-            elif parm_type is parameter.CopperParmButton:
-                # button
-                widget = ParameterButtonWidget(self, parm)
+                elif parm_template_type is ParmTemplateType.Menu:
+                    # Menu
+                    widget = ParameterMenuWidget(self, parm)
 
-            elif parm_type is parameter.CopperParmOpPath:
-                # op path
-                widget = ParameterOpPathWidget(self, parm)
+                elif parm_template_type is ParmTemplateType.Toggle:
+                    # Toggle
+                    widget = ParameterToggleWidget(self, parm)
 
-            elif parm_type is parameter.CopperParmOrderedMenu:
-                # menu
-                widget = ParameterChoiceWidget(self, parm)
- 
-            elif parm_type is parameter.CopperParmFile:
-                # file path
-                widget = ParameterFilePathWidget(self, parm)
+                elif parm_template_type is ParmTemplateType.String:
+                    # String
+                    widget = ParameterStringWidget(self, parm)
 
-            else:    
-                # all other
-                widget = QtGui.QLineEdit(str(value))
-                widget.returnPressed.connect(parm.setValue)  
-            
-            # highlight animated parameter
-            if parm.animated():
-                widget.setStyleSheet("background-color: rgb(128,255,128)")    
+                parms_layout.addWidget(widget) 
+                
 
             hbox = QtGui.QHBoxLayout()
-            if parm_type is bool:    
-                label = QtGui.QLabel("")
+            if parm_template_type not in [ParmTemplateType.Toggle, ParmTemplateType.Button]:
+                label = QtGui.QLabel(parm_template.label())
+                if parm_template.numComponents() == 1:
+                    label.setToolTip("Parameter: %s" % parm.name())
+                else:
+                    label.setToolTip("Parameters: %s" % [parm.name() for parm in node.parmGroups()[parm_template]])
+
+                label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+                label.setStatusTip(parm.name())
+                label.setFixedWidth(140)
+                hbox.addWidget(label)
             else:
-                label = QtGui.QLabel(parm.label())
+                hbox.addSpacing(143)
 
-            label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-            label.setStatusTip(parm.name())
-            label.setFixedWidth(140)
-            hbox.addWidget(label)
-
-
-            if isinstance(widget, QtGui.QLayout):
-                hbox.addLayout(widget)
-            else:
-                hbox.addWidget(widget)
+            hbox.addLayout(parms_layout)
 
             self.parm_box.addLayout(hbox)
 

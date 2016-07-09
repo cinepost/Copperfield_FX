@@ -8,7 +8,7 @@ if not os.environ.get("COPPER_HOME"):
 	os.environ["COPPER_HOME"] = cwd
 
 import inspect
-from op.op_engine import Copper_Engine as engine
+from op.op_engine import Copper_Engine
 import settings
 
 from rop import *
@@ -22,6 +22,6 @@ def nodeTypeCategories():
 
 def CreateEngine(device_type = None, device_index=None):
 	print "Creating engine instance of type: %s" % device_type
-	return engine(device_type = device_type, device_index=device_index, cl_path=settings.cl_path)
+	return Copper_Engine(device_type = device_type, device_index=device_index, cl_path=settings.cl_path)
 
 engine = CreateEngine("GPU")

@@ -2,17 +2,46 @@ from copper.parameter import CopperParameter
 import collections
 
 class OP_Parameters(object):
-
 	def __init__(self):
 		self.__parms__ = collections.OrderedDict()
+		self.__parm_groups__ = collections.OrderedDict() # Used to group parameters by parm templates
+		for parm_template in self.parmTemplates():
+			self.addParmTuple(parm_template=parm_template, folder_path=[])
 
-	def addParameter(self, name, parm_type, value=None, label=None, callback=None, menu_items=[]):
-		parm = CopperParameter(self, name, parm_type, label=label, callback=callback, menu_items=menu_items)
-		if value != None: parm.set(value)
-		self.__parms__[name] = parm
+	def addParmTuple(self, parm_template=None, folder_path=[], spare=False):
+		callback = None
+		self.__parm_groups__[parm_template] = []
+
+		if parm_template.length() == 1:
+			parm_name = parm_template.name()
+			try:
+				default_value = parm_template.defaultValue()[0]
+			except:
+				default_value = parm_template.defaultValue()
+
+			self.__parms__[parm_name] = CopperParameter(self, name=parm_name, parm_template=parm_template, default_value=default_value, spare=spare, callback=callback)
+			self.__parm_groups__[parm_template] = [self.__parms__[parm_name]]
+			#print "Added parameter %s %s" % (parm_name, parm)
+		else:
+			for i in range(parm_template.length()):
+				parm_name = "%s%s" % (parm_template.name(), i+1)
+				default_value = parm_template.defaultValue()[i]
+				
+				self.__parms__[parm_name] = CopperParameter(self, name=parm_name, parm_template=parm_template, default_value=parm_template.defaultValue()[i], spare=spare, callback=callback)
+				self.__parm_groups__[parm_template] += [self.__parms__[parm_name]]
+				#print "Added parameter %s %s" % (parm_name, parm)
+
+	def addSpareParmTuple(self, parm_template=None, folder_path = []):
+		self.addParmTuple(parm_template, folder_path, spare=True)
+
+	def addSpareParmFolder(folder_name, in_folder=[]):
+		pass
 
 	def parms(self):
-		return [self.__parms__[name] for name in self.__parms__]	
+		return self.__parms__.values()
+
+	def parmGroups(self):
+		return self.__parm_groups__
 
 	def setParms(self, parameters):
 		self.cooked = False

@@ -37,23 +37,22 @@ class COP2_Node(OP_Network):
 	def parmTemplates(cls):
 		templates = super(COP2_Node, cls).parmTemplates()
 		templates += [
-			FloatParmTemplate(name="effectamount", label="Effect Amount", length=1, default_value=(1.0,), naming_scheme=ParmNamingScheme.Base1)
+			FloatParmTemplate(name="effectamount", label="Effect Amount", length=1, default_value=(1.0,), min=0.0, max=1.0, min_is_strict=True, max_is_strict=True, naming_scheme=ParmNamingScheme.Base1)
 		]
 		return templates
 
-	def getImageWidth(self):
-		return self.image_width
+	def xRes(self):
+		raise NotImplementedError
 
-	def getImageHeight(self):
-		return self.image_height
+	def yRes(self):
+		raise NotImplementedError
 
-	@property
-	def size(self):
-		return (self.getImageWidth(), self.getImageHeight())
+	def imageBounds(self):
+		return (self.xRes()/2, self.yRes()/2, self.xRes()/2, self.yRes()/2)
 		
 	@property	
 	def area(self):	
-		return self.getImageWidth() * self.getImageHeight()
+		return self.xRes() * self.yRes()
 		
 	@property	
 	def volume(self):	
@@ -129,8 +128,8 @@ class COP2_Node(OP_Network):
 
 			self.log("Getting bypass cl buffer from node %s" % bypass_node.path())
 
-			self.width = bypass_node.getWidth()
-			self.height = bypass_node.getHeight()
+			self.width = bypass_node.xRes()
+			self.height = bypass_node.yRes()
 			return bypass_node.getOutDevBuffer()
 
 		if self.cooked == False:
@@ -146,15 +145,15 @@ class COP2_Node(OP_Network):
 		host_buffer = numpy.empty((self.width, self.height, 4), dtype = numpy.float16)
 		self.engine.queue.finish()
 		#print "Building quantized buffer for node %s with size %s" % (self, self.size)
-		quantized_buffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.size)	
+		quantized_buffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.size)	
 		#print "Quantized buffer is %s of size %s" % (quantized_buffer, quantized_buffer.size)
 		#print "Executing quantize program for node %s" % self.name()
 		
-		with cl.CommandQueue(self.engine.ctx) as queue:
+		with cl.CommandQueue(self.engine.openclContext()) as queue:
 			evt = self.common_program.quantize_show(queue, self.size, None, device_buffer, quantized_buffer )
 			evt.wait()
 
-		with cl.CommandQueue(self.engine.ctx) as queue:	
+		with cl.CommandQueue(self.engine.openclContext()) as queue:	
 			evt = cl.enqueue_copy(queue, host_buffer, quantized_buffer, origin=(0,0), region=self.size)
 			evt.wait()
 		

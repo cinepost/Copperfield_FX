@@ -23,7 +23,7 @@ class StringParmType:
 
 class ParmTemplate(object):
 	def __init__(self, name='parm', label='Label', length=1, default_value=(0,), min=0, max=10, min_is_strict=False, max_is_strict=False,
-			naming_scheme=ParmNamingScheme.XYZW, look=ParmLookScheme.Regular):
+			naming_scheme=ParmNamingScheme.XYZW, look=ParmLookScheme.Regular, join_with_next=False):
 
 		self._name = name
 		self._label = label
@@ -35,6 +35,7 @@ class ParmTemplate(object):
 		self._max_is_strict = max_is_strict
 		self._naming_scheme = naming_scheme
 		self._look = look
+		self._join_with_next = join_with_next
 
 	def name(self):
 		return self._name
@@ -69,8 +70,11 @@ class ParmTemplate(object):
 	def look(self):
 		return self._look
 
-	def joinWithNext(self):
-		return False
+	def joinWithNext(self, join_with_next):
+		self._join_with_next = join_with_next
+
+	def joinsWithNext(self):
+		return self._join_with_next
 
 	@classmethod
 	def type(cls):

@@ -19,23 +19,34 @@ class ParameterBaseWidget(QtGui.QWidget):
 class ParameterFloatWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
+		self.resolution = 100
 
 		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsFloat())) 
 		self.line_edit.setMinimumWidth(60)
-		self.line_edit.setMaximumWidth(140)
 		self.layout.addWidget(self.line_edit)
 
 		if parm.parmTemplate().numComponents() == 1:
+			self.line_edit.setMaximumWidth(140)
 			self.slider = QtGui.QSlider(self)
+			self.slider.setValue(int(self.parm.evalAsFloat() * self.resolution))
 			self.slider.setOrientation(QtCore.Qt.Horizontal)
 			self.slider.setMinimum(0)
-			self.slider.setMaximum(100)
+			self.slider.setMaximum(self.resolution)
+			self.slider.setSingleStep(0)
 			self.slider.setTracking(True)
+			self.slider.valueChanged.connect(self.processSlider)
 			self.layout.addWidget(self.slider)
 
 		# connect signals
-		self.line_edit.editingFinished.connect(self.setParmValue)
+		self.line_edit.editingFinished.connect(self.processLineEdit)
 
+	def processSlider(self):
+		value = self.slider.value()
+		self.line_edit.setText(str(float(value)/self.resolution))
+
+	def processLineEdit(self):
+		value = float(self.line_edit.text())
+		self.slider.setValue(value)
 
 class ParameterIntWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
@@ -48,14 +59,26 @@ class ParameterIntWidget(ParameterBaseWidget):
 		if parm.parmTemplate().numComponents() == 1:
 			self.line_edit.setMaximumWidth(140)
 			self.slider = QtGui.QSlider(self)
+			self.slider.setValue(self.parm.evalAsFloat())
 			self.slider.setOrientation(QtCore.Qt.Horizontal)
-			self.slider.setMinimum(0)
-			self.slider.setMaximum(100)
+			self.slider.setMinimum(parm.parmTemplate().min())
+			self.slider.setMaximum(parm.parmTemplate().max())
 			self.slider.setTracking(True)
+			self.slider.setTickInterval(1)
+			self.slider.setTickPosition(QtGui.QSlider.TicksBelow)
+			self.slider.valueChanged.connect(self.processSlider)
 			self.layout.addWidget(self.slider)
 
 		# connect signals
-		self.line_edit.editingFinished.connect(self.setParmValue)
+		self.line_edit.editingFinished.connect(self.processLineEdit)
+
+	def processSlider(self):
+		value = self.slider.value()
+		self.line_edit.setText(str(value))
+
+	def processLineEdit(self):
+		value = int(self.line_edit.text())
+		self.slider.setValue(value)
 
 
 class ParameterToggleWidget(ParameterBaseWidget):

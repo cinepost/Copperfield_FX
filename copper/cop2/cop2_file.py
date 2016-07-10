@@ -43,29 +43,35 @@ class COP2_File(COP2_Node):
 	def label(cls):
 		return "File"
 
+	def xRes(self):
+		return self.parm("size1").eval()
+
+	def yRes(self):
+		return self.parm("size2").eval()
+
 	def loadJPG(self, filename):
 		img = matplotlib.image.imread(filename)
 		
 		self.source_width = img.shape[1]
 		self.source_height = img.shape[0]
 		
-		if self.parm("width").eval() != 0:
-			self.image_width = self.parm("width").eval()
+		if self.parm("size1").eval() != 0:
+			self.image_width = self.parm("size1").eval()
 		else:
 			self.image_width = self.source_width
 					
-		if self.parm("height").eval() != 0:
-			self.image_height = self.parm("height").eval() 
+		if self.parm("size2").eval() != 0:
+			self.image_height = self.parm("size2").eval() 
 		else:
 			self.image_height = self.source_height
 			
-		r = numpy.array(img[:,:,0],dtype=numpy.int8)
-		g = numpy.array(img[:,:,1],dtype=numpy.int8)
-		b = numpy.array(img[:,:,2],dtype=numpy.int8)
+		r = numpy.array(img[:,:,0],dtype=numpy.uint8)
+		g = numpy.array(img[:,:,1],dtype=numpy.uint8)
+		b = numpy.array(img[:,:,2],dtype=numpy.uint8)
 		
-		self.devInBufferR = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
-		self.devInBufferG = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
-		self.devInBufferB = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
+		self.devInBufferR = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
+		self.devInBufferG = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
+		self.devInBufferB = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
 
 
 	def loadEXR(self, filename):
@@ -81,38 +87,38 @@ class COP2_File(COP2_Node):
 		self.source_width = size[0]
 		self.source_height = size[1]
 		
-		if self.parm("width").eval() != 0:
-			self.width = self.parm("width").eval()
+		if self.parm("size1").eval() != 0:
+			self.width = self.parm("size1").eval()
 		else:
 			self.width = self.source_width
 					
-		if self.parm("height").eval() != 0:
-			self.height = self.parm("height").eval() 
+		if self.parm("size2").eval() != 0:
+			self.height = self.parm("size2").eval() 
 		else:
 			self.height = self.source_height
 		
 		redstr = image.channel('R', pt)
 		host_buff_r = numpy.fromstring(redstr, dtype = numpy.float16)
 		host_buff_r.shape = (size[1], size[0]) # Numpy arrays are (row, col)
-		self.devInBufferR = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_r)
+		self.devInBufferR = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_r)
 		
 		greenstr = image.channel('G', pt)
 		host_buff_g = numpy.fromstring(greenstr, dtype = numpy.float16)
 		host_buff_g.shape = (size[1], size[0]) # Numpy arrays are (row, col)
-		self.devInBufferG = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_g)
+		self.devInBufferG = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_g)
 		
 		bluestr = image.channel('B', pt)
 		host_buff_b = numpy.fromstring(bluestr, dtype = numpy.float16)
 		host_buff_b.shape = (size[1], size[0]) # Numpy arrays are (row, col)
-		self.devInBufferB = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_b)
+		self.devInBufferB = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_b)
 		
 		if(channels.get('A') is not None):
 			alphastr = image.channel('A', pt)
 			host_buff_a = numpy.fromstring(alphastr, dtype = numpy.float16)
 			host_buff_a.shape = (size[1], size[0]) # Numpy arrays are (row, col)
-			self.devInBufferA = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_a)
+			self.devInBufferA = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_a)
 		else:
-			self.devInBufferA = cl.Image(self.engine.ctx, self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=numpy.ones(self.source_width * self.source_height, dtype = numpy.float16))
+			self.devInBufferA = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=numpy.ones(self.source_width * self.source_height, dtype = numpy.float16))
 	
 	def getImageFileName(self):
 		filename = self.parm("filename").eval()
@@ -124,29 +130,30 @@ class COP2_File(COP2_Node):
 		logging.debug("Computing using CL.")
 		imagefile = self.getImageFileName()
 		logging.debug("Reading image %s" % imagefile)
-		self.image_width = self.parm("width").eval()
-		self.image_height = self.parm("height").eval()
+		self.image_width = self.parm("size1").eval()
+		self.image_height = self.parm("size2").eval()
 
 		if os.path.isfile(imagefile):	 
 			ext = imagefile.split(".")[-1]
 			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:
 				self.loadJPG(imagefile)
-				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
-				exec_evt = self.program.run_jpg(self.engine.queue, self.size, None, 
+				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
+				exec_evt = self.program.run_jpg(self.engine.openclQueue(), (self.image_width, self.image_height), None, 
 					self.devInBufferR, # red channel buffer
 					self.devInBufferG, # green channel buffer
 					self.devInBufferB, # blue channel buffer
 					self.devOutBuffer, 
 					numpy.int32(self.source_width),
 					numpy.int32(self.source_height),
-					numpy.int32(self.width),
-					numpy.int32(self.height),
+					numpy.int32(self.image_width),
+					numpy.int32(self.image_height)
 				)
 				exec_evt.wait()
+
 			elif ext in ["exr", "EXR"]:
 				self.loadEXR(imagefile)
-				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
-				exec_evt = self.program.run_exr(self.engine.queue, self.size, None, 
+				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
+				exec_evt = self.program.run_exr(self.engine.openclQueue(), (self.image_width, self.image_height), None, 
 					self.devInBufferR, # red channel buffer
 					self.devInBufferG, # green channel buffer
 					self.devInBufferB, # blue channel buffer
@@ -165,12 +172,12 @@ class COP2_File(COP2_Node):
 				# try to find sequence to get resolution frame resolution if
 				file_name_pattern = self.parm("filename").eval()
 
-				self.image_width = self.parm("width").eval()
-				self.image_height = self.parm("height").eval()
+				self.image_width = self.parm("size1").eval()
+				self.image_height = self.parm("size2").eval()
 				if 0 in [self.width, self.height]:
 					raise BaseException("Image file %s does not exist !!!" % imagefile)
 
 				logging.warning("Image file %s does not found !!! Using BLACK frame instead." % imagefile)	
-				self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.image_width, self.image_height), hostbuf=numpy.zeros(self.image_width * self.image_height * 4, dtype = numpy.float32))
+				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.image_width, self.image_height), hostbuf=numpy.zeros(self.image_width * self.image_height * 4, dtype = numpy.float32))
 				
 

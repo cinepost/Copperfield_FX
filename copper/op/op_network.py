@@ -1,6 +1,7 @@
 import re, collections
 import logging 
 
+from gui.signals import signals
 from copper.op.base import OpRegistry
 from copper.op.op_node import OP_Node
 from copper.parameter import CopperParameter
@@ -140,6 +141,7 @@ class OP_Network(OP_Node):
 		if self.engine.network_cb:
 			self.engine.network_cb()
 
+		signals.copperNodeCreated[str].emit(node.path())
 		return node
 
 	def setName(self, name):

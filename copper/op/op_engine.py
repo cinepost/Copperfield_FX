@@ -33,35 +33,28 @@ class Copper_Engine(OP_Network):
 		self.__time__= 0
 		self.__frame__= 0
 		self.__fps__ = 25.0
+		self._cl_ctx = None
 
 		print "Initializing engine of type %s" % device_type
-		devices = []
+		self._devices = []
 		platforms = cl.get_platforms()
 		for platform in platforms:
 			if device_type is "CPU":
-				devices += platform.get_devices(cl.device_type.CPU)
+				self._devices += platform.get_devices(cl.device_type.CPU)
 			
 			elif device_type is "GPU":
-				devices += platform.get_devices(cl.device_type.GPU)
+				self._devices += platform.get_devices(cl.device_type.GPU)
 			
 			elif device_type is "ALL":	 
-				devices += platform.get_devices(cl.device_type.ALL)	
+				self._devices += platform.get_devices(cl.device_type.ALL)	
 			
 			else:
-				devices = None	
+				self._devices = None	
 			
-		if devices:		
-			if device_index:
-				print "Creating engine selected device: %s" % devices[device_index] 
-				self._ctx = cl.Context(devices = [devices[device_index]])
-			else:	
-				print "Creating engine using devices: %s" % devices 
-				self._ctx = cl.Context(devices = devices)
-
-			self._queue 	= cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
+		if self._devices:		
 			self._mf 		= cl.mem_flags
 			self.cl_path 	= cl_path
-			self.cl_mode = True
+			self.cl_mode 	= True
 			print "Using Open_CL."
 		else:
 			print "NO OPEN_CL CAPABLE DEVICE FOUND !!!"
@@ -90,19 +83,26 @@ class Copper_Engine(OP_Network):
 
 	def load_program(self, filename):
 		of = open("%s/%s" % (os.path.expandvars(self.cl_path), filename), 'r')
-		return cl.Program(self.ctx, of.read()).build()
+		return cl.Program(self.openclContext(), of.read()).build()
 
 	@property 
 	def have_gl(self):
 		return cl.have_gl()	
 
-	@property
-	def ctx(self):
-		return self._ctx
+	def openclContext(self, device_index=None):
+		if not self._cl_ctx:
+			if device_index:
+				self._cl_ctx = cl.Context(	properties=get_gl_sharing_context_properties(),
+										devices = [self._devices[device_index]])
+			else:	
+				self._cl_ctx = cl.Context(	properties=get_gl_sharing_context_properties(),
+										devices = self._devices)
+
+			print "OpenCL context created: %s" % self._cl_ctx
+		return self._cl_ctx
 		
-	@property
-	def queue(self):
-		return self._queue	
+	def openclQueue(self):
+		return cl.CommandQueue(self.openclContext(), properties=cl.command_queue_properties.PROFILING_ENABLE)
 		
 	@property
 	def mf(self):
@@ -229,7 +229,7 @@ class Copper_Engine(OP_Network):
 		## Create file reading node 
 		file1 = comp.createNode("file")
 		file1.setPos(10, 10)
-		file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/773dee750c33093fd74279637db1a38b.jpg"})
+		file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/mythbuster.jpg"})
 
 		## Create blur node
 		#blur1 = comp.createNode("blur")

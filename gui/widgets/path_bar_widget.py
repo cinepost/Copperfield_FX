@@ -41,7 +41,7 @@ class PathBarWidget(QtGui.QFrame):
         self.setAcceptDrops(True)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
 
-        self.buildPathBar(node_path="/obj/geo1")
+        self.buildPathBar(node_path="/obj")
 
     def pinPressed(self):
         if self.pinned == False:
@@ -64,7 +64,7 @@ class PathBarWidget(QtGui.QFrame):
         for i in reversed(range(self.path_layout.count())): 
             self.path_layout.itemAt(i).widget().deleteLater()
 
-        node = node.parent()
+        btn = None
         while node:
             if node is not engine:
                 btn = QtGui.QPushButton()
@@ -75,6 +75,6 @@ class PathBarWidget(QtGui.QFrame):
 
             node = node.parent()
 
-        btn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        if btn: btn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
 
 

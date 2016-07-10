@@ -9,14 +9,13 @@ __kernel void run_jpg(	__read_only image2d_t img_in_r,
 
 	float2 coord = (float2)((float)x / (float)out_width, (float)y / (float)out_height);
 	float4 val = 1.0f;
-	if(x < out_width){
-		if(y < out_height){
+
 		val.x = read_imagef(img_in_r, sampler, coord).x;
 		val.y = read_imagef(img_in_g, sampler, coord).x;
 		val.z = read_imagef(img_in_b, sampler, coord).x;
-			write_imagef(img_out, (int2)(x, y), val);
-		}
-	}
+		write_imagef(img_out, (int2)(x, y), val);
+		//write_imagef(img_out, (int2)(x, y), float4(0.75f, 0.5f, 0.25f, 0.0f));
+
 }
 
 

@@ -26,6 +26,12 @@ class OP_Node(OP_Parameters):
 		return (self.pos_x, self.pos_y,)
 
 	'''
+	Moves node in a good place among it's siblings. Used to arrange nodes in a network for the first time. Or just auto place node.
+	'''
+	def moveToGoodPosition(self):
+		raise NotImplementedError
+
+	'''
 	isNetwork returns if the node can have children.  This is true
 	if the node has an operator table or has any children.
 	This does NOT tell you if it is derived from OP_Network.

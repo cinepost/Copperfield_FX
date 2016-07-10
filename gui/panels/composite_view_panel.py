@@ -32,11 +32,11 @@ class CompositeViewPanel(BasePanel):
 
 class CompositeViewWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
-        #format = QtOpenGL.QGLFormat.defaultFormat()
-        #format.setSampleBuffers(True)
-        #format.setSamples(16)
-        #QtOpenGL.QGLWidget.__init__(self, format, parent)
-        super(CompositeViewWidget, self).__init__(parent)
+        format = QtOpenGL.QGLFormat.defaultFormat()
+        format.setSampleBuffers(True)
+        format.setSamples(16)
+        QtOpenGL.QGLWidget.__init__(self, format, parent)
+        #super(CompositeViewWidget, self).__init__(parent)
         if not self.isValid():
             raise OSError("OpenGL not supported.")
 
@@ -70,10 +70,10 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
                 self.draw_new_node = False
 
-            glBindTexture(GL_TEXTURE_2D, self.texid_cl)
+            glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
         else:
             # default texture
-            glBindTexture(GL_TEXTURE_2D, self.texid_gl)    
+            glBindTexture(GL_TEXTURE_2D, self.null_gl_tex_id)    
 
         glBegin(GL_QUADS)
         glTexCoord2f(0.0,0.0)
@@ -144,8 +144,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
         # bind default texture here  
-        self.texid_gl = self.bindTexture(QtGui.QImage("media/deftex_02.jpg"), GL_TEXTURE_2D, GL_RGBA) 
-        glBindTexture(GL_TEXTURE_2D, self.texid_gl)
+        self.null_gl_tex_id = self.bindTexture(QtGui.QImage("media/deftex_02.jpg"), GL_TEXTURE_2D, GL_RGBA) 
+        glBindTexture(GL_TEXTURE_2D, self.null_gl_tex_id)
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
@@ -153,14 +153,14 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
         glBindTexture(GL_TEXTURE_2D, 0)
 
-        self.texid_cl = glGenTextures(1)
-
-        glBindTexture(GL_TEXTURE_2D, self.texid_cl)
+        self.node_gl_tex_id = glGenTextures(1)
+        print "Type %s" % type(self.node_gl_tex_id)
+        glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glBindTexture(GL_TEXTURE_2D, 0)
 
     def reset_view(self):
@@ -170,35 +170,32 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.updateGL()
 
     def buildCopImageDataTexture(self):
+        if not cl.have_gl():
+            raise BaseException("No OpenGL interop !!!")
+
         if self.node:
             # bind texture from current compy node
-            img_cl_buffer = self.node.getOutDevBuffer()
+            cl_image_buffer = self.node.getOutDevBuffer()
 
-            #glBindTexture(GL_TEXTURE_2D, self.texid_cl)
+            glBindTexture(GL_TEXTURE_2D, 0)
+            glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.xRes(),  self.node.yRes(), 0, GL_RGB, GL_FLOAT, None)
             glBindTexture(GL_TEXTURE_2D, 0)
 
-            print "Node size: %s %s" % (self.node.getWidth() , self.node.getHeight())
+            print "Node size: %s %s" % (self.node.xRes(), self.node.yRes())
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.getWidth() , self.node.getHeight(), 0, GL_RGBA, GL_FLOAT, None)
-            display_cl_gl_texture = cl.GLTexture(self.engine.ctx, self.engine.mf.WRITE_ONLY,  GL_TEXTURE_2D, 0, self.texid_cl, 2)    
-            self.engine.queue.finish()
+            node_gl_texture = cl.GLTexture(engine.openclContext(), engine.mf.WRITE_ONLY, GL_TEXTURE_2D, 0, self.node_gl_tex_id, 2) 
 
-            #pbo = glGenBuffers(1)
-            #glBindBuffer(GL_ARRAY_BUFFER, pbo)
-            #rawGlBufferData(GL_ARRAY_BUFFER,  self.node.width * self.node.height, None, GL_STATIC_DRAW)
-            #glEnableClientState(GL_VERTEX_ARRAY)
-            
-            #try:
-            #    display_pbo_cl = cl.GLBuffer(self.engine.ctx, self.engine.mf.WRITE_ONLY, int(pbo))
-            #except:
-            #    raise
-            #cl.enqueue_acquire_gl_objects(queue, [coords_dev])
-            #prog.generate_sin(queue, (n_vertices,), None, coords_dev)
-            #cl.enqueue_release_gl_objects(queue, [coords_dev])
+            # Aquire OpenGL texture object
+            cl.enqueue_acquire_gl_objects(engine.openclQueue(), [node_gl_texture])
 
-            print "Binding texture"
-            glBindTexture(GL_TEXTURE_2D, 0)
-            print "Binding done"
+            # copy OpenCL buffer to OpenGl texture
+            cl.enqueue_copy_image(engine.openclQueue(), cl_image_buffer, node_gl_texture, (0,0), (0,0), (self.node.xRes(), self.node.yRes()), wait_for=None)
+
+            # Release OpenGL texturte object
+            cl.enqueue_release_gl_objects(engine.openclQueue(), [node_gl_texture])
+
+            engine.openclQueue().finish()
 
     @QtCore.pyqtSlot(str)    
     def setNode(self, node_path = None):
@@ -209,8 +206,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
                 self.node = engine.node(node_path)
                 self.node_path = node_path
                 self.node.cook()
-                self.image_width = self.node.getWidth()
-                self.image_height = self.node.getHeight()
+                self.image_width = self.node.xRes()
+                self.image_height = self.node.yRes()
                 self.draw_new_node = True
   
         else:

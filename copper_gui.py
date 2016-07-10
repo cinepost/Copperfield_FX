@@ -167,11 +167,13 @@ if __name__ == '__main__':
     app.setWindowIcon(QtGui.QIcon('icons/copper_icon.png'))
 
     #engine = copper.CreateEngine("GPU")
-    engine.test_project()
-
+    
     window = Window()
     window.load_style()
     window.show()    
     window.raise_() 
     window.activateWindow()
+
+    engine.test_project()
+
     sys.exit(app.exec_())

@@ -37,7 +37,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
         self.createNodeTree(self, engine.node("/")) 
 
         ### Connect signals from UI
-        self.connect(self, QtCore.SIGNAL("copperNetworkChanged"), self.rebuildNodeTree)
+        signals.copperNodeCreated.connect(self.rebuildNodeTree)
 
         ### Connect internal signals
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
@@ -64,10 +64,14 @@ class TreeViewWidget(QtGui.QTreeWidget):
     def handleShowInViewer(self, node_path):
         signals.copperSetCompositeViewNode[str].emit(node_path)
 
+    
+    '''
+    Rebuilds node tree upon recieving signals like copperNodeCreated or copperNodeChanged
+    '''
     @QtCore.pyqtSlot()   
     def rebuildNodeTree(self):
         self.clear()
-        self.createNodeTree(self.engine, self)
+        self.createNodeTree(self, engine.node("/"))
 
     @QtCore.pyqtSlot()   
     def menuContextMenu(self, point):

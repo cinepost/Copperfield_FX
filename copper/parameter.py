@@ -56,23 +56,22 @@ class CopperParameter(object):
 	def __init__(self, node, name, parm_template, default_value=None, callback = None, spare=True):
 		self.__keyframes__ = []
 		self.value = default_value
-		self.__cb__ = callback
-		self.__node__ = node
-		self.__name__ = name
-		self.__parm_template__ = parm_template
-		self.__spare__ = spare
+		self._node = node
+		self._name = name
+		self._parm_template = parm_template
+		self._spare = spare
 
 	def isSpare(self):
-		return self.__spare__
+		return self._spare
 
 	def parmTemplate(self):
-		return self.__parm_template__
+		return self._parm_template
 
 	def node(self):
-		return self.__node__	
+		return self._node	
 
 	def name(self):
-		return self.__name__
+		return self._name
 
 	def path(self):
 		return "%s/%s" % (self.node().path(), self.name())
@@ -95,27 +94,16 @@ class CopperParameter(object):
 		else:
 			raise BaseException("Cannot get menu values for a non-menu parm")
 
+	def pressButton(self):
+		if self.parmTemplate().type() is ParmTemplateType.Button:
+			self.parmTemplate().callback()
+
 	def invalidateNode(self):
 		self.node.invalidate()
 		# call this method to force recook node. e.g. parameter changed
 
-	def setValue(self, value):
+	def set(self, value):
 		self.value = value
-		self.invalidateNode()
-		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
-
-	def setValueStr(self, value):
-		self.value = str(value)
-		self.invalidateNode()
-		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
-
-	def setValueInt(self, value):
-		self.value = int(value)
-		self.invalidateNode()
-		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
-
-	def setValueFloat(self, value):
-		self.value = float(value)
 		self.invalidateNode()
 		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
 
@@ -142,7 +130,7 @@ class CopperParameter(object):
 	def evalAsBool(self):
 		return bool(self.eval())
 
-	def evalAsStr(self):
+	def evalAsString(self):
 		return str(self.eval())
 
 	def evalAtTime(self, time):
@@ -208,15 +196,7 @@ class CopperParameter(object):
 				
 	def setKeyframe(self, keyframe):
 		self.__keyframes__.append(keyframe)
-
-	def setCallback(self, callback):
-		self.__cb__ = callback
-
-	def getCallback(self):
-		return self.__cb__	
-
-	def callback(self):
-		self.__cb__()	
+	
 
 	#def __str__(self):
 	#	return self.value			

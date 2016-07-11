@@ -20,7 +20,7 @@ QToolButton, QPushButton {
 	border: none;
 	width: 16px;
 	height: 16px;
-	padding: 4px;
+	padding: 2px;
 }
 
 QToolBar{
@@ -67,8 +67,8 @@ QLineEdit {
 	color: #fff;
 	border: 2px solid #222;
 	border-style: groove;
-	margin: 1px;
-	height: 20px;
+	margin: 0px;
+	height: 18px;
 	background-color: #101010;
 	outline: 0;
 }
@@ -421,7 +421,7 @@ QWidget#Parameters QPushButton {
 	color: #ccc;
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #555, stop:1 #363636);
 	border: 1px solid #111;
-	border-radius: 1px;
+	border-radius: 2px;
 }
 
 QWidget#Parameters QPushButton:pressed {

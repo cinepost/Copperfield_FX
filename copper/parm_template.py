@@ -23,7 +23,7 @@ class StringParmType:
 
 class ParmTemplate(object):
 	def __init__(self, name='parm', label='Label', length=1, default_value=(0,), min=0, max=10, min_is_strict=False, max_is_strict=False,
-			naming_scheme=ParmNamingScheme.XYZW, look=ParmLookScheme.Regular, join_with_next=False):
+			naming_scheme=ParmNamingScheme.XYZW, look=ParmLookScheme.Regular, join_with_next=False, callback=None):
 
 		self._name = name
 		self._label = label
@@ -36,6 +36,7 @@ class ParmTemplate(object):
 		self._naming_scheme = naming_scheme
 		self._look = look
 		self._join_with_next = join_with_next
+		self._callback = callback
 
 	def name(self):
 		return self._name
@@ -76,6 +77,10 @@ class ParmTemplate(object):
 	def joinsWithNext(self):
 		return self._join_with_next
 
+	def callback(self):
+		if self._callback:
+			self._callback()
+
 	@classmethod
 	def type(cls):
 		return cls._type
@@ -91,6 +96,8 @@ class IntParmTemplate(ParmTemplate):
 
 class ButtonParmTemplate(ParmTemplate):
 	_type = ParmTemplateType.Button
+	def __init__(self, name="parm", label="Label", length=1, default_value=False, callback=None):
+		super(ButtonParmTemplate, self).__init__(name=name, label=label, length=length, default_value=default_value, callback=callback)
 
 
 class ToggleParmTemplate(ParmTemplate):

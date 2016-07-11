@@ -33,9 +33,8 @@ class COP2_Node(OP_Network):
 			"A": COP_Plane(self, dtype=float)
 		}
 
-	@classmethod
-	def parmTemplates(cls):
-		templates = super(COP2_Node, cls).parmTemplates()
+	def parmTemplates(self):
+		templates = super(COP2_Node, self).parmTemplates()
 		templates += [
 			FloatParmTemplate(name="effectamount", label="Effect Amount", length=1, default_value=(1.0,), min=0.0, max=1.0, min_is_strict=True, max_is_strict=True, naming_scheme=ParmNamingScheme.Base1)
 		]

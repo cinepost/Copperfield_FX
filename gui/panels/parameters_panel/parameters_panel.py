@@ -107,7 +107,8 @@ class ParametersWidget(QtGui.QWidget):
             parm_template_type = parm_template.type()
 
             parms_layout = QtGui.QHBoxLayout()
-            parms_layout.setSpacing(0)
+            parms_layout.setSpacing(1)
+            parms_layout.setContentsMargins(0, 0, 0, 0)
             for parm in node.parmGroups()[parm_template]:
                 if parm_template_type is ParmTemplateType.Int:
                     # Int

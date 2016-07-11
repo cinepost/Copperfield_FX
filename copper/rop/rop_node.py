@@ -11,19 +11,25 @@ class ROP_Node(OP_Network):
 	
 	def __init__(self, engine, parent):
 		super(ROP_Node, self).__init__(engine, parent)
-		#self.addParameter("execute", parameter.CopperParmButton, None, label="Render", callback=self.execute)
-		#self.addParameter("f1", int, 0)
-		#self.addParameter("f2", int, 100)
-		#self.addParameter("f3", int, 1)
 
-	@classmethod
-	def parmTemplates(cls):
-		templates = super(ROP_Node, cls).parmTemplates()
+	def parmTemplates(self):
+		templates = super(ROP_Node, self).parmTemplates()
 		templates += [
-			ButtonParmTemplate(name="execute", label="Render"),
+			ButtonParmTemplate(name="execute", label="Render", callback=self.render),
+			MenuParmTemplate(name="trange", label="Valid Frame Range", menu_items=('off', 'normal', 'on'), menu_labels=('Render Current Frame', 'Render Frame Range', 'Render Frame Range Only (Strict)')),
 			IntParmTemplate(name="f", label="Start/End/Inc", length=3, default_value=(1,240,1), naming_scheme=ParmNamingScheme.Base1)
 		]
 		return templates
 
-	def execute(self):
-		raise NotImplementedError	
+	def render(self, frame_range=None):
+		if frame_range:
+			f1 = frame_range[0]
+			f2 = frame_range[1]
+			f3 = frame_range[2]
+		else:
+			f1 = self.parm("f1").evalAsInt()
+			f2 = self.parm("f2").evalAsInt()
+			f3 = self.parm("f3").evalAsInt()
+		
+		for frame in range(f1, f2, f3):
+			self.renderFrame(frame)

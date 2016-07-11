@@ -13,14 +13,20 @@ class ParameterBaseWidget(QtGui.QWidget):
 		self.setLayout(self.layout)
 
 	def setParmValue(self):
-		#self.parm.setValueFloat(float(self.line_edit.text()))
-		pass
+		parm_type = self.parm.parmTemplate().type()
+		if parm_type is ParmTemplateType.Float:
+			self.parm.set(float(self.line_edit.text()))
+		elif parm_type is ParmTemplateType.Int:
+			self.parm.set(int(self.line_edit.text()))
+		elif parm_type is ParmTemplateType.String:
+			self.parm.set(str(self.line_edit.text()))
+
 
 class ParameterFloatWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 		self.resolution = 100
-
+		self.slider = None
 		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsFloat())) 
 		self.line_edit.setMinimumWidth(60)
 		self.layout.addWidget(self.line_edit)
@@ -43,15 +49,17 @@ class ParameterFloatWidget(ParameterBaseWidget):
 	def processSlider(self):
 		value = self.slider.value()
 		self.line_edit.setText(str(float(value)/self.resolution))
+		self.setParmValue()
 
 	def processLineEdit(self):
 		value = float(self.line_edit.text())
-		self.slider.setValue(value)
+		if self.slider: self.slider.setValue(value)
+		self.setParmValue()
 
 class ParameterIntWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
-
+		self.slider = None
 		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsInt())) 
 		self.line_edit.setMinimumWidth(60)
 		self.layout.addWidget(self.line_edit)
@@ -75,10 +83,12 @@ class ParameterIntWidget(ParameterBaseWidget):
 	def processSlider(self):
 		value = self.slider.value()
 		self.line_edit.setText(str(value))
+		self.setParmValue()
 
 	def processLineEdit(self):
 		value = int(self.line_edit.text())
-		self.slider.setValue(value)
+		if self.slider: self.slider.setValue(value)
+		self.setParmValue()
 
 
 class ParameterToggleWidget(ParameterBaseWidget):
@@ -130,18 +140,18 @@ class ParameterButtonWidget(ParameterBaseWidget):
 			self.layout.addStretch(1)
 
 		# connect signals
-		##self.button.clicked.connect(parm.getCallback())
+		self.button.clicked.connect(parm.pressButton)
 
 
 class ParameterStringWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
-		self.string_widget = QtGui.QLineEdit(parm.evalAsStr())
-		self.string_widget.setDragEnabled(True)
-		self.string_widget.setAcceptDrops(True)
-		self.string_widget.installEventFilter(self)
-		self.layout.addWidget(self.string_widget)
+		self.line_edit = QtGui.QLineEdit(parm.evalAsString())
+		self.line_edit.setDragEnabled(True)
+		self.line_edit.setAcceptDrops(True)
+		self.line_edit.installEventFilter(self)
+		self.layout.addWidget(self.line_edit)
 
 		if parm.parmTemplate().stringType() is StringParmType.FileReference:
 			self.file_button = QtGui.QToolButton(self)
@@ -160,15 +170,15 @@ class ParameterStringWidget(ParameterBaseWidget):
 			self.layout.addWidget(self.op_path_button)	
 
 		# connect signals
-		self.string_widget.editingFinished.connect(self.setParmValue)
+		self.line_edit.editingFinished.connect(self.setParmValue)
 
 	def BrowseFile(self, lineEdit):
 		file_name = QtGui.QFileDialog.getOpenFileName()
-		self.string_widget.setText(file_name)
+		self.line_edit.setText(file_name)
 
 	def BrowseOp(self, lineEdit):
 		op_path = QtGui.QFileDialog.getOpenFileName()
-		self.string_widget.setText(op_path)
+		self.line_edit.setText(op_path)
 
 
 

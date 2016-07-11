@@ -23,10 +23,8 @@ class COP2_File(COP2_Node):
 		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
 
-
-	@classmethod
-	def parmTemplates(cls):
-		templates = super(COP2_File, cls).parmTemplates()
+	def parmTemplates(self):
+		templates = super(COP2_File, self).parmTemplates()
 		templates += [
 			StringParmTemplate(name="filename", label="File", string_type=StringParmType.FileReference),
 			IntParmTemplate(name="size", label="Size", length=2, default_value=(640,480), naming_scheme=ParmNamingScheme.Base1),

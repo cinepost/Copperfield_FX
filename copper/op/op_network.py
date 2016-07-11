@@ -39,8 +39,7 @@ class OP_Network(OP_Node):
 	def label(cls):
 		raise NotImplementedError
 
-	@classmethod
-	def parmTemplates(cls):
+	def parmTemplates(self):
 		return []
 
 	def __increment__(self, s):

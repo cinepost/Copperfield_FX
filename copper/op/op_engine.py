@@ -69,10 +69,13 @@ class Copper_Engine(OP_Network):
 			self.translators[translator.registerExtension()] = translator
 
 		# create base network managers
-		self.createNode("out")
-		self.createNode("img")
-		self.createNode("obj")	
+		self.createNode("out", "out")
+		self.createNode("img", "img")
+		self.createNode("obj", "obj")	
 	
+	def isGuiMode(self):
+		return True
+
 	def set_network_change_callback(self, callback):
 		self.network_cb = callback
 
@@ -213,18 +216,19 @@ class Copper_Engine(OP_Network):
 		out = self.node("out")
 
 		## Create composite output driver
-		out.createNode("comp", "comp1")
+		out.createNode("comp")
 
 		## First get image network
 		img = self.node("img")
 		
 		## Create composition
-		comp = img.createNode("img", "comp1")
+		comp = img.createNode("img")
 
 		obj = self.node("obj")
 
+		geo = obj.createNode("geo")
+		ins = obj.createNode("instance")
 		geo = obj.createNode("geo", "geo1")
-		ins = obj.createNode("instance", "instance1")
 
 		## Create file reading node 
 		file1 = comp.createNode("file")

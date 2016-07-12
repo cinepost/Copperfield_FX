@@ -4,14 +4,19 @@ from gui.signals import signals
 from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
 class ParameterBaseWidget(QtGui.QWidget):
+	valueChanged = QtCore.pyqtSignal()
 	def __init__(self, parent, parm):
 		QtGui.QWidget.__init__(self, parent)
-		self.parm = parm 
+		self.parm = parm
+		self.line_edit = None # Not all type of parm widget has line edit
 		self.layout = QtGui.QHBoxLayout(self)
 		self.layout.setSpacing(2)
 		self.layout.setContentsMargins(0, 0, 0, 0)
 		self.setLayout(self.layout)
 
+		self.valueChanged.connect(self.setParmValue)
+
+	@QtCore.pyqtSlot()
 	def setParmValue(self):
 		parm_type = self.parm.parmTemplate().type()
 		if parm_type is ParmTemplateType.Float:
@@ -20,6 +25,19 @@ class ParameterBaseWidget(QtGui.QWidget):
 			self.parm.set(int(self.line_edit.text()))
 		elif parm_type is ParmTemplateType.String:
 			self.parm.set(str(self.line_edit.text()))
+
+	'''
+	Handle drop event. Validate dropped data and set parameter.
+	'''
+	def eventFilter(self, source, event):
+		if (event.type() == QtCore.QEvent.Drop and source is self.line_edit):
+			if self.line_edit:
+				self.line_edit.setText("")
+				self.line_edit.dropEvent(event)
+				if event.isAccepted():
+					self.valueChanged.emit()
+				return True
+		return QtGui.QWidget.eventFilter(self, source, event) # propagate event
 
 
 class ParameterFloatWidget(ParameterBaseWidget):
@@ -49,12 +67,12 @@ class ParameterFloatWidget(ParameterBaseWidget):
 	def processSlider(self):
 		value = self.slider.value()
 		self.line_edit.setText(str(float(value)/self.resolution))
-		self.setParmValue()
+		self.valueChanged.emit()
 
 	def processLineEdit(self):
 		value = float(self.line_edit.text())
 		if self.slider: self.slider.setValue(value)
-		self.setParmValue()
+		self.valueChanged.emit()
 
 class ParameterIntWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
@@ -83,12 +101,12 @@ class ParameterIntWidget(ParameterBaseWidget):
 	def processSlider(self):
 		value = self.slider.value()
 		self.line_edit.setText(str(value))
-		self.setParmValue()
+		self.valueChanged.emit()
 
 	def processLineEdit(self):
 		value = int(self.line_edit.text())
 		if self.slider: self.slider.setValue(value)
-		self.setParmValue()
+		self.valueChanged.emit()
 
 
 class ParameterToggleWidget(ParameterBaseWidget):
@@ -150,7 +168,7 @@ class ParameterStringWidget(ParameterBaseWidget):
 		self.line_edit = QtGui.QLineEdit(parm.evalAsString())
 		self.line_edit.setDragEnabled(True)
 		self.line_edit.setAcceptDrops(True)
-		self.line_edit.installEventFilter(self)
+		self.line_edit.installEventFilter(self) # process drag'n'drop
 		self.layout.addWidget(self.line_edit)
 
 		if parm.parmTemplate().stringType() is StringParmType.FileReference:

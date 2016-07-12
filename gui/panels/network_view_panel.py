@@ -112,16 +112,20 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         self.setSceneRect(-100000, -100000, 200000, 200000)
 
     @QtCore.pyqtSlot()
-    def addNode(self, node):
-        node_item= NodeItem(node)
-        self.addItem(node_item)
-        node_item.autoPlace()
+    def addNode(self, node_path=None):
+        if node_path:
+            node = engine.node(node_path)
+            if node:
+                node_item= NodeItem(node)
+                self.addItem(node_item)
+                node_item.autoPlace()
 
-    def buildNetworkLevel(self, node):
-        self.clear()
-        nodes = node.nodes()
-        for node in nodes:
-            self.addNode(node)
+    def buildNetworkLevel(self, node_path=None):
+        node = engine.node(node_path)
+        if node:
+            self.clear()
+            for child in node.children():
+                self.addNode(child.path())
 
     def zoom(self, zoomFactor):
         self.zoomLevel *= zoomFactor
@@ -174,6 +178,8 @@ class NetworkViewWidget(QtGui.QGraphicsView):
 
         self.setObjectName("network_widget")
 
+        self.network_level = "/"
+
         self.scene = NodeFlowScene(self)
         self.setScene(self.scene)
         self.setMouseTracking(True)
@@ -191,10 +197,23 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
 
         ## As a debug we always set new panel widget to "/"
-        self.setNetworkLevel(engine.node("/obj"))
+        self.setNetworkLevel("/obj")
 
-    def setNetworkLevel(self, node):
-        self.scene.buildNetworkLevel(node)
+
+        ## Connect engine signals
+        signals.copperNodeCreated[str].connect(self.copperNodeCreated)
+
+    @QtCore.pyqtSlot(str)
+    def copperNodeCreated(self, node_path):
+        print "Network View node created %s" % node_path
+        node = engine.node(str(node_path))
+        if node:
+            if self.network_level == node.parent().path():
+                self.scene.addNode(str(node_path))
+
+    def setNetworkLevel(self, node_path):
+        self.network_level = node_path
+        self.scene.buildNetworkLevel(node_path)
 
     def wheelEvent(self, event):
          # Zoom Factor

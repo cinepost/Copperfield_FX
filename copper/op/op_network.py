@@ -20,7 +20,7 @@ class OP_Network(OP_Node):
 		# mask is a list with node type names that are allowed to be created by this NetworkManager instance e.d ["img","comp"] If mask is None than any node type can be used
 		super(OP_Network, self).__init__()
 		self.__engine__ = engine
-		self.__name__ = None
+		self._name = None
 		self.__node_dict__ = {}
 		self.__parent__ = parent
 		self.__inputs__ = []
@@ -42,15 +42,20 @@ class OP_Network(OP_Node):
 	def parmTemplates(self):
 		return []
 
-	def __increment__(self, s):
+	def getBase1Name(self, base_name):
 		""" look for the last sequence of number(s) in a string and increment """
-		m = lastNum.search(s)
+		m = lastNum.search(base_name)
 		if m:
 			next = str(int(m.group(1))+1)
 			start, end = m.span(1)
-			s = s[:max(end-len(next), start)] + next + s[end:]
+			name = base_name[:max(end-len(next), start)] + next + base_name[end:]
 		else:
-			return "%s1" % s	
+			name = "%s1" % base_name
+
+		if name in self.__node_dict__:
+			name = self.getBase1Name(name)
+
+		return name
 
 	@property 
 	def engine(self):
@@ -124,8 +129,10 @@ class OP_Network(OP_Node):
 
 		if node_name:
 			name = node_name
+			if name in self.__node_dict__:
+				name = self.getBase1Name(name)
 		else:
-			name = node_type_name	
+			name = self.getBase1Name(node_type_name)
 
 		node_type_name_with_category = '%s/%s' % (self.childTypeCategory().name(), node_type_name)
 		logging.debug("Creating node %s inside %s" % (node_type_name_with_category, self.__class__.__name__))
@@ -136,23 +143,18 @@ class OP_Network(OP_Node):
 		else:
 			raise BaseException("Unknown node type \"%s\". Abort." % node_type_name_with_category)	
 
-		self.__node_dict__[node.name()] = node
-		if self.engine.network_cb:
-			self.engine.network_cb()
+		self.__node_dict__[name] = node
 
-		signals.copperNodeCreated[str].emit(node.path())
+		if self.engine.isGuiMode():
+			signals.copperNodeCreated[str].emit(node.path())
+		
 		return node
 
 	def setName(self, name):
-		if name in self.parent().__node_dict__:
-			# need to rename this node name by appending number to this node name
-			new_name = self.__increment__(name)
-			self.__name__ = new_name
-		else:	
-			self.__name__ = name	
+		self._name = name	
 
 	def name(self):
-		return self.__name__	
+		return self._name	
 
 	def path(self):
 		if self.parent():

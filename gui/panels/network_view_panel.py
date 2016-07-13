@@ -16,8 +16,8 @@ class NetworkViewPanel(BasePanel):
     def __init__(self):  
         BasePanel.__init__(self, network_controls = True) 
 
-        self.network_view_widget = NetworkViewWidget(self)
         self.network_view_controls = NetworkViewControls(self)
+        self.network_view_widget = NetworkViewWidget(self)
 
         self.addWidget(self.network_view_controls)
         self.addWidget(self.network_view_widget)
@@ -36,6 +36,7 @@ class NetworkViewControls(CollapsableWidget):
 
         self.addWidget(QtGui.QLabel("huypizda"))
 
+
 class NodeItem(QtGui.QGraphicsItem):
     def __init__(self, node):      
         QtGui.QGraphicsItem.__init__(self)
@@ -45,7 +46,7 @@ class NodeItem(QtGui.QGraphicsItem):
             self.icon = QtGui.QIcon(self.node.iconName())
         else:
             self.icon = None
-
+        
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 
@@ -61,23 +62,32 @@ class NodeItem(QtGui.QGraphicsItem):
 
     def paint(self, painter, option, widget=None):
         pen = QtGui.QPen()
-        pen.setCosmetic(True)
 
+        
+        painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+        painter.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
+
+        device_transfrom = 1.0 / painter.deviceTransform().m11()
+        node_rect = QtCore.QRectF(-20+device_transfrom,-5+device_transfrom,40 - 2*device_transfrom,10 - 2 * device_transfrom)
+        node_outline_rect = QtCore.QRectF(-20, -5, 40, 10)
+        node_color = QtGui.QColor(160, 160, 160)
         if option.state & QtGui.QStyle.State_Selected:
-            pen.setWidth(3)
-            painter.fillRect(QtCore.QRectF(-20,-5,40,10), QtGui.QColor(196, 196, 196))
-            painter.setPen(QtGui.QColor(250, 200, 128))
-            painter.drawRect(-20,-5,40,10)
-        else:
-            pen.setWidth(1)
-            painter.fillRect(QtCore.QRectF(-20,-5,40,10), QtGui.QColor(160, 160, 160))
-            painter.setPen(QtGui.QColor(128, 128, 128))
-            painter.drawRect(-20,-5,40,10)
+            node_color = QtGui.QColor(196, 196, 196)
+            # draw selection border
+            border_width = 2.0 *device_transfrom
+            painter.fillRect(QtCore.QRectF(-20 - border_width ,-5 - border_width,40 + border_width * 2 ,10 + border_width * 2), QtGui.QColor(250, 190, 96))
+
+        painter.fillRect(node_outline_rect, QtGui.QColor(16, 16, 16))
+        painter.fillRect(node_rect, node_color)
+
 
         ## Paint icon if there is one
-        if self.icon:
-            painter.drawPixmap(-4, -4, 8, 8, self.icon.pixmap(QtCore.QSize(64,64)));
-            #self.icon.paint(painter, QtCore.QRect(-8,-8,8,8))
+        icon_size = int(max(min(8 / device_transfrom, 64), 8))
+        if self.icon and icon_size >= 8:
+            print "icon size %s" % icon_size
+            pixmap = self.icon.pixmap(icon_size, icon_size)
+            painter.drawPixmap(-4, -4, 8, 8, pixmap)
+            #self.icon.paint(painter, QtCore.QRect(-4,-4,18,18))
 
         painter.setPen(QtGui.QColor(128, 128, 128))
         painter.drawText(24, 0, self.node.name())
@@ -85,21 +95,22 @@ class NodeItem(QtGui.QGraphicsItem):
     def boundingRect(self):
         return QtCore.QRectF(-20,-5,40,10)
 
-
     def itemChange(self, change, value):
         if change == QtGui.QGraphicsItem.ItemSelectedChange:
             if value == True:
                 # do stuff if selected
+                print "Node %s selected!" % self.node.name()
                 signals.copperNodeSelected[str].emit(self.node.path()) 
             else:
                 # do stuff if not selected
+                print "Node %s not selected!" % self.node.name()
                 pass
 
         elif change == QtGui.QGraphicsItem.ItemPositionChange:
             # snap to grid code here
             print "Item moved"
 
-        return QtGui.QGraphicsItem.itemChange(self, change, value)
+        return super(NodeItem, self).itemChange(change, value)
 
 
 class NodeFlowScene(QtGui.QGraphicsScene):
@@ -155,6 +166,9 @@ class NodeFlowScene(QtGui.QGraphicsScene):
             painter.setPen(pen)
             painter.drawLines(lines)
 
+    def drawForeground(self, painter, rect):
+        painter.drawText(rect, "Network type name")
+
     def mousePressEvent(self, event):
         picked_item = self.itemAt(event.scenePos())
 
@@ -199,7 +213,6 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         ## As a debug we always set new panel widget to "/"
         self.setNetworkLevel("/obj")
 
-
         ## Connect engine signals
         signals.copperNodeCreated[str].connect(self.copperNodeCreated)
 
@@ -232,6 +245,7 @@ class NetworkViewWidget(QtGui.QGraphicsView):
             zoomFactor = zoomInFactor
         else:
             zoomFactor = zoomOutFactor
+        
         self.scale(zoomFactor, zoomFactor)
         self.scene.zoom(zoomFactor) # This is used by scene view to determine current viewport zoom
 
@@ -250,6 +264,7 @@ class NetworkViewWidget(QtGui.QGraphicsView):
     def keyReleaseEvent(self, event):
         self.setInteractive(True)
         self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
+
 
 
 

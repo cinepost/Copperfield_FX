@@ -1,10 +1,5 @@
 
 /* Main Window */
-QMainWindow {
-	background-color: #333;
-	border: none;
-}
-
 QMainWindow QToolBar {
 	border-bottom: 1px solid #000;
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #444, stop:1 #363636);
@@ -254,19 +249,11 @@ QFrame#bar QPushButton:pressed{
 	background-color: #543;
 }
 
-QToolButton#back {
-	image: url("icons/main/go-previous.svg");
-}
-
-QToolButton#fwd {
-	image: url("icons/main/go-next.svg");
-}
-
 QToolButton#pin {
 	image: url("icons/main/pin.svg");
 }
 
-QToolButton#pin:checked {
+QToolButton#pin:checked, QToolButton#pin:pressed {
 	image: url("icons/main/pin-pressed.svg");
 	background-color: #972;
 }
@@ -537,5 +524,4 @@ QTextEdit {
 QGraphicsView#network_widget {
 	border-top: 1px solid black;
 }
-
 

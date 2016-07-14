@@ -76,6 +76,9 @@ class Copper_Engine(OP_Network):
 	def isGuiMode(self):
 		return True
 
+	def isRoot(self):
+		return True
+
 	def set_network_change_callback(self, callback):
 		self.network_cb = callback
 

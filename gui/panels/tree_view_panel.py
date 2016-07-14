@@ -38,6 +38,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
 
         ### Connect signals from UI
         signals.copperNodeCreated.connect(self.rebuildNodeTree)
+        signals.copperNodeSelected[str].connect(self.selectNode)
 
         ### Connect internal signals
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
@@ -70,6 +71,11 @@ class TreeViewWidget(QtGui.QTreeWidget):
     '''
     @QtCore.pyqtSlot()   
     def rebuildNodeTree(self):
+        self.clear()
+        self.createNodeTree(self, engine.node("/"))
+
+    @QtCore.pyqtSlot(str)   
+    def selectNode(self, node_path):
         self.clear()
         self.createNodeTree(self, engine.node("/"))
 

@@ -12,6 +12,9 @@ from gui.signals import signals
 from gui.widgets import PathBarWidget, CollapsableWidget
 from base_panel import BasePanel
 
+def next_greater_power_of_2(x):  
+    return 2**(x-1).bit_length()
+
 class NetworkViewPanel(BasePanel):
     def __init__(self):  
         BasePanel.__init__(self, network_controls = True) 
@@ -37,18 +40,84 @@ class NetworkViewControls(CollapsableWidget):
         self.addWidget(QtGui.QLabel("huypizda"))
 
 
+class NodeSocketItem(QtGui.QGraphicsItem):
+    INPUT_SOCKET = 1
+    OUTPUT_SOCKET = 2
+
+    STACK_LEFT = 1
+    STACK_RIGHT = 2
+    STACK_TOP = 3
+    STACK_BOTTOM = 4
+
+    def __init__(self, parent, socket_type=None, stack_side=STACK_TOP):
+        QtGui.QGraphicsItem.__init__(self, parent)
+        self.stack_side = stack_side
+        self.node = parent.node
+        self._socket_type = socket_type
+        self.socket_color = QtGui.QColor(128, 128, 128)
+        self.setAcceptHoverEvents(True)
+        self.setZValue(self.parentItem().zValue() - 100)
+        self.stack()
+
+    def paint(self, painter, option, widget=None):
+        # LOD here. Do not draw socket if the viewport scale factor is less than 0.5
+        device_transfrom = 1.0 / painter.deviceTransform().m11()
+        socket_rect = self.boundingRect()
+        socket_outline_rect = self.boundingRect().adjusted(-device_transfrom, -device_transfrom, device_transfrom, device_transfrom)
+
+        painter.fillRect(socket_outline_rect, QtGui.QColor(16, 16, 16))
+        painter.fillRect(socket_rect, self.socket_color)
+
+    def boundingRect(self):
+        # LOD here. Do not draw socket if the viewport scale factor is less than 0.5
+        socket_width = self.size().width()
+        socket_height = self.size().height()
+        return QtCore.QRectF(-socket_width/2, -socket_height/2, socket_width, socket_height)
+
+    def size(self):
+        if self.stack_side in [NodeSocketItem.STACK_TOP, NodeSocketItem.STACK_BOTTOM]:
+            return QtCore.QSizeF(9, 2.25)
+        else:
+            return QtCore.QSizeF(2.25, 9)
+
+    def stack(self):
+        parent_item = self.parentItem()
+        parent_size = parent_item.size()
+        
+        if self.stack_side in [NodeSocketItem.STACK_TOP, NodeSocketItem.STACK_BOTTOM]:
+            if self.stack_side == NodeSocketItem.STACK_TOP:
+                self.setPos(0, -(parent_size.height()/2 + self.size().height() / 2))
+            else:
+                self.setPos(0, (parent_size.height()/2 + self.size().height() / 2))
+        elif stack_side in [NodeSocketItem.STACK_LEFT, NodeSocketItem.STACK_RIGHT]:
+            pass
+
 class NodeItem(QtGui.QGraphicsItem):
     def __init__(self, node):      
         QtGui.QGraphicsItem.__init__(self)
         self.node = node
+        self._inputs = []
+        self._outputs = []
              
         if self.node.iconName():
             self.icon = QtGui.QIcon(self.node.iconName())
         else:
             self.icon = None
         
+        self.setAcceptHoverEvents(True)
+        self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
         self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+
+        # create input sockets
+        for socket in [1]:
+            socket_item = NodeSocketItem(self, socket_type=NodeSocketItem.INPUT_SOCKET, stack_side=NodeSocketItem.STACK_TOP)
+            self._inputs.append(socket_item)
+
+        # create output sockets
+        for socket in [1]:
+            socket_item = NodeSocketItem(self,  socket_type=NodeSocketItem.OUTPUT_SOCKET, stack_side=NodeSocketItem.STACK_BOTTOM)
+            self._outputs.append(socket_item)
 
     def autoPlace(self):
         scene = self.scene()
@@ -61,39 +130,62 @@ class NodeItem(QtGui.QGraphicsItem):
         self.setPos(self.node.pos_x, self.node.pos_y)
 
     def paint(self, painter, option, widget=None):
-        pen = QtGui.QPen()
-
+        device_scale_factor = 1.0 / painter.deviceTransform().m11()
         
+        if painter.deviceTransform().m11() > 0.75:
+            [socket.show() for socket in self.childItems()]
+        else:
+            [socket.hide() for socket in self.childItems()]
+
+        pen = QtGui.QPen()
         painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
         painter.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
 
-        device_transfrom = 1.0 / painter.deviceTransform().m11()
-        node_rect = QtCore.QRectF(-20+device_transfrom,-5+device_transfrom,40 - 2*device_transfrom,10 - 2 * device_transfrom)
-        node_outline_rect = QtCore.QRectF(-20, -5, 40, 10)
+        node_rect = self.boundingRect().adjusted(device_scale_factor, device_scale_factor, -device_scale_factor, -device_scale_factor)
+        node_outline_rect = self.boundingRect()
         node_color = QtGui.QColor(160, 160, 160)
         if option.state & QtGui.QStyle.State_Selected:
             node_color = QtGui.QColor(196, 196, 196)
-            # draw selection border
-            border_width = 2.0 *device_transfrom
-            painter.fillRect(QtCore.QRectF(-20 - border_width ,-5 - border_width,40 + border_width * 2 ,10 + border_width * 2), QtGui.QColor(250, 190, 96))
+            # Draw selection border
+            painter.fillPath(self.outlinePath(painter), QtGui.QBrush(QtGui.QColor(250, 190, 64)))
 
         painter.fillRect(node_outline_rect, QtGui.QColor(16, 16, 16))
         painter.fillRect(node_rect, node_color)
 
-
         ## Paint icon if there is one
-        icon_size = int(max(min(8 / device_transfrom, 64), 8))
-        if self.icon and icon_size >= 8:
-            print "icon size %s" % icon_size
+        icon_size = next_greater_power_of_2(int(max(min(8 / device_scale_factor, 64), 8)))
+        if self.icon and icon_size > 8:
             pixmap = self.icon.pixmap(icon_size, icon_size)
-            painter.drawPixmap(-4, -4, 8, 8, pixmap)
-            #self.icon.paint(painter, QtCore.QRect(-4,-4,18,18))
+            painter.drawPixmap(-3, -3, 6, 6, pixmap)
 
-        painter.setPen(QtGui.QColor(128, 128, 128))
-        painter.drawText(24, 0, self.node.name())
+        font = painter.font()
+        font.setPointSize(4)
+        painter.setFont(font)
+        painter.setPen(QtGui.QColor(192, 192, 192))
+        painter.drawText(self.size().width() / 2 + 1, 1, self.node.name())
 
     def boundingRect(self):
-        return QtCore.QRectF(-20,-5,40,10)
+        socket_width = self.size().width()
+        socket_height = self.size().height()
+        return QtCore.QRectF(-socket_width/2, -socket_height/2, socket_width, socket_height)
+
+    def outlinePath(self, painter):
+        device_transfrom = 1.0 / painter.deviceTransform().m11()
+        border_width = 2.0 *device_transfrom
+        path = QtGui.QPainterPath()
+        path.addRect(self.boundingRect().adjusted(-border_width, -border_width, border_width, border_width))
+        border_width = 3.0 *device_transfrom
+        for child_item in self.childItems():
+            if child_item.isVisible():
+                child_path = QtGui.QPainterPath()
+                child_rect = child_item.mapRectToParent(child_item.boundingRect()).adjusted(-border_width, -border_width, border_width, border_width)
+                child_path.addRect(child_rect)
+                path += child_path
+
+        return path
+
+    def size(self):
+        return QtCore.QSizeF(38, 10)
 
     def itemChange(self, change, value):
         if change == QtGui.QGraphicsItem.ItemSelectedChange:
@@ -108,16 +200,22 @@ class NodeItem(QtGui.QGraphicsItem):
 
         elif change == QtGui.QGraphicsItem.ItemPositionChange:
             # snap to grid code here
-            print "Item moved"
+            new_pos = value.toPointF()
+            new_pos.setX(0)
+            print "ItemPositionChange %s" % new_pos
+            value = QtCore.QVariant(new_pos)
+            #return new_pos
 
         return super(NodeItem, self).itemChange(change, value)
 
+    def contextMenuEvent(self, event):
+        print "Context menu"
 
 class NodeFlowScene(QtGui.QGraphicsScene):
     def __init__(self, parent=None):      
         QtGui.QGraphicsScene.__init__(self, parent) 
-        self.gridSizeWidth = 180
-        self.gridSizeHeight = 80 
+        self.gridSizeWidth = 60
+        self.gridSizeHeight = 30 
         self.zoomLevel = 1.0
 
         self.setSceneRect(-100000, -100000, 200000, 200000)
@@ -142,7 +240,7 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         self.zoomLevel *= zoomFactor
 
     def drawBackground(self, painter, rect):
-        painter.fillRect(rect, QtGui.QColor(48, 48, 48))
+        painter.fillRect(rect, QtGui.QColor(42, 42, 42))
 
         if self.zoomLevel > 0.1:
             # Draw grid
@@ -167,7 +265,8 @@ class NodeFlowScene(QtGui.QGraphicsScene):
             painter.drawLines(lines)
 
     def drawForeground(self, painter, rect):
-        painter.drawText(rect, "Network type name")
+        #painter.drawText(rect, "Network type name")
+        pass
 
     def mousePressEvent(self, event):
         picked_item = self.itemAt(event.scenePos())
@@ -183,7 +282,7 @@ class NodeFlowScene(QtGui.QGraphicsScene):
 
     def mouseDoubleClickEvent(self, event):
         picked_item = self.itemAt(event.scenePos())
-        self.buildNetworkLevel(picked_item.node)
+        self.buildNetworkLevel(picked_item.node.path())
 
 
 class NetworkViewWidget(QtGui.QGraphicsView):

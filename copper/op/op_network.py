@@ -61,14 +61,11 @@ class OP_Network(OP_Node):
 	def engine(self):
 		return self.__engine__		
 
-	def nodes(self):
-		return [self.__node_dict__[node_name] for node_name in self.__node_dict__]
-
 	def parent(self):
 		return self.__parent__	
 
 	def children(self):
-		return self.nodes()
+		return [self.__node_dict__[node_name] for node_name in self.__node_dict__]
 
 	def inputs(self):
 		return self.__inputs__
@@ -91,7 +88,7 @@ class OP_Network(OP_Node):
 		except:
 			raise
 
-	def has_inputs(self):
+	def hasInputs(self):
 		if len(self.__inputs__) > 0:
 			return True
 		else:
@@ -156,14 +153,28 @@ class OP_Network(OP_Node):
 	def name(self):
 		return self._name	
 
+	def isRoot(self):
+		False
+
 	def path(self):
+		"""returns path to this node as a string eg. /obj/geo1/file1"""
 		if self.parent():
 			if self.parent().parent():
 				return "%s/%s" % (self.parent().path(), self.name())
 			else:	
 				return "/%s" % self.name()
 		else:	
-			return "/"		
+			return "/"
+
+	def pathAsNodeList(self):
+		"""returns path to this node as a list of nodes"""
+		if not self.isRoot():
+			path_list = self.parent().pathAsNodeList()
+			path_list += [self]
+		else:
+			return []
+
+		return path_list
 
 	def parm(self, parm_path):
 		if parm_path[0] == "/":
@@ -199,7 +210,7 @@ class OP_Network(OP_Node):
 			return self.root()
 
 		path_list = filter(lambda a: a != '', path.split("/"))
-		if path[0] == "/":
+		if path[0] == "":
 			# traverse from root
 			return self.root().traverse(path_list)
 		else:	

@@ -21,6 +21,9 @@ class ROP_Node(OP_Network):
 		]
 		return templates
 
+	def renderFrame(self, frame):
+		raise NotImplementedError
+
 	def render(self, frame_range=None):
 		if frame_range:
 			f1 = frame_range[0]
@@ -32,4 +35,9 @@ class ROP_Node(OP_Network):
 			f3 = self.parm("f3").evalAsInt()
 		
 		for frame in range(f1, f2, f3):
-			self.renderFrame(frame)
+			try:
+				self.renderFrame(frame)
+			except Exception as e:
+				print e.__doc__
+				print e.message
+				return

@@ -40,7 +40,7 @@ class ParametersWidget(QtGui.QWidget):
         self.setMinimumHeight(160)
 
         self.parm_box = QtGui.QVBoxLayout(self)
-        self.parm_box.setSpacing(2)
+        self.parm_box.setSpacing(0)
         self.parm_box.setContentsMargins(0, 0, 0, 0)
 
         no_op_label = QtGui.QLabel("No Operator Selected")
@@ -53,19 +53,21 @@ class ParametersWidget(QtGui.QWidget):
         self.parm_box.addStretch(1)
 
         #Container Widget        
-        widget = QtGui.QWidget(self)
-
-        widget.setLayout(self.parm_box)
-        widget.setObjectName("Parameters")
+        self.widget = QtGui.QWidget(self)
+        self.widget.setLayout(self.parm_box)
+        self.widget.setObjectName("Parameters")
 
         self.scroll = QtGui.QScrollArea()
         self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setWidget(widget)
+        self.scroll.setWidget(self.widget)
 
         self.header_bar = QtGui.QHBoxLayout()
+        self.header_bar.setSpacing(2)
+        self.header_bar.setContentsMargins(0, 0, 0, 0)
 
         self.vbox = QtGui.QVBoxLayout()
+        self.vbox.setSpacing(0)
         self.vbox.setContentsMargins(0, 0, 0, 0)
 
         self.vbox.addLayout(self.header_bar)
@@ -78,7 +80,7 @@ class ParametersWidget(QtGui.QWidget):
     def nodeSelected(self, node_path = None):
         if node_path == "/":
             return 
-            
+
         node = engine.node(str(node_path))
         
         # remove old parms widgets

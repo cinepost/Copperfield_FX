@@ -92,6 +92,7 @@ class NodeSocketItem(QtGui.QGraphicsItem):
         elif stack_side in [NodeSocketItem.STACK_LEFT, NodeSocketItem.STACK_RIGHT]:
             pass
 
+
 class NodeItem(QtGui.QGraphicsItem):
     def __init__(self, node):      
         QtGui.QGraphicsItem.__init__(self)
@@ -149,8 +150,17 @@ class NodeItem(QtGui.QGraphicsItem):
             # Draw selection border
             painter.fillPath(self.outlinePath(painter), QtGui.QBrush(QtGui.QColor(250, 190, 64)))
 
+        # Draw node box itself
         painter.fillRect(node_outline_rect, QtGui.QColor(16, 16, 16))
         painter.fillRect(node_rect, node_color)
+
+        # Draw error pattern if need
+        if self.node.errors():
+            error_brush = QtGui.QBrush(QtCore.Qt.red, QtCore.Qt.BDiagPattern)
+            matrix = error_brush.matrix()
+            matrix.scale(device_scale_factor * 0.75, device_scale_factor * 0.75)
+            error_brush.setMatrix(matrix)
+            painter.fillRect(node_rect, error_brush)
 
         ## Paint icon if there is one
         icon_size = next_greater_power_of_2(int(max(min(8 / device_scale_factor, 64), 8)))
@@ -314,14 +324,18 @@ class NetworkViewWidget(QtGui.QGraphicsView):
 
         ## Connect engine signals
         signals.copperNodeCreated[str].connect(self.copperNodeCreated)
+        signals.copperNodeSelected[str].connect(self.copperNodeSelected)
 
     @QtCore.pyqtSlot(str)
     def copperNodeCreated(self, node_path):
-        print "Network View node created %s" % node_path
         node = engine.node(str(node_path))
         if node:
             if self.network_level == node.parent().path():
                 self.scene.addNode(str(node_path))
+
+    @QtCore.pyqtSlot(str)
+    def copperNodeSelected(self, node_path):
+        pass
 
     def setNetworkLevel(self, node_path):
         self.network_level = node_path

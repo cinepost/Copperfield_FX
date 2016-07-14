@@ -23,6 +23,7 @@ class TreeViewPanel(BasePanel):
 class TreeViewWidget(QtGui.QTreeWidget):
     def __init__(self, parent=None):      
         QtGui.QTreeWidget.__init__(self, parent)
+        self.nodes_map = {}
         self.setDragEnabled(True)
         self.setObjectName("QTreeView")
         self.current_node = None
@@ -40,7 +41,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
 
         ### Connect signals from UI
         signals.copperNodeCreated.connect(self.rebuildNodeTree)
-        signals.copperNodeSelected[str].connect(self.selectNode)
+        signals.copperNodeSelected[str].connect(self.nodeSelected)
 
         ### Connect internal signals
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
@@ -55,6 +56,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
             root_item.setIcon(0, QtGui.QIcon(engine.iconName()))
             root_item.setText(0, "/")
             root_item.setText(1, "/")
+            self.nodes_map["/"] = root_item
             self.createNodeTree(root_item, "/")
         else:
             node = engine.node(node_path)
@@ -68,6 +70,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
 
                     item.setText(0, child_node.name())
                     item.setText(1, child_node.path())
+                    self.nodes_map[child_node.path()] = item
                     if child_node.children():
                         self.createNodeTree(item, child_node.path())  
 
@@ -78,18 +81,19 @@ class TreeViewWidget(QtGui.QTreeWidget):
     def handleShowInViewer(self, node_path):
         signals.copperSetCompositeViewNode[str].emit(node_path)
 
-    '''
-    Rebuilds node tree upon recieving signals like copperNodeCreated or copperNodeChanged
-    '''
     @QtCore.pyqtSlot()   
     def rebuildNodeTree(self):
+        '''Rebuilds node tree upon recieving signals like copperNodeCreated or copperNodeChanged'''
         self.clear()
+        self.nodes_map = {}
         self.createNodeTree(self)
 
     @QtCore.pyqtSlot(str)   
-    def selectNode(self, node_path):
-        self.clear()
-        self.createNodeTree(self)
+    def nodeSelected(self, node_path):
+        for item in self.selectedItems():
+            item.setSelected(False)
+        item = self.nodes_map[str(node_path)]
+        item.setSelected(True)
 
     @QtCore.pyqtSlot()   
     def menuContextMenu(self, point):

@@ -129,6 +129,9 @@ class OP_Network(OP_Node):
 	def evalParm(self, parm_path):
 		return self.parm(parm_path).eval()
 
+	def errors(self):
+		return
+
 	def getBase1Name(self, base_name):
 		""" look for the last sequence of number(s) in a string and increment """
 		m = lastNum.search(base_name)

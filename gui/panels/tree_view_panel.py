@@ -34,7 +34,9 @@ class TreeViewWidget(QtGui.QTreeWidget):
         vbox.setContentsMargins(0, 0, 0, 0)
         
         self.header().close()
-        self.createNodeTree(self, engine.node("/")) 
+
+        # build tree from root
+        self.createNodeTree(self)
 
         ### Connect signals from UI
         signals.copperNodeCreated.connect(self.rebuildNodeTree)
@@ -44,19 +46,30 @@ class TreeViewWidget(QtGui.QTreeWidget):
         self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
         self.itemClicked.connect(self.handleItemClicked)
 
-    def createNodeTree(self, parent, node=None):
-        if node:
-            for cur_node in node.children():
-                item = QtGui.QTreeWidgetItem(parent)
-                item.setExpanded(True)
+    def createNodeTree(self, parent, node_path=None):
+        """Builds node tree from node"""
+        if not node_path:
+            # create root node item
+            root_item = QtGui.QTreeWidgetItem(self)
+            root_item.setExpanded(True)
+            root_item.setIcon(0, QtGui.QIcon(engine.iconName()))
+            root_item.setText(0, "/")
+            root_item.setText(1, "/")
+            self.createNodeTree(root_item, "/")
+        else:
+            node = engine.node(node_path)
+            if node:
+                for child_node in node.children():
+                    item = QtGui.QTreeWidgetItem(parent)
+                    item.setExpanded(True)
 
-                if cur_node.iconName():
-                    item.setIcon(0, QtGui.QIcon(cur_node.iconName()))
+                    if child_node.iconName():
+                        item.setIcon(0, QtGui.QIcon(child_node.iconName()))
 
-                item.setText(0, cur_node.name())
-                item.setText(1, cur_node.path())
-                if cur_node.children():
-                    self.createNodeTree(item, cur_node)  
+                    item.setText(0, child_node.name())
+                    item.setText(1, child_node.path())
+                    if child_node.children():
+                        self.createNodeTree(item, child_node.path())  
 
     def handleItemClicked(self, item):
         selected_node_path = str(item.text(1))
@@ -65,19 +78,18 @@ class TreeViewWidget(QtGui.QTreeWidget):
     def handleShowInViewer(self, node_path):
         signals.copperSetCompositeViewNode[str].emit(node_path)
 
-    
     '''
     Rebuilds node tree upon recieving signals like copperNodeCreated or copperNodeChanged
     '''
     @QtCore.pyqtSlot()   
     def rebuildNodeTree(self):
         self.clear()
-        self.createNodeTree(self, engine.node("/"))
+        self.createNodeTree(self)
 
     @QtCore.pyqtSlot(str)   
     def selectNode(self, node_path):
         self.clear()
-        self.createNodeTree(self, engine.node("/"))
+        self.createNodeTree(self)
 
     @QtCore.pyqtSlot()   
     def menuContextMenu(self, point):

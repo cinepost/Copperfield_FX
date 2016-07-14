@@ -76,6 +76,9 @@ class ParametersWidget(QtGui.QWidget):
 
   
     def nodeSelected(self, node_path = None):
+        if node_path == "/":
+            return 
+            
         node = engine.node(str(node_path))
         
         # remove old parms widgets

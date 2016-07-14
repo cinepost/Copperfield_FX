@@ -7,7 +7,8 @@ from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
 
 from copper import settings
-from copper.op.node_type_category import ManagerNodeTypeCategory
+from copper.op.node_type import NodeTypeBase
+from copper.op.node_type_category import DirectorNodeTypeCategory, ManagerNodeTypeCategory
 from copper.op.base import OpRegistry
 from copper.op.op_network import OP_Network
 from copper.managers import OBJ_Network, COP_Network, ROP_Network
@@ -28,8 +29,14 @@ class Copper_Engine(OP_Network):
 	parmTemplateType = ParmTemplateType
 	stringParmType = StringParmType
 
+	class NodeType(NodeTypeBase):
+		icon_name = 'NETWORKS_root'
+		type_name = 'root'
+		category = DirectorNodeTypeCategory
+
 	def __init__(self, device_type="GPU", device_index=None, cl_path=""): # "cpu" or "gpu" here or "ALL"
 		super(Copper_Engine, self).__init__(self, None) # base node is the engine itself, therefore it has no parent
+		self._name = "/"
 		self.__time__= 0
 		self.__frame__= 0
 		self.__fps__ = 25.0

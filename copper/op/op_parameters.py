@@ -37,17 +37,6 @@ class OP_Parameters(object):
 	def addSpareParmFolder(folder_name, in_folder=[]):
 		pass
 
-	def parms(self):
-		return self.__parms__.values()
-
-	def parmGroups(self):
-		return self.__parm_groups__
-
-	def setParms(self, parameters):
-		self.cooked = False
-		for parm_name in parameters:
-			self.__parms__[parm_name].set(parameters[parm_name])
-	
 	def parm(self, parm_path):
 		if parm_path[0] == "/":
 			# get parameter by path
@@ -57,6 +46,20 @@ class OP_Parameters(object):
 		else:
 			# get this node parameter by name 
 			return self.__parms__.get(parm_path)
+
+	def parms(self):
+		return self.__parms__.values()
+
+	def parmGroups(self):
+		return self.__parm_groups__
+
+	def parmTemplates(self):
+		return []
+
+	def setParms(self, parameters):
+		self.cooked = False
+		for parm_name in parameters:
+			self.__parms__[parm_name].set(parameters[parm_name])
 
 	def evalParm(self, parm_path):
 		return self.parm(parm_path).eval()							

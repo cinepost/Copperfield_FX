@@ -80,6 +80,9 @@ class PathBarWidget(QtGui.QFrame):
         return self.pinned
 
     def nodeSelected(self, node_path=None):
+        if node_path == "/":
+            return
+
         if self.buildPathBar(node_path):
             if self.history:
                 if self.history[-1] == node_path:
@@ -91,34 +94,38 @@ class PathBarWidget(QtGui.QFrame):
             self.btn_back.setEnabled(True)
 
     def buildPathBar(self, node_path=None):
-        node = engine.node(node_path).parent()
-        if node.isRoot():
-            node = engine.node(node_path)
-
+        node = engine.node(node_path)
         if not node:
             return False
-
-        for i in reversed(range(self.path_layout.count())): 
-            self.path_layout.itemAt(i).widget().deleteLater()
-
-        btn = None
-
-        path_nodes = node.pathAsNodeList()
-
-        for node in path_nodes:
+        elif node.isRoot():
             btn = QtGui.QPushButton()
-            btn.setIcon(QtGui.QIcon(node.iconName()))
-            btn.setText(node.name())
-            btn.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+        else:
+            parent = node.parent()
+            if parent.isRoot():
+                parent = node
 
-            menu = QtGui.QMenu()
-            menu.addAction('This is Action 1')
-            menu.addAction('This is Action 2')
-            btn.setMenu(menu)
+            for i in reversed(range(self.path_layout.count())): 
+                self.path_layout.itemAt(i).widget().deleteLater()
 
-            self.path_layout.addWidget(btn)
+            btn = None
 
-        btn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+            path_nodes = parent.pathAsNodeList()
+
+            for node in path_nodes:
+                btn = QtGui.QPushButton()
+                btn.setIcon(QtGui.QIcon(node.iconName()))
+                btn.setText(node.name())
+                btn.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+
+                menu = QtGui.QMenu()
+                menu.addAction('This is Action 1')
+                menu.addAction('This is Action 2')
+                btn.setMenu(menu)
+
+                self.path_layout.addWidget(btn)
+
+        if btn:
+            btn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
 
         return True
 

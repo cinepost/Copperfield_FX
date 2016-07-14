@@ -43,6 +43,10 @@ class NodeTypeCategory(object):
 		return cls.type_name
 
 
+class DirectorNodeTypeCategory(NodeTypeCategory):
+	cat_name = 'Director'
+	type_name = 'DIR'
+
 class ManagerNodeTypeCategory(NodeTypeCategory):
 	cat_name = 'Manager'
 	type_name = 'MGR'

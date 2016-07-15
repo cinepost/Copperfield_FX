@@ -95,8 +95,10 @@ class Copper_Engine(OP_Network):
 			self.network_cb()	 	
 
 	def load_program(self, filename):
-		of = open("%s/%s" % (os.path.expandvars(self.cl_path), filename), 'r')
-		return cl.Program(self.openclContext(), of.read()).build()
+		program_file = open("%s/%s" % (os.path.expandvars(self.cl_path), filename), 'r')
+		program_code = program_file.read()
+		program_file.close()
+		return cl.Program(self.openclContext(), program_code).build()
 
 	@property 
 	def have_gl(self):
@@ -226,7 +228,8 @@ class Copper_Engine(OP_Network):
 		out = self.node("out")
 
 		## Create composite output driver
-		out.createNode("comp")
+		out_comp = out.createNode("comp")
+		out_comp.setParms({"coppath": "/img/img1/file1", "copoutput": "/Users/max/Desktop/copper_test/img_test.jpg", "f1": 0, "f2": 25, "f3":1})
 
 		## First get image network
 		img = self.node("img")
@@ -246,7 +249,6 @@ class Copper_Engine(OP_Network):
 		file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/mythbuster.jpg"})
 
 		## Create blur node
-		#blur1 = comp.createNode("blur")
-		#blur1.setInput(0, file1)
-		#blur1.setParms({"blursize":0.01, "blursizey": 0.5, "useindepy" : True}) 
-
+		blur1 = comp.createNode("blur")
+		blur1.setInput(0, file1)
+		blur1.setParms({"blursize":0.01, "blursizey": 0.05, "useindepy" : True}) 

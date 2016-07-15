@@ -22,6 +22,7 @@ class COP2_File(COP2_Node):
 	def __init__(self, engine, parent):
 		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
+		print "Program jpg %s" % self.program.run_jpg
 
 	def parmTemplates(self):
 		templates = super(COP2_File, self).parmTemplates()
@@ -70,7 +71,6 @@ class COP2_File(COP2_Node):
 		self.devInBufferR = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
 		self.devInBufferG = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
 		self.devInBufferB = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
-
 
 	def loadEXR(self, filename):
 		import OpenEXR
@@ -133,7 +133,7 @@ class COP2_File(COP2_Node):
 
 		if os.path.isfile(imagefile):	 
 			ext = imagefile.split(".")[-1]
-			if ext in ["jpg","JPEG","JPG","jpeg","png","PNG"]:
+			if ext.lower() in ["jpg", "jpeg", "png"]:
 				self.loadJPG(imagefile)
 				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
 				exec_evt = self.program.run_jpg(self.engine.openclQueue(), (self.image_width, self.image_height), None, 
@@ -148,7 +148,7 @@ class COP2_File(COP2_Node):
 				)
 				exec_evt.wait()
 
-			elif ext in ["exr", "EXR"]:
+			elif ext.lower() == "exr":
 				self.loadEXR(imagefile)
 				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
 				exec_evt = self.program.run_exr(self.engine.openclQueue(), (self.image_width, self.image_height), None, 
@@ -167,14 +167,6 @@ class COP2_File(COP2_Node):
 			if self.parm("missingfr").eval() is 4:
 				raise BaseException("Image file %s does not exist !!!" % imagefile)
 			else:
-				# try to find sequence to get resolution frame resolution if
-				file_name_pattern = self.parm("filename").eval()
-
-				self.image_width = self.parm("size1").eval()
-				self.image_height = self.parm("size2").eval()
-				if 0 in [self.width, self.height]:
-					raise BaseException("Image file %s does not exist !!!" % imagefile)
-
 				logging.warning("Image file %s does not found !!! Using BLACK frame instead." % imagefile)	
 				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.image_width, self.image_height), hostbuf=numpy.zeros(self.image_width * self.image_height * 4, dtype = numpy.float32))
 				

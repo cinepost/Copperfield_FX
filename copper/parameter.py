@@ -174,7 +174,10 @@ class CopperParameter(object):
 		#raise BaseException("Unimplemented evalAtTime(self, time) in %s" % self)
 
 	def evalAtFrame(self, frame):
-		raise BaseException("Unimplemented evalAtFrame(self, frame) in %s" % self)	
+		raise NotImplementedError
+
+	def evalAsStringAtFrame(self, frame):
+		return self.evalAsString()
 
 	def unexpandedString(self):
 		raise BaseException("Unimplemented unexpandedString(self) in %s" % self)

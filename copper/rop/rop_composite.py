@@ -1,3 +1,7 @@
+import sys
+import numpy
+from PIL import Image
+
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import DriverNodeTypeCategory
 from copper.rop.rop_node import ROP_Node
@@ -26,28 +30,28 @@ class ROP_Composite(ROP_Node):
 
 	@classmethod
 	def label(cls):
-		return "Composite"	
+		return "Composite"
 
-	def renderToFile(self, node_path, filename, frame = None):
-		node = self.node(node_path)
+	def renderFrame(self, frame=None):
+		if frame:
+			output_node = self.engine.node(self.parm("coppath").evalAsString())
+			self._renderToFile(output_node, self.parm("copoutput").evalAsStringAtFrame(frame), frame=frame)
+
+	def _renderToFile(self, node, filename, frame = None):
 		if frame:
 			render_frame = frame
 		else:
 			render_frame = self.frame()
 
 		
-		print "Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name)
+		print "Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), filename)
 		buff = node.getOutHostBuffer()
-		image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
+
+		image = Image.frombuffer('RGBA', node.shape(), buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
 
 		if "lin" in sys.platform :
 			# Flip image vertically
 			image = image.transpose(Image.FLIP_TOP_BOTTOM)
 
-		image.save(render_file_name, 'JPEG', quality=100)
-
-	def renderFrame(self, frame=None):
-		if frame:
-			output_node_path = self.engine.node(self.parm("coppath").evalAsString()).path()
-			self.renderToFile(output_node_path, self.parm("copoutput").evalAsStringAtFrame(frame), frame=frame)
+		image.save(filename, 'JPEG', quality=100)
             

@@ -188,13 +188,14 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
             # Aquire OpenGL texture object
             cl.enqueue_acquire_gl_objects(engine.openclQueue(), [node_gl_texture])
-
+            engine.openclQueue().finish()
+            
             # copy OpenCL buffer to OpenGl texture
             cl.enqueue_copy_image(engine.openclQueue(), cl_image_buffer, node_gl_texture, (0,0), (0,0), (self.node.xRes(), self.node.yRes()), wait_for=None)
+            engine.openclQueue().finish()
 
             # Release OpenGL texturte object
             cl.enqueue_release_gl_objects(engine.openclQueue(), [node_gl_texture])
-
             engine.openclQueue().finish()
 
     @QtCore.pyqtSlot(str)    

@@ -1,5 +1,7 @@
 from PyQt4 import QtGui, QtCore
 
+from collapsable_widget import CollapsableWidget
+
 class TimeLine(QtGui.QGraphicsScene):
     
     def __init__(self, parent=None):      
@@ -13,6 +15,7 @@ class TimeLine(QtGui.QGraphicsScene):
         self.cursor = QtGui.QGraphicsRectItem(self.cursor_pos_x, 0, self.cursor_width, 26)
         self.cursor.setX(self.cursor_pos_x)
         self.addItem(self.cursor)
+        self.setSceneRect(-1000, -1, 2000, 2)
    
     def mouseMoveEvent(self, event):
         if self.is_mouse_moves_cursor(event): 
@@ -39,55 +42,48 @@ class TimeLine(QtGui.QGraphicsScene):
 
         return False            
 
-class TimeLineWidget(QtGui.QWidget):
-    in_frame = 0
-    out_frame = 250
-    cursor = 0.0
+class TimeLineWidget(CollapsableWidget):
+    def __init__(self, parent=None):
+        CollapsableWidget.__init__(self, parent)
+        
+        self.start_frame = 0
+        self.end_frame = 250
+        self.current_frame = 0.0
 
-    def __init__(self, parent=None):      
-        super(TimeLineWidget, self).__init__(parent)
         self.isPressed = False
-        self.setStyleSheet("background-color: rgb(164, 164, 164); border:1px solid rgb(128, 128, 128); border-radius: 1px;")
         self.initUI()
         
     def initUI(self):
-        self.setFixedHeight(30)
         
         # Left buttons
-        buttons_box = QtGui.QHBoxLayout()
-        buttons_box.setContentsMargins(0, 0, 0, 0)
-        buttons_box.setSpacing(2)
+        self.buttons_layout = QtGui.QHBoxLayout()
+        self.buttons_layout.setContentsMargins(0, 0, 0, 0)
+        self.buttons_layout.setSpacing(0)
         
-        prev_key_btn = QtGui.QToolButton()
-        prev_key_btn.setIcon(QtGui.QIcon('icons/glyphicons_170_step_backward.png'))
-        prev_key_btn.setIconSize(QtCore.QSize(24,24))
-        prev_key_btn.setStatusTip('Step back one frame')
+        self.prev_key_btn = QtGui.QPushButton()
+        self.prev_key_btn.setCheckable(True)
+        self.prev_key_btn.setIcon(QtGui.QIcon('icons/glyphicons_170_step_backward.png'))
+        self.prev_key_btn.setStatusTip('Step back one frame')
 
-        play_btn = QtGui.QToolButton()
-        play_btn.setIcon(QtGui.QIcon('icons/glyphicons_173_play.png'))
-        play_btn.setIconSize(QtCore.QSize(24,24))
-        play_btn.setStatusTip('Play')
+        self.play_btn = QtGui.QPushButton()
+        self.play_btn.setCheckable(True)
+        self.play_btn.setIcon(QtGui.QIcon('icons/glyphicons_173_play.png'))
+        self.play_btn.setStatusTip('Play')
 
-        next_key_btn = QtGui.QToolButton()
-        next_key_btn.setIcon(QtGui.QIcon('icons/glyphicons_178_step_forward.png'))
-        next_key_btn.setIconSize(QtCore.QSize(24,24))
-        next_key_btn.setStatusTip('Step forward one frame')
+        self.next_key_btn = QtGui.QPushButton()
+        self.next_key_btn.setCheckable(True)
+        self.next_key_btn.setIcon(QtGui.QIcon('icons/glyphicons_178_step_forward.png'))
+        self.next_key_btn.setStatusTip('Step forward one frame')
 
-        buttons_box.addWidget(prev_key_btn)
-        buttons_box.addWidget(play_btn)
-        buttons_box.addWidget(next_key_btn)
+        self.buttons_layout.addWidget(self.prev_key_btn)
+        self.buttons_layout.addWidget(self.play_btn)
+        self.buttons_layout.addWidget(self.next_key_btn)
 
         # Time line
-        timelinebox = QtGui.QHBoxLayout()
-        timeline = TimeLine(self)
-        timeline = QtGui.QGraphicsView(self)
-        timeline.setScene(TimeLine(self))
-        timelinebox.addWidget(timeline)
+        self.time_line = QtGui.QGraphicsView(self)
+        self.time_line.setFixedHeight(30)
+        self.time_line.setScene(TimeLine(self))
 
-        # Set main layout
-        hbox = QtGui.QHBoxLayout()
-        hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.addLayout(buttons_box)
-        hbox.addLayout(timelinebox)
 
-        self.setLayout(hbox)       
+        self.addLayout(self.buttons_layout)
+        self.addWidget(self.time_line)      

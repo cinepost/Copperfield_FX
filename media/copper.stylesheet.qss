@@ -1,5 +1,11 @@
-
 /* Main Window */
+QMainWindow {
+	padding: 0;
+	margin: 0;
+	border: none;
+}
+
+
 QMainWindow QToolBar {
 	border-bottom: 1px solid #000;
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #444, stop:1 #363636);
@@ -16,6 +22,8 @@ QToolButton, QPushButton {
 	width: 16px;
 	height: 16px;
 	padding: 2px;
+	qproperty-iconSize: 16px;
+	outline: none;
 }
 
 QToolBar{
@@ -120,6 +128,7 @@ QPushButton#btn_min {
 	border-bottom: none;
 	border-right: 1px solid #222;
 	outline: 0;
+	qproperty-iconSize: 6px;
 }
 
 QToolButton#file {

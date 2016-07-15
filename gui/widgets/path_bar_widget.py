@@ -53,7 +53,7 @@ class PathBarWidget(QtGui.QFrame):
     def historyGoBack(self):
         if self.history_index > 0:
             self.history_index -= 1
-            print "History back to: %s with index %s" % (self.history[self.history_index], self.history_index)
+            #print "History back to: %s with index %s" % (self.history[self.history_index], self.history_index)
             self.btn_frwd.setEnabled(True)
             if self.history_index == 0:
                 self.btn_back.setEnabled(False)
@@ -63,7 +63,7 @@ class PathBarWidget(QtGui.QFrame):
     def historyGoForward(self):
         if self.history_index < (len(self.history) - 1):
             self.history_index += 1
-            print "History fwd to: %s with index %s" % (self.history[self.history_index], self.history_index)
+            #print "History fwd to: %s with index %s" % (self.history[self.history_index], self.history_index)
             self.btn_back.setEnabled(True)
             if self.history_index == (len(self.history) - 1):
                 self.btn_frwd.setEnabled(False)
@@ -90,7 +90,7 @@ class PathBarWidget(QtGui.QFrame):
 
             self.history += [node_path]
             self.history_index += 1
-            print "History added: %s at index %s" % (node_path, self.history_index)
+            #print "History added: %s at index %s" % (node_path, self.history_index)
             self.btn_back.setEnabled(True)
 
     def buildPathBar(self, node_path=None):

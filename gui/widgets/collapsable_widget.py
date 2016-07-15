@@ -34,8 +34,11 @@ class CollapsableWidget(QtGui.QFrame):
 	def addWidget(self, widget):
 		self.box_layout.addWidget(widget)
 
-	def addLayout(self, widget):
+	def addLayout(self, layout):
 		self.box_layout.addLayout(layout)
+
+	def addStretch(self, stretch):
+		self.box_layout.addStretch(stretch)
 
 	def setArrow(self):
 		self.button_min.setIcon(QtGui.QIcon("icons/main/min-right.svg"))

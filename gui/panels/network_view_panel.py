@@ -37,7 +37,13 @@ class NetworkViewControls(CollapsableWidget):
     def __init__(self, parent=None):
         CollapsableWidget.__init__(self, parent)
 
-        self.addWidget(QtGui.QLabel("huypizda"))
+        self.snap_to_grid_btn = QtGui.QPushButton()
+        self.snap_to_grid_btn.setCheckable(True)
+        self.snap_to_grid_btn.setIcon(QtGui.QIcon('icons/main/network_view/snap_to_grid.svg'))
+        self.snap_to_grid_btn.setStatusTip('Show/hide grid and enable/disable snapping')
+
+        self.addWidget(self.snap_to_grid_btn)
+        self.addStretch(1)
 
 
 class NodeSocketItem(QtGui.QGraphicsItem):
@@ -99,6 +105,7 @@ class NodeItem(QtGui.QGraphicsItem):
         self.node = node
         self._inputs = []
         self._outputs = []
+        self._selected_indirect = False # this flag shows us that this node selected outside the widget
              
         if self.node.iconName():
             self.icon = QtGui.QIcon(self.node.iconName())
@@ -197,12 +204,27 @@ class NodeItem(QtGui.QGraphicsItem):
     def size(self):
         return QtCore.QSizeF(38, 10)
 
-    def itemChange(self, change, value):
+    def select(self):
+        ''' This method is used to select node when Network View panel recieves signal copperNodeSelected.
+            We need this to avoid signals loop. Because copperNodeSelected signal was fired by other widget, 
+            this copper node is already selected, so we need only update graphics item without sending signal
+            again.
+        '''
+        self._selected_indirect = True
+        for item in self.scene().selectedItems(): item.setSelected(False)
+        self.setSelected(True)
+        self._selected_indirect = False
+
+    def itemChange(self, change, value, direct=True):
+        ''' direct argument shows us that shit node wa selected inside the items scene. Otherwise don't propagate copperNodeSelected signal.
+            Just change item state.
+        '''
         if change == QtGui.QGraphicsItem.ItemSelectedChange:
             if value == True:
                 # do stuff if selected
                 print "Node %s selected!" % self.node.name()
-                signals.copperNodeSelected[str].emit(self.node.path()) 
+                if not self._selected_indirect:
+                    signals.copperNodeSelected[str].emit(self.node.path()) 
             else:
                 # do stuff if not selected
                 print "Node %s not selected!" % self.node.name()
@@ -221,13 +243,15 @@ class NodeItem(QtGui.QGraphicsItem):
     def contextMenuEvent(self, event):
         print "Context menu"
 
+
 class NodeFlowScene(QtGui.QGraphicsScene):
     def __init__(self, parent=None):      
         QtGui.QGraphicsScene.__init__(self, parent) 
+        self.nodes_map = {}
+
         self.gridSizeWidth = 60
         self.gridSizeHeight = 30 
         self.zoomLevel = 1.0
-
         self.setSceneRect(-100000, -100000, 200000, 200000)
 
     @QtCore.pyqtSlot()
@@ -237,6 +261,7 @@ class NodeFlowScene(QtGui.QGraphicsScene):
             if node:
                 node_item= NodeItem(node)
                 self.addItem(node_item)
+                self.nodes_map[node_path] = node_item
                 node_item.autoPlace()
 
     def buildNetworkLevel(self, node_path=None):
@@ -294,6 +319,10 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         picked_item = self.itemAt(event.scenePos())
         self.buildNetworkLevel(picked_item.node.path())
 
+    def selectNode(self, node_path):
+        if node_path in self.nodes_map:
+            self.nodes_map[node_path].select()
+
 
 class NetworkViewWidget(QtGui.QGraphicsView):
     def __init__(self, parent=None):  
@@ -335,7 +364,7 @@ class NetworkViewWidget(QtGui.QGraphicsView):
 
     @QtCore.pyqtSlot(str)
     def copperNodeSelected(self, node_path):
-        pass
+        self.scene.selectNode(str(node_path))
 
     def setNetworkLevel(self, node_path):
         self.network_level = node_path

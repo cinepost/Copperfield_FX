@@ -32,8 +32,10 @@ class Workarea(QtGui.QWidget):
 
         # Create layout and place widgets
         VBox = QtGui.QVBoxLayout()    
+        VBox.setSpacing(0)
         VBox.setContentsMargins(0, 0, 0, 0)
         HBox = QtGui.QHBoxLayout()
+        HBox.setSpacing(0)
         HBox.setContentsMargins(0, 0, 0, 0)
     
 
@@ -53,7 +55,7 @@ class Workarea(QtGui.QWidget):
         panelMgr3.setAllowedPanelTypes([SceneViewPanel, ParametersPanel, CompositeViewPanel, TreeViewPanel, NetworkViewPanel, PythonShellPanel])
         panelMgr3.addNewPaneTabByType(NetworkViewPanel)
         panelMgr3.addNewPaneTabByType(TreeViewPanel)
-        #panelMgr3.addPaneTab(self.pythonShell)
+        #panelMgr3.addNewPaneTabByType(PythonShellPanel)
         panelMgr3.setSizePolicy(QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding))
 
         # Set Up inital splitters layout

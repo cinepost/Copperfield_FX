@@ -113,8 +113,8 @@ class COP2_Node(OP_Network):
 		if bypass_node:
 
 			print "Getting bypass planes from node %s" % bypass_node.path()
-			self.width = bypass_node.getImageWidth()
-			self.height = bypass_node.getImageHeight()
+			self.width = bypass_node.xRes()
+			self.height = bypass_node.yRes()
 			return bypass_node.getCookedPlanes()
 
 		self.cooked = False

@@ -214,6 +214,13 @@ class OP_Network(OP_Node):
 		if not path:
 			return None
 			
+		# check it path is string, if no then try to convert it
+		if not isinstance(path, basestring):
+			try:
+				path = str(path)
+			except:
+				raise
+
 		if path == "/":
 			return self.root()
 

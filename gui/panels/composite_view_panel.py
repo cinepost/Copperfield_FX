@@ -11,6 +11,7 @@ from PIL import Image
 import pyopencl as cl
 
 from copper import engine
+from copper.op.node_type_category import Cop2NodeTypeCategory
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import BasePanel
@@ -36,11 +37,12 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         format.setSampleBuffers(True)
         format.setSamples(16)
         QtOpenGL.QGLWidget.__init__(self, format, parent)
-        #super(CompositeViewWidget, self).__init__(parent)
+
         if not self.isValid():
             raise OSError("OpenGL not supported.")
 
         self.setMouseTracking(True)
+        self.setAcceptDrops(True)
         self.isPressed = False
         self.oldx = 0
         self.oldy = 0
@@ -261,3 +263,18 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
     def mouseReleaseEvent(self, e):
         self.isPressed = False
+
+    def dragEnterEvent(self, event):
+        if event.mimeData().hasFormat("text/plain"):
+            node_path = str(event.mimeData().text())
+            node = engine.node(node_path)
+            if node:
+                if node.type().category().name() == "Cop2":
+                    event.acceptProposedAction()
+
+    def dropEvent(self, event):
+        node_path = event.mimeData().text()
+        signals.copperSetCompositeViewNode.emit(str(node_path))
+        event.acceptProposedAction()
+
+

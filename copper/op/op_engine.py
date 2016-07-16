@@ -2,6 +2,7 @@ import sys, os
 import pyopencl as cl
 import pickle
 import numpy
+import logging
 
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
@@ -67,7 +68,7 @@ class Copper_Engine(OP_Network):
 			print "NO OPEN_CL CAPABLE DEVICE FOUND !!!"
 			exit(1)		
 
-		print "Bundled with ops: %s \n Done." % OpRegistry._registry
+		logging.debug("Bundled with ops: %s \n Done." % OpRegistry._registry)
 
 		# register translators
 		self.translators = {}

@@ -10,17 +10,17 @@ import math
 from copper import engine
 from gui.signals import signals
 from gui.widgets import PathBarWidget, CollapsableWidget
-from base_panel import BasePanel
+from base_panel import NetworkPanel
 
 def next_greater_power_of_2(x):  
     return 2**(x-1).bit_length()
 
-class NetworkViewPanel(BasePanel):
+class NetworkViewPanel(NetworkPanel):
     def __init__(self):  
-        BasePanel.__init__(self, network_controls = True) 
+        NetworkPanel.__init__(self) 
 
         self.network_view_controls = NetworkViewControls(self)
-        self.network_view_widget = NetworkViewWidget(self)
+        self.network_view_widget = NetworkViewWidget(self, self)
 
         self.addWidget(self.network_view_controls)
         self.addWidget(self.network_view_widget)
@@ -28,9 +28,6 @@ class NetworkViewPanel(BasePanel):
     @classmethod
     def panelTypeName(cls):
         return "Network View"
-
-    def nodeSelected(self, node_path = None):
-        pass
 
 
 class NetworkViewControls(CollapsableWidget):
@@ -325,9 +322,9 @@ class NodeFlowScene(QtGui.QGraphicsScene):
 
 
 class NetworkViewWidget(QtGui.QGraphicsView):
-    def __init__(self, parent=None):  
+    def __init__(self, parent, panel):  
         QtGui.QGraphicsView.__init__(self, parent)
-
+        self.panel = panel
         self.setObjectName("network_widget")
 
         self.network_level = "/"
@@ -351,9 +348,9 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         ## As a debug we always set new panel widget to "/"
         self.setNetworkLevel("/obj")
 
-        ## Connect engine signals
-        signals.copperNodeCreated[str].connect(self.copperNodeCreated)
-        signals.copperNodeSelected[str].connect(self.copperNodeSelected)
+        ## Connect panel signals
+        self.panel.signals.copperNodeCreated[str].connect(self.copperNodeCreated)
+        self.panel.signals.copperNodeSelected[str].connect(self.copperNodeSelected)
 
     @QtCore.pyqtSlot(str)
     def copperNodeCreated(self, node_path):

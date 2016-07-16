@@ -7,33 +7,30 @@ import numpy
 import copper
 import math
 
-from copper import engine
 from gui.signals import signals
 from gui.widgets import PathBarWidget
-from base_panel import BasePanel
+from base_panel import NetworkPanel
 
-class SceneViewPanel(BasePanel):
+class SceneViewPanel(NetworkPanel):
     def __init__(self):  
-        BasePanel.__init__(self, network_controls=True) 
+        NetworkPanel.__init__(self) 
 
-        self.scene_view_widget = SceneViewWidget()
+        self.scene_view_widget = SceneViewWidget(self, self)
         self.addWidget(self.scene_view_widget)
 
     @classmethod
     def panelTypeName(cls):
         return "Scene View"
 
-    def nodeSelected(self, node_path = None):
-        pass
-
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent, panel):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)
         format.setSamples(16)
         QtOpenGL.QGLWidget.__init__(self, format, parent)
-        self.width = 1902
+        self.panel = panel
+        self.width = 1920
         self.height = 1200
         self.setMinimumSize(640, 360)
         self.orbit_mode = False

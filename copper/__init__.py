@@ -4,7 +4,7 @@ os.environ["PYOPENCL_NO_CACHE"] = "1"
 
 if not os.environ.get("COPPER_HOME"):
 	cwd = os.getcwd()
-	print "Using current directory %s as $COPPER_HOME !!!" % cwd
+	print "Using current directory %s as $COPPER_HOME" % cwd
 	os.environ["COPPER_HOME"] = cwd
 
 import inspect

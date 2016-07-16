@@ -5,7 +5,6 @@ QMainWindow {
 	border: none;
 }
 
-
 QMainWindow QToolBar {
 	border-bottom: 1px solid #000;
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #444, stop:1 #363636);
@@ -179,27 +178,18 @@ QLabel#info, QLabel#info:hover {
 }
 
 /* Pane Tabs Editor side widget "Plus" button */
-QPushButton#plusButton {
-    image: url("icons/fa/white/svg/plus.svg");
+QPushButton {
     border: none;
     font-weight: bold;
-    width: 12px;
-    height: 12px;
-    padding: 2px;
+    width: 16px;
+    height: 16px;
+    qproperty-iconSize: 14px;
     outline: 0;
+    padding: 0;
+    margin: 0;
 }
 
-QPushButton#arrowButton {
-    image: url("icons/main/arrow_down.svg");
-    border: none;
-    font-weight: bold;
-    width: 12px;
-    height: 12px;
-    padding: 2px;
-    outline: 0;
-}
-
-QPushButton#plusButton::menu-indicator {
+QPushButton::menu-indicator {
     image: none;
     width: 0;
     height: 0;
@@ -282,7 +272,7 @@ QTabWidget::tab-bar {
 }
 
 QTabBar::close-button { 
-	image: url("icons/fa/white/svg/close.svg");
+	image: url("icons/main/tab-close.svg");
 	subcontrol-position: right;
 	margin: 0px;
 	padding: 2px;
@@ -340,28 +330,28 @@ QTreeView::item {
 
 
 QTreeView::branch:has-siblings:!adjoins-item {
-	image: url("icons/treeview/vline.png");
+	image: url("icons/main/treeview/vline.png");
 }
 
 QTreeView::branch:has-siblings:adjoins-item {
-	image: url("icons/treeview/branch-more.png");
+	image: url("icons/main/treeview/branch-more.png");
 }
 
 QTreeView::branch:!has-children:!has-siblings:adjoins-item {
-    image: url("icons/treeview/branch-end.png");
+    image: url("icons/main/treeview/branch-end.png");
 }
 
 QTreeView::branch:has-children:!has-siblings:closed,
 QTreeView::branch:closed:has-children:has-siblings {
     border-image: none;
-    image: url("icons/fa/white/png/16/plus-square.png");
+    image: url("icons/main/treeview/plus-square.png");
     padding: 4px;
 }
 
 QTreeView::branch:open:has-children:!has-siblings,
 QTreeView::branch:open:has-children:has-siblings  {
     border-image: none;
-    image: url("icons/fa/white/png/16/minus-square.png");
+    image: url("icons/main/treeview/minus-square.png");
     padding: 4px;
 }
 

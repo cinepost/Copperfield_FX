@@ -22,7 +22,6 @@ class COP2_File(COP2_Node):
 	def __init__(self, engine, parent):
 		super(COP2_File, self).__init__(engine, parent)
 		self.program = self.engine.load_program("source_image.cl")
-		print "Program jpg %s" % self.program.run_jpg
 
 	def parmTemplates(self):
 		templates = super(COP2_File, self).parmTemplates()

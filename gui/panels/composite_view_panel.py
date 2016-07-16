@@ -14,25 +14,22 @@ from copper import engine
 from copper.op.node_type_category import Cop2NodeTypeCategory
 from gui.signals import signals
 from gui.widgets import PathBarWidget
-from base_panel import BasePanel
+from base_panel import NetworkPanel
 
-class CompositeViewPanel(BasePanel):
+class CompositeViewPanel(NetworkPanel):
     def __init__(self):
-        BasePanel.__init__(self, network_controls=True)
+        NetworkPanel.__init__(self, network_controls=True)
 
-        self.image_view_widget = CompositeViewWidget()
+        self.image_view_widget = CompositeViewWidget(self, self)
         self.addWidget(self.image_view_widget)
 
     @classmethod
     def panelTypeName(cls):
         return "Composite View"
 
-    def nodeSelected(self, node_path = None):
-        pass
-
 
 class CompositeViewWidget(QtOpenGL.QGLWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent, panel):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)
         format.setSamples(16)
@@ -41,6 +38,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         if not self.isValid():
             raise OSError("OpenGL not supported.")
 
+        self.panel = panel
         self.setMouseTracking(True)
         self.setAcceptDrops(True)
         self.isPressed = False
@@ -54,9 +52,9 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.node = None
         self.node_path = None
         self.draw_new_node = False
-        self.setNode()
+        self.emptyView()
 
-        signals.copperSetCompositeViewNode.connect(self.setNode)
+        self.panel.signals.copperSetCompositeViewNode[str].connect(self.setNodeToDisplay)
 
     def drawCopNodeImageData(self):
         glDisable( GL_LIGHTING )
@@ -73,24 +71,31 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
                 self.draw_new_node = False
 
             glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
+
+            glBegin(GL_QUADS)
+            glTexCoord2f(0.0,0.0)
+            glVertex2d(-self.img_half_width, self.img_half_height)
+            glTexCoord2f(1.0,0.0)
+            glVertex2d(self.img_half_width, self.img_half_height)
+            glTexCoord2f(1.0,1.0)
+            glVertex2d(self.img_half_width, -self.img_half_height)
+            glTexCoord2f(0.0,1.0);
+            glVertex2d(-self.img_half_width, -self.img_half_height)
+            glEnd()
         else:
             # default texture
             glBindTexture(GL_TEXTURE_2D, self.null_gl_tex_id)    
 
-        glBegin(GL_QUADS)
-        glTexCoord2f(0.0,0.0)
-        #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 1.0f);
-        glVertex2d(-self.img_half_width, self.img_half_height)
-        glTexCoord2f(1.0,0.0)
-        #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 1.0f);
-        glVertex2d(self.img_half_width, self.img_half_height)
-        glTexCoord2f(1.0,1.0)
-        #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 0.0f);
-        glVertex2d(self.img_half_width, -self.img_half_height)
-        glTexCoord2f(0.0,1.0);
-        #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 0.0f);
-        glVertex2d(-self.img_half_width, -self.img_half_height)
-        glEnd()
+            glBegin(GL_QUADS)
+            glTexCoord2f(0.0,0.0)
+            glVertex2d(-self.img_half_width, -self.img_half_height)
+            glTexCoord2f(1.0,0.0)
+            glVertex2d(self.img_half_width, -self.img_half_height)
+            glTexCoord2f(1.0,1.0)
+            glVertex2d(self.img_half_width, self.img_half_height)
+            glTexCoord2f(0.0,1.0);
+            glVertex2d(-self.img_half_width, self.img_half_height)
+            glEnd()
 
         glBindTexture(GL_TEXTURE_2D, 0)
         glDisable( GL_TEXTURE_2D )
@@ -199,7 +204,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
 
     @QtCore.pyqtSlot(str)    
-    def setNode(self, node_path = None):
+    def setNodeToDisplay(self, node_path = None):
         if node_path:
             print "Showing node %s" % node_path
             node_path = str(node_path)
@@ -209,18 +214,23 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
                 self.node.cook()
                 self.image_width = self.node.xRes()
                 self.image_height = self.node.yRes()
+                self.img_half_width = self.image_width / 2.0
+                self.img_half_height = self.image_height / 2.0
                 self.draw_new_node = True
   
         else:
-            self.node = None
-            self.node_path = None
-            self.image_width = 1920
-            self.image_height = 1080
-            self.ar = 1.0 * self.image_height / self.image_width
+            self.emptyView()
 
+        self.updateGL()
+
+    def emptyView(self):
+        self.node = None
+        self.node_path = None
+        self.image_width = 1280
+        self.image_height = 720
+        self.ar = 1.0 * self.image_height / self.image_width
         self.img_half_width = self.image_width / 2.0
         self.img_half_height = self.image_height / 2.0
-        self.updateGL()        
 
     def wheelEvent(self, event):
          # Zoom Factor

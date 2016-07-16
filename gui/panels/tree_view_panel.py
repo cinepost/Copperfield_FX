@@ -3,11 +3,11 @@ from PyQt4 import QtGui, QtCore
 from copper import engine
 from gui.signals import signals
 from gui.widgets import PathBarWidget
-from base_panel import BasePanel
+from base_panel import NetworkPanel
 
-class TreeViewPanel(BasePanel):
+class TreeViewPanel(NetworkPanel):
     def __init__(self):      
-        BasePanel.__init__(self, network_controls=True) 
+        NetworkPanel.__init__(self) 
 
         self.tree_view_widget = TreeViewWidget()
         self.addWidget(self.tree_view_widget)
@@ -15,9 +15,6 @@ class TreeViewPanel(BasePanel):
     @classmethod
     def panelTypeName(cls):
         return "Tree View"
-
-    def nodeSelected(self, node_path = None):
-        pass
 
 
 class TreeViewWidget(QtGui.QTreeWidget):
@@ -72,7 +69,9 @@ class TreeViewWidget(QtGui.QTreeWidget):
                     item.setText(1, child_node.path())
                     self.nodes_map[child_node.path()] = item
                     if child_node.children():
-                        self.createNodeTree(item, child_node.path())  
+                        self.createNodeTree(item, child_node.path())
+
+        self.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
     def handleItemClicked(self, item):
         selected_node_path = str(item.text(1))

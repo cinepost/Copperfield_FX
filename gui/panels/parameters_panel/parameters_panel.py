@@ -4,7 +4,7 @@ from copper import parameter
 from copper import engine
 from gui.signals import signals
 from gui.widgets import PathBarWidget
-from gui.panels.base_panel import BasePanel
+from gui.panels.base_panel import NetworkPanel
 from parameters_widgets import *
 
 from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
@@ -17,24 +17,22 @@ def clearLayout(layout):
         elif child.layout() is not None:
             clearLayout(child.layout())
 
-class ParametersPanel(BasePanel):
+class ParametersPanel(NetworkPanel):
     def __init__(self):      
-        BasePanel.__init__(self, network_controls=True)   
+        NetworkPanel.__init__(self)   
 
-        self.parameters_widget = ParametersWidget()
+        self.parameters_widget = ParametersWidget(self, self)
         self.addWidget(self.parameters_widget)
 
     @classmethod
     def panelTypeName(cls):
         return "Parameters"
 
-    def nodeSelected(self, node_path=None):
-        self.parameters_widget.nodeSelected(node_path)
-
 
 class ParametersWidget(QtGui.QWidget):
-    def __init__(self, parent=None):    
+    def __init__(self, parent, panel):    
         QtGui.QWidget.__init__(self, parent) 
+        self.panel = panel
 
         self.setMinimumWidth(320)
         self.setMinimumHeight(160)
@@ -76,9 +74,12 @@ class ParametersWidget(QtGui.QWidget):
         self.setLayout(self.vbox)
         self.setAcceptDrops(True)
 
-  
-    def nodeSelected(self, node_path = None):
-        if node_path == "/":
+        # connect panel signals
+        self.panel.signals.copperNodeSelected.connect(self.nodeSelected)
+
+    @QtCore.pyqtSlot(str)
+    def nodeSelected(self, node_path=None):
+        if node_path in [None, "/"]:
             return 
 
         node = engine.node(str(node_path))

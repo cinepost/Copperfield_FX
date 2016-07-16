@@ -15,7 +15,7 @@
    height="16"
    id="svg5952"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="pane-maximize.svg">
+   sodipodi:docname="pane-plus.svg">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -25,15 +25,15 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1379"
-     inkscape:window-height="1036"
+     inkscape:window-width="1210"
+     inkscape:window-height="809"
      id="namedview231"
      showgrid="false"
      inkscape:zoom="37.9375"
      inkscape:cx="8"
      inkscape:cy="8"
-     inkscape:window-x="427"
-     inkscape:window-y="87"
+     inkscape:window-x="350"
+     inkscape:window-y="303"
      inkscape:window-maximized="0"
      inkscape:current-layer="svg5952" />
   <defs
@@ -1427,7 +1427,7 @@
        id="linearGradient8255"
        xlink:href="#linearGradient1887-2"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.86591516,0,0,0.89017608,-98.55717,-297.78074)" />
+       gradientTransform="matrix(0.7493243,0,0,0.76994521,-84.209815,-256.48345)" />
     <linearGradient
        x1="404.67871"
        y1="46.338985"
@@ -1436,7 +1436,7 @@
        id="linearGradient8257"
        xlink:href="#linearGradient3480-7"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(0.86837005,0,0,0.78310729,-350.21514,-33.487935)" />
+       gradientTransform="matrix(0.75144865,0,0,0.67733757,-301.98339,-27.887131)" />
   </defs>
   <metadata
      id="metadata5957">
@@ -1446,22 +1446,22 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <rect
-     width="12.988009"
-     height="10.681998"
-     x="1.5059956"
-     y="3.81831"
-     id="rect5622"
-     style="color:#000000;display:inline;fill:url(#linearGradient8255);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.99938333;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none" />
+     style="opacity:1;fill:#f1f1f1;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     id="rect5854"
+     width="2"
+     height="10"
+     x="7"
+     y="3" />
   <rect
-     width="13.000616"
-     height="2.601526"
-     x="1.4996917"
-     y="1.499692"
-     id="rect5624"
-     style="color:#000000;display:inline;fill:url(#linearGradient8257);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.99938333;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none" />
+     y="7"
+     x="3"
+     height="2"
+     width="10"
+     id="rect5856"
+     style="opacity:1;fill:#f1f1f1;fill-opacity:1;stroke:none;stroke-width:0.5;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
 </svg>

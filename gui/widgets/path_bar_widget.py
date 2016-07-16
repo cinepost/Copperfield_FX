@@ -2,7 +2,7 @@ from PyQt4 import Qt, QtGui, QtCore
 
 from gui.signals import signals
 from copper import engine
-from copper import parameter
+#from copper import parameter
 
 class PathBarWidget(QtGui.QFrame):
     def __init__(self, parent=None): 

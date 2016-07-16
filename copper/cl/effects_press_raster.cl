@@ -1,6 +1,6 @@
 __constant sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_REPEAT | CLK_FILTER_LINEAR;
 
-float level(float in , float min, float max){
+inline float level(float in , float min, float max){
 	float out = clamp(in - min, 0.0f, 1.0f);
 	out *= (1.0f / max);
 	return out;
@@ -16,7 +16,7 @@ __kernel void raster(
 	int y = get_global_id(1);
 	float iar = (float)img_width / (float)img_height;
 	
-	float3 acc = 0f;
+	float3 acc = 0.0f;
 	
 	for( int a=0; a < quality; a++){
 		for( int b=0; b < quality; b++){
@@ -28,14 +28,14 @@ __kernel void raster(
 		    in.y = level(pow(in.y,0.5f), 0.1f, 0.9f);
 		    in.z = level(pow(in.z,0.5f), 0.1f, 0.9f);
 		    
-		    float kc = 1f - in.x;
-		    float km = 1f - in.y;
-		    float ky = 1f - in.z;
+		    float kc = 1.0f - in.x;
+		    float km = 1.0f - in.y;
+		    float ky = 1.0f - in.z;
 		    float kk = min(min(kc, km), ky);
 		    
-		    float cyan = (kc - kk) / (1f - kk);
-			float magenta = (km - kk) / (1f - kk);
-			float yellow = (ky - kk) / (1f - kk);
+		    float cyan = (kc - kk) / (1.0f - kk);
+			float magenta = (km - kk) / (1.0f - kk);
+			float yellow = (ky - kk) / (1.0f - kk);
 			float black = kk;
 		    
 		    // black
@@ -87,19 +87,19 @@ __kernel void raster(
 		    float d_y = smoothstep(clamp(val + smooth_bias, 0.0f, 1.0f), clamp( val - smooth_bias, 0.0f , 1.0f), sqrt(su*su + sv*sv));
 		
 		    
-		    float3 res = 1f;
+		    float3 res = 1.0f;
 		    
-		    res *= (float3)(0.05f, 0.05f, 0.05f) * d_b + (float3)(1f, 1f, 1f) * (1f - d_b);
-			res *= (float3)(1f, 0.05f, 1f) * d_m + (float3)(1f, 1f, 1f) * (1f - d_m);
-			res *= (float3)(1f, 1f, 0.05f) * d_y + (float3)(1f, 1f, 1f) * (1f - d_y);
-			res *= (float3)(0.05f, 1f, 1f) * d_c + (float3)(1f, 1f, 1f) * (1f - d_c);
+		    res *= (float3)(0.05f, 0.05f, 0.05f) * d_b + (float3)(1.0f, 1.0f, 1.0f) * (1.0f - d_b);
+			res *= (float3)(1.0f, 0.05f, 1.0f) * d_m + (float3)(1.0f, 1.0f, 1.0f) * (1.0f - d_m);
+			res *= (float3)(1.0f, 1.0f, 0.05f) * d_y + (float3)(1.0f, 1.0f, 1.0f) * (1.0f - d_y);
+			res *= (float3)(0.05f, 1.0f, 1.0f) * d_c + (float3)(1.0f, 1.0f, 1.0f) * (1.0f - d_c);
 			acc += res;
 		}	
 	}
 
 	acc /= quality * quality;
 
-	float4 out = 1f;
+	float4 out = 1.0f;
 	out.x = acc.x;
 	out.y = acc.y;
 	out.z = acc.z;

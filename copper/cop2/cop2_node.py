@@ -102,10 +102,10 @@ class COP2_Node(OP_Network):
 				raise
 			else:	 
 				self.cooked = True
-				logging.debug("Cooked.")
+				logging.debug("Node %s cooked." % self.path())
 				return True
 		else:
-			self.log("Already cooked." )
+			logging.debug("Node %s already cooked." % self.path())
 			return True	
 
 	def getCookedPlanes(self):

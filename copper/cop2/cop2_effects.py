@@ -35,6 +35,12 @@ class COP2_Blur(COP2_Node):
 		
 		return templates
 
+	def xRes(self):
+		return self.input(0).xRes()
+
+	def yRes(self):
+		return self.input(0).yRes()
+
 	def compute(self):	
 		if self.hasInputs():
 			self.devTmpBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, self.image_format, shape=self.input(0).shape())
@@ -70,7 +76,7 @@ class COP2_PressRaster(COP2_Node):
 
 	class NodeType(NodeTypeBase):
 		icon_name = 'COP2_press'
-		type_name = 'press'
+		type_name = 'press_raster'
 		category = Cop2NodeTypeCategory
 
 	def __init__(self, engine, parent):
@@ -79,20 +85,35 @@ class COP2_PressRaster(COP2_Node):
 		self.__inputs__ = [None]
 		self.__input_names__ = ["Input 1"]	
 
-		self.addParameter("density", float, 100)
-		self.addParameter("quality", int, 2)
+	def parmTemplates(self):
+		templates = super(COP2_PressRaster, self).parmTemplates()
+		templates += [
+			FloatParmTemplate(name="density", label="Density", length=1, default_value=(200,)),
+			IntParmTemplate(name="quality", label="Super sampling", length=1, default_value=(2,)),
+		]
+		
+		return templates
+
+	@classmethod
+	def label(cls):
+		return "Press Raster"
+
+	def xRes(self):
+		return self.input(0).xRes()
+
+	def yRes(self):
+		return self.input(0).yRes()
 			
 	def compute(self):	
-		if self.has_inputs():
-			self.devOutBuffer = cl.Image(self.engine.ctx, self.engine.mf.READ_WRITE, self.image_format, shape=self.inputs.get(0).size)	
-			self.width = self.input(0).width
-			self.height = self.input(0).height
-			print "Raterizing area: %s x %s" %(self.input(0).width, self.input(0).height)
-			exec_evt = self.program.raster(self.engine.queue, self.size, None, 
+		if self.hasInputs():
+			self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, self.image_format, shape=self.input(0).shape())	
+			self.width = self.xRes()
+			self.height = self.yRes()
+			exec_evt = self.program.raster(self.engine.openclQueue(), (self.width, self.height), None, 
 				self.input(0).getOutDevBuffer(),     
 				self.devOutBuffer,
-				numpy.int32(self.input(0).width),
-				numpy.int32(self.input(0).height),
+				numpy.int32(self.input(0).xRes()),
+				numpy.int32(self.input(0).yRes()),
 				numpy.float32(self.parm("density").eval()),
 				numpy.int32(self.parm("quality").eval()),
 			)

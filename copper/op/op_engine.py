@@ -243,12 +243,17 @@ class Copper_Engine(OP_Network):
 		ins = obj.createNode("instance")
 		geo = obj.createNode("geo", "geo1")
 
-		## Create file reading node 
+		## Create COP2_File node 
 		file1 = comp.createNode("file")
 		file1.setPos(10, 10)
 		file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/mythbuster.jpg"})
 
-		## Create blur node
+		## Create COP2_blur node
 		blur1 = comp.createNode("blur")
 		blur1.setInput(0, file1)
-		blur1.setParms({"blursize":0.01, "blursizey": 0.05, "useindepy" : True}) 
+		blur1.setParms({"blursize":0.01, "blursizey": 0.05, "useindepy" : True})
+
+		## Create COP2_Press node
+		press1 = comp.createNode("press_raster")
+		press1.setParms({"quality":4, "density": 100})
+		press1.setInput(0, blur1) 

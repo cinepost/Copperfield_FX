@@ -78,16 +78,16 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glBegin(GL_QUADS)
         glTexCoord2f(0.0,0.0)
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 1.0f);
-        glVertex2d(-self.img_half_width, -self.img_half_height)
+        glVertex2d(-self.img_half_width, self.img_half_height)
         glTexCoord2f(1.0,0.0)
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 1.0f);
-        glVertex2d(self.img_half_width, -self.img_half_height)
+        glVertex2d(self.img_half_width, self.img_half_height)
         glTexCoord2f(1.0,1.0)
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 1.0f, 0.0f);
-        glVertex2d(self.img_half_width, self.img_half_height)
+        glVertex2d(self.img_half_width, -self.img_half_height)
         glTexCoord2f(0.0,1.0);
         #glMultiTexCoord2fARB(GL_TEXTURE0_ARB, 0.0f, 0.0f);
-        glVertex2d(-self.img_half_width, self.img_half_height)
+        glVertex2d(-self.img_half_width, -self.img_half_height)
         glEnd()
 
         glBindTexture(GL_TEXTURE_2D, 0)
@@ -154,13 +154,12 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glBindTexture(GL_TEXTURE_2D, 0)
 
         self.node_gl_tex_id = glGenTextures(1)
-        print "Type %s" % type(self.node_gl_tex_id)
         glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glBindTexture(GL_TEXTURE_2D, 0)
 
     def reset_view(self):
@@ -188,15 +187,14 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
             # Aquire OpenGL texture object
             cl.enqueue_acquire_gl_objects(engine.openclQueue(), [node_gl_texture])
-            engine.openclQueue().finish()
             
             # copy OpenCL buffer to OpenGl texture
             cl.enqueue_copy_image(engine.openclQueue(), cl_image_buffer, node_gl_texture, (0,0), (0,0), (self.node.xRes(), self.node.yRes()), wait_for=None)
-            engine.openclQueue().finish()
 
             # Release OpenGL texturte object
             cl.enqueue_release_gl_objects(engine.openclQueue(), [node_gl_texture])
             engine.openclQueue().finish()
+
 
     @QtCore.pyqtSlot(str)    
     def setNode(self, node_path = None):

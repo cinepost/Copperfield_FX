@@ -26,6 +26,7 @@ class OP_Network(OP_Node):
 		self.__inputs__ = []
 		self.__input_names__ = []
 		self.__network_label__ = None
+		self._needs_to_cook = True
 
 	def asCode(self, brief=False, recurse=False):
 		code = ""
@@ -56,6 +57,9 @@ class OP_Network(OP_Node):
 	@classmethod
 	def childTypeCategory(cls):
 		raise NotImplementedError
+
+	def cook(self, force=False, frame_range=()):
+		pass
 
 	def createNode(self, node_type_name, node_name=None):
 		if not self.isNetwork():
@@ -187,6 +191,15 @@ class OP_Network(OP_Node):
 	def inputConnectors(self):
 		return []
 
+	def _invalidate(self):
+		''' 
+		Call this method to instruct node it needs to recook itself next time needed. For example when parameter was changes
+		'''
+		self._setCooked(False)
+
+	def needsToCook(self):
+		return self._needs_to_cook
+
 	def outputNames(self):
 		return []
 
@@ -261,6 +274,12 @@ class OP_Network(OP_Node):
 	# return root node
 	def root(self):
 		return self.__engine__
+
+	def _setCooked(self, state):
+		if state is True:
+			self._needs_to_cook = False
+		else:
+			self._needs_to_cook = True
 
 	def setName(self, name):
 		self._name = name

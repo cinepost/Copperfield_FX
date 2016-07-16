@@ -196,6 +196,8 @@ class CopperParameter(object):
 			else:
 				# Constant parameter
 				self.value = value
+
+		self.node()._invalidate() # This is important ! We need to say node that it needs to recook itself when needed, because some parameter was changed
 				
 	def setKeyframe(self, keyframe):
 		self.__keyframes__.append(keyframe)

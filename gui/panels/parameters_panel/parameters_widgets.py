@@ -193,10 +193,13 @@ class ParameterStringWidget(ParameterBaseWidget):
 	def BrowseFile(self, lineEdit):
 		file_name = QtGui.QFileDialog.getOpenFileName()
 		self.line_edit.setText(file_name)
+		self.valueChanged.emit()
 
 	def BrowseOp(self, lineEdit):
 		op_path = QtGui.QFileDialog.getOpenFileName()
 		self.line_edit.setText(op_path)
+		self.valueChanged.emit()
+
 
 
 

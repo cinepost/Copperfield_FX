@@ -5,6 +5,7 @@ import pyopencl as cl
 import numpy
 import logging
 import threading
+import logging
 
 from copper.parameter import CopperParameter
 from copper.op.op_network import OP_Network
@@ -48,6 +49,9 @@ class COP2_Node(OP_Network):
 
 	def imageBounds(self):
 		return (self.xRes()/2, self.yRes()/2, self.xRes()/2, self.yRes()/2)
+
+	def isBypassed(self):
+		return False
 		
 	def shape(self):
 		return (self.xRes(), self.yRes())
@@ -85,23 +89,19 @@ class COP2_Node(OP_Network):
 	def bypass_node(self):
 		return None			
 
-	def invalidate(self):
-		print "Node %s invalidated!" % self.name
-		self.cooked = False
-
-	def cook(self, force=False, frame_range=(), software=False):
-		if any(node.cooked is False for node in self.inputs()):
-			print "Cooking inputs: %s" % [inp.name() for inp in self.inputs()]
+	def cook(self, force=False, frame_range=()):
+		if any(node.needsToCook() for node in self.inputs()):
+			logging.debug("Cooking inputs: %s" % [inp.path() for inp in self.inputs()])
 			for node in self.inputs():
 				node.cook()
 
-		if self.cooked != True:
+		if self.needsToCook():
 			try:
 				self.compute()
 			except:
 				raise
 			else:	 
-				self.cooked = True
+				self._setCooked(True)
 				logging.debug("Node %s cooked." % self.path())
 				return True
 		else:
@@ -117,9 +117,8 @@ class COP2_Node(OP_Network):
 			self.height = bypass_node.yRes()
 			return bypass_node.getCookedPlanes()
 
-		self.cooked = False
-		if self.cooked == False:
-			self.cook(software=True)
+		if self.needsToCook():
+			self.cook()
 
 		return self.__planes__	
 
@@ -133,10 +132,10 @@ class COP2_Node(OP_Network):
 			self.height = bypass_node.yRes()
 			return bypass_node.getOutDevBuffer()
 
-		if self.cooked == False:
-			print "Cooking node %s" % self.name()
+		if self.needsToCook():
+			print "Cooking node %s" % self.path()
 			self.cook()
-			print "Cooking node %s done." % self.name()
+			print "Cooking node %s done." % self.path()
 		
 		return self.devOutBuffer
 

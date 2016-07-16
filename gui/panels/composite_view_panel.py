@@ -45,6 +45,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.oldx = 0
         self.oldy = 0
 
+        self.font = QtGui.QFont("verdana", 12)
         self.setCursor(QtCore.Qt.CrossCursor)
 
         self.zoom = 1.0 
@@ -112,9 +113,11 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glScaled (1.0 * self.zoom, 1.0 * self.zoom, 1.0)
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
+        # draw image data
         self.drawCopNodeImageData()
 
-        glColor(1.0, 1.0, 1.0)
+        # draw outline
+        glColor(.5, .5, .5)
         glBegin(GL_LINES)
         glVertex2d(-self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,self.img_half_height)
         glVertex2d(self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,-self.img_half_height)
@@ -122,22 +125,34 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glVertex2d(-self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,self.img_half_height)
         glEnd()
 
-        # draw text
+        # switch to 2D for text overlay
+        glLoadIdentity()
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho( 0, self.view_width, self.view_height, 0, -1, 1 )
+
         if self.node_path:
-            self.renderText( 0.0, 0.0, 0.0, self.node_path ) 
-        else:
-            self.renderText( 0.0, 0.0, 0.0, "No output node selected !" )    
+            glColor3f(0, 1, 0)
+            self.renderText( 10, 20, self.node_path, self.font )
+
+            glColor3f(.5, .5, .5)
+            self.renderText( 10, 34, "%sx%s" % (self.image_width, self.image_height), self.font )
+
+        # revert to 3D
+        glLoadIdentity()
+        glOrtho(-self.view_width / 2.0, self.view_width / 2.0, -self.view_height / 2.0, self.view_height / 2.0, -100.0, 100.0)
+        glMatrixMode(GL_MODELVIEW)
 
         glFlush()
 
     def resizeGL(self, width, height):
-        self.width = width
-        self.height = height
-        if self.isValid() and width > 0 and height > 0:
-            glViewport(0, 0, width, height)
+        self.view_width = width
+        self.view_height = height
+        if self.isValid() and self.view_width > 0 and self.view_height > 0:
+            glViewport(0, 0, self.view_width, self.view_height)
             glMatrixMode(GL_PROJECTION)
             glLoadIdentity()
-            glOrtho(-width/2.0, width/2.0, -height/2.0, height/2.0, -100.0, 100.0)
+            glOrtho(-self.view_width / 2.0, self.view_width / 2.0, -self.view_height / 2.0, self.view_height / 2.0, -100.0, 100.0)
             glMatrixMode(GL_MODELVIEW)
 
     def initializeGL(self):

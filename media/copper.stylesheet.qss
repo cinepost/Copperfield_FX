@@ -460,51 +460,44 @@ QScrollBar:vertical {
 	border: 1px solid #333;
 	background: #282828;
 	width: 15px;
-	margin: 22px 0 22px 0;
+	margin: 0px 0 36px 0;
 }
  
 QScrollBar::handle:vertical {
-	background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #666, stop:1 #444);
+	image: url("icons/main/scrolls/grip-vertical.png");
+	background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #666, stop:1 #333);
 	min-height: 20px;
+	border-top: 1px solid #555;
+	border-bottom: 1px solid #555;
 }
 
-QScrollBar::add-line:vertical {
+QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical {
 	border: 1px solid #333;
-	background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #666, stop:1 #444);
-	height: 20px;
-	subcontrol-position: bottom;
+	border-top: 1px solid black;
+	background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #666, stop:1 #333);
+	height: 17px;
 	subcontrol-origin: margin;
+	subcontrol-position: bottom;
 }
 
 QScrollBar::sub-line:vertical {
-	border: 1px solid #333;
-	background: qlineargradient( x1:0 y1:0, x2:1 y2:0, stop:0 #666, stop:1 #444);
-	height: 20px;
-	subcontrol-position: top;
-	subcontrol-origin: margin;
+	margin-bottom: 18px;
 }
 
 QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
-	border: none;
-	width: 7px;
-	height: 7px;
-	background: none;
+	width: 11px;
+	height: 11px;
+	subcontrol-position: center;
+	margin: 0;
 }
 
+
 QScrollBar::down-arrow:vertical {
-	image: url("icons/fa/black/svg/arrow-down.svg");
+	image: url("icons/main/scrolls/arrow-down.svg");
 }
 
 QScrollBar::up-arrow:vertical {
- 	image: url("icons/fa/black/svg/arrow-up.svg");
-}
-
-QScrollBar::down-arrow:vertical:hover {
-	image: url("icons/fa/white/svg/arrow-down.svg");
-}
-
-QScrollBar::up-arrow:vertical:hover {
- 	image: url("icons/fa/white/svg/arrow-up.svg");
+ 	image: url("icons/main/scrolls/arrow-up.svg");
 }
 
 QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {

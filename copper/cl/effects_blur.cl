@@ -28,7 +28,6 @@ __kernel void fast_blur_h(
 		sum += read_imagef(image_in, sampler, sample_coord) * w;
 	}
 
-
     sum /= ww;
     write_imagef(image_out, (int2)(x, y), sum);
 }
@@ -60,7 +59,6 @@ __kernel void fast_blur_v(
 		ww += w;
 		sum += read_imagef(image_in, sampler, sample_coord) * w;
 	}
-
 
     sum /= ww;
     float4 zero = 0.f;

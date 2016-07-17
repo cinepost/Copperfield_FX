@@ -1,9 +1,11 @@
 import six
+import multiprocessing
 import logging 
 
 from .base import OpRegistry
 from .op_parameters import OP_Parameters
-from .op_input import OP_Input 
+from .op_input import OP_Input
+from .op_cooking_queue import OpCookingQueue
 
 @six.add_metaclass(OpRegistry)
 class OP_Node(OP_Parameters):
@@ -25,15 +27,9 @@ class OP_Node(OP_Parameters):
 		self.color = (0.4, 0.4, 0.4, 1.0,)
 
 	def cook(self, force=False, frame_range=()):
-		# first cook all input nodes if needed
-		if any(node.needsToCook() for node in self.inputs()):
-			logging.debug("Cooking inputs: %s" % [inp.path() for inp in self.inputs()])
-			for node in self.inputs():
-				node.cook()
-
-		# cook node itself if needed
-		if self.needsToCook() and not self.isBypassed():
-			self.cookData()
+		if self.needsToCook():
+			queue = OpCookingQueue(self)
+			queue.execute()
 
 	def cookData(self):
 		raise NotImplementedError

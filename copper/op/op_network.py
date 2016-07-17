@@ -56,6 +56,7 @@ class OP_Network(OP_Node):
 		raise NotImplementedError
 
 	def createNode(self, node_type_name, node_name=None):
+		node = None
 		if not self.isNetwork():
 			raise BaseException("Unable to create node of type %s. %s is not a network manager !!!" % (node_type_name, self))
 
@@ -73,7 +74,7 @@ class OP_Network(OP_Node):
 			node = OpRegistry[node_type_name_with_category](self.engine, self)	
 			node.setName(name)
 		else:
-			raise BaseException("Unknown node type \"%s\". Abort." % node_type_name_with_category)	
+			raise BaseException("Invalid node type name \"%s\"" % node_type_name_with_category)	
 
 		self.__node_dict__[name] = node
 
@@ -185,8 +186,8 @@ class OP_Network(OP_Node):
 			# traverse from this
 			return self.traverse(path_list)		
 
-	def __str__(self):
-		return self.__class__.__name__
+	#def __str__(self):
+	#	return self.__class__.__name__
 
 	def parent(self):
 		return self.__parent__	

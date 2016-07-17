@@ -1,5 +1,9 @@
 __constant sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_LINEAR;
 
+__kernel void test(void){
+	float4 val = 1.0f;
+}
+
 __kernel void run_jpg(	__read_only image2d_t img_in_r,
 						__read_only image2d_t img_in_g,
 						__read_only image2d_t img_in_b, __write_only image2d_t img_out, int in_width, int in_height, int out_width, int out_height)

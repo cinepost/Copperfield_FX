@@ -3,7 +3,6 @@ import pyopencl as cl
 import pickle
 import numpy
 import logging
-
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
 
@@ -42,6 +41,7 @@ class Copper_Engine(OP_Network):
 		self.__frame__= 0
 		self.__fps__ = 25.0
 		self._cl_ctx = None
+		self._cl_queue = None
 
 		print "Initializing engine of type %s" % device_type
 		self._devices = []
@@ -60,7 +60,6 @@ class Copper_Engine(OP_Network):
 				self._devices = None	
 			
 		if self._devices:		
-			self._mf 		= cl.mem_flags
 			self.cl_path 	= cl_path
 			self.cl_mode 	= True
 			print "Using Open_CL."
@@ -118,11 +117,10 @@ class Copper_Engine(OP_Network):
 		return self._cl_ctx
 		
 	def openclQueue(self):
-		return cl.CommandQueue(self.openclContext(), properties=cl.command_queue_properties.PROFILING_ENABLE)
+		if not self._cl_queue:
+			self._cl_queue = cl.CommandQueue(self.openclContext(), properties=cl.command_queue_properties.PROFILING_ENABLE)
 		
-	@property
-	def mf(self):
-		return self._mf
+		return self._cl_queue
 
 	def fps(self):
 		return self.__fps__

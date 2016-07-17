@@ -47,7 +47,7 @@ class COP2_File(COP2_Node):
 	def yRes(self):
 		return self.parm("size2").eval()
 
-	def loadJPG(self, filename):
+	def loadJPG(self, filename, cl_context):
 		img = matplotlib.image.imread(filename)
 		
 		self.source_width = img.shape[1]
@@ -67,11 +67,11 @@ class COP2_File(COP2_Node):
 		g = numpy.array(img[:,:,1],dtype=numpy.uint8)
 		b = numpy.array(img[:,:,2],dtype=numpy.uint8)
 		
-		self.devInBufferR = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
-		self.devInBufferG = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
-		self.devInBufferB = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
+		self.devInBufferR = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
+		self.devInBufferG = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
+		self.devInBufferB = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
 
-	def loadEXR(self, filename):
+	def loadEXR(self, filename, cl_context):
 		import OpenEXR
 		import Imath
 		
@@ -97,45 +97,45 @@ class COP2_File(COP2_Node):
 		redstr = image.channel('R', pt)
 		host_buff_r = numpy.fromstring(redstr, dtype = numpy.float16)
 		host_buff_r.shape = (size[1], size[0]) # Numpy arrays are (row, col)
-		self.devInBufferR = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_r)
+		self.devInBufferR = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_r)
 		
 		greenstr = image.channel('G', pt)
 		host_buff_g = numpy.fromstring(greenstr, dtype = numpy.float16)
 		host_buff_g.shape = (size[1], size[0]) # Numpy arrays are (row, col)
-		self.devInBufferG = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_g)
+		self.devInBufferG = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_g)
 		
 		bluestr = image.channel('B', pt)
 		host_buff_b = numpy.fromstring(bluestr, dtype = numpy.float16)
 		host_buff_b.shape = (size[1], size[0]) # Numpy arrays are (row, col)
-		self.devInBufferB = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_b)
+		self.devInBufferB = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_b)
 		
 		if(channels.get('A') is not None):
 			alphastr = image.channel('A', pt)
 			host_buff_a = numpy.fromstring(alphastr, dtype = numpy.float16)
 			host_buff_a.shape = (size[1], size[0]) # Numpy arrays are (row, col)
-			self.devInBufferA = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_a)
+			self.devInBufferA = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=host_buff_a)
 		else:
-			self.devInBufferA = cl.Image(self.engine.openclContext(), self.engine.mf.READ_ONLY | self.engine.mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=numpy.ones(self.source_width * self.source_height, dtype = numpy.float16))
+			self.devInBufferA = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=numpy.ones(self.source_width * self.source_height, dtype = numpy.float16))
 	
 	def getImageFileName(self):
 		filename = self.parm("filename").eval()
 		return filename
 		#image_frame = self.engine.frame() + self.parm("start").evalAsInt() - self.parm("startframe").evalAsInt()
 		#return filename.expandedString(context={"frame": image_frame})
-			
-	def compute(self):
-		logging.debug("Computing using CL.")
+
+	def compute(self, lock, cl_context, cl_queue):
+		super(COP2_File, self).compute()
+
 		imagefile = self.getImageFileName()
-		logging.debug("Reading image %s" % imagefile)
 		self.image_width = self.parm("size1").eval()
 		self.image_height = self.parm("size2").eval()
 
 		if os.path.isfile(imagefile):	 
 			ext = imagefile.split(".")[-1]
 			if ext.lower() in ["jpg", "jpeg", "png"]:
-				self.loadJPG(imagefile)
-				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
-				exec_evt = self.program.run_jpg(self.engine.openclQueue(), (self.image_width, self.image_height), None, 
+				self.loadJPG(imagefile, cl_context)
+				self.devOutBuffer = cl.Image(cl_context, cl.mem_flags.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
+				exec_evt = self.program.run_jpg(cl_queue, (self.image_width, self.image_height), None, 
 					self.devInBufferR, # red channel buffer
 					self.devInBufferG, # green channel buffer
 					self.devInBufferB, # blue channel buffer
@@ -148,9 +148,9 @@ class COP2_File(COP2_Node):
 				exec_evt.wait()
 
 			elif ext.lower() == "exr":
-				self.loadEXR(imagefile)
-				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
-				exec_evt = self.program.run_exr(self.engine.openclQueue(), (self.image_width, self.image_height), None, 
+				self.loadEXR(imagefile, cl_context)
+				self.devOutBuffer = cl.Image(cl_context, cl.mem_flags.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
+				exec_evt = self.program.run_exr(cl_queue, (self.image_width, self.image_height), None, 
 					self.devInBufferR, # red channel buffer
 					self.devInBufferG, # green channel buffer
 					self.devInBufferB, # blue channel buffer
@@ -167,6 +167,6 @@ class COP2_File(COP2_Node):
 				raise BaseException("Image file %s does not exist !!!" % imagefile)
 			else:
 				logging.warning("Image file %s does not found !!! Using BLACK frame instead." % imagefile)	
-				self.devOutBuffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE | self.engine.mf.COPY_HOST_PTR, self.image_format, shape=(self.image_width, self.image_height), hostbuf=numpy.zeros(self.image_width * self.image_height * 4, dtype = numpy.float32))
+				self.devOutBuffer = cl.Image(cl_context, cl.mem_flags.READ_WRITE | cl.mem_flags.COPY_HOST_PTR, self.image_format, shape=(self.image_width, self.image_height), hostbuf=numpy.zeros(self.image_width * self.image_height * 4, dtype = numpy.float32))
 				
 

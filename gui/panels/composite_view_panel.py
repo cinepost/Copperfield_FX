@@ -196,7 +196,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
         if self.node:
             # bind texture from current compy node
-            cl_image_buffer = self.node.getOutDevBuffer()
+            cl_image_buffer = self.node.getCookedData()
 
             glBindTexture(GL_TEXTURE_2D, 0)
             glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
@@ -205,7 +205,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
             print "Node size: %s %s" % (self.node.xRes(), self.node.yRes())
 
-            node_gl_texture = cl.GLTexture(engine.openclContext(), engine.mf.WRITE_ONLY, GL_TEXTURE_2D, 0, self.node_gl_tex_id, 2) 
+            node_gl_texture = cl.GLTexture(engine.openclContext(), cl.mem_flags.WRITE_ONLY, GL_TEXTURE_2D, 0, self.node_gl_tex_id, 2) 
 
             # Aquire OpenGL texture object
             cl.enqueue_acquire_gl_objects(engine.openclQueue(), [node_gl_texture])

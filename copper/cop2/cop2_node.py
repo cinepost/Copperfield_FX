@@ -6,6 +6,7 @@ import numpy
 import logging
 import threading
 import logging
+import copy
 
 from copper.parameter import CopperParameter
 from copper.op.op_network import OP_Network
@@ -28,7 +29,7 @@ class COP2_Node(OP_Network):
 		self.image_format = cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT)
 		self.common_program = engine.load_program("common.cl")
 		
-		self.__planes__ = {
+		self._planes = {
 			"C": COP_Plane(self, channel_names=['r','g','b'], dtype=float),
 			"A": COP_Plane(self, dtype=float)
 		}
@@ -47,10 +48,7 @@ class COP2_Node(OP_Network):
 		raise NotImplementedError
 
 	def imageBounds(self):
-		return (self.xRes()/2, self.yRes()/2, self.xRes()/2, self.yRes()/2)
-
-	def isBypassed(self):
-		return False
+		return (0, 0, self.xRes(), self.yRes())
 		
 	def shape(self):
 		return (self.xRes(), self.yRes())
@@ -88,38 +86,23 @@ class COP2_Node(OP_Network):
 	def bypass_node(self):
 		return None			
 
-	def cook(self, force=False, frame_range=()):
-		super(COP2_Node, self).cook(force=force, frame_range=frame_range)
+	def compute(self):
+		logging.debug("Computing %s" % self.path())
 
-	def cookData(self):
-		if self.needsToCook():
-			try:
-				self.compute()
-			except:
-				raise
-			else:	 
-				self._needs_to_cook = False
-				logging.debug("Node %s cooked." % self.path())
-				return True
-		else:
-			logging.debug("Node %s already cooked." % self.path())
-			return True	
+	def cookData(self, lock):
+		try:
+			self.compute(lock, self.engine.openclContext(), self.engine.openclQueue())
+		except Exception, e:
+			logging.error(str(e))
+			return False
 
-	def getOutDevBuffer(self):
-		bypass_node = self.bypass_node()
-		if bypass_node:
+		self._needs_to_cook = False
+		return True
 
-			print "Getting bypass cl buffer from node %s" % bypass_node.path()
+	def getCookedData(self):
+		return self.getOutDevBuffer()
 
-			self.width = bypass_node.xRes()
-			self.height = bypass_node.yRes()
-			return bypass_node.getOutDevBuffer()
-
-		if self.needsToCook():
-			print "Cooking node %s" % self.path()
-			self.cook()
-			print "Cooking node %s done." % self.path()
-		
+	def getOutDevBuffer(self):		
 		return self.devOutBuffer
 
 	def getOutHostBuffer(self):

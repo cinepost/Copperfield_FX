@@ -23,10 +23,7 @@ class OP_Network(OP_Node):
 		self._name = None
 		self.__node_dict__ = {}
 		self.__parent__ = parent
-		self.__inputs__ = []
-		self.__input_names__ = []
 		self.__network_label__ = None
-		self._needs_to_cook = True
 
 	def asCode(self, brief=False, recurse=False):
 		code = ""
@@ -57,9 +54,6 @@ class OP_Network(OP_Node):
 	@classmethod
 	def childTypeCategory(cls):
 		raise NotImplementedError
-
-	def cook(self, force=False, frame_range=()):
-		pass
 
 	def createNode(self, node_type_name, node_name=None):
 		if not self.isNetwork():
@@ -151,27 +145,6 @@ class OP_Network(OP_Node):
 
 		return name
 
-	def hasInputs(self):
-		if len(self.__inputs__) > 0:
-			return True
-		else:
-			return False
-
-	def inputs(self):
-		return self.__inputs__
-
-	def input(self, index):
-		try:
-			node = self.__inputs__[index]
-		except:
-			raise BaseException("Wrong input index %s specified for node %s !!!") % (index, self)
-
-		return node			
-
-	def inputNames(self):
-		""" Returns dict of input names eg: ["Input 1", "Input 2"] """
-		return [name for name in self.__input_names__]
-
 	@classmethod
 	def isNetwork(cls):
 		return True
@@ -181,39 +154,6 @@ class OP_Network(OP_Node):
 
 	def isSelected(self):
 		return False
-
-	def inputNames(self):
-		return []
-
-	def inputConnections(self):
-		return []
-
-	def inputConnectors(self):
-		return []
-
-	def _invalidate(self):
-		''' 
-		Call this method to instruct node it needs to recook itself next time needed. For example when parameter was changes
-		'''
-		self._setCooked(False)
-
-	def needsToCook(self):
-		return self._needs_to_cook
-
-	def outputNames(self):
-		return []
-
-	def outputConnections(self):
-		return []
-
-	def outputConnectors(self):
-		return []
-
-	def setInput(self, input_index, node):
-		try:
-			self.__inputs__[input_index] = node					
-		except:
-			raise
 
 	@classmethod
 	def label(cls):
@@ -274,12 +214,6 @@ class OP_Network(OP_Node):
 	# return root node
 	def root(self):
 		return self.__engine__
-
-	def _setCooked(self, state):
-		if state is True:
-			self._needs_to_cook = False
-		else:
-			self._needs_to_cook = True
 
 	def setName(self, name):
 		self._name = name

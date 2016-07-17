@@ -22,7 +22,6 @@ class COP2_Node(OP_Network):
 
 		self.image_width	= None	
 		self.image_height	= None
-		self.cooked	= False	
 
 		self.devOutBuffer = None # Device output buffer. This buffer holds thre result image array
 
@@ -90,37 +89,21 @@ class COP2_Node(OP_Network):
 		return None			
 
 	def cook(self, force=False, frame_range=()):
-		if any(node.needsToCook() for node in self.inputs()):
-			logging.debug("Cooking inputs: %s" % [inp.path() for inp in self.inputs()])
-			for node in self.inputs():
-				node.cook()
+		super(COP2_Node, self).cook(force=force, frame_range=frame_range)
 
+	def cookData(self):
 		if self.needsToCook():
 			try:
 				self.compute()
 			except:
 				raise
 			else:	 
-				self._setCooked(True)
+				self._needs_to_cook = False
 				logging.debug("Node %s cooked." % self.path())
 				return True
 		else:
 			logging.debug("Node %s already cooked." % self.path())
 			return True	
-
-	def getCookedPlanes(self):
-		bypass_node = self.bypass_node()
-		if bypass_node:
-
-			print "Getting bypass planes from node %s" % bypass_node.path()
-			self.width = bypass_node.xRes()
-			self.height = bypass_node.yRes()
-			return bypass_node.getCookedPlanes()
-
-		if self.needsToCook():
-			self.cook()
-
-		return self.__planes__	
 
 	def getOutDevBuffer(self):
 		bypass_node = self.bypass_node()

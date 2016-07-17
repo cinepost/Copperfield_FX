@@ -3,6 +3,7 @@ import numpy
 
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import Cop2NodeTypeCategory
+from copper.op.op_input import OP_Input
 from copper.cop2.cop2_node import COP2_Node
 from copper import parameter
 
@@ -18,8 +19,9 @@ class COP2_Blur(COP2_Node):
 	def __init__(self, engine, parent):
 		super(COP2_Blur, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_blur.cl")
-		self.__inputs__ = [None]
-		self.__input_names__ = ["Input 1"]
+		self._inputs = (
+			OP_Input("Input 1"),
+		)
 
 	@classmethod
 	def label(cls):
@@ -82,8 +84,9 @@ class COP2_PressRaster(COP2_Node):
 	def __init__(self, engine, parent):
 		super(COP2_PressRaster, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_press_raster.cl")
-		self.__inputs__ = [None]
-		self.__input_names__ = ["Input 1"]	
+		self._inputs = (
+			OP_Input("Input 1"),
+		)
 
 	def parmTemplates(self):
 		templates = super(COP2_PressRaster, self).parmTemplates()

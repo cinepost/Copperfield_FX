@@ -161,7 +161,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_MULTISAMPLE)
         glEnable(GL_LINE_SMOOTH)
-        #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable(GL_BLEND)
         glDisable(GL_DEPTH_TEST)
         glColor4f(1.0, 1.0, 1.0, 1.0)
 

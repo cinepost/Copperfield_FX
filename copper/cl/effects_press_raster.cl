@@ -24,6 +24,7 @@ __kernel void raster(
 			float2 coord = (float2)(((float)x + (float)a / (float)quality)/ (float)img_width, ((float)y + (float)b / (float)quality) / (float)img_height);
 		    
 		    float4 in = read_imagef(image_in, sampler, coord);
+		    in *= in.w;
 		    in.x = level(pow(in.x,0.5f), 0.1f, 0.9f);
 		    in.y = level(pow(in.y,0.5f), 0.1f, 0.9f);
 		    in.z = level(pow(in.z,0.5f), 0.1f, 0.9f);

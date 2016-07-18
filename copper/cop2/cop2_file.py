@@ -26,7 +26,7 @@ class COP2_File(COP2_Node):
 	def parmTemplates(self):
 		templates = super(COP2_File, self).parmTemplates()
 		templates += [
-			StringParmTemplate(name="filename", label="File", string_type=StringParmType.FileReference),
+			StringParmTemplate(name="filename", label="File", default_value=("media/default.png",), string_type=StringParmType.FileReference),
 			IntParmTemplate(name="size", label="Size", length=2, default_value=(640,480), naming_scheme=ParmNamingScheme.Base1),
 			ToggleParmTemplate(name="flipy", label="Flip Image", default_value=False),
 			IntParmTemplate(name='startframe', label='Shift to Start Frame', length=1, naming_scheme=ParmNamingScheme.Base1, default_value=(1,)),
@@ -48,10 +48,11 @@ class COP2_File(COP2_Node):
 		return self.parm("size2").eval()
 
 	def loadJPG(self, filename, cl_context):
-		img = matplotlib.image.imread(filename)
+		img = Image.open(filename).convert("RGBA")
+		im = numpy.asarray(img)
 		
-		self.source_width = img.shape[1]
-		self.source_height = img.shape[0]
+		self.source_width = im.shape[1]
+		self.source_height = im.shape[0]
 		
 		if self.parm("size1").eval() != 0:
 			self.image_width = self.parm("size1").eval()
@@ -63,13 +64,22 @@ class COP2_File(COP2_Node):
 		else:
 			self.image_height = self.source_height
 			
-		r = numpy.array(img[:,:,0],dtype=numpy.uint8)
-		g = numpy.array(img[:,:,1],dtype=numpy.uint8)
-		b = numpy.array(img[:,:,2],dtype=numpy.uint8)
+		r = numpy.array(im[:,:,0],dtype=numpy.uint8)
+		g = numpy.array(im[:,:,1],dtype=numpy.uint8)
+		b = numpy.array(im[:,:,2],dtype=numpy.uint8)
+		a = numpy.array(im[:,:,3],dtype=numpy.uint8)
+
+		self.devInBufferR = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), 
+			shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
 		
-		self.devInBufferR = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
-		self.devInBufferG = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
-		self.devInBufferB = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
+		self.devInBufferG = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), 
+			shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
+		
+		self.devInBufferB = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), 
+			shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
+		
+		self.devInBufferA = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), 
+			shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=a)
 
 	def loadEXR(self, filename, cl_context):
 		import OpenEXR
@@ -139,6 +149,7 @@ class COP2_File(COP2_Node):
 					self.devInBufferR, # red channel buffer
 					self.devInBufferG, # green channel buffer
 					self.devInBufferB, # blue channel buffer
+					self.devInBufferA, # alpha channel buffer 
 					self.devOutBuffer, 
 					numpy.int32(self.source_width),
 					numpy.int32(self.source_height),

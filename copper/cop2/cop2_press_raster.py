@@ -26,8 +26,8 @@ class COP2_PressRaster(COP2_Node):
 	def parmTemplates(self):
 		templates = super(COP2_PressRaster, self).parmTemplates()
 		templates += [
-			FloatParmTemplate(name="density", label="Density", length=1, default_value=(200,)),
-			IntParmTemplate(name="quality", label="Super sampling", length=1, default_value=(2,)),
+			FloatParmTemplate(name="density", label="Density", length=1, default_value=(200,), min=10.0, max=1000.0),
+			IntParmTemplate(name="quality", label="Super sampling", length=1, default_value=(2,), min=1, max=10),
 		]
 		
 		return templates

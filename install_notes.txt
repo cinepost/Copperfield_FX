@@ -1,0 +1,11 @@
+
+# Pillow installation OSX
+
+brew tap homebrew/dupes
+brew install zlib
+brew link --force zlib
+
+brew install libjpeg
+brew install libpng
+
+pip install Pillow

@@ -456,11 +456,19 @@ QWidget#Parameters QSlider::sub-page:qlineargradient {
 }
 
 /* ScrollBar */
-QScrollBar:vertical {
+QScrollBar:vertical, QScrollBar:horizontal {
 	border: 1px solid #333;
 	background: #282828;
+}
+
+QScrollBar:vertical {
 	width: 15px;
-	margin: 0px 0 36px 0;
+	margin: 0 0 36px 0;
+}
+
+QScrollBar:horizontal {
+	height: 15px;
+	margin: 0 36px 0 0;
 }
  
 QScrollBar::handle:vertical {
@@ -469,6 +477,14 @@ QScrollBar::handle:vertical {
 	min-height: 20px;
 	border-top: 1px solid #555;
 	border-bottom: 1px solid #555;
+}
+
+QScrollBar::handle:horizontal {
+	/*image: url("icons/main/scrolls/grip-vertical.png");*/
+	background: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #666, stop:1 #333);
+	min-height: 20px;
+	border-left: 1px solid #555;
+	border-right: 1px solid #555;
 }
 
 QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical {
@@ -480,8 +496,21 @@ QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical {
 	subcontrol-position: bottom;
 }
 
+QScrollBar::sub-line:horizontal, QScrollBar::add-line:horizontal {
+	border: 1px solid #333;
+	border-left: 1px solid black;
+	background: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #666, stop:1 #333);
+	width: 17px;
+	subcontrol-origin: margin;
+	subcontrol-position: right;
+}
+
 QScrollBar::sub-line:vertical {
 	margin-bottom: 18px;
+}
+
+QScrollBar::sub-line:horizontal {
+	margin-right: 18px;
 }
 
 QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {

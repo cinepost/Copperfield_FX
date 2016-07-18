@@ -43,6 +43,11 @@ class COP2_Blur(COP2_Node):
 	def yRes(self):
 		return self.input(0).yRes()
 
+	def imageBounds(self):
+		h_half_extents = int(0.5 * (self.xRes() * self.parm("blursize").evalAsFloat()))
+		v_half_extents = int(0.5 * (self.yRes() * self.parm("blursizey").evalAsFloat()))
+		return (0 - h_half_extents, 0 - v_half_extents, self.xRes() + h_half_extents, self.yRes() + v_half_extents) 
+
 	def compute(self, lock, cl_context, cl_queue):
 		super(COP2_Blur, self).compute()	
 		if self.hasInputs():
@@ -57,7 +62,6 @@ class COP2_Blur(COP2_Node):
 				numpy.float32(self.parm("blursize").evalAsFloat()),
 				numpy.int32(self.width),
 				numpy.int32(self.height ),
-				numpy.int32(self.parm("useindepy").evalAsInt()),
 			)
 			exec_evt.wait()
 			
@@ -67,7 +71,6 @@ class COP2_Blur(COP2_Node):
 				numpy.float32(self.parm("blursizey").evalAsFloat()),
 				numpy.int32(self.width),
 				numpy.int32(self.height ),
-				numpy.int32(self.parm("useindepy").evalAsInt()),
 			)
 			exec_evt.wait()
 			del self.devTmpBuffer

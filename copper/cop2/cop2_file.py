@@ -42,10 +42,13 @@ class COP2_File(COP2_Node):
 		return "File"
 
 	def xRes(self):
-		return self.parm("size1").eval()
+		return self.parm("size1").evalAsInt()
 
 	def yRes(self):
-		return self.parm("size2").eval()
+		return self.parm("size2").evalAsInt()
+
+	def imageBounds(self):
+		return (0, 0, self.xRes(), self.yRes())
 
 	def loadJPG(self, filename, cl_context):
 		img = Image.open(filename).convert("RGBA")

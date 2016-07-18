@@ -51,7 +51,6 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.zoom = 1.0 
 
         self.node = None
-        self.node_path = None
         self.rebuild_node_image = False
         self.emptyView()
 
@@ -74,17 +73,29 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
                 self.rebuild_node_image = False
 
+            # draw node extents
+            bounds = self.node.imageBounds()
+
+            glColor(.15, .15, .85)
+            glBegin(GL_LINES)
+            glVertex2d(bounds[0],bounds[3]);glVertex2d(bounds[2],bounds[3])
+            glVertex2d(bounds[2],bounds[3]);glVertex2d(bounds[2],bounds[1])
+            glVertex2d(bounds[2],bounds[1]);glVertex2d(bounds[0],bounds[1])
+            glVertex2d(bounds[0],bounds[1]);glVertex2d(bounds[0],bounds[3])
+            glEnd()
+
+            # Draw actual image data
             glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
 
             glBegin(GL_QUADS)
             glTexCoord2f(0.0,0.0)
-            glVertex2d(-self.img_half_width, self.img_half_height)
+            glVertex2d(-self.image_width/2, self.image_height/2)
             glTexCoord2f(1.0,0.0)
-            glVertex2d(self.img_half_width, self.img_half_height)
+            glVertex2d(self.image_width/2, self.image_height/2)
             glTexCoord2f(1.0,1.0)
-            glVertex2d(self.img_half_width, -self.img_half_height)
+            glVertex2d(self.image_width/2, -self.image_height/2)
             glTexCoord2f(0.0,1.0);
-            glVertex2d(-self.img_half_width, -self.img_half_height)
+            glVertex2d(-self.image_width/2, -self.image_height/2)
             glEnd()
         else:
             # default texture
@@ -92,13 +103,13 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
             glBegin(GL_QUADS)
             glTexCoord2f(0.0,0.0)
-            glVertex2d(-self.img_half_width, -self.img_half_height)
+            glVertex2d(-self.image_width/2, -self.image_height/2)
             glTexCoord2f(1.0,0.0)
-            glVertex2d(self.img_half_width, -self.img_half_height)
+            glVertex2d(self.image_width/2, -self.image_height/2)
             glTexCoord2f(1.0,1.0)
-            glVertex2d(self.img_half_width, self.img_half_height)
+            glVertex2d(self.image_width/2, self.image_height/2)
             glTexCoord2f(0.0,1.0);
-            glVertex2d(-self.img_half_width, self.img_half_height)
+            glVertex2d(-self.image_width/2, self.image_height/2)
             glEnd()
 
         glBindTexture(GL_TEXTURE_2D, 0)
@@ -122,10 +133,10 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         # draw outline
         glColor(.5, .5, .5)
         glBegin(GL_LINES)
-        glVertex2d(-self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,self.img_half_height)
-        glVertex2d(self.img_half_width,self.img_half_height);glVertex2d(self.img_half_width,-self.img_half_height)
-        glVertex2d(self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,-self.img_half_height)
-        glVertex2d(-self.img_half_width,-self.img_half_height);glVertex2d(-self.img_half_width,self.img_half_height)
+        glVertex2d(-self.image_width/2,self.image_height/2);glVertex2d(self.image_width/2,self.image_height/2)
+        glVertex2d(self.image_width/2,self.image_height/2);glVertex2d(self.image_width/2,-self.image_height/2)
+        glVertex2d(self.image_width/2,-self.image_height/2);glVertex2d(-self.image_width/2,-self.image_height/2)
+        glVertex2d(-self.image_width/2,-self.image_height/2);glVertex2d(-self.image_width/2,self.image_height/2)
         glEnd()
 
         # switch to 2D for text overlay
@@ -224,30 +235,31 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
     @QtCore.pyqtSlot(str)
     def updateNodeDisplay(self, node_path=None):
-        if node_path and node_path == self.node_path: # ensure we a re updating the same node as shown before
-            print "Updating node display: %s" % node_path
-            self.node.cook()
+        node = hou.node(node_path)
+        if node and node == self.node: # ensure we a re updating the same node as shown before
+            print "Updating node display: %s" % node.path()
+            if node.needsToCook():
+                self.node.cook()
+            
             self.image_width = self.node.xRes()
             self.image_height = self.node.yRes()
-            self.img_half_width = self.image_width / 2.0
-            self.img_half_height = self.image_height / 2.0
             self.rebuild_node_image = True
 
             self.updateGL()
 
     @QtCore.pyqtSlot(str)    
     def setNodeToDisplay(self, node_path=None):
-        if node_path:
-            print "Showing node %s" % node_path
+        node = hou.node(node_path)
+        if node:
+            print "Showing node %s" % node.path()
             node_path = str(node_path)
-            if self.node_path != node_path:
-                self.node = hou.node(node_path)
-                self.node_path = node_path
-                self.node.cook()
+            if self.node != node:
+                self.node = node
+                if node.needsToCook():
+                    self.node.cook()
+                
                 self.image_width = self.node.xRes()
                 self.image_height = self.node.yRes()
-                self.img_half_width = self.image_width / 2.0
-                self.img_half_height = self.image_height / 2.0
                 self.rebuild_node_image = True
   
         else:
@@ -261,9 +273,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.image_width = 1280
         self.image_height = 720
         self.ar = 1.0 * self.image_height / self.image_width
-        self.img_half_width = self.image_width / 2.0
-        self.img_half_height = self.image_height / 2.0
-
+        
     def wheelEvent(self, event):
          # Zoom Factor
         zoomInFactor = 1.05

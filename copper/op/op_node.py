@@ -120,7 +120,10 @@ class OP_Node(OP_Parameters):
 		''' 
 		Call this method to instruct node it needs to recook itself next time needed. For example when parameter was changes
 		'''
-		self._needs_to_cook = on_off 
+		self._needs_to_cook = on_off
+		if on_off == True:
+			from gui.signals import signals
+			signals.copperNodeModified[str].emit(self.path())
 
 	def needsToCook(self):
 		return self._needs_to_cook

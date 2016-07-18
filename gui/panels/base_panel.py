@@ -61,13 +61,14 @@ class NetworkPanel(BasePanel):
     def __init__(self, network_controls=False):
         BasePanel.__init__(self)
         self.signals = gui.signals.Signals() # copy of signals, because gui.signals.signals is a singleton
-        self.path_bar_widget = PathBarWidget(self)
+        self.path_bar_widget = PathBarWidget(self, self)
         self.panel_layout.addWidget(self.path_bar_widget)
 
         # connect global gui signals
         gui.signals.signals.copperNodeCreated.connect(self.copperNodeCreated)
         gui.signals.signals.copperNodeSelected.connect(self.copperNodeSelected)
         gui.signals.signals.copperSetCompositeViewNode.connect(self.copperSetCompositeViewNode)
+        gui.signals.signals.copperNodeModified.connect(self.copperNodeModified)
 
     @classmethod
     def hasNetworkControls(cls):
@@ -104,6 +105,11 @@ class NetworkPanel(BasePanel):
     def copperSetCompositeViewNode(self, node_path = None):
         if not self.path_bar_widget.isPinned():
             self.signals.copperSetCompositeViewNode[str].emit(node_path)
+
+    @QtCore.pyqtSlot(str)
+    def copperNodeModified(self, node_path = None):
+        if not self.path_bar_widget.isPinned():
+            self.signals.copperNodeModified[str].emit(node_path)
 
 
 

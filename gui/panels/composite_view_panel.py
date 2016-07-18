@@ -10,7 +10,7 @@ from PIL import Image
 
 import pyopencl as cl
 
-from copper import engine
+from copper import engine as hou
 from copper.op.node_type_category import Cop2NodeTypeCategory
 from gui.signals import signals
 from gui.widgets import PathBarWidget
@@ -52,10 +52,13 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
         self.node = None
         self.node_path = None
-        self.draw_new_node = False
+        self.rebuild_node_image = False
         self.emptyView()
 
+        # connect panel signals
         self.panel.signals.copperSetCompositeViewNode[str].connect(self.setNodeToDisplay)
+        self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
+
 
     def drawCopNodeImageData(self):
         glDisable( GL_LIGHTING )
@@ -63,13 +66,13 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         # bind proper texture to display
         if self.node:
             # texture from COP_Node iamge data
-            if self.draw_new_node:
+            if self.rebuild_node_image:
                 try:
                     self.buildCopImageDataTexture()
                 except:
                     raise 
 
-                self.draw_new_node = False
+                self.rebuild_node_image = False
 
             glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
 
@@ -206,33 +209,46 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
             print "Node size: %s %s" % (self.node.xRes(), self.node.yRes())
 
-            node_gl_texture = cl.GLTexture(engine.openclContext(), cl.mem_flags.WRITE_ONLY, GL_TEXTURE_2D, 0, self.node_gl_tex_id, 2) 
+            node_gl_texture = cl.GLTexture(hou.openclContext(), cl.mem_flags.WRITE_ONLY, GL_TEXTURE_2D, 0, self.node_gl_tex_id, 2) 
 
             # Aquire OpenGL texture object
-            cl.enqueue_acquire_gl_objects(engine.openclQueue(), [node_gl_texture])
+            cl.enqueue_acquire_gl_objects(hou.openclQueue(), [node_gl_texture])
             
             # copy OpenCL buffer to OpenGl texture
-            cl.enqueue_copy_image(engine.openclQueue(), cl_image_buffer, node_gl_texture, (0,0), (0,0), (self.node.xRes(), self.node.yRes()), wait_for=None)
+            cl.enqueue_copy_image(hou.openclQueue(), cl_image_buffer, node_gl_texture, (0,0), (0,0), (self.node.xRes(), self.node.yRes()), wait_for=None)
 
             # Release OpenGL texturte object
-            cl.enqueue_release_gl_objects(engine.openclQueue(), [node_gl_texture])
-            engine.openclQueue().finish()
+            cl.enqueue_release_gl_objects(hou.openclQueue(), [node_gl_texture])
+            hou.openclQueue().finish()
 
+
+    @QtCore.pyqtSlot(str)
+    def updateNodeDisplay(self, node_path=None):
+        if node_path and node_path == self.node_path: # ensure we a re updating the same node as shown before
+            print "Updating node display: %s" % node_path
+            self.node.cook()
+            self.image_width = self.node.xRes()
+            self.image_height = self.node.yRes()
+            self.img_half_width = self.image_width / 2.0
+            self.img_half_height = self.image_height / 2.0
+            self.rebuild_node_image = True
+
+            self.updateGL()
 
     @QtCore.pyqtSlot(str)    
-    def setNodeToDisplay(self, node_path = None):
+    def setNodeToDisplay(self, node_path=None):
         if node_path:
             print "Showing node %s" % node_path
             node_path = str(node_path)
             if self.node_path != node_path:
-                self.node = engine.node(node_path)
+                self.node = hou.node(node_path)
                 self.node_path = node_path
                 self.node.cook()
                 self.image_width = self.node.xRes()
                 self.image_height = self.node.yRes()
                 self.img_half_width = self.image_width / 2.0
                 self.img_half_height = self.image_height / 2.0
-                self.draw_new_node = True
+                self.rebuild_node_image = True
   
         else:
             self.emptyView()
@@ -293,7 +309,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
     def dragEnterEvent(self, event):
         if event.mimeData().hasFormat("text/plain"):
             node_path = str(event.mimeData().text())
-            node = engine.node(node_path)
+            node = hou.node(node_path)
             if node:
                 if node.type().category().name() == "Cop2":
                     event.acceptProposedAction()

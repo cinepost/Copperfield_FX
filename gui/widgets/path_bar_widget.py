@@ -5,8 +5,9 @@ from copper import engine
 #from copper import parameter
 
 class PathBarWidget(QtGui.QFrame):
-    def __init__(self, parent=None): 
-        QtGui.QFrame.__init__(self, parent)     
+    def __init__(self, parent, panel): 
+        QtGui.QFrame.__init__(self, parent)
+        self.panel = panel  
         self.pinned = False
         self.history = []
         self.history_index = -1
@@ -50,6 +51,9 @@ class PathBarWidget(QtGui.QFrame):
 
         self.buildPathBar(node_path="/obj")
 
+        # connect panel signals
+        self.panel.signals.copperNodeSelected[str].connect(self.nodeSelected)
+
     def historyGoBack(self):
         if self.history_index > 0:
             self.history_index -= 1
@@ -79,6 +83,7 @@ class PathBarWidget(QtGui.QFrame):
     def isPinned(self):
         return self.pinned
 
+    @QtCore.pyqtSlot(str)
     def nodeSelected(self, node_path=None):
         if node_path == "/":
             return

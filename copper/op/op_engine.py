@@ -245,8 +245,7 @@ class Copper_Engine(OP_Network):
 		## Create COP2_File node 
 		file1 = comp.createNode("file")
 		file1.setPos(10, 10)
-		#file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/mythbuster.jpg"})
-		file1.setParms({"size1": 512, "size2": 512})
+		file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/mythbuster.jpg"})
 
 		## Create COP2_blur node
 		blur1 = comp.createNode("blur")

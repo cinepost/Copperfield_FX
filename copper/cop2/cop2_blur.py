@@ -30,8 +30,8 @@ class COP2_Blur(COP2_Node):
 	def parmTemplates(self):
 		templates = super(COP2_Blur, self).parmTemplates()
 		templates += [
-			FloatParmTemplate(name="blursize", label="Size", length=1, default_value=(0,05)),
-			FloatParmTemplate(name="blursizey", label="Y Size", length=1, default_value=(0,05)),
+			FloatParmTemplate(name="blursize", label="Size", length=1, default_value=(0,05), min=0.0, max=1.0),
+			FloatParmTemplate(name="blursizey", label="Y Size", length=1, default_value=(0,05), min=0.0, max=1.0),
 			ToggleParmTemplate(name="useindepy", label="Independent Y control", default_value=False)
 		]
 		

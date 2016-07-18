@@ -27,7 +27,7 @@ class COP2_File(COP2_Node):
 		templates = super(COP2_File, self).parmTemplates()
 		templates += [
 			StringParmTemplate(name="filename", label="File", default_value=("media/default.png",), string_type=StringParmType.FileReference),
-			IntParmTemplate(name="size", label="Size", length=2, default_value=(640,480), naming_scheme=ParmNamingScheme.Base1),
+			IntParmTemplate(name="size", label="Size", length=2, default_value=(512,512), naming_scheme=ParmNamingScheme.Base1),
 			ToggleParmTemplate(name="flipy", label="Flip Image", default_value=False),
 			IntParmTemplate(name='startframe', label='Shift to Start Frame', length=1, naming_scheme=ParmNamingScheme.Base1, default_value=(1,)),
 			IntParmTemplate(name='start', label='File Range Start', length=1, naming_scheme=ParmNamingScheme.Base1, default_value=(1,)),

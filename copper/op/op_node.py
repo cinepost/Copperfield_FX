@@ -1,6 +1,7 @@
 import six
 import multiprocessing
 import logging 
+import datetime
 
 from .base import OpRegistry
 from .op_parameters import OP_Parameters
@@ -15,35 +16,80 @@ class OP_Node(OP_Parameters):
 
 	def __init__(self):
 		OP_Parameters.__init__(self)
+		self._creation_time = datetime.datetime.now()
+		self._hidden = False
 		self._needs_to_cook = True
+		self._selected = False
 		self._bypass = False
 
 		self._inputs = []
 
-		self.pos_x = None
-		self.pos_y = None
-		self.width = 120
-		self.height = 32
-		self.color = (0.4, 0.4, 0.4, 1.0,)
+		self._pos_x = None
+		self._pos_y = None
+		self._width = 120
+		self._height = 32
+		self._color = (0.4, 0.4, 0.4, 1.0,)
+
+	def color(self):
+		'''
+		Return the color of this node’s tile in the network editor.
+		'''
+		return self._color
 
 	def cook(self, force=False, frame_range=()):
 		if self.needsToCook():
 			queue = OpCookingQueue(self)
-			queue.execute()
+			queue.execute(frame_range=frame_range)
 
 	def cookData(self):
 		raise NotImplementedError
 
-	def setPos(self, x, y):
-		self.pos_x = x
-		self.pos_y = y
+	def creationTime(self):
+		'''
+		Return the date and time when the node was created.
+		'''
+		return self._creation_time
 
-	def getPos(self):
-		return (self.pos_x, self.pos_y,)
+	def destroy(self):
+		'''
+		Delete this node.
+		'''
+		raise NotImplementedError
+
+	def errors(self):
+		'''
+		Return the text of any errors from the last cook of this node, or the empty string ("" ) if there were no errors.
+		'''
+		return self._errors
+
+	def setPosition(self, pos):
+		'''
+		Sets the position of this node’s tile in the network editor graph. Raises hou.InvalidInput if the node cannot have the given position.
+		'''
+		self._pos_x = pos[0]
+		self._pos_y = pos[1]
+
+	def position(self):
+		'''
+		Return the position of this node’s tile in the network editor graph as a Vector2 . See also move() and setPosition() .
+		'''
+		return (self._pos_x, self._pos_y)
 
 	def moveToGoodPosition(self):
 		'''Moves node in a good place among it's siblings. Used to arrange nodes in a network for the first time. Or just auto place node.'''
 		raise NotImplementedError
+
+	def hide(self, on):
+		'''
+		Hide or show a node in the network editor. See hou.Node.isHidden for more information about hidden nodes.
+		'''
+		self._hidden = on
+
+	def isHidden(self):
+		'''
+		Return whether the node is hidden in the network editor. Note that Houdini also uses the term "exposed" to refer to nodes that are not hidden.
+		'''
+		return self._hidden
 
 	@classmethod
 	def isNetwork(cls):
@@ -57,6 +103,12 @@ class OP_Node(OP_Parameters):
 	@classmethod
 	def isManager(cls):
 		raise NotImplementedError
+
+	def isSelected(self):
+		'''
+		Return whether this node is selected.
+		'''
+		return self._selected
 
 	@classmethod
 	def iconName(cls):
@@ -79,6 +131,13 @@ class OP_Node(OP_Parameters):
 
 		return inp.getNode()			
 
+	def inputAncestrors(self):
+		ancestors += self.inputs()
+		if ancestors:
+			ancestors + [inp.inputAncestrors() for inp in self.inputs()]
+
+		return ancestors
+
 	def inputNames(self):
 		""" Returns dict of input names eg: ["Input 1", "Input 2"] """
 		return tuple([inp.name() for inp in self._inputs])
@@ -88,6 +147,9 @@ class OP_Node(OP_Parameters):
 
 	def inputConnectors(self):
 		return []
+
+	def isCurrent(self):
+		raise NotImplementedError
 
 	def outputNames(self):
 		return []
@@ -105,6 +167,19 @@ class OP_Node(OP_Parameters):
 			raise
 
 		inp.setNode(node)
+
+	def setSelected(on, clear_all_selected=False, show_asset_if_selected=False):
+		'''
+		Select or deselect this node, optionally deselecting all other selected nodes in this network. If show_asset_if_selected is True, 
+		then the panes will show the top-level asset of the selected node instead.
+		'''
+		self._selected = on
+
+	def size(self):
+		'''
+		Return the size of this node’s tile in the network editor graph as a Vector2 .
+		'''
+		return (self._width, self._height)
 
 	@classmethod
 	def type(cls):
@@ -125,6 +200,11 @@ class OP_Node(OP_Parameters):
 			from gui.signals import signals
 			signals.copperNodeModified[str].emit(self.path())
 
-	def needsToCook(self):
+	def needsToCook(self, time=hou.time()):
 		return self._needs_to_cook
 
+	def warnings(self):
+		'''
+		Return the text of any warnings from the last cook of this node, or the empty string ("" ) if there were no warnings.			
+		'''
+		return self._warnings

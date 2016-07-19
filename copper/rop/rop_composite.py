@@ -35,23 +35,7 @@ class ROP_Composite(ROP_Node):
 	def renderFrame(self, frame=None):
 		if frame:
 			output_node = self.engine.node(self.parm("coppath").evalAsString())
-			self._renderToFile(output_node, self.parm("copoutput").evalAsStringAtFrame(frame), frame=frame)
-
-	def _renderToFile(self, node, filename, frame = None):
-		if frame:
-			render_frame = frame
-		else:
-			render_frame = self.frame()
-
-		
-		print "Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), filename)
-		buff = node.getOutHostBuffer()
-
-		image = Image.frombuffer('RGBA', node.shape(), buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
-
-		if "lin" in sys.platform :
-			# Flip image vertically
-			image = image.transpose(Image.FLIP_TOP_BOTTOM)
-
-		image.save(filename, 'JPEG', quality=100)
+			if output_node:
+				filename = self.parm("copoutput").evalAsStringAtFrame(frame)
+				output_node.saveImage(filename, (frame, frame, 1))
             

@@ -25,7 +25,11 @@ class OP_Network(OP_Node):
 		self.__parent__ = parent
 		self.__network_label__ = None
 
-	def asCode(self, brief=False, recurse=False):
+	def asCode(self, brief=False, recurse=False, save_channels_only=False, save_creation_commands=True, save_keys_in_frames=False, save_outgoing_wires=False, 
+		save_parm_values_only=False, save_spare_parms=True, function_name=None):
+		'''
+		Prints the Python code necessary to recreate a node.
+		'''
 		code = ""
 		if self.parent() is None:
 			# We are the root or base manager, so lets skip them
@@ -49,13 +53,22 @@ class OP_Network(OP_Node):
 		return code
 
 	def children(self):
-		return [self.__node_dict__[node_name] for node_name in self.__node_dict__]
+		'''
+		Return a list of nodes that are children of this node. Using the file system analogy, a node’s children are like the contents of a folder/directory.
+		'''
+		return tuple([self.__node_dict__[node_name] for node_name in self.__node_dict__])
 
 	@classmethod
 	def childTypeCategory(cls):
+		'''
+		Return the hou.NodeTypeCategory corresponding to the children of this node. For example, if this node is a geometry object, the children are SOPs. If it is an object subnet, the children are objects.
+		'''
 		raise NotImplementedError
 
-	def createNode(self, node_type_name, node_name=None):
+	def createNode(self, node_type_name, node_name=None, run_init_scripts=True, load_contents=True, exact_type_name=False):
+		'''
+		Create a new node of type node_type_name as a child of this node.
+		'''
 		node = None
 		if not self.isNetwork():
 			raise BaseException("Unable to create node of type %s. %s is not a network manager !!!" % (node_type_name, self))
@@ -82,6 +95,12 @@ class OP_Network(OP_Node):
 			signals.copperNodeCreated[str].emit(node.path())
 		
 		return node
+
+	def createOutputNode(node_type_name, node_name=None, run_init_scripts=True, load_contents=True, bool exact_type_name=False):
+		'''
+		Create a new node and connect its first input to this node’s (first) output. Return the new node.
+		'''
+		raise NotImplementedError
 
 	def dumpParms(self):
 		dump = {}
@@ -234,6 +253,5 @@ class OP_Network(OP_Node):
 			return node		
 
 	def flush(self):
-		self.__node_dict__ = {}				
-
+		self.__node_dict__ = {}
 

@@ -31,11 +31,18 @@ class OP_Parameters(object):
 				self.__parm_groups__[parm_template] += [self.__parms__[parm_name]]
 				#print "Added parameter %s %s" % (parm_name, parm)
 
-	def addSpareParmTuple(self, parm_template=None, folder_path = []):
-		self.addParmTuple(parm_template, folder_path, spare=True)
-
 	def addSpareParmFolder(folder_name, in_folder=[]):
+		'''
+		Adds a folder to the spare parameters. 
+		'''
 		pass
+
+	def addSpareParmTuple(self, parm_template=None, folder_path = []):
+		'''
+		Add a spare parameter tuple to the end of the parameters on the node. If in_folder is not an empty sequence, this method adds the parameters 
+		to the end of the parameters in a particular folder.
+		'''
+		self.addParmTuple(parm_template, folder_path, spare=True)
 
 	def parm(self, parm_path):
 		if parm_path[0] == "/":

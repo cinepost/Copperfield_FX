@@ -21,8 +21,8 @@ class COP2_Node(OP_Network):
 	def __init__(self, engine, parent):
 		super(COP2_Node, self).__init__(engine, parent)
 
-		self.image_width	= None	
-		self.image_height	= None
+		self._display_flag = False
+		self._render_flag = False
 
 		self.devOutBuffer = None # Device output buffer. This buffer holds thre result image array
 
@@ -42,14 +42,38 @@ class COP2_Node(OP_Network):
 		return templates
 
 	def xRes(self):
+		'''
+		Returns the x-resolution of the node’s image for the current frame. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
+		'''
 		raise NotImplementedError
 
 	def yRes(self):
+		'''
+		Returns the y-resolution of the node’s image for the current frame. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
+		'''
 		raise NotImplementedError
 
-	def imageBounds(self):
+	def imageBounds(self, plane="C"):
+		'''
+		Returns the x and y boundaries of the given plane in the form of (xmin, ymin, xmax, ymax). The value of the plane argument is the plane name.
+		By default, the image bounds of the color plane is returned.
+		Note that the image bounds is not the same as the image resolution. For example, the image bounds for a Font COP is the bounding rectangle around the displayed letters 
+		while the resolution is the size of the node’s image.
+		Note that the returned image bounds is for the current frame.
+		Raises ValueError if plane is None or empty. Raises hou.OperationFailed if the node could not be cooked or opened for processing. 
+		Raises hou.OperationFailed if the given plane does not exist.
+		'''
 		return (0, 0, self.xRes(), self.yRes())
-		
+
+	def depth(self,plane):
+		'''
+		Return the data format used to represent one component of one pixel in the given image plane.
+		For example, if the depth of the "C" (color) plane is hou.imageDepth.Int8, each of the red, green, and blue components is stored as an (unsigned) 8-bit integer, 
+		occupying one byte. If, for example, it is instead hou.imageDepth.Float32, each of the red, green, and blue components is a 32-bit float and occupies 4 bytes 
+		(12 bytes total for all 3 components combined).
+		'''
+		return NotImplementedError
+
 	def shape(self):
 		return (self.xRes(), self.yRes())
 
@@ -68,11 +92,48 @@ class COP2_Node(OP_Network):
 	def pitch(self):
 		return self.width * 16
 
+	def isDisplayFlagSet(self):
+		'''
+		Returns True if the node’s display flag is turned on. Returns False otherwise.
+		'''
+		return self._display_flag
+
+	def isRenderFlagSet(self):
+		'''
+		Turns the node’s render flag on or off. The render flag controls which node in a compositing network will be rendered to /hom/hou/mplay or to disk. 
+		The value of the on argument must be True or False.
+		Raises hou.PermissionError if the node is unwritable.
+		'''
+		return self._render_flag
+
 	def isTimeDependent(self):
 		return False		
 
 	def planes(self):
-		return self.__planes__.keys()
+		'''
+		Returns a tuple of plane names in the node’s image sequence. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
+		'''
+		return tuple(self.__planes__.keys())
+
+	def setDisplayFlag(self, on):
+		self._display_flag = on
+
+	def setRenderFlag(self, on):
+		self._render_flag = on
+
+	def saveImage(file_name, frame_range=()):
+		for frame in frame_range:
+			print "Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), filename)
+			
+			if self.needsToCook():
+				self.cook()
+
+			buff = node.getOutHostBuffer()
+			image = Image.frombuffer('RGBA', node.shape(), buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
+
+			if "lin" in sys.platform : image = image.transpose(Image.FLIP_TOP_BOTTOM) # Flip image vertically
+
+			image.save(filename, 'JPEG', quality=100)
 
 	def getPlane(self, plane_name):
 		return self.__planes__.get(plane_name)	

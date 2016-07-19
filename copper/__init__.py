@@ -24,4 +24,4 @@ def CreateEngine(device_type = None, device_index=None):
 	print "Creating engine instance of type: %s" % device_type
 	return Copper_Engine(device_type = device_type, device_index=device_index, cl_path=settings.cl_path)
 
-engine = CreateEngine("GPU")
+engine = CreateEngine("CPU",0)

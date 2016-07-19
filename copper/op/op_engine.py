@@ -15,7 +15,7 @@ from copper.managers import OBJ_Network, COP_Network, ROP_Network
 from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
 
-from copper.parm_template import *
+from copper import parm_template
 
 class Copper_Engine(OP_Network):
 	__base__ = True
@@ -24,17 +24,17 @@ class Copper_Engine(OP_Network):
 	filters		= {}
 	network_cb  = None
 
-	parmLook = ParmLookScheme
-	parmNamingScheme = ParmNamingScheme
-	parmTemplateType = ParmTemplateType
-	stringParmType = StringParmType
+	parmLook = parm_template.ParmLookScheme
+	parmNamingScheme = parm_template.ParmNamingScheme
+	parmTemplateType = parm_template.ParmTemplateType
+	stringParmType = parm_template.StringParmType
 
 	class NodeType(NodeTypeBase):
 		icon_name = 'NETWORKS_root'
 		type_name = 'root'
 		category = DirectorNodeTypeCategory
 
-	def __init__(self, device_type="GPU", device_index=None, cl_path=""): # "cpu" or "gpu" here or "ALL"
+	def __init__(self, device_type="CPU", device_index=None, cl_path=""): # "cpu" or "gpu" here or "ALL"
 		super(Copper_Engine, self).__init__(self, None) # base node is the engine itself, therefore it has no parent
 		self._name = "/"
 		self.__time__= 0
@@ -104,7 +104,7 @@ class Copper_Engine(OP_Network):
 	def have_gl(self):
 		return cl.have_gl()	
 
-	def openclContext(self, device_index=None):
+	def openclContext(self, device_index=0):
 		if not self._cl_ctx:
 			if device_index:
 				self._cl_ctx = cl.Context(	properties=get_gl_sharing_context_properties(),

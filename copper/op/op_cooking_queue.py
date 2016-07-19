@@ -12,7 +12,7 @@ class OpCookingQueue(object):
 	def cook(self, lock, op):
 		return op.cookData(lock)
 
-	def execute(self):
+	def execute(self, frame_range=()):
 		print "Executing queues:"
 		for queue in self.op_queues:
 			print "Executing queue: %s" % [op.path() for op in queue]

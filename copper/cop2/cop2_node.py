@@ -43,13 +43,13 @@ class COP2_Node(OP_Network):
 
 	def xRes(self):
 		'''
-		Returns the x-resolution of the node’s image for the current frame. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
+		Returns the x-resolution of the node's image for the current frame. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
 		'''
 		raise NotImplementedError
 
 	def yRes(self):
 		'''
-		Returns the y-resolution of the node’s image for the current frame. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
+		Returns the y-resolution of the node's image for the current frame. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
 		'''
 		raise NotImplementedError
 
@@ -58,7 +58,7 @@ class COP2_Node(OP_Network):
 		Returns the x and y boundaries of the given plane in the form of (xmin, ymin, xmax, ymax). The value of the plane argument is the plane name.
 		By default, the image bounds of the color plane is returned.
 		Note that the image bounds is not the same as the image resolution. For example, the image bounds for a Font COP is the bounding rectangle around the displayed letters 
-		while the resolution is the size of the node’s image.
+		while the resolution is the size of the node's image.
 		Note that the returned image bounds is for the current frame.
 		Raises ValueError if plane is None or empty. Raises hou.OperationFailed if the node could not be cooked or opened for processing. 
 		Raises hou.OperationFailed if the given plane does not exist.
@@ -94,13 +94,13 @@ class COP2_Node(OP_Network):
 
 	def isDisplayFlagSet(self):
 		'''
-		Returns True if the node’s display flag is turned on. Returns False otherwise.
+		Returns True if the node's display flag is turned on. Returns False otherwise.
 		'''
 		return self._display_flag
 
 	def isRenderFlagSet(self):
 		'''
-		Turns the node’s render flag on or off. The render flag controls which node in a compositing network will be rendered to /hom/hou/mplay or to disk. 
+		Turns the node's render flag on or off. The render flag controls which node in a compositing network will be rendered to /hom/hou/mplay or to disk. 
 		The value of the on argument must be True or False.
 		Raises hou.PermissionError if the node is unwritable.
 		'''
@@ -111,7 +111,7 @@ class COP2_Node(OP_Network):
 
 	def planes(self):
 		'''
-		Returns a tuple of plane names in the node’s image sequence. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
+		Returns a tuple of plane names in the node's image sequence. Raises hou.OperationFailed if the node could not be cooked or opened for processing.
 		'''
 		return tuple(self.__planes__.keys())
 

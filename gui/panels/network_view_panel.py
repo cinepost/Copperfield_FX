@@ -128,11 +128,11 @@ class NodeItem(QtGui.QGraphicsItem):
         scene = self.scene()
         items_rect = scene.itemsBoundingRect()
 
-        if self.node.pos_x is None or self.node.pos_y is None:
-            self.node.pos_x = items_rect.right() + 20
-            self.node.pos_y = items_rect.bottom() + 20
+        pos = self.node.position()
+        if pos[0] is None or pos[1] is None:
+            self.node.setPosition((items_rect.right() + 20, items_rect.bottom() + 20))
 
-        self.setPos(self.node.pos_x, self.node.pos_y)
+        self.setPos(self.node.position()[0], self.node.position()[1])
 
     def paint(self, painter, option, widget=None):
         device_scale_factor = 1.0 / painter.deviceTransform().m11()

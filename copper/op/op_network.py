@@ -54,7 +54,7 @@ class OP_Network(OP_Node):
 
 	def children(self):
 		'''
-		Return a list of nodes that are children of this node. Using the file system analogy, a node’s children are like the contents of a folder/directory.
+		Return a list of nodes that are children of this node. Using the file system analogy, a node's children are like the contents of a folder/directory.
 		'''
 		return tuple([self.__node_dict__[node_name] for node_name in self.__node_dict__])
 
@@ -96,9 +96,9 @@ class OP_Network(OP_Node):
 		
 		return node
 
-	def createOutputNode(node_type_name, node_name=None, run_init_scripts=True, load_contents=True, bool exact_type_name=False):
+	def createOutputNode(node_type_name, node_name=None, run_init_scripts=True, load_contents=True, exact_type_name=False):
 		'''
-		Create a new node and connect its first input to this node’s (first) output. Return the new node.
+		Create a new node and connect its first input to this node's (first) output. Return the new node.
 		'''
 		raise NotImplementedError
 

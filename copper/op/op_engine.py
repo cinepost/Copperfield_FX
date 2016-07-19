@@ -37,8 +37,8 @@ class Copper_Engine(OP_Network):
 	def __init__(self, device_type="CPU", device_index=None, cl_path=""): # "cpu" or "gpu" here or "ALL"
 		super(Copper_Engine, self).__init__(self, None) # base node is the engine itself, therefore it has no parent
 		self._name = "/"
-		self.__time__= 0
-		self.__frame__= 0
+		self._time = 0.0
+		self._frame = 0
 		self.__fps__ = 25.0
 		self._cl_ctx = None
 		self._cl_queue = None
@@ -123,13 +123,13 @@ class Copper_Engine(OP_Network):
 		return self._cl_queue
 
 	def fps(self):
-		return self.__fps__
+		return self._fps
 
 	def time(self):
-		return self.__time__
+		return self._time
 
 	def frame(self):
-		return self.__frame__		
+		return self._frame		
 
 	def setFps(self, fps):
 		self.__fps__ = fps	
@@ -244,7 +244,7 @@ class Copper_Engine(OP_Network):
 
 		## Create COP2_File node 
 		file1 = comp.createNode("file")
-		file1.setPos(10, 10)
+		file1.setPosition((10, 10))
 		file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/mythbuster.jpg"})
 
 		## Create COP2_blur node

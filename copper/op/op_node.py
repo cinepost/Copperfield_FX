@@ -32,7 +32,7 @@ class OP_Node(OP_Parameters):
 
 	def color(self):
 		'''
-		Return the color of this node’s tile in the network editor.
+		Return the color of this node's tile in the network editor.
 		'''
 		return self._color
 
@@ -64,14 +64,14 @@ class OP_Node(OP_Parameters):
 
 	def setPosition(self, pos):
 		'''
-		Sets the position of this node’s tile in the network editor graph. Raises hou.InvalidInput if the node cannot have the given position.
+		Sets the position of this node's tile in the network editor graph. Raises hou.InvalidInput if the node cannot have the given position.
 		'''
 		self._pos_x = pos[0]
 		self._pos_y = pos[1]
 
 	def position(self):
 		'''
-		Return the position of this node’s tile in the network editor graph as a Vector2 . See also move() and setPosition() .
+		Return the position of this node's tile in the network editor graph as a Vector2 . See also move() and setPosition() .
 		'''
 		return (self._pos_x, self._pos_y)
 
@@ -177,7 +177,7 @@ class OP_Node(OP_Parameters):
 
 	def size(self):
 		'''
-		Return the size of this node’s tile in the network editor graph as a Vector2 .
+		Return the size of this node's tile in the network editor graph as a Vector2 .
 		'''
 		return (self._width, self._height)
 
@@ -200,7 +200,10 @@ class OP_Node(OP_Parameters):
 			from gui.signals import signals
 			signals.copperNodeModified[str].emit(self.path())
 
-	def needsToCook(self, time=hou.time()):
+	def needsToCook(self, time=None):
+		if not time:
+			cook_time = self.root().time()
+			
 		return self._needs_to_cook
 
 	def warnings(self):

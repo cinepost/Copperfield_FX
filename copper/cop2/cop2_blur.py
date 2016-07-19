@@ -63,7 +63,7 @@ class COP2_Blur(COP2_Node):
 				numpy.int32(self.width),
 				numpy.int32(self.height ),
 			)
-			exec_evt.wait()
+			#exec_evt.wait()
 			
 			exec_evt = self.program.fast_blur_v(cl_queue, (self.width, self.height), None, 
 				self.devTmpBuffer,     

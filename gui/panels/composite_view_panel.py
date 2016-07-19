@@ -74,9 +74,26 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
                 self.rebuild_node_image = False
 
             # draw node extents
-            bounds = self.node.imageBounds()
+            bounds = list(self.node.imageBounds())
+            bounds[0] -= self.image_width/2
+            bounds[2] -= self.image_width/2
+            bounds[1] -= self.image_height/2
+            bounds[3] -= self.image_height/2
 
-            glColor(.15, .15, .85)
+
+            #draw bounds grid
+            glColor(0.25, 0.25, 0.25)
+            glBegin(GL_LINES)
+            for dx in range(1, bounds[2] - bounds[0], 256):
+                glVertex2d(bounds[0] + dx,bounds[1]);glVertex2d(bounds[0] + dx,bounds[3])
+
+            for dy in range(1, bounds[3] - bounds[1], 256):
+                glVertex2d(bounds[0], bounds[1] + dy);glVertex2d(bounds[2], bounds[1] + dy)
+
+            glEnd()
+
+
+            glColor(.05, .15, .85)
             glBegin(GL_LINES)
             glVertex2d(bounds[0],bounds[3]);glVertex2d(bounds[2],bounds[3])
             glVertex2d(bounds[2],bounds[3]);glVertex2d(bounds[2],bounds[1])
@@ -87,6 +104,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
             # Draw actual image data
             glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
 
+            glColor(1.0, 1.0, 1.0)
             glBegin(GL_QUADS)
             glTexCoord2f(0.0,0.0)
             glVertex2d(-self.image_width/2, self.image_height/2)

@@ -1,4 +1,4 @@
-__constant sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_LINEAR;
+__constant sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_ADDRESS_CLAMP_TO_EDGE | CLK_FILTER_LINEAR;
 
 __kernel void fast_blur_h(
         __read_only image2d_t image_in,
@@ -6,37 +6,32 @@ __kernel void fast_blur_h(
         float blur_diameter, int img_width, int img_height)
       {
 
-    int x = get_global_id(0);
+	int x = get_global_id(0);
 	int y = get_global_id(1);
-    
+	float2 sample_coord = (float2)(x + .5f, y + .5f);
+
+	float4 sum = read_imagef(image_in, sampler, sample_coord); // central pixel of a blur kernel
+
     if(blur_diameter > 0.0f) {
-    	
-    	float2 coord = (float2)((float)x / (float)img_width, (float)y / (float)img_height);
+    	float blur_radius_in_pixels = img_width * (blur_diameter / 2.0);
+		int side_samples = floor(blur_radius_in_pixels); // half number of full samples, e.g. for a blur diameter 5.2 pixels side_samples would be 2.
 
-		int x_samples = img_width * blur_diameter + 2;
-		float dx = blur_diameter / x_samples;
-	
-		float4 sum = 0.f;
-		float ww = 0.f;
-		float dist = 0.f;
-		float2 sample_coord;
-		float w;
+		float total_weights = 1.f; // the weight of a central sample
+		float sample_weight;
 
-		for(int a = 0; a < x_samples; a++){
-			sample_coord = coord;
-			dist = a * dx - blur_diameter / 2.f;
-			sample_coord.x += dist;
-			w = 1.f - fabs(dist / (blur_diameter / 2.f));
-			ww += w;
-			sum += read_imagef(image_in, sampler, sample_coord) * w;
+		// sampling left and right side_samples
+		for(int i = 1; i <= side_samples; i++){
+			sample_weight = (side_samples - i) / blur_radius_in_pixels;
+			total_weights += sample_weight * 2;
+			sum += read_imagef(image_in, sampler, sample_coord + (float2)(i, 0)) * sample_weight;
+			sum += read_imagef(image_in, sampler, sample_coord - (float2)(i, 0)) * sample_weight;
 		}
 
-    	sum /= ww;
+    	sum /= total_weights;
     	write_imagef(image_out, (int2)(x, y), sum);
 	
-	}else{
-		write_imagef(image_out, (int2)(x, y), read_imagef(image_in, sampler, (int2)(x, y)));
 	}
+	write_imagef(image_out, (int2)(x, y), sum);
 }
 
 __kernel void fast_blur_v(
@@ -47,35 +42,28 @@ __kernel void fast_blur_v(
 
     int x = get_global_id(0);
 	int y = get_global_id(1);
+	float2 sample_coord = (float2)(x + .5f, y + .5f);
+    
+	float4 sum = read_imagef(image_in, sampler, sample_coord); // central pixel of a blur kernel
 
-	if(blur_diameter > 0.0f) {
+    if(blur_diameter > 0.0f) {
+    	float blur_radius_in_pixels = img_height * (blur_diameter / 2.0);
+		int side_samples = floor(blur_radius_in_pixels); // half number of full samples, e.g. for a blur diameter 5.2 pixels side_samples would be 2.
 
-		float2 coord = (float2)((float)x / (float)img_width, (float)y / (float)img_height);
+		float total_weights = 1.f; // the weight of a central sample
+		float sample_weight;
 
-		int y_samples = img_height * blur_diameter + 2;
-		float dy = blur_diameter / y_samples;
-
-		float4 sum = 0.f;
-		float ww = 0.f;
-		float dist = 0.f;
-		float2 sample_coord;
-		float w;
-		for(int a = 0; a < y_samples; a++){
-			sample_coord = coord;
-			dist = a * dy - blur_diameter / 2.f;
-			sample_coord.y += dist;
-			w = 1.f - fabs(dist / (blur_diameter / 2.f));
-			ww += w;
-			sum += read_imagef(image_in, sampler, sample_coord) * w;
+		// sampling left and right side_samples
+		for(int i = 1; i <= side_samples; i++){
+			sample_weight = (side_samples - i) / blur_radius_in_pixels;
+			total_weights += sample_weight * 2;
+			sum += read_imagef(image_in, sampler, sample_coord + (float2)(0 , i)) * sample_weight;
+			sum += read_imagef(image_in, sampler, sample_coord - (float2)(0 , i)) * sample_weight;
 		}
 
-		sum /= ww;
-		//float4 zero = 0.f;
-		//float4 one = 1.f;
-		//sum = clamp(sum, zero, one);
-		write_imagef(image_out, (int2)(x, y), sum);
-
-	}else{
-		write_imagef(image_out, (int2)(x, y), read_imagef(image_in, sampler, (int2)(x, y)));
+    	sum /= total_weights;
+    	write_imagef(image_out, (int2)(x, y), sum);
+	
 	}
+	write_imagef(image_out, (int2)(x, y), sum);
 }

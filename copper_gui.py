@@ -13,6 +13,7 @@ os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     app = QtGui.QApplication(sys.argv)
+    QtGui.QFontDatabase.addApplicationFont('media/fonts')
     app.setStyle(QtGui.QStyleFactory.create('Plastique'))
     app.setWindowIcon(QtGui.QIcon('icons/copper_icon.png'))
 

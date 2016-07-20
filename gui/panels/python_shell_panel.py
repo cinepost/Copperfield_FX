@@ -10,6 +10,8 @@ from PyQt4.QtCore import *
 from copper import engine
 from base_panel import BasePanel
 
+from .python_syntax_highlighter import PythonHighlighter
+
 class PythonShellPanel(BasePanel):
     def __init__(self):
         BasePanel.__init__(self)
@@ -53,7 +55,7 @@ class PythonShellWidget(QtGui.QTextEdit):
     def printBanner(self):
         self.write(sys.version)
         self.write(' on ' + sys.platform + '\n')
-        self.write('Copper python interpreter on PyQt ' + PYQT_VERSION_STR + '\n')
+        self.write('CopperFX python interpreter on PyQt ' + PYQT_VERSION_STR + '\n')
         msg = 'Type !hist for a history view and !hist(n) history index recall'
         self.write(msg + '\n')
 

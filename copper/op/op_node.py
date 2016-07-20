@@ -117,11 +117,8 @@ class OP_Node(OP_Parameters):
 	def hasInputs(self):
 		if len(self._inputs) > 0:
 			return True
-		else:
-			return False
 
-	def inputs(self):
-		return tuple(inp.getNode() for inp in self._inputs)
+		return False
 
 	def input(self, input_index):
 		try:
@@ -129,12 +126,23 @@ class OP_Node(OP_Parameters):
 		except:
 			raise BaseException("Wrong input index %s specified for node %s !!!") % (input_index, self)
 
-		return inp.getNode()			
+		return inp.getNode()	
 
-	def inputAncestrors(self):
-		ancestors += self.inputs()
+	def inputs(self):
+		'''
+		Return a tuple of the nodes connected to this node's inputs.
+		'''
+		return tuple(inp.getNode() for inp in self._inputs)		
+
+	def inputAncestors(self, include_ref_inputs=True, follow_subnets=False):
+		'''
+		Return a tuple of all input ancestors of this node. If include_ref_inputs is False, then reference inputs are not traversed.
+		If follow_subnets is True, then instead of treating subnetwork nodes as a single node, we also traverse its children starting with its display node.
+		'''
+		ancestors = self.inputs()
 		if ancestors:
-			ancestors + [inp.inputAncestrors() for inp in self.inputs()]
+			for ancestor in ancestors:
+				ancestors += ancestor.inputAncestors(include_ref_inputs, follow_subnets)
 
 		return ancestors
 
@@ -203,7 +211,7 @@ class OP_Node(OP_Parameters):
 	def needsToCook(self, time=None):
 		if not time:
 			cook_time = self.root().time()
-			
+
 		return self._needs_to_cook
 
 	def warnings(self):

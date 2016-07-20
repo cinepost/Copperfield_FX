@@ -66,13 +66,16 @@ QCheckBox::indicator {
 }
 
 QLineEdit {
-	color: #fff;
+	font-family: "DejaVu Sans Mono";
+	font-size: 10px;
+	color: #eee;
 	border: 2px solid #222;
 	border-style: groove;
-	margin: 0px;
+	margin: 0;
 	height: 18px;
 	background-color: #101010;
 	outline: 0;
+	qproperty-alignment: AlignLeft AlignCenter;
 }
 
 QLineEdit[readOnly="true"] { background-color: gray; }
@@ -92,6 +95,10 @@ QComboBox QAbstractItemView {
 
 QGraphicsView, QScrollArea{
 	border: none;
+}
+
+QTextEdit {
+	font-family: "DejaVu Sans Mono";
 }
 
 /* QToolButton Menu */
@@ -535,7 +542,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 
 /* PythonShell */
 QTextEdit {
-	font-family: "Arial";
+	font-size: 12px;
 	color:	#aaa;
 	background-color: #080808;
 	border: none;

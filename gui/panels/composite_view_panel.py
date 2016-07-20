@@ -197,11 +197,12 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glEnable(GL_BLEND)
         glDisable(GL_DEPTH_TEST)
         glColor4f(1.0, 1.0, 1.0, 1.0)
+        glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, -1) # Uncomment to keep texture sharp
 
         # bind default texture here  
         self.null_gl_tex_id = self.bindTexture(QtGui.QImage("media/deftex_02.jpg"), GL_TEXTURE_2D, GL_RGBA) 
         glBindTexture(GL_TEXTURE_2D, self.null_gl_tex_id)
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
+        glGenerateMipmap(GL_TEXTURE_2D)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
@@ -210,11 +211,10 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
         self.node_gl_tex_id = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
-        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE )
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
         glBindTexture(GL_TEXTURE_2D, 0)
 
     def reset_view(self):
@@ -231,10 +231,9 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
             # bind texture from current compy node
             cl_image_buffer = self.node.getCookedData()
 
-            glBindTexture(GL_TEXTURE_2D, 0)
             glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.xRes(),  self.node.yRes(), 0, GL_RGB, GL_FLOAT, None)
-            glBindTexture(GL_TEXTURE_2D, 0)
+
 
             print "Node size: %s %s" % (self.node.xRes(), self.node.yRes())
 
@@ -249,6 +248,13 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
             # Release OpenGL texturte object
             cl.enqueue_release_gl_objects(hou.openclQueue(), [node_gl_texture])
             hou.openclQueue().finish()
+
+            glGenerateMipmap(GL_TEXTURE_2D)  #Generate mipmaps now!!!
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
+            glBindTexture(GL_TEXTURE_2D, 0)
 
 
     @QtCore.pyqtSlot(str)

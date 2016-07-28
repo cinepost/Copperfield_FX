@@ -229,11 +229,18 @@ class NodeItem(QtGui.QGraphicsItem):
 
         elif change == QtGui.QGraphicsItem.ItemPositionChange:
             # snap to grid code here
+            scene = self.scene()
             new_pos = value.toPointF()
-            new_pos.setX(0)
-            print "ItemPositionChange %s" % new_pos
+
+            snapped_x = round((new_pos.x() / scene.gridSizeWidth)) * scene.gridSizeWidth
+            snapped_y = round((new_pos.y() / scene.gridSizeHeight)) * scene.gridSizeHeight
+            
+            if abs(new_pos.x() - snapped_x) < 5: new_pos.setX(snapped_x)
+            if abs(new_pos.y() - snapped_y) < 5: new_pos.setY(snapped_y)
+            
+
+            #print "ItemPositionChange %s" % new_pos
             value = QtCore.QVariant(new_pos)
-            #return new_pos
 
         return super(NodeItem, self).itemChange(change, value)
 

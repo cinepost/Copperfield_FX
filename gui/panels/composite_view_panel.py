@@ -163,9 +163,9 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glLoadIdentity()
         glOrtho( 0, self.view_width, self.view_height, 0, -1, 1 )
 
-        if self.node_path:
+        if self.node:
             glColor3f(0, 1, 0)
-            self.renderText( 10, 20, self.node_path, self.font )
+            self.renderText( 10, 20, self.node.path(), self.font )
 
             glColor3f(.5, .5, .5)
             self.renderText( 10, 34, "%sx%s" % (self.image_width, self.image_height), self.font )

@@ -115,12 +115,12 @@ class NodeItem(QtGui.QGraphicsItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 
         # create input sockets
-        for socket in [1]:
+        for socket in self.node.inputs():
             socket_item = NodeSocketItem(self, socket_type=NodeSocketItem.INPUT_SOCKET, stack_side=NodeSocketItem.STACK_TOP)
             self._inputs.append(socket_item)
 
         # create output sockets
-        for socket in [1]:
+        for socket in self.node.outputs():
             socket_item = NodeSocketItem(self,  socket_type=NodeSocketItem.OUTPUT_SOCKET, stack_side=NodeSocketItem.STACK_BOTTOM)
             self._outputs.append(socket_item)
 
@@ -272,8 +272,13 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         node = engine.node(node_path)
         if node:
             self.clear()
+            # build node boxes
             for child in node.children():
                 self.addNode(child.path())
+
+            # build links
+            for child in node.children():
+                pass
 
     def zoom(self, zoomFactor):
         self.zoomLevel *= zoomFactor
@@ -353,7 +358,7 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
 
         ## As a debug we always set new panel widget to "/"
-        self.setNetworkLevel("/obj")
+        self.setNetworkLevel("/img")
 
         ## Connect panel signals
         self.panel.signals.copperNodeCreated[str].connect(self.copperNodeCreated)

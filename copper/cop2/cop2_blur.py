@@ -3,7 +3,7 @@ import numpy
 
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import Cop2NodeTypeCategory
-from copper.op.op_input import OP_Input
+from copper.op.op_connection import OP_Connection
 from copper.cop2.cop2_node import COP2_Node
 from copper import parameter
 
@@ -20,9 +20,12 @@ class COP2_Blur(COP2_Node):
 		super(COP2_Blur, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_blur.cl")
 		self._inputs = (
-			OP_Input("Input 1"),
+			OP_Connection("input1"),
 		)
-
+		self._outputs = (
+			OP_Connection("output1"),
+		)
+		
 	@classmethod
 	def label(cls):
 		return "Blur"

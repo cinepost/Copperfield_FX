@@ -7,6 +7,8 @@ class OBJ_Node(OP_Network):
 	
 	def __init__(self, engine, parent):
 		super(OBJ_Node, self).__init__(engine, parent)
+		self._render_node = None
+		self._display_node = None
 
 	def parmTemplates(self):
 		templates = super(OBJ_Node, self).parmTemplates()
@@ -21,8 +23,8 @@ class OBJ_Node(OP_Network):
 
 	@classmethod
 	def renderNode(cls):
-		raise NotImplementedError
+		return self._render_node
 
 	@classmethod
 	def displayNode(cls):
-		raise NotImplementedError
+		return self._display_node

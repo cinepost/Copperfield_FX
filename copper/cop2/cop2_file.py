@@ -8,6 +8,7 @@ import logging
 
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import Cop2NodeTypeCategory
+from copper.op.op_connection import OP_Connection
 from copper.cop2.cop2_node import COP2_Node
 from copper import parameter
 
@@ -21,6 +22,9 @@ class COP2_File(COP2_Node):
 
 	def __init__(self, engine, parent):
 		super(COP2_File, self).__init__(engine, parent)
+		self._outputs = (
+			OP_Connection("output1"),
+		)
 		self.program = self.engine.load_program("source_image.cl")
 
 	def parmTemplates(self):

@@ -2,10 +2,11 @@ import six
 import multiprocessing
 import logging 
 import datetime
+from collections import OrderedDict
 
 from .base import OpRegistry
 from .op_parameters import OP_Parameters
-from .op_input import OP_Input
+from .op_connection import OP_Connection
 from .op_cooking_queue import OpCookingQueue
 
 @six.add_metaclass(OpRegistry)
@@ -22,7 +23,8 @@ class OP_Node(OP_Parameters):
 		self._selected = False
 		self._bypass = False
 
-		self._inputs = []
+		self._inputs = ()
+		self._outputs = ()
 
 		self._pos_x = None
 		self._pos_y = None
@@ -126,13 +128,13 @@ class OP_Node(OP_Parameters):
 		except:
 			raise BaseException("Wrong input index %s specified for node %s !!!") % (input_index, self)
 
-		return inp.getNode()	
+		return inp.node()	
 
 	def inputs(self):
 		'''
 		Return a tuple of the nodes connected to this node's inputs.
 		'''
-		return tuple(inp.getNode() for inp in self._inputs)		
+		return tuple([op_connection.node() for op_connection in self._inputs])
 
 	def inputAncestors(self, include_ref_inputs=True, follow_subnets=False):
 		'''
@@ -148,7 +150,7 @@ class OP_Node(OP_Parameters):
 
 	def inputNames(self):
 		""" Returns dict of input names eg: ["Input 1", "Input 2"] """
-		return tuple([inp.name() for inp in self._inputs])
+		return tuple([op_connection.name() for op_connection in self._inputs])
 
 	def inputConnections(self):
 		return []
@@ -159,8 +161,12 @@ class OP_Node(OP_Parameters):
 	def isCurrent(self):
 		raise NotImplementedError
 
+	def outputs(self):
+		return tuple([op_connection.node() for op_connection in self._outputs])
+
 	def outputNames(self):
-		return []
+		""" Returns dict of output names eg: ["Input 1", "Input 2"] """
+		return tuple([op_connection.name() for op_connection in self._outputs])
 
 	def outputConnections(self):
 		return []

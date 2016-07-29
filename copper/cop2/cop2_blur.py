@@ -21,6 +21,7 @@ class COP2_Blur(COP2_Node):
 		self.program = engine.load_program("effects_blur.cl")
 		self._inputs = (
 			OP_Connection("input1"),
+			OP_Connection("input2"),
 		)
 		self._outputs = (
 			OP_Connection("output1"),

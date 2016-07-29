@@ -43,6 +43,18 @@ class NetworkViewControls(CollapsableWidget):
         self.addStretch(1)
 
 
+class NodeLinkItem(QtGui.QGraphicsItem):
+    def __init__(self, parent, socket_from, socket_to):
+        QtGui.QGraphicsItem.__init__(self, parent)
+
+        self._socket_from = socket_from
+        self._socket_to = socket_to
+
+    def paint(self, painter, option, widget=None):
+        painter.drawLine(self._socket_from.pos(), self._socket_to.pos())
+
+
+
 class NodeSocketItem(QtGui.QGraphicsItem):
     INPUT_SOCKET = 1
     OUTPUT_SOCKET = 2
@@ -60,7 +72,7 @@ class NodeSocketItem(QtGui.QGraphicsItem):
         self.socket_color = QtGui.QColor(128, 128, 128)
         self.setAcceptHoverEvents(True)
         self.setZValue(self.parentItem().zValue() - 100)
-        self.stack()
+        self.putInPlace()
 
     def paint(self, painter, option, widget=None):
         # LOD here. Do not draw socket if the viewport scale factor is less than 0.5
@@ -83,16 +95,33 @@ class NodeSocketItem(QtGui.QGraphicsItem):
         else:
             return QtCore.QSizeF(2.25, 9)
 
-    def stack(self):
-        parent_item = self.parentItem()
-        parent_size = parent_item.size()
+    def putInPlace(self):
+        node_item = self.parentItem()
+        parent_size = node_item.size()
         
         if self.stack_side in [NodeSocketItem.STACK_TOP, NodeSocketItem.STACK_BOTTOM]:
+    
             if self.stack_side == NodeSocketItem.STACK_TOP:
-                self.setPos(0, -(parent_size.height()/2 + self.size().height() / 2))
+                self.setPos(0, -(parent_size.height() / 2 + self.size().height() / 2))
             else:
-                self.setPos(0, (parent_size.height()/2 + self.size().height() / 2))
-        elif stack_side in [NodeSocketItem.STACK_LEFT, NodeSocketItem.STACK_RIGHT]:
+                self.setPos(0, (parent_size.height() / 2 + self.size().height() / 2))
+
+            # we need to place sockets once again so they accupy all the available space on the edge
+            existing_sockets = node_item.inputSockets(self.stack_side)
+            if existing_sockets:
+                total_sockets_count = len(existing_sockets) + 1
+                sockets_distance = node_item.size().width() / total_sockets_count
+                socket_position = (sockets_distance / 2) - node_item.size().width() / 2
+
+                for existing_socket in existing_sockets:
+                    existing_socket.setX(socket_position)
+                    socket_position += sockets_distance
+
+                self.setX(socket_position)
+
+
+
+        elif self.stack_side in [NodeSocketItem.STACK_LEFT, NodeSocketItem.STACK_RIGHT]:
             pass
 
 
@@ -100,8 +129,8 @@ class NodeItem(QtGui.QGraphicsItem):
     def __init__(self, node):      
         QtGui.QGraphicsItem.__init__(self)
         self.node = node
-        self._inputs = []
-        self._outputs = []
+        self._inputs = {NodeSocketItem.STACK_TOP: [], NodeSocketItem.STACK_LEFT: [], NodeSocketItem.STACK_RIGHT: [], NodeSocketItem.STACK_BOTTOM: []}
+        self._outputs = {NodeSocketItem.STACK_TOP: [], NodeSocketItem.STACK_LEFT: [], NodeSocketItem.STACK_RIGHT: [], NodeSocketItem.STACK_BOTTOM: []}
         self._selected_indirect = False # this flag shows us that this node selected outside the widget
              
         if self.node.iconName():
@@ -117,12 +146,18 @@ class NodeItem(QtGui.QGraphicsItem):
         # create input sockets
         for socket in self.node.inputs():
             socket_item = NodeSocketItem(self, socket_type=NodeSocketItem.INPUT_SOCKET, stack_side=NodeSocketItem.STACK_TOP)
-            self._inputs.append(socket_item)
+            self._inputs[NodeSocketItem.STACK_TOP].append(socket_item)
 
         # create output sockets
         for socket in self.node.outputs():
             socket_item = NodeSocketItem(self,  socket_type=NodeSocketItem.OUTPUT_SOCKET, stack_side=NodeSocketItem.STACK_BOTTOM)
-            self._outputs.append(socket_item)
+            self._outputs[NodeSocketItem.STACK_BOTTOM].append(socket_item)
+
+    def inputSockets(self, stack_side):
+        return tuple(self._inputs[stack_side])
+
+    def outputSockets(self, stack_side):
+        return tuple(self._outputs[stack_side])
 
     def autoPlace(self):
         scene = self.scene()
@@ -275,10 +310,6 @@ class NodeFlowScene(QtGui.QGraphicsScene):
             # build node boxes
             for child in node.children():
                 self.addNode(child.path())
-
-            # build links
-            for child in node.children():
-                pass
 
     def zoom(self, zoomFactor):
         self.zoomLevel *= zoomFactor

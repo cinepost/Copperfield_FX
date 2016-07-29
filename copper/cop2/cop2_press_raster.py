@@ -21,6 +21,8 @@ class COP2_PressRaster(COP2_Node):
 		self.program = engine.load_program("effects_press_raster.cl")
 		self._inputs = (
 			OP_Connection("input1"),
+			OP_Connection("input2"),
+			OP_Connection("input3"),
 		)
 		self._outputs = (
 			OP_Connection("output1"),

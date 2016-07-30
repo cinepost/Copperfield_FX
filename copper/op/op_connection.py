@@ -11,3 +11,7 @@ class OP_Connection(object):
 
 	def name(self):
 		return self._name
+
+	def connected(self):
+		if self._node: return True
+		return False

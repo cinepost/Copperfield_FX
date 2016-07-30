@@ -134,7 +134,7 @@ class OP_Node(OP_Parameters):
 		'''
 		Return a tuple of the nodes connected to this node's inputs.
 		'''
-		return tuple([op_connection.node() for op_connection in self._inputs])
+		return tuple([op_connection.node() for op_connection in self._inputs if op_connection.connected()])
 
 	def inputAncestors(self, include_ref_inputs=True, follow_subnets=False):
 		'''
@@ -162,7 +162,7 @@ class OP_Node(OP_Parameters):
 		raise NotImplementedError
 
 	def outputs(self):
-		return tuple([op_connection.node() for op_connection in self._outputs])
+		return tuple([op_connection.node() for op_connection in self._outputs if op_connection.connected()])
 
 	def outputNames(self):
 		""" Returns dict of output names eg: ["Input 1", "Input 2"] """

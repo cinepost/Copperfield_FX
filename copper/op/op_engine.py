@@ -15,19 +15,14 @@ from copper.managers import OBJ_Network, COP_Network, ROP_Network
 from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
 
-from copper import parm_template
+from copper.root_types import ROOT_Types 
 
-class Copper_Engine(OP_Network):
+class Copper_Engine(OP_Network, ROOT_Types):
 	__base__ = True
 	programs 	= {}
 	app 		= None
 	filters		= {}
 	network_cb  = None
-
-	parmLook = parm_template.ParmLookScheme
-	parmNamingScheme = parm_template.ParmNamingScheme
-	parmTemplateType = parm_template.ParmTemplateType
-	stringParmType = parm_template.StringParmType
 
 	class NodeType(NodeTypeBase):
 		icon_name = 'NETWORKS_root'
@@ -43,7 +38,7 @@ class Copper_Engine(OP_Network):
 		self._cl_ctx = None
 		self._cl_queue = None
 
-		print "Initializing engine of type %s" % device_type
+		logging.debug("Initializing engine of type %s" % device_type)
 		self._devices = []
 		platforms = cl.get_platforms()
 		for platform in platforms:
@@ -62,9 +57,9 @@ class Copper_Engine(OP_Network):
 		if self._devices:		
 			self.cl_path 	= cl_path
 			self.cl_mode 	= True
-			print "Using Open_CL."
+			logging.info("Using Open_CL.")
 		else:
-			print "NO OPEN_CL CAPABLE DEVICE FOUND !!!"
+			logging.error("NO OPEN_CL CAPABLE DEVICE FOUND !!!")
 			exit(1)		
 
 		logging.debug("Bundled with ops: %s \n Done." % OpRegistry._registry)
@@ -91,7 +86,7 @@ class Copper_Engine(OP_Network):
 
 	def call_network_changed_callback(self):
 		if self.network_cb:
-			print "Calling network change callback..."
+			logging.debug("Calling network change callback...")
 			self.network_cb()	 	
 
 	def load_program(self, filename):

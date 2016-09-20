@@ -9,7 +9,6 @@ logging.basicConfig(level=logging.DEBUG)
 
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
 
-
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     app = QtGui.QApplication(sys.argv)

@@ -1,4 +1,5 @@
 from copper.op.op_network import OP_Network
+from copper.op.node_type_category import SopNodeTypeCategory
 
 from copper.parm_template import *
 
@@ -28,3 +29,7 @@ class OBJ_Node(OP_Network):
 	@classmethod
 	def displayNode(cls):
 		return self._display_node
+
+	@classmethod
+	def childTypeCategory(cls):
+		return SopNodeTypeCategory

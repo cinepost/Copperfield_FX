@@ -59,6 +59,10 @@ class ObjectNodeTypeCategory(NodeTypeCategory):
 	cat_name = 'Object'
 	type_name = 'OBJ'
 
+class SopNodeTypeCategory(NodeTypeCategory):
+	cat_name = 'Sop'
+	type_name = 'SOP'
+
 class CopNetNodeTypeCategory(NodeTypeCategory):
 	cat_name = 'CopNet'
 	type_name = 'IMG'

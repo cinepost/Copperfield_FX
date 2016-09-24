@@ -20,7 +20,7 @@ class NetworkViewPanel(NetworkPanel):
         NetworkPanel.__init__(self) 
 
         self.network_view_controls = NetworkViewControls(self)
-        self.network_view_widget = NetworkViewWidget(self, self)
+        self.network_view_widget = NetworkViewWidget(self)
 
         self.addWidget(self.network_view_controls)
         self.addWidget(self.network_view_widget)
@@ -306,6 +306,7 @@ class NodeFlowScene(QtGui.QGraphicsScene):
     def buildNetworkLevel(self, node_path=None):
         node = engine.node(node_path)
         if node:
+            self.nodes_map = {}
             self.clear()
             # build node boxes
             for child in node.children():
@@ -360,14 +361,17 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         self.buildNetworkLevel(picked_item.node.path())
 
     def selectNode(self, node_path):
-        if node_path in self.nodes_map:
-            self.nodes_map[node_path].select()
+        if node_path not in self.nodes_map:
+            # If node is not in map we need to rebuild visual network
+            self.buildNetworkLevel(engine.node(node_path).parent().path())
+
+        # highlight selected node
+        self.nodes_map[node_path].select()
 
 
 class NetworkViewWidget(QtGui.QGraphicsView):
-    def __init__(self, parent, panel):  
+    def __init__(self, parent):  
         QtGui.QGraphicsView.__init__(self, parent)
-        self.panel = panel
         self.setObjectName("network_widget")
 
         self.network_level = "/"
@@ -392,8 +396,8 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         self.setNetworkLevel("/img")
 
         ## Connect panel signals
-        self.panel.signals.copperNodeCreated[str].connect(self.copperNodeCreated)
-        self.panel.signals.copperNodeSelected[str].connect(self.copperNodeSelected)
+        self.parent().signals.copperNodeCreated[str].connect(self.copperNodeCreated)
+        self.parent().signals.copperNodeSelected[str].connect(self.copperNodeSelected)
 
     @QtCore.pyqtSlot(str)
     def copperNodeCreated(self, node_path):

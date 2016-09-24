@@ -14,6 +14,7 @@ import settings
 from rop import *
 from obj import *
 from cop2 import *
+from sop import *
 
 from copper.op.node_type_category import NodeTypeCategoryRegistry
 

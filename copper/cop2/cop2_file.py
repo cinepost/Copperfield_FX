@@ -15,6 +15,7 @@ from copper import parameter
 from copper.parm_template import *
 
 class COP2_File(COP2_Node):
+	
 	class NodeType(NodeTypeBase):
 		icon_name = 'COP2_file'
 		type_name = 'file'

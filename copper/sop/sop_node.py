@@ -10,5 +10,5 @@ class SOP_Node(OP_Network):
 		super(SOP_Node, self).__init__(engine, parent)
 		self._geometry = Copper_Geometry()
 
-	def geometry(self):
+	def cookData(self, lock):
 		return self._geometry

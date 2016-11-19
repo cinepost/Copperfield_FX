@@ -32,6 +32,8 @@ class COP2_File(COP2_Node):
 		templates = super(COP2_File, self).parmTemplates()
 		templates += [
 			StringParmTemplate(name="filename", label="File", default_value=("media/default.png",), string_type=StringParmType.FileReference),
+			MenuParmTemplate(name='overridesize', label='File Size', menu_items=('natural', 'project', 'size'), menu_labels=('Natural Resolution',
+ 				'Project Resolution', 'Specific Resolution'), default_value=0),
 			IntParmTemplate(name="size", label="Size", length=2, default_value=(512,512), naming_scheme=ParmNamingScheme.Base1),
 			ToggleParmTemplate(name="flipy", label="Flip Image", default_value=False),
 			IntParmTemplate(name='startframe', label='Shift to Start Frame', length=1, naming_scheme=ParmNamingScheme.Base1, default_value=(1,)),
@@ -47,13 +49,28 @@ class COP2_File(COP2_Node):
 		return "File"
 
 	def xRes(self):
-		return self.parm("size1").evalAsInt()
+		if self.overridesize:
+			return self.parm("size1").eval()
+
+		self.cook()
+		return self.image_width
 
 	def yRes(self):
-		return self.parm("size2").evalAsInt()
+		if self.overridesize:
+			return self.parm("size2").eval()
+
+		self.cook()
+		return self.image_height
 
 	def imageBounds(self):
 		return (0, 0, self.xRes(), self.yRes())
+
+	@property
+	def overridesize(self):
+		if self.parm("overridesize").evalAsString() != "natural":
+			return True
+
+		return False
 
 	def loadJPG(self, filename, cl_context):
 		img = Image.open(filename).convert("RGBA")
@@ -61,13 +78,13 @@ class COP2_File(COP2_Node):
 		
 		self.source_width = im.shape[1]
 		self.source_height = im.shape[0]
-		
-		if self.parm("size1").eval() != 0:
+
+		if self.parm("size1").eval() != 0 and self.overridesize:
 			self.image_width = self.parm("size1").eval()
 		else:
 			self.image_width = self.source_width
 					
-		if self.parm("size2").eval() != 0:
+		if self.parm("size2").eval() != 0 and self.overridesize:
 			self.image_height = self.parm("size2").eval() 
 		else:
 			self.image_height = self.source_height
@@ -101,16 +118,16 @@ class COP2_File(COP2_Node):
 		size = (dw.max.x - dw.min.x + 1, dw.max.y - dw.min.y + 1)
 		self.source_width = size[0]
 		self.source_height = size[1]
-		
-		if self.parm("size1").eval() != 0:
-			self.width = self.parm("size1").eval()
+
+		if self.parm("size1").eval() != 0 and self.overridesize:
+			self.image_width = self.parm("size1").eval()
 		else:
-			self.width = self.source_width
+			self.image_width = self.source_width
 					
-		if self.parm("size2").eval() != 0:
-			self.height = self.parm("size2").eval() 
+		if self.parm("size2").eval() != 0 and self.overridesize:
+			self.image_height = self.parm("size2").eval() 
 		else:
-			self.height = self.source_height
+			self.image_height = self.source_height
 		
 		redstr = image.channel('R', pt)
 		host_buff_r = numpy.fromstring(redstr, dtype = numpy.float16)
@@ -177,8 +194,8 @@ class COP2_File(COP2_Node):
 					self.devOutBuffer, 
 					numpy.int32(self.source_width),
 					numpy.int32(self.source_height),
-					numpy.int32(self.width),
-					numpy.int32(self.height),
+					numpy.int32(self.image_width),
+					numpy.int32(self.image_height),
 				)
 				exec_evt.wait()
 		else:

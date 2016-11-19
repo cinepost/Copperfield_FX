@@ -14,10 +14,10 @@ class ParameterBaseWidget(QtGui.QWidget):
 		self.layout.setContentsMargins(0, 0, 0, 0)
 		self.setLayout(self.layout)
 
-		self.valueChanged.connect(self.setParmValue)
+		self.valueChanged.connect(self.parmChanged)
 
 	@QtCore.pyqtSlot()
-	def setParmValue(self):
+	def parmChanged(self):
 		parm_type = self.parm.parmTemplate().type()
 		if parm_type is ParmTemplateType.Float:
 			self.parm.set(float(self.line_edit.text()))
@@ -25,6 +25,12 @@ class ParameterBaseWidget(QtGui.QWidget):
 			self.parm.set(int(self.line_edit.text()))
 		elif parm_type is ParmTemplateType.String:
 			self.parm.set(str(self.line_edit.text()))
+		elif parm_type is ParmTemplateType.Menu:
+			self.parm.set(int(self.combobox.currentIndex()))
+
+	@QtCore.pyqtSlot()
+	def setParmValueInt(self, value):
+		self.parm.set(value)
 
 	'''
 	Handle drop event. Validate dropped data and set parameter.
@@ -125,7 +131,7 @@ class ParameterToggleWidget(ParameterBaseWidget):
 		self.layout.addStretch(1)
 
 		# connect signals
-		self.checkbox.stateChanged.connect(self.setParmValue)
+		self.checkbox.stateChanged.connect(self.parmChanged)
 
 
 class ParameterMenuWidget(ParameterBaseWidget):
@@ -142,6 +148,9 @@ class ParameterMenuWidget(ParameterBaseWidget):
 
 		if parm.parmTemplate().numComponents() == 1:
 			self.layout.addStretch(1)
+
+		# connect signals
+		self.combobox.currentIndexChanged.connect(self.parmChanged)
 
 
 class ParameterButtonWidget(ParameterBaseWidget):
@@ -188,7 +197,7 @@ class ParameterStringWidget(ParameterBaseWidget):
 			self.layout.addWidget(self.op_path_button)	
 
 		# connect signals
-		self.line_edit.editingFinished.connect(self.setParmValue)
+		self.line_edit.editingFinished.connect(self.parmChanged)
 
 	def BrowseFile(self, lineEdit):
 		file_name = QtGui.QFileDialog.getOpenFileName()

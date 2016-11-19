@@ -131,6 +131,9 @@ class CopperParameter(object):
 		return bool(self.eval())
 
 	def evalAsString(self):
+		if self.parmTemplate().type() == ParmTemplateType.Menu:
+			return self.menuItems()[self.eval()]
+
 		return str(self.eval())
 
 	def evalAtTime(self, time):

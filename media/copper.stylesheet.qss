@@ -65,6 +65,14 @@ QCheckBox::indicator {
     background-color: #101010;
 }
 
+QCheckBox::indicator:checked {
+    image: url("icons/main/checkbox_checked.png");
+}
+
+QCheckBox::indicator:checked:hover {
+    image: url("icons/main/checkbox_checked_hover.png");
+}
+
 QLineEdit {
 	font-family: "DejaVu Sans Mono";
 	font-size: 10px;

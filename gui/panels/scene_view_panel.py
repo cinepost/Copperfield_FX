@@ -11,6 +11,7 @@ from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import NetworkPanel
 
+
 class SceneViewPanel(NetworkPanel):
     def __init__(self):  
         NetworkPanel.__init__(self) 
@@ -21,6 +22,22 @@ class SceneViewPanel(NetworkPanel):
     @classmethod
     def panelTypeName(cls):
         return "Scene View"
+
+
+class VirtualCamera(object):
+    def __init__(self):
+        self.pos = numpy.array([0.0, 0.0, 5.0])
+        self.target = numpy.array([0.0, 0.0, 0.0])
+        self.up = numpy.array([0.0, 1.0, 0.0])
+
+    def gluLookAt(self):
+        gluLookAt(self.pos[0], self.pos[1], self.pos[2], self.target[0], self.target[1], self.target[2], self.up[0], self.up[1], self.up[2])
+
+    def orbit(self, phi, theta):
+        radius = math.sqrt(math.pow(self.pos[0] - self.target[0], 2) + math.pow(self.pos[1] - self.target[1], 2) + math.pow(self.pos[2] - self.target[2], 2))
+        self.pos[0] = self.target[0] + radius * math.cos(theta) * math.sin(phi)
+        self.pos[1] = self.target[1] + radius * math.sin(theta) * math.sin(phi)
+        self.pos[2] = self.target[0] + radius * math.cos(phi)
 
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
@@ -34,8 +51,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.height = 1200
         self.setMinimumSize(640, 360)
         self.orbit_mode = False
-        self.orbit_angle_h = 0
-        self.orbit_angle_w = 0
+        self.camera = VirtualCamera()
 
     def drawBackground(self):
         glDisable(GL_DEPTH_TEST)
@@ -148,10 +164,10 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         # Draw scene
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        gluPerspective(45.0,float(self.width)/float(self.height),0.1, 1000.0)
+        gluPerspective(45.0, float(self.width)/float(self.height),0.1, 1000.0)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        gluLookAt(5, 5+self.orbit_angle_h, 5, 0, 0, 0, 0, 1, 0)
+        self.camera.gluLookAt()
 
         # Grid
         self.drawSceneGrid()
@@ -169,7 +185,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
             glViewport(0, 0, width, height)
             glMatrixMode(GL_PROJECTION)
             glLoadIdentity()
-            gluPerspective(45.0,float(width)/float(height),0.1, 1000.0)
+            gluPerspective(45.0, float(width)/float(height), 0.1, 1000.0)
             glMatrixMode(GL_MODELVIEW)
 
     def initializeGL(self):
@@ -187,6 +203,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
     def mousePressEvent(self, event):
         self.orbit_mode = True
+        self.lastMousePos = event.pos()
         self.setCursor(QtCore.Qt.ClosedHandCursor)
 
     def mouseReleaseEvent(self, event):
@@ -194,7 +211,14 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.setCursor(QtCore.Qt.OpenHandCursor)
 
     def mouseMoveEvent(self, event):
-        self.orbit_angle_h += 1
-        self.updateGL()
+        if self.orbit_mode:
+            phi = (event.x() - self.lastMousePos.x()) * 0.01
+            theta = (event.y() - self.lastMousePos.y()) * 0.01
+
+            print "phi: %s theta: %s" % (phi, theta)
+
+            self.camera.orbit(phi, theta)
+
+            self.updateGL()
 
 

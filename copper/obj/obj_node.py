@@ -22,13 +22,19 @@ class OBJ_Node(OP_Network):
 		]
 		return templates
 
-	@classmethod
-	def renderNode(cls):
-		return self._render_node
 
-	@classmethod
-	def displayNode(cls):
-		return self._display_node
+	def renderNode(self):
+		if self.children():
+			return self.children()[0]
+		else:
+			return self._render_node
+
+
+	def displayNode(self):
+		if self.children():
+			return self.children()[0]
+		else:
+			return self._display_node
 
 	@classmethod
 	def childTypeCategory(cls):

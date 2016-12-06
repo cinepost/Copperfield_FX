@@ -53,6 +53,9 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.orbit_mode = False
         self.camera = VirtualCamera()
 
+        # connect panel signals
+        self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
+
     def drawBackground(self):
         glDisable(GL_DEPTH_TEST)
         glBegin(GL_QUADS)
@@ -135,14 +138,29 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
     def drawSceneObjects(self):
         glTranslatef(0.0, 0.0, 0.0)
-        glColor3f( 1.0, 0.6, 0.2 )
-        glPolygonMode(GL_FRONT, GL_FILL)
 
-        glBegin(GL_TRIANGLES)
-        glVertex3f(0.0, 1.0, 0.0)
-        glVertex3f(1.0, -1.0, 0.0)
-        glVertex3f(-1.0,-1.0, 0.0)
-        glEnd()
+        glPointSize( 3.0 )
+        for node in copper.engine.node("/obj").children():
+            print "Drawing node: %s" % node.path()
+            display_node = node.displayNode()
+            if display_node:
+                print "Drawing sop node: %s" % display_node.path()
+                geometry = display_node.geometry()
+                if geometry:
+                    print "Drawing geometry for sop node: %s" % display_node.path()
+                    glColor3f(0.2,0.3,0.9)
+                    glBegin(GL_POINTS)
+
+                    for point in geometry.points():
+                        glVertex3f(point.x, point.y, point.z)
+
+                    glEnd()
+
+    @QtCore.pyqtSlot(str)
+    def updateNodeDisplay(self, node_path=None):
+        # Now using quick and dirty hack to check that only geometry nodes changes reflected in scene view
+        if str(node_path).startswith("/obj"):
+            self.updateGL()
 
     def paintGL(self):
         if not self.isValid():
@@ -189,12 +207,13 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
             glMatrixMode(GL_MODELVIEW)
 
     def initializeGL(self):
-        glClearDepth(1.0)              
-        glDepthFunc(GL_LESS)
-        glEnable(GL_DEPTH_TEST)
+        glClearDepth( 1.0 )              
+        glDepthFunc( GL_LESS )
+        glEnable( GL_DEPTH_TEST )
+        glEnable( GL_POINT_SMOOTH )
         #glEnable(GL_MULTISAMPLE)
         #glEnable(GL_LINE_SMOOTH)
-        glShadeModel(GL_SMOOTH)
+        glShadeModel( GL_SMOOTH )
 
         #glMatrixMode(GL_PROJECTION)
         ##lLoadIdentity()                    

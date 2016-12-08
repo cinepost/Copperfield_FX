@@ -55,13 +55,23 @@ class Workarea(QtGui.QWidget):
         HSplitter.addWidget(panelMgr1)
         HSplitter.addWidget(VSplitter)
         HSplitter.setStretchFactor (0, 1)
-        HSplitter.setStretchFactor (1, 0)   
+        HSplitter.setStretchFactor (1, 0)  
 
         VBox.addWidget(HSplitter)
         VBox.addWidget(self.timeline_widget)
         self.setLayout(VBox)
 
+        # Connect signals
+        self.connect(panelMgr1.maximize_button, QtCore.SIGNAL("clicked()"), self.maximizePanelManager)
+        self.connect(panelMgr2.maximize_button, QtCore.SIGNAL("clicked()"), self.maximizePanelManager)
+        self.connect(panelMgr3.maximize_button, QtCore.SIGNAL("clicked()"), self.maximizePanelManager)
+
+        # Show workspace
         self.show()
+
+    @QtCore.pyqtSlot()
+    def maximizePanelManager(self):
+        print "Maximize panel: "
 
     @QtCore.pyqtSlot()   
     def renderNode(self, node_path):

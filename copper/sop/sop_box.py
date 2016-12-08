@@ -63,4 +63,12 @@ class SOP_Box(SOP_Node):
 			for x in range(divratex):
 				for y in range(divratey):
 					for z in range(divratez):
-						self._geometry._points.append(Point(tx + x*step_x, ty + y*step_y , tz + z*step_z))
+						#self._geometry._points.append(Point(tx + x*step_x, ty + y*step_y , tz + z*step_z))
+						self._geometry.createPoint().setPosition([tx + x*step_x, ty + y*step_y, tz + z*step_z])
+
+
+
+
+
+
+

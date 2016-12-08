@@ -6,6 +6,8 @@ class TabbedPanelManager(QtGui.QFrame):
         QtGui.QFrame.__init__(self, parent)
         self.setObjectName("tabbedPanel")
 
+        self.maximized = False
+
         self.layout = QtGui.QVBoxLayout()
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -28,7 +30,9 @@ class TabbedPanelManager(QtGui.QFrame):
         self.plus_button.setMenu(self.plus_button_menu)
 
         self.maximize_button = QtGui.QPushButton(self)
+        self.maximize_button.setCheckable(True)
         self.maximize_button.setIcon(QtGui.QIcon("icons/main/pane-maximize.svg"))
+        self.maximize_button.setStatusTip('Maximize pane')
 
         self.arrow_button = QtGui.QPushButton(self)
         self.arrow_button.setIcon(QtGui.QIcon("icons/main/pane-arrow.svg"))
@@ -79,7 +83,6 @@ class TabbedPanelManager(QtGui.QFrame):
         panelWidget = PanelRegistry[panel_type_name]()
         tab_index = self._addPanel(panelWidget, panelWidget.panelTypeName())
         self.tabs.tabBar().setCurrentIndex(tab_index)
-
 
     def setActive(self, index):
         self.tabs.setCurrentIndex(index)

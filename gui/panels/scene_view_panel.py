@@ -11,6 +11,8 @@ from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import NetworkPanel
 
+from copper.sop.geometry import Matrix4x4, Vector3
+
 
 class SceneViewPanel(NetworkPanel):
     def __init__(self):  
@@ -24,20 +26,97 @@ class SceneViewPanel(NetworkPanel):
         return "Scene View"
 
 
-class VirtualCamera(object):
+class Camera(object):
     def __init__(self):
-        self.pos = numpy.array([0.0, 0.0, 5.0])
-        self.target = numpy.array([0.0, 0.0, 0.0])
-        self.up = numpy.array([0.0, 1.0, 0.0])
+        self.fov_degrees = 45.0
+        self.orbiting_speed_degrees_per_radians = 300.0
+
+        self.nearPlane = 1.0
+        self.farPlane = 10000.0
+
+        # point of view, or center of camera; the ego-center; the eye-point
+        self.position = Vector3()
+
+        # point of interest; what the camera is looking at; the exo-center
+        self.target = Vector3()
+
+        # This is the up vector for the (local) camera space
+        self.up = Vector3()
+
+        # This is the up vector for the (global) world space;
+        # it is perpendicular to the horizontal (x,z)-plane
+        self.ground = Vector3([0,1,0])
+
+        # During dollying (i.e. when the camera is translating into
+        # the scene), if the camera gets too close to the target
+        # point, we push the target point away.
+        # The threshold distance at which such "pushing" of the
+        # target point begins is this fraction of nearPlane.
+        # To prevent the target point from ever being clipped,
+        # this fraction should be chosen to be greater than 1.0.
+        self.rarget_push_threshold = 1.3
+
+        # We give these some initial values just as a safeguard
+        # against division by zero when computing their ratio.
+        self.viewportWidthInPixels = 10
+        self.viewportHeightInPixels = 10
+        self.viewportRadiusInPixels = 5
+
+        self.reset()
+
+    def reset(self):
+        #tangent = math.tan( self.fov_degrees / 2.0 / 180.0 * math.pi )
+        #distanceFromTarget = self.sceneRadius / tangent
+        self.position = Vector3([5,5,5])
+        self.target = Vector3([0,0,0])
+        self.up = self.ground.returnCopy()
 
     def gluLookAt(self):
-        gluLookAt(self.pos[0], self.pos[1], self.pos[2], self.target[0], self.target[1], self.target[2], self.up[0], self.up[1], self.up[2])
+        gluLookAt(self.position[0], self.position[1], self.position[2], self.target[0], self.target[1], self.target[2], self.up[0], self.up[1], self.up[2])
 
-    def orbit(self, phi, theta):
-        radius = math.sqrt(math.pow(self.pos[0] - self.target[0], 2) + math.pow(self.pos[1] - self.target[1], 2) + math.pow(self.pos[2] - self.target[2], 2))
-        self.pos[0] = self.target[0] + radius * math.cos(theta) * math.sin(phi)
-        self.pos[1] = self.target[1] + radius * math.sin(theta) * math.sin(phi)
-        self.pos[2] = self.target[0] + radius * math.cos(phi)
+    def setViewportDimensions( self, widthInPixels, heightInPixels ):
+        self.viewportWidthInPixels = widthInPixels
+        self.viewportHeightInPixels = heightInPixels
+        self.viewportRadiusInPixels = 0.5*widthInPixels if (widthInPixels < heightInPixels) else 0.5*heightInPixels
+
+    def transform(self):
+        tangent = math.tan( self.fov_degrees/2.0 / 180.0 * math.pi )
+        viewportRadius = self.nearPlane * tangent
+        if self.viewportWidthInPixels < self.viewportHeightInPixels:
+            viewportWidth = 2.0*viewportRadius
+            viewportHeight = viewportWidth * self.viewportHeightInPixels / float(self.viewportWidthInPixels)
+        else:
+            viewportHeight = 2.0*viewportRadius
+            viewportWidth = viewportHeight * self.viewportWidthInPixels / float(self.viewportHeightInPixels)
+        glFrustum(
+            - 0.5 * viewportWidth,  0.5 * viewportWidth,    # left, right
+            - 0.5 * viewportHeight, 0.5 * viewportHeight,   # bottom, top
+            self.nearPlane, self.farPlane
+            )
+
+        M = Matrix4x4.lookAt(self.position, self.target, self.up, False)
+        glMultMatrixf(M.get())
+
+    def place(self):
+        gluPerspective(self.fov_degrees, float(self.viewportWidthInPixels)/float(self.viewportHeightInPixels), self.nearPlane, self.farPlane)
+        gluLookAt(self.position[0], self.position[1], self.position[2], self.target[0], self.target[1], self.target[2], self.up[0], self.up[1], self.up[2])
+
+    # Causes the camera to "orbit" around the target point.
+    # This is also called "tumbling" in some software packages.
+    def orbit(self,delta_x_pixels, delta_y_pixels):
+        pixelsPerDegree = 1000 / float(self.orbiting_speed_degrees_per_radians)
+        radiansPerPixel = 1.0 / pixelsPerDegree * math.pi / 180.0
+
+        t2p = self.position - self.target
+
+        M = Matrix4x4.rotationAroundOrigin( delta_x_pixels * radiansPerPixel, self.ground )
+        t2p = M * t2p
+        self.up = M * self.up
+        right = (self.up ^ t2p).normalized()
+        M = Matrix4x4.rotationAroundOrigin( delta_y_pixels * radiansPerPixel, right )
+        t2p = M * t2p
+        self.up = M * self.up
+        self.position = self.target + t2p
 
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
@@ -51,7 +130,8 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.height = 1200
         self.setMinimumSize(640, 360)
         self.orbit_mode = False
-        self.camera = VirtualCamera()
+        self.old_mouse_x = self.old_mouse_y = 0
+        self.camera = Camera()
 
         # connect panel signals
         self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
@@ -79,7 +159,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glColor3f( 0.35, 0.35, 0.35 )
         glLineWidth(0.5)
 
-        # Draw lines
+        # Draw minor lines
         glBegin(GL_LINES)
         x_coord = - grid_half_size
         for x in range(lines_quantity):
@@ -100,7 +180,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         lines_quantity = int(grid_size / grid_step) + 1
         glLineWidth(1.0)
 
-        # Draw lines
+        # Draw major lines
         glBegin(GL_LINES)
         x_coord = - grid_half_size
         for x in range(lines_quantity):
@@ -152,7 +232,8 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                     glBegin(GL_POINTS)
 
                     for point in geometry.points():
-                        glVertex3f(point.x, point.y, point.z)
+                        point_pos = point.position()
+                        glVertex3f(point_pos[0], point_pos[1], point_pos[2])
 
                     glEnd()
 
@@ -182,10 +263,11 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         # Draw scene
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        gluPerspective(45.0, float(self.width)/float(self.height),0.1, 1000.0)
+        #gluPerspective(45.0, float(self.width)/float(self.height),0.1, 1000.0)
+        #self.camera.transform()
+        self.camera.place()
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        self.camera.gluLookAt()
 
         # Grid
         self.drawSceneGrid()
@@ -195,16 +277,15 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
         glFlush()
 
-    def resizeGL(self, width, height):
-        self.width = width
-        self.height = height
-        
+
+    def resizeGL(self, widthInPixels, heightInPixels):
+        self.width = widthInPixels
+        self.height = heightInPixels
+        self.camera.setViewportDimensions(widthInPixels, heightInPixels)
+
         if self.isValid():
-            glViewport(0, 0, width, height)
-            glMatrixMode(GL_PROJECTION)
-            glLoadIdentity()
-            gluPerspective(45.0, float(width)/float(height), 0.1, 1000.0)
-            glMatrixMode(GL_MODELVIEW)
+            glViewport(0, 0, widthInPixels, heightInPixels)
+        
 
     def initializeGL(self):
         glClearDepth( 1.0 )              
@@ -222,22 +303,30 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
     def mousePressEvent(self, event):
         self.orbit_mode = True
-        self.lastMousePos = event.pos()
+        self.old_mouse_x = mouseEvent.x()
+        self.old_mouse_y = mouseEvent.y()
         self.setCursor(QtCore.Qt.ClosedHandCursor)
 
     def mouseReleaseEvent(self, event):
         self.orbit_mode = False
         self.setCursor(QtCore.Qt.OpenHandCursor)
 
-    def mouseMoveEvent(self, event):
-        if self.orbit_mode:
-            phi = (event.x() - self.lastMousePos.x()) * 0.01
-            theta = (event.y() - self.lastMousePos.y()) * 0.01
-
-            print "phi: %s theta: %s" % (phi, theta)
-
-            self.camera.orbit(phi, theta)
-
-            self.updateGL()
+    def mouseMoveEvent(self, mouseEvent):
+        if int(mouseEvent.buttons()) != QtCore.Qt.NoButton :
+            # user is orbiting camera
+            delta_x = mouseEvent.x() - self.old_mouse_x
+            delta_y = self.old_mouse_y - mouseEvent.y()
+            if int(mouseEvent.buttons()) & QtCore.Qt.LeftButton :
+                if int(mouseEvent.buttons()) & QtCore.Qt.MidButton :
+                    self.camera.dollyCameraForward( 3*(delta_x + delta_y), False )
+                else:
+                    self.camera.orbit(delta_x, delta_y)
+            elif int(mouseEvent.buttons()) & QtCore.Qt.MidButton :
+                self.camera.translateSceneRightAndUp( delta_x, delta_y )
+            
+        self.update()
+        
+        self.old_mouse_x = mouseEvent.x()
+        self.old_mouse_y = mouseEvent.y()
 
 

@@ -1,67 +1,63 @@
-import numpy as np
+import numpy
 import math
 
 
 class Matrix4x4:
     def __init__(self):
-        self.setToIdentity()
+        self.identityMatrix()
     
-    def __str__(self):
-        return str(self.m[0:4]) + "\n" + str(self.m[4:8]) + "\n" + str(self.m[8:12]) + "\n" + str(self.m[12:16])
+    def __repr__(self):
+        return self.m
 
+    def __str__(self):
+    	return str(self.m)
+        
     def get(self):
         return self.m
     
     def returnCopy(self):
         M = Matrix4x4()
-        M.m = list(self.m)  # copy the list
+        M.m = numpy.array(self.m, copy=True) # copy the matrix array
         return M
     
-    def setToIdentity(self):
-        self.m = [ 1.0, 0.0, 0.0, 0.0,
-                   0.0, 1.0, 0.0, 0.0,
-                   0.0, 0.0, 1.0, 0.0,
-                   0.0, 0.0, 0.0, 1.0 ]
+    def identityMatrix(self):
+        self.m = numpy.identity(4)
 
     @staticmethod
-    def translation( Vector3 ):
+    def translation( vector3 ):
         M = Matrix4x4()
-        M.m[ 0] = 1.0;   M.m[ 4] = 0.0;   M.m[ 8] = 0.0;   M.m[12] = Vector3.x();
-        M.m[ 1] = 0.0;   M.m[ 5] = 1.0;   M.m[ 9] = 0.0;   M.m[13] = Vector3.y();
-        M.m[ 2] = 0.0;   M.m[ 6] = 0.0;   M.m[10] = 1.0;   M.m[14] = Vector3.z();
-        M.m[ 3] = 0.0;   M.m[ 7] = 0.0;   M.m[11] = 0.0;   M.m[15] = 1.0;
+        M.m[3,:3] = vector3.comps
+        #M.m[ 0] = 1.0;   M.m[ 4] = 0.0;   M.m[ 8] = 0.0;   M.m[12] = vector3.comps[0];
+        #M.m[ 1] = 0.0;   M.m[ 5] = 1.0;   M.m[ 9] = 0.0;   M.m[13] = vector3.comps[1];
+        #M.m[ 2] = 0.0;   M.m[ 6] = 0.0;   M.m[10] = 1.0;   M.m[14] = vector3.comps[2];
+        #M.m[ 3] = 0.0;   M.m[ 7] = 0.0;   M.m[11] = 0.0;   M.m[15] = 1.0;
         return M
 
     @staticmethod
-    def rotationAroundOrigin( angleInRadians, axisVector ):
-        # Note: assumes axisVector is normalized
-        c = math.cos( angleInRadians )
-        s = math.sin( angleInRadians )
-        one_minus_c = 1-c
-        M = Matrix4x4()
-        M.m[ 0] = c + one_minus_c * axisVector.x()*axisVector.x()
-        M.m[ 5] = c + one_minus_c * axisVector.y()*axisVector.y()
-        M.m[10] = c + one_minus_c * axisVector.z()*axisVector.z()
-        M.m[ 1] = M.m[ 4] = one_minus_c * axisVector.x()*axisVector.y()
-        M.m[ 2] = M.m[ 8] = one_minus_c * axisVector.x()*axisVector.z()
-        M.m[ 6] = M.m[ 9] = one_minus_c * axisVector.y()*axisVector.z()
-        xs = axisVector.x() * s
-        ys = axisVector.y() * s
-        zs = axisVector.z() * s
-        M.m[ 1] += zs;  M.m[ 4] -= zs;
-        M.m[ 2] -= ys;  M.m[ 8] += ys;
-        M.m[ 6] += xs;  M.m[ 9] -= xs;
+    def rotationMatrix( angleInRadians, axisVector, point=None):
+		sina = math.sin(angleInRadians)
+		cosa = math.cos(angleInRadians)
+		direction = axisVector.normalized().comps
+		# rotation matrix around unit vector
+		R = numpy.diag([cosa, cosa, cosa])		
+		R += numpy.outer(direction, direction) * (1.0 - cosa)
+		direction *= sina
+		R += numpy.array([[ 0.0, -direction[2], direction[1]],
+			 [ direction[2], 0.0, -direction[0]],
+			 [-direction[1], direction[0],  0.0]])
+		M = Matrix4x4()
+		M.m[:3, :3] = R
+		if point is not None:
+			# rotation not around origin
+			point = numpy.array(point[:3], dtype=numpy.float64, copy=False)
+			M.m[:3, 3] = point - numpy.dot(R, point)
 
-        M.m[12] = 0.0;
-        M.m[13] = 0.0;
-        M.m[14] = 0.0;
-        M.m[ 3] = 0.0;   M.m[ 7] = 0.0;   M.m[11] = 0.0;   M.m[15] = 1.0;
-        return M
+		return M
 
     @staticmethod
     def rotation( angleInRadians, axisVector, originPoint ):
         v = originPoint.asVector3()
-        return Matrix4x4.translation(v) * Matrix4x4.rotationAroundOrigin(angleInRadians,axisVector) * Matrix4x4.translation(- v)
+        return Matrix4x4.translation(v) * Matrix4x4.rotationMatrix(angleInRadians,axisVector) * Matrix4x4.translation(- v)
 
     @staticmethod
     def uniformScaleAroundOrigin(scaleFactor):
@@ -83,158 +79,109 @@ class Matrix4x4:
 
         z = (eyePoint-targetPoint).normalized()
         y = upVector
-        x = y ^ z   # cross product
-        y = z ^ x   # cross product
-
-        # Cross product gives area of parallelogram, which is < 1 for
-        # non-perpendicular unit-length vectors; so normalize x and y.
-        x = x.normalized()
-        y = y.normalized()
+        x = (y ^ z).normalized()   # cross product
+        y = (z ^ x).normalized()   # cross product
 
         M = Matrix4x4()
 
+        # the rotation matrix
+        M.m[:3,:3] = [x.comps, y.comps ,z.comps]
+
+        # step two: postmultiply by a translation matrix
         if isInverted :
-            # the rotation matrix
-            M.m[ 0] = x.x();   M.m[ 4] = y.x();   M.m[ 8] = z.x();   M.m[12] = 0.0;
-            M.m[ 1] = x.y();   M.m[ 5] = y.y();   M.m[ 9] = z.y();   M.m[13] = 0.0;
-            M.m[ 2] = x.z();   M.m[ 6] = y.z();   M.m[10] = z.z();   M.m[14] = 0.0;
-            M.m[ 3] = 0.0;     M.m[ 7] = 0.0;     M.m[11] = 0.0;     M.m[15] = 1.0;
-
-            # step two: premultiply by a translation matrix
-            return Matrix4x4.translation( eyePoint.asVector3() ) * M
+            return M * Matrix4x4.translation( eyePoint )
         else:
-            # the rotation matrix
-            M.m[ 0] = x.x();   M.m[ 4] = x.y();   M.m[ 8] = x.z();   M.m[12] = 0.0;
-            M.m[ 1] = y.x();   M.m[ 5] = y.y();   M.m[ 9] = y.z();   M.m[13] = 0.0;
-            M.m[ 2] = z.x();   M.m[ 6] = z.y();   M.m[10] = z.z();   M.m[14] = 0.0;
-            M.m[ 3] = 0.0;     M.m[ 7] = 0.0;     M.m[11] = 0.0;     M.m[15] = 1.0;
-
-            # step two: postmultiply by a translation matrix
-            return M * Matrix4x4.translation( - eyePoint )
+            M.m = numpy.transpose(M.m)
+            return Matrix4x4.translation( - eyePoint ) * M
 
     def __mul__(a,b):   # note: a is really self
         if isinstance(b,Matrix4x4):
             M = Matrix4x4()
-            M.m[ 0] = a.m[ 0]*b.m[ 0] + a.m[ 4]*b.m[ 1] + a.m[ 8]*b.m[ 2] + a.m[12]*b.m[ 3];
-            M.m[ 1] = a.m[ 1]*b.m[ 0] + a.m[ 5]*b.m[ 1] + a.m[ 9]*b.m[ 2] + a.m[13]*b.m[ 3];
-            M.m[ 2] = a.m[ 2]*b.m[ 0] + a.m[ 6]*b.m[ 1] + a.m[10]*b.m[ 2] + a.m[14]*b.m[ 3];
-            M.m[ 3] = a.m[ 3]*b.m[ 0] + a.m[ 7]*b.m[ 1] + a.m[11]*b.m[ 2] + a.m[15]*b.m[ 3];
-
-            M.m[ 4] = a.m[ 0]*b.m[ 4] + a.m[ 4]*b.m[ 5] + a.m[ 8]*b.m[ 6] + a.m[12]*b.m[ 7];
-            M.m[ 5] = a.m[ 1]*b.m[ 4] + a.m[ 5]*b.m[ 5] + a.m[ 9]*b.m[ 6] + a.m[13]*b.m[ 7];
-            M.m[ 6] = a.m[ 2]*b.m[ 4] + a.m[ 6]*b.m[ 5] + a.m[10]*b.m[ 6] + a.m[14]*b.m[ 7];
-            M.m[ 7] = a.m[ 3]*b.m[ 4] + a.m[ 7]*b.m[ 5] + a.m[11]*b.m[ 6] + a.m[15]*b.m[ 7];
-
-            M.m[ 8] = a.m[ 0]*b.m[ 8] + a.m[ 4]*b.m[ 9] + a.m[ 8]*b.m[10] + a.m[12]*b.m[11];
-            M.m[ 9] = a.m[ 1]*b.m[ 8] + a.m[ 5]*b.m[ 9] + a.m[ 9]*b.m[10] + a.m[13]*b.m[11];
-            M.m[10] = a.m[ 2]*b.m[ 8] + a.m[ 6]*b.m[ 9] + a.m[10]*b.m[10] + a.m[14]*b.m[11];
-            M.m[11] = a.m[ 3]*b.m[ 8] + a.m[ 7]*b.m[ 9] + a.m[11]*b.m[10] + a.m[15]*b.m[11];
-
-            M.m[12] = a.m[ 0]*b.m[12] + a.m[ 4]*b.m[13] + a.m[ 8]*b.m[14] + a.m[12]*b.m[15];
-            M.m[13] = a.m[ 1]*b.m[12] + a.m[ 5]*b.m[13] + a.m[ 9]*b.m[14] + a.m[13]*b.m[15];
-            M.m[14] = a.m[ 2]*b.m[12] + a.m[ 6]*b.m[13] + a.m[10]*b.m[14] + a.m[14]*b.m[15];
-            M.m[15] = a.m[ 3]*b.m[12] + a.m[ 7]*b.m[13] + a.m[11]*b.m[14] + a.m[15]*b.m[15];
-
+            M.m = numpy.dot(a.m,b.m)
             return M
         elif isinstance(b,Vector3):
             # We treat the vector as if its (homogeneous) 4th component were zero.
-            return Vector3([
-                a.m[ 0]*b.x() + a.m[ 4]*b.y() + a.m[ 8]*b.z(), # + a.m[12]*b.w(),
-                a.m[ 1]*b.x() + a.m[ 5]*b.y() + a.m[ 9]*b.z(), # + a.m[13]*b.w(),
-                a.m[ 2]*b.x() + a.m[ 6]*b.y() + a.m[10]*b.z()  # + a.m[14]*b.w(),
-                # a.m[ 3]*b.x() + a.m[ 7]*b.y() + a.m[11]*b.z() + a.m[15]*b.w()
-                ])
-        #elif isinstance(b,Point3D):
-            # We treat the point as if its (homogeneous) 4th component were one.
-        #    return Point3D(
-        #        a.m[ 0]*b.x() + a.m[ 4]*b.y() + a.m[ 8]*b.z() + a.m[12],
-        #        a.m[ 1]*b.x() + a.m[ 5]*b.y() + a.m[ 9]*b.z() + a.m[13],
-        #        a.m[ 2]*b.x() + a.m[ 6]*b.y() + a.m[10]*b.z() + a.m[14]
-        #        )
+            return Vector3(a.m[:3,:3].dot(b.comps))
+        else:
+        	raise BaseException("%s __mul__ %s not supported !!!" % (a.__class__, b.__class__))
 
 class Vector3:
-	def __init__(self, pos=[0, 0, 0]):
-		self._pos = [pos[0], pos[1], pos[2]]
+	def __init__(self, comps=None):
+		if comps == None:
+			self.comps = numpy.empty(3, dtype=numpy.float64)
+		else:
+			self.comps = numpy.asarray(comps[:3], dtype=numpy.float64)
+
+	def __repr__(self):
+		return "%s %s" % (self.__class__, self.comps)
 
 	def x(self):
-		return self._pos[0]
+		return self.comps[0]
 
 	def y(self):
-		return self._pos[1]
+		return self.comps[1]
 
 	def z(self):
-		return self._pos[2]
+		return self.comps[2]
 
 	def __getitem__(self, key):
-		return self._pos[key]
+		return self.comps[key]
 
 	def __setitem__(self, key, value):
-		self._pos[key] = value
+		self.comps[key] = value
 
 	def distanceTo(self, other):
-		return math.sqrt(pow(other._pos[0] - self._pos[0], 2) + pow(other._pos[1] - self._pos[1], 2) + pow(other._pos[2] - self._pos[2], 2))
+		return numpy.linalg.norm(numpy.subtract(self.comps, other.comps))
 
 	def __neg__(self):
-		return Vector3([-self._pos[0], -self._pos[1], -self._pos[2]])
+		return Vector3(numpy.negative(self.comps))
 
-	def __add__(self,other):		
-		return Vector3([self._pos[0]+other._pos[0], self._pos[1]+other._pos[1], self._pos[2]+other._pos[2]])
+	def __add__(self,other):
+		return Vector3(numpy.add(self.comps, other.comps))
 	
 	def __sub__(self,other):
-		return Vector3([self._pos[0]-other._pos[0], self._pos[1]-other._pos[1], self._pos[2]-other._pos[2]])
+		return Vector3(numpy.subtract(self.comps, other.comps))
 
 	def __xor__(self, other):   # cross product
-		return Vector3([
-			self._pos[1]*other._pos[2] - self._pos[1]*other._pos[1],
-			self._pos[2]*other._pos[0] - self._pos[0]*other._pos[2],
-			self._pos[0]*other._pos[1] - self._pos[1]*other._pos[0]
-		])
+		return Vector3(numpy.cross(self.comps, other.comps))
 
 	def __mul__(self,other):
 		if isinstance(other,Vector3):
 		# dot product
-			return self._pos[0]*other._pos[0] + self._pos[1]*other._pos[1] + self._pos[2]*other._pos[2]
+			return Vector3(numpy.dot(self.comps, other.comps))
 		
 		# scalar product
-		return Vector3([self._pos[0]*other, self._pos[1]*other, self._pos[2]*other])
+		return Vector3(numpy.dot(self.comps, other))
 
 	def __eq__(self,other):
-		return self._pos[0]==other._pos[0] and self._pos[1]==other._pos[1] and self._pos[2]==other._pos[2]
+		return numpy.array_equal(sefl.comps, other.comps)
 
 	def __ne__(self,other):
 		return not (self==other)
 
 	def returnCopy(self):
-		return Vector3(self._pos)
+		return Vector3(self.comps)
 
 	def lengthSquared(self):
-		return self._pos[0]*self._pos[0]+self._pos[1]*self._pos[1]+self._pos[2]*self._pos[2]
+		return sum(numpy.square(self.comps))
 
 	def length(self):
-		return math.sqrt( self.lengthSquared() )
+		return numpy.linalg.norm(self.comps)
 
 	def normalized(self):
-		l = self.length()
-		if ( l > 0 ):
-			return Vector3([self._pos[0]/l, self._pos[1]/l, self._pos[2]/l])
-		
-		return self.returnCopy()
-
-	def __repr__(self):
-		return "%s %s" % (self.__class__, self._pos)
+		norm = numpy.linalg.norm(self.comps)
+		if norm==0:
+			norm=numpy.finfo(v.dtype).eps
+		return Vector3(self.comps/norm)
 
 
-class Point:
-	def __init__(self):
-		self._pos = Vector3()
+class Point(Vector3):
 
-	def setPosition(self, vec):
-		self._pos[0] = vec[0]
-		self._pos[1] = vec[1]
-		self._pos[2] = vec[2]
+	def setPosition(self, pos):
+		self.comps = pos
 
 	def position(self):
-		return self._pos
+		return self.comps
 
 
 class Geometry(object):

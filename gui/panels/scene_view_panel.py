@@ -27,18 +27,18 @@ class SceneViewPanel(NetworkPanel):
 
 
 class Camera(object):
-    def __init__(self):
+    def __init__(self, position=[5,5,5], target=[0,0,0]):
         self.fov_degrees = 45.0
         self.orbiting_speed_degrees_per_radians = 300.0
 
-        self.nearPlane = 1.0
-        self.farPlane = 10000.0
+        self.nearPlane = 0.1
+        self.farPlane = 1000.0
 
         # point of view, or center of camera; the ego-center; the eye-point
-        self.position = Vector3()
+        self.position = self.default_position = Vector3(position)
 
         # point of interest; what the camera is looking at; the exo-center
-        self.target = Vector3()
+        self.target = self.default_target = Vector3(target)
 
         # This is the up vector for the (local) camera space
         self.up = Vector3()
@@ -54,7 +54,7 @@ class Camera(object):
         # target point begins is this fraction of nearPlane.
         # To prevent the target point from ever being clipped,
         # this fraction should be chosen to be greater than 1.0.
-        self.rarget_push_threshold = 1.3
+        self.target_push_threshold = 1.3
 
         # We give these some initial values just as a safeguard
         # against division by zero when computing their ratio.
@@ -62,17 +62,19 @@ class Camera(object):
         self.viewportHeightInPixels = 10
         self.viewportRadiusInPixels = 5
 
-        self.reset()
+        self.build_up()
 
     def reset(self):
         #tangent = math.tan( self.fov_degrees / 2.0 / 180.0 * math.pi )
         #distanceFromTarget = self.sceneRadius / tangent
-        self.position = Vector3([5,5,5])
-        self.target = Vector3([0,0,0])
-        self.up = self.ground.returnCopy()
+        self.position = self.default_position
+        self.target = self.default_target
+        self.build_up()
 
-    def gluLookAt(self):
-        gluLookAt(self.position[0], self.position[1], self.position[2], self.target[0], self.target[1], self.target[2], self.up[0], self.up[1], self.up[2])
+    def build_up(self):
+        t2p = self.position - self.target
+        left = -(t2p ^ self.ground).normalized()
+        self.up = (t2p ^ left).normalized()
 
     def setViewportDimensions( self, widthInPixels, heightInPixels ):
         self.viewportWidthInPixels = widthInPixels
@@ -95,11 +97,7 @@ class Camera(object):
             )
 
         M = Matrix4x4.lookAt(self.position, self.target, self.up, False)
-        glMultMatrixf(M.get())
-
-    def place(self):
-        gluPerspective(self.fov_degrees, float(self.viewportWidthInPixels)/float(self.viewportHeightInPixels), self.nearPlane, self.farPlane)
-        gluLookAt(self.position[0], self.position[1], self.position[2], self.target[0], self.target[1], self.target[2], self.up[0], self.up[1], self.up[2])
+        glMultMatrixf(M.m)
 
     # Causes the camera to "orbit" around the target point.
     # This is also called "tumbling" in some software packages.
@@ -109,14 +107,57 @@ class Camera(object):
 
         t2p = self.position - self.target
 
-        M = Matrix4x4.rotationAroundOrigin( delta_x_pixels * radiansPerPixel, self.ground )
+        M = Matrix4x4.rotationMatrix( - delta_x_pixels * radiansPerPixel, self.ground )
         t2p = M * t2p
         self.up = M * self.up
-        right = (self.up ^ t2p).normalized()
-        M = Matrix4x4.rotationAroundOrigin( delta_y_pixels * radiansPerPixel, right )
+        
+        right = (self.up.normalized() ^ t2p.normalized()).normalized()
+        M = Matrix4x4.rotationMatrix( delta_y_pixels * radiansPerPixel, right )
         t2p = M * t2p
         self.up = M * self.up
         self.position = self.target + t2p
+
+    # This causes the scene to appear to translate right and up
+    # (i.e., what really happens is the camera is translated left and down).
+    # This is also called "panning" in some software packages.
+    # Passing in negative delta values causes the opposite motion.
+    def pan( self, delta_x_pixels, delta_y_pixels ):
+        direction = self.target - self.position
+        distanceFromTarget = direction.length()
+        direction = direction.normalized()
+
+        translationSpeedInUnitsPerRadius = distanceFromTarget * math.tan( self.fov_degrees/2.0 / 180.0 * math.pi )
+        pixelsPerUnit = self.viewportRadiusInPixels / translationSpeedInUnitsPerRadius
+
+        right = direction ^ self.up
+
+        translation = right*(- delta_x_pixels / pixelsPerUnit) + self.up*(- delta_y_pixels / pixelsPerUnit)
+
+        self.position = self.position + translation
+        self.target = self.target + translation
+
+    # This causes the camera to translate forward into the scene.
+    # This is also called "dollying" or "tracking" in some software packages.
+    # Passing in a negative delta causes the opposite motion.
+    # If ``pushTarget'' is True, the point of interest translates forward (or backward)
+    # *with* the camera, i.e. it's "pushed" along with the camera; otherwise it remains stationary.
+    def dolly( self, delta_pixels, pushTarget ):
+        direction = self.target - self.position
+        distanceFromTarget = direction.length()
+        direction = direction.normalized()
+
+        translationSpeedInUnitsPerRadius = distanceFromTarget * math.tan( self.fov_degrees/2.0 / 180.0 * math.pi )
+        pixelsPerUnit = self.viewportRadiusInPixels / translationSpeedInUnitsPerRadius
+
+        dollyDistance = delta_pixels / pixelsPerUnit
+
+        if not pushTarget:
+            distanceFromTarget -= dollyDistance
+            if distanceFromTarget < self.target_push_threshold * self.nearPlane:
+                distanceFromTarget = self.target_push_threshold * self.nearPlane
+
+        self.position += direction * dollyDistance
+        self.target = self.position + direction * distanceFromTarget
 
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
@@ -263,9 +304,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         # Draw scene
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        #gluPerspective(45.0, float(self.width)/float(self.height),0.1, 1000.0)
-        #self.camera.transform()
-        self.camera.place()
+        self.camera.transform()
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
@@ -301,13 +340,13 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         #gluPerspective(45.0,1.33,0.1, 100.0) 
         #glMatrixMode(GL_MODELVIEW)
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, mouseEvent):
         self.orbit_mode = True
         self.old_mouse_x = mouseEvent.x()
         self.old_mouse_y = mouseEvent.y()
         self.setCursor(QtCore.Qt.ClosedHandCursor)
 
-    def mouseReleaseEvent(self, event):
+    def mouseReleaseEvent(self, mouseEvent):
         self.orbit_mode = False
         self.setCursor(QtCore.Qt.OpenHandCursor)
 
@@ -316,13 +355,16 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
             # user is orbiting camera
             delta_x = mouseEvent.x() - self.old_mouse_x
             delta_y = self.old_mouse_y - mouseEvent.y()
+            
             if int(mouseEvent.buttons()) & QtCore.Qt.LeftButton :
-                if int(mouseEvent.buttons()) & QtCore.Qt.MidButton :
-                    self.camera.dollyCameraForward( 3*(delta_x + delta_y), False )
-                else:
-                    self.camera.orbit(delta_x, delta_y)
+                # orbit camera
+                self.camera.orbit(delta_x, delta_y)
+            elif int(mouseEvent.buttons()) & QtCore.Qt.RightButton :
+                # dolly camera
+                self.camera.dolly( 3*(delta_x + delta_y), False )
             elif int(mouseEvent.buttons()) & QtCore.Qt.MidButton :
-                self.camera.translateSceneRightAndUp( delta_x, delta_y )
+                # pan camera
+                self.camera.pan( delta_x, delta_y )
             
         self.update()
         

@@ -11,7 +11,7 @@ from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import NetworkPanel
 
-from copper.sop.geometry import Matrix4, Vector3
+from copper.vmath import Matrix4, Vector3
 
 
 class SceneViewPanel(NetworkPanel):
@@ -27,12 +27,12 @@ class SceneViewPanel(NetworkPanel):
 
 
 class Camera(object):
-    def __init__(self, position=[5,5,5], target=[0,0,0]):
-        self.fov_degrees = 45.0
+    def __init__(self, position=[5,5,5], target=[0,0,0], fov_degrees = 45.0, near_plane = 0.1, far_plane = 1000.0):
+        self.fov_degrees = self.default_fov_degrees = fov_degrees
         self.orbiting_speed_degrees_per_radians = 300.0
 
-        self.nearPlane = 0.1
-        self.farPlane = 1000.0
+        self.near_plane = self.default_near_plane = near_plane
+        self.far_plane = self.default_far_plane = far_plane
 
         # point of view, or center of camera; the ego-center; the eye-point
         self.position = self.default_position = Vector3(position)
@@ -51,7 +51,7 @@ class Camera(object):
         # the scene), if the camera gets too close to the target
         # point, we push the target point away.
         # The threshold distance at which such "pushing" of the
-        # target point begins is this fraction of nearPlane.
+        # target point begins is this fraction of near_plane.
         # To prevent the target point from ever being clipped,
         # this fraction should be chosen to be greater than 1.0.
         self.target_push_threshold = 1.3
@@ -65,8 +65,9 @@ class Camera(object):
         self.build_up()
 
     def reset(self):
-        #tangent = math.tan( self.fov_degrees / 2.0 / 180.0 * math.pi )
-        #distanceFromTarget = self.sceneRadius / tangent
+        self.fov_degrees = self.default_fov_degrees
+        self.near_plane = self.default_near_plane
+        self.far_plane = self.default_far_plane
         self.position = self.default_position
         self.target = self.default_target
         self.build_up()
@@ -83,7 +84,7 @@ class Camera(object):
 
     def transform(self):
         tangent = math.tan( self.fov_degrees/2.0 / 180.0 * math.pi )
-        viewportRadius = self.nearPlane * tangent
+        viewportRadius = self.near_plane * tangent
         if self.viewportWidthInPixels < self.viewportHeightInPixels:
             viewportWidth = 2.0*viewportRadius
             viewportHeight = viewportWidth * self.viewportHeightInPixels / float(self.viewportWidthInPixels)
@@ -93,7 +94,7 @@ class Camera(object):
         glFrustum(
             - 0.5 * viewportWidth,  0.5 * viewportWidth,    # left, right
             - 0.5 * viewportHeight, 0.5 * viewportHeight,   # bottom, top
-            self.nearPlane, self.farPlane
+            self.near_plane, self.far_plane
             )
 
         M = Matrix4.lookAt(self.position, self.target, self.up, False)
@@ -139,9 +140,9 @@ class Camera(object):
     # This causes the camera to translate forward into the scene.
     # This is also called "dollying" or "tracking" in some software packages.
     # Passing in a negative delta causes the opposite motion.
-    # If ``pushTarget'' is True, the point of interest translates forward (or backward)
+    # If ``push_target_distance'' is True, the point of interest translates forward (or backward)
     # *with* the camera, i.e. it's "pushed" along with the camera; otherwise it remains stationary.
-    def dolly( self, delta_pixels, pushTarget ):
+    def dolly( self, delta_pixels, push_target_distance = None):
         direction = self.target - self.position
         distanceFromTarget = direction.length()
         direction = direction.normalized()
@@ -151,10 +152,10 @@ class Camera(object):
 
         dollyDistance = delta_pixels / pixelsPerUnit
 
-        if not pushTarget:
+        if not push_target_distance:
             distanceFromTarget -= dollyDistance
-            if distanceFromTarget < self.target_push_threshold * self.nearPlane:
-                distanceFromTarget = self.target_push_threshold * self.nearPlane
+            if distanceFromTarget < self.target_push_threshold * self.near_plane:
+                distanceFromTarget = self.target_push_threshold * self.near_plane
 
         self.position += direction * dollyDistance
         self.target = self.position + direction * distanceFromTarget
@@ -172,7 +173,11 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.setMinimumSize(640, 360)
         self.orbit_mode = False
         self.old_mouse_x = self.old_mouse_y = 0
-        self.camera = Camera()
+        self.cameras = {
+            'persp': Camera(),
+        }
+
+        self.current_camera = 'persp'
 
         # connect panel signals
         self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
@@ -304,7 +309,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         # Draw scene
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        self.camera.transform()
+        self.cameras[self.current_camera].transform()
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
@@ -320,7 +325,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
     def resizeGL(self, widthInPixels, heightInPixels):
         self.width = widthInPixels
         self.height = heightInPixels
-        self.camera.setViewportDimensions(widthInPixels, heightInPixels)
+        self.cameras[self.current_camera].setViewportDimensions(widthInPixels, heightInPixels)
 
         if self.isValid():
             glViewport(0, 0, widthInPixels, heightInPixels)
@@ -359,16 +364,16 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
             if int(mouseEvent.buttons()) & QtCore.Qt.LeftButton :
                 if mouseEvent.modifiers() == QtCore.Qt.AltModifier :
                     # pan camera
-                    self.camera.pan( delta_x, delta_y )
+                    self.cameras[self.current_camera].pan( delta_x, delta_y )
                 else:
                     # orbit camera
-                    self.camera.orbit(delta_x, delta_y)
+                    self.cameras[self.current_camera].orbit(delta_x, delta_y)
             elif int(mouseEvent.buttons()) & QtCore.Qt.RightButton :
                 # dolly camera
-                self.camera.dolly( 3*(delta_x + delta_y), False )
+                self.cameras[self.current_camera].dolly( 3*(delta_x + delta_y), False )
             elif int(mouseEvent.buttons()) & QtCore.Qt.MidButton :
                 # pan camera
-                self.camera.pan( delta_x, delta_y )
+                self.cameras[self.current_camera].pan( delta_x, delta_y )
             
         self.update()
         

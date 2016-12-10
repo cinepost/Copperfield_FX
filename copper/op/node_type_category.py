@@ -1,7 +1,7 @@
 import six
 import inspect 
 
-from copper.op.base import RegistryMeta
+from copper.op.base import OpRegistry, RegistryMeta
 
 @six.add_metaclass(RegistryMeta)
 class NodeTypeCategoryRegistry(type):
@@ -35,8 +35,10 @@ class NodeTypeCategory(object):
 		return cls.cat_name
 
 	@classmethod
-	def nodeTypes(self):
-		raise NotImplementedError
+	def nodeTypes(cls):
+		print "Type: %s" % cls.type_name
+		print "OpRegistry: %s" % OpRegistry._registry_by_type
+		return OpRegistry._registry_by_type[cls.type_name]
 
 	@classmethod
 	def typeName(cls):

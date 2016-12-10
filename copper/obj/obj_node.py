@@ -2,6 +2,7 @@ from copper.op.op_network import OP_Network
 from copper.op.node_type_category import SopNodeTypeCategory
 
 from copper.parm_template import *
+from copper.sop.geometry import Matrix4
 
 class OBJ_Node(OP_Network):
 	__base__ = True
@@ -39,3 +40,7 @@ class OBJ_Node(OP_Network):
 	@classmethod
 	def childTypeCategory(cls):
 		return SopNodeTypeCategory
+
+
+	def worldTransform(self):
+		return Matrix4(1)

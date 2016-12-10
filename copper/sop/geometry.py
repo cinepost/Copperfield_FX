@@ -3,8 +3,8 @@ import math
 
 
 class Matrix4:
-    def __init__(self):
-        self.identityMatrix()
+    def __init__(self, d=0):
+        self.m = numpy.identity(4, dtype=numpy.float64) * d
     
     def __repr__(self):
         return self.m
@@ -19,18 +19,17 @@ class Matrix4:
         M = Matrix4()
         M.m = numpy.array(self.m, copy=True) # copy the matrix array
         return M
+
+    def setToZero(self):
+    	self.m = numpy.zeros((4,4), dtype=numpy.float64)
     
-    def identityMatrix(self):
-        self.m = numpy.identity(4)
+    def setToIdentity(self):
+        self.m = numpy.identity(4, dtype=numpy.float64)
 
     @staticmethod
     def translation( vector3 ):
-        M = Matrix4()
+        M = Matrix4(1) # identity matrix
         M.m[3,:3] = vector3.comps
-        #M.m[ 0] = 1.0;   M.m[ 4] = 0.0;   M.m[ 8] = 0.0;   M.m[12] = vector3.comps[0];
-        #M.m[ 1] = 0.0;   M.m[ 5] = 1.0;   M.m[ 9] = 0.0;   M.m[13] = vector3.comps[1];
-        #M.m[ 2] = 0.0;   M.m[ 6] = 0.0;   M.m[10] = 1.0;   M.m[14] = vector3.comps[2];
-        #M.m[ 3] = 0.0;   M.m[ 7] = 0.0;   M.m[11] = 0.0;   M.m[15] = 1.0;
         return M
 
     @staticmethod
@@ -45,7 +44,7 @@ class Matrix4:
 		R += numpy.array([[ 0.0, -direction[2], direction[1]],
 			 [ direction[2], 0.0, -direction[0]],
 			 [-direction[1], direction[0],  0.0]])
-		M = Matrix4()
+		M = Matrix4(1) # identity matrix
 		M.m[:3, :3] = R
 		if point is not None:
 			# rotation not around origin
@@ -61,11 +60,8 @@ class Matrix4:
 
     @staticmethod
     def uniformScaleAroundOrigin(scaleFactor):
-        M = Matrix4()
-        M.m[ 0] = scaleFactor; M.m[ 4] = 0.0;         M.m[ 8] = 0.0;         M.m[12] = 0.0;
-        M.m[ 1] = 0.0;         M.m[ 5] = scaleFactor; M.m[ 9] = 0.0;         M.m[13] = 0.0;
-        M.m[ 2] = 0.0;         M.m[ 6] = 0.0;         M.m[10] = scaleFactor; M.m[14] = 0.0;
-        M.m[ 3] = 0.0;         M.m[ 7] = 0.0;         M.m[11] = 0.0;         M.m[15] = 1.0;
+        M = Matrix4(1) # identity matrix
+        M.m[:3,:3] *= scaleFactor
         return M
 
     @staticmethod
@@ -82,7 +78,7 @@ class Matrix4:
         x = (y ^ z).normalized()   # cross product
         y = (z ^ x).normalized()   # cross product
 
-        M = Matrix4()
+        M = Matrix4(1) # identity matrix
 
         # the rotation matrix
         M.m[:3,:3] = [x.comps, y.comps ,z.comps]

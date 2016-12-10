@@ -370,6 +370,30 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         # highlight selected node
         self.nodes_map[node_path].select()
 
+    def contextMenuEvent(self, event):
+        network_node = engine.node(self.network_level)
+
+        menu = QtGui.QMenu(event.widget())
+        group = QtGui.QActionGroup(menu)
+        menu.addAction('Tool Menu...')
+
+        add_operators_menu = menu.addMenu("Add")
+
+        node_types = network_node.childTypeCategory().nodeTypes()
+        for node_type_name, node_class in node_types.iteritems():
+            icon = QtGui.QIcon(node_class.iconName())
+            action = add_operators_menu.addAction(icon, node_type_name)
+            action.setActionGroup(group)
+            action.setData(node_type_name)
+        
+        group.triggered.connect(self.addOperator)
+
+        menu.exec_(event.screenPos())
+
+    def addOperator(self, action):
+        network_node = engine.node(self.network_level)
+        network_node.createNode(action.data().toPyObject())
+
 
 class NetworkViewWidget(QtGui.QGraphicsView):
     def __init__(self, parent):  
@@ -412,27 +436,6 @@ class NetworkViewWidget(QtGui.QGraphicsView):
 
     def setNetworkLevel(self, node_path):
         self.scene.buildNetworkLevel(node_path)
-
-    def contextMenuEvent(self, event):
-        network_node = engine.node(self.scene.network_level)
-
-        menu = QtGui.QMenu(self)
-        menu.setObjectName("context")
-        menu.addAction('Tool Menu...')
-
-        add_operators_menu = menu.addMenu("Add")
-
-        node_types = network_node.childTypeCategory().nodeTypes()
-        for node_type_name, node_class in node_types.iteritems():
-            icon = QtGui.QIcon(node_class.iconName())
-            action = add_operators_menu.addAction(icon, node_type_name)
-            action.triggered.connect(lambda: self.addOperator(node_type_name))
-
-        menu.exec_(self.mapToGlobal(event.pos()))
-
-    def addOperator(self, node_type_name):
-        network_node = engine.node(self.scene.network_level)
-        network_node.createNode(node_type_name)
 
     def wheelEvent(self, event):
          # Zoom Factor

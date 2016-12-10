@@ -357,8 +357,12 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
             delta_y = self.old_mouse_y - mouseEvent.y()
             
             if int(mouseEvent.buttons()) & QtCore.Qt.LeftButton :
-                # orbit camera
-                self.camera.orbit(delta_x, delta_y)
+                if mouseEvent.modifiers() == QtCore.Qt.AltModifier :
+                    # pan camera
+                    self.camera.pan( delta_x, delta_y )
+                else:
+                    # orbit camera
+                    self.camera.orbit(delta_x, delta_y)
             elif int(mouseEvent.buttons()) & QtCore.Qt.RightButton :
                 # dolly camera
                 self.camera.dolly( 3*(delta_x + delta_y), False )

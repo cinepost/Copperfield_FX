@@ -3,7 +3,7 @@ import logging
 from copper.op.op_network import OP_Network
 from copper.parm_template import *
 
-from .geometry import Geometry
+from copper.geometry import Geometry
 
 class SOP_Node(OP_Network):
 	__base__ = True

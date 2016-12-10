@@ -5,7 +5,7 @@ from copper.op.op_connection import OP_Connection
 from copper import parameter
 
 from copper.parm_template import *
-from .geometry import Geometry
+from copper.geometry import Geometry
 
 class SOP_Box(SOP_Node):
 

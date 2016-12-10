@@ -8,6 +8,7 @@ import copper
 import math
 
 from copper import engine
+from copper.op.base import OpRegistry
 from gui.signals import signals
 from gui.widgets import PathBarWidget, CollapsableWidget
 from base_panel import NetworkPanel
@@ -306,6 +307,7 @@ class NodeFlowScene(QtGui.QGraphicsScene):
     def buildNetworkLevel(self, node_path=None):
         node = engine.node(node_path)
         if node:
+            self.network_level = node_path
             self.nodes_map = {}
             self.clear()
             # build node boxes
@@ -374,8 +376,6 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         QtGui.QGraphicsView.__init__(self, parent)
         self.setObjectName("network_widget")
 
-        self.network_level = "/"
-
         self.scene = NodeFlowScene(self)
         self.setScene(self.scene)
         self.setMouseTracking(True)
@@ -403,7 +403,7 @@ class NetworkViewWidget(QtGui.QGraphicsView):
     def copperNodeCreated(self, node_path):
         node = engine.node(str(node_path))
         if node:
-            if self.network_level == node.parent().path():
+            if self.scene.network_level == node.parent().path():
                 self.scene.addNode(str(node_path))
 
     @QtCore.pyqtSlot(str)
@@ -411,8 +411,28 @@ class NetworkViewWidget(QtGui.QGraphicsView):
         self.scene.selectNode(str(node_path))
 
     def setNetworkLevel(self, node_path):
-        self.network_level = node_path
         self.scene.buildNetworkLevel(node_path)
+
+    def contextMenuEvent(self, event):
+        network_node = engine.node(self.scene.network_level)
+
+        menu = QtGui.QMenu(self)
+        menu.setObjectName("context")
+        menu.addAction('Tool Menu...')
+
+        add_operators_menu = menu.addMenu("Add")
+
+        node_types = network_node.childTypeCategory().nodeTypes()
+        for node_type_name, node_class in node_types.iteritems():
+            icon = QtGui.QIcon(node_class.iconName())
+            action = add_operators_menu.addAction(icon, node_type_name)
+            action.triggered.connect(lambda: self.addOperator(node_type_name))
+
+        menu.exec_(self.mapToGlobal(event.pos()))
+
+    def addOperator(self, node_type_name):
+        network_node = engine.node(self.scene.network_level)
+        network_node.createNode(node_type_name)
 
     def wheelEvent(self, event):
          # Zoom Factor

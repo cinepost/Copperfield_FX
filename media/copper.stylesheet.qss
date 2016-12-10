@@ -109,21 +109,13 @@ QTextEdit {
 	font-family: "DejaVu Sans Mono";
 }
 
-/* QMenu context menu*/
-QMenu#context, QMenu#context > QMenu {
-	icon-size: 16px;
-}
-
-QMenu#context::item, QMenu#context > QMenu::item {
-
-}
-
 
 /* QToolButton Menu */
 QMenu{
+	icon-size: 12px;
 	font-size: 12px;
-	border-left: 1px solid #666;
-	border-top: 1px solid #666;
+	border-left: 1px solid #777;
+	border-top: 1px solid #777;
 	border-right: 1px solid #222;
 	border-bottom: 1px solid #222;
 	background-color: #333;

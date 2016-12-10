@@ -11,7 +11,7 @@ from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import NetworkPanel
 
-from copper.sop.geometry import Matrix4x4, Vector3
+from copper.sop.geometry import Matrix4, Vector3
 
 
 class SceneViewPanel(NetworkPanel):
@@ -96,7 +96,7 @@ class Camera(object):
             self.nearPlane, self.farPlane
             )
 
-        M = Matrix4x4.lookAt(self.position, self.target, self.up, False)
+        M = Matrix4.lookAt(self.position, self.target, self.up, False)
         glMultMatrixf(M.m)
 
     # Causes the camera to "orbit" around the target point.
@@ -107,12 +107,12 @@ class Camera(object):
 
         t2p = self.position - self.target
 
-        M = Matrix4x4.rotationMatrix( - delta_x_pixels * radiansPerPixel, self.ground )
+        M = Matrix4.rotationMatrix( - delta_x_pixels * radiansPerPixel, self.ground )
         t2p = M * t2p
         self.up = M * self.up
         
         right = (self.up.normalized() ^ t2p.normalized()).normalized()
-        M = Matrix4x4.rotationMatrix( delta_y_pixels * radiansPerPixel, right )
+        M = Matrix4.rotationMatrix( delta_y_pixels * radiansPerPixel, right )
         t2p = M * t2p
         self.up = M * self.up
         self.position = self.target + t2p

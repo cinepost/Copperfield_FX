@@ -2,7 +2,7 @@ import numpy
 import math
 
 
-class Matrix4x4:
+class Matrix4:
     def __init__(self):
         self.identityMatrix()
     
@@ -16,7 +16,7 @@ class Matrix4x4:
         return self.m
     
     def returnCopy(self):
-        M = Matrix4x4()
+        M = Matrix4()
         M.m = numpy.array(self.m, copy=True) # copy the matrix array
         return M
     
@@ -25,7 +25,7 @@ class Matrix4x4:
 
     @staticmethod
     def translation( vector3 ):
-        M = Matrix4x4()
+        M = Matrix4()
         M.m[3,:3] = vector3.comps
         #M.m[ 0] = 1.0;   M.m[ 4] = 0.0;   M.m[ 8] = 0.0;   M.m[12] = vector3.comps[0];
         #M.m[ 1] = 0.0;   M.m[ 5] = 1.0;   M.m[ 9] = 0.0;   M.m[13] = vector3.comps[1];
@@ -45,7 +45,7 @@ class Matrix4x4:
 		R += numpy.array([[ 0.0, -direction[2], direction[1]],
 			 [ direction[2], 0.0, -direction[0]],
 			 [-direction[1], direction[0],  0.0]])
-		M = Matrix4x4()
+		M = Matrix4()
 		M.m[:3, :3] = R
 		if point is not None:
 			# rotation not around origin
@@ -57,11 +57,11 @@ class Matrix4x4:
     @staticmethod
     def rotation( angleInRadians, axisVector, originPoint ):
         v = originPoint.asVector3()
-        return Matrix4x4.translation(v) * Matrix4x4.rotationMatrix(angleInRadians,axisVector) * Matrix4x4.translation(- v)
+        return Matrix4.translation(v) * Matrix4.rotationMatrix(angleInRadians,axisVector) * Matrix4.translation(- v)
 
     @staticmethod
     def uniformScaleAroundOrigin(scaleFactor):
-        M = Matrix4x4()
+        M = Matrix4()
         M.m[ 0] = scaleFactor; M.m[ 4] = 0.0;         M.m[ 8] = 0.0;         M.m[12] = 0.0;
         M.m[ 1] = 0.0;         M.m[ 5] = scaleFactor; M.m[ 9] = 0.0;         M.m[13] = 0.0;
         M.m[ 2] = 0.0;         M.m[ 6] = 0.0;         M.m[10] = scaleFactor; M.m[14] = 0.0;
@@ -71,7 +71,7 @@ class Matrix4x4:
     @staticmethod
     def uniformScale( scaleFactor, originPoint ):
         v = originPoint.asVector3()
-        return Matrix4x4.translation(v) * Matrix4x4.uniformScaleAroundOrigin(scaleFactor) * Matrix4x4.translation(- v)
+        return Matrix4.translation(v) * Matrix4.uniformScaleAroundOrigin(scaleFactor) * Matrix4.translation(- v)
 
     @staticmethod
     def lookAt( eyePoint, targetPoint, upVector, isInverted ):
@@ -82,21 +82,21 @@ class Matrix4x4:
         x = (y ^ z).normalized()   # cross product
         y = (z ^ x).normalized()   # cross product
 
-        M = Matrix4x4()
+        M = Matrix4()
 
         # the rotation matrix
         M.m[:3,:3] = [x.comps, y.comps ,z.comps]
 
         # step two: postmultiply by a translation matrix
         if isInverted :
-            return M * Matrix4x4.translation( eyePoint )
+            return M * Matrix4.translation( eyePoint )
         else:
             M.m = numpy.transpose(M.m)
-            return Matrix4x4.translation( - eyePoint ) * M
+            return Matrix4.translation( - eyePoint ) * M
 
     def __mul__(a,b):   # note: a is really self
-        if isinstance(b,Matrix4x4):
-            M = Matrix4x4()
+        if isinstance(b,Matrix4):
+            M = Matrix4()
             M.m = numpy.dot(a.m,b.m)
             return M
         elif isinstance(b,Vector3):

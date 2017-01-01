@@ -49,5 +49,8 @@ class OBJ_Node(OP_Network):
 
 
 	def worldTransform(self):
-		M = Matrix4(1)
+		rx = self.parm('r1').evalAsFloat()
+		ry = self.parm('r2').evalAsFloat()
+		rz = self.parm('r3').evalAsFloat()
+		M = Matrix4.eulerToMatrixDegrees(rx, ry, rz)
 		return M

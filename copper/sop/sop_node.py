@@ -12,12 +12,12 @@ class SOP_Node(OP_Network):
 		super(SOP_Node, self).__init__(engine, parent)
 		self._geometry = Geometry()
 
-	def compute(self, lock):
-		raise Exception("Unimplemented method !!!")
+	def cookMySop(self, lock):
+		raise NotImplementedError
 
 	def cookData(self, lock):
 		try:
-			self.compute(lock)
+			self.cookMySop(lock)
 		except Exception, e:
 			logging.error(str(e))
 			return False

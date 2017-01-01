@@ -75,8 +75,14 @@ class Copper_Engine(OP_Network, ROOT_Types):
 		self.createNode("img", "img")
 		self.createNode("obj", "obj")	
 	
-	def isGuiMode(self):
-		return True
+	@property
+	def gui_signals(self):
+		try:
+			from gui.signals import signals
+		except:
+			return None
+
+		return signals
 
 	def isRoot(self):
 		return True
@@ -188,6 +194,16 @@ class Copper_Engine(OP_Network, ROOT_Types):
 	def readFile(self, file_path):
 		return open(file_path, "rb").read()
 
+	def interpreter(self):
+		import code, sys
+		console = code.InteractiveConsole(locals={'hou': self})
+		
+		banner = "%s\n" % sys.version
+		banner+= 'on %s\n' % sys.platform 
+		banner+= 'CopperFX python interpreter\n'
+
+		console.interact(banner)
+
 	def open_project(self, filename):
 		file_extension = filename.rsplit(".",1)[-1]
 		translator = self.translators.get(file_extension, None)
@@ -233,11 +249,15 @@ class Copper_Engine(OP_Network, ROOT_Types):
 
 		obj = self.node("obj")
 
-		geo = obj.createNode("geo")
+		geo1 = obj.createNode("geo")
+		
 		ins = obj.createNode("instance")
-		geo = obj.createNode("geo", "geo1")
+		
+		#geo2 = obj.createNode("geo", "geo1")
+		#box = geo2.createNode("box")
 
-		box = geo.createNode("box")
+		#geo3 = obj.createNode("geo")
+		#file = geo3.createNode("file")
 
 		## Create COP2_File node 
 		file1 = comp.createNode("file")

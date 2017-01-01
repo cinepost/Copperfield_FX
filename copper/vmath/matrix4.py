@@ -30,14 +30,51 @@ class Matrix4:
     @staticmethod
     def translation( vector3 ):
         M = Matrix4(1) # identity matrix
-        M.m[3,:3] = vector3.comps
+        M.m[3,:3] = vector3
+        return M
+
+    @staticmethod
+    def eulerToMatrixDegrees(rx=0, ry=0, rz=0):
+        ''' Return matrix for rotations around z, y and x axes '''
+        return Matrix4.eulerToMatrixRadians(numpy.radians(rx), numpy.radians(ry), numpy.radians(rz))
+
+    @staticmethod
+    def eulerToMatrixRadians(rx=0, ry=0, rz=0):
+        ''' Return matrix for rotations around z, y and x axes '''
+
+        cosx = math.cos(rx)
+        sinx = math.sin(rx)
+        m1 = numpy.array(
+                [[1, 0, 0, 0],
+                 [0, cosx, -sinx, 0],
+                 [0, sinx, cosx, 0],
+                 [0, 0, 0, 1]])
+
+        cosy = math.cos(ry)
+        siny = math.sin(ry)
+        m2 = numpy.array(
+                [[cosy, 0, siny, 0],
+                 [0, 1, 0, 0],
+                 [-siny, 0, cosy, 0],
+                 [0, 0, 0, 1]])
+
+        cosz = math.cos(rz)
+        sinz = math.sin(rz)
+        m3 = numpy.array(
+                [[cosz, -sinz, 0, 0],
+                 [sinz, cosz, 0, 0],
+                 [0, 0, 1, 0],
+                 [0, 0, 0, 1]])
+        
+        M = Matrix4()
+        M.m = numpy.dot(numpy.dot(m1,m2),m3)
         return M
 
     @staticmethod
     def rotationMatrix( angleInRadians, axisVector, point=None):
 		sina = math.sin(angleInRadians)
 		cosa = math.cos(angleInRadians)
-		direction = axisVector.normalized().comps
+		direction = axisVector.normalized()
 		# rotation matrix around unit vector
 		R = numpy.diag([cosa, cosa, cosa])		
 		R += numpy.outer(direction, direction) * (1.0 - cosa)
@@ -82,7 +119,7 @@ class Matrix4:
         M = Matrix4(1) # identity matrix
 
         # the rotation matrix
-        M.m[:3,:3] = [x.comps, y.comps ,z.comps]
+        M.m[:3,:3] = [x, y ,z]
 
         # step two: postmultiply by a translation matrix
         if isInverted :
@@ -98,6 +135,6 @@ class Matrix4:
             return M
         elif isinstance(b,Vector3):
             # We treat the vector as if its (homogeneous) 4th component were zero.
-            return Vector3(a.m[:3,:3].dot(b.comps))
+            return Vector3(a.m[:3,:3].dot(b))
         else:
 			raise BaseException("%s __mul__ %s not supported !!!" % (a.__class__, b.__class__))

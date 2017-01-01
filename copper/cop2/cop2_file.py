@@ -1,4 +1,3 @@
-from PyQt4 import Qt, QtGui
 import matplotlib.image
 from PIL import Image 
 import pyopencl as cl

@@ -1,5 +1,4 @@
-#!/usr/local/bin/python
-
+from copper import engine
 import argparse
 
 def main():
@@ -33,14 +32,19 @@ def main():
 				print("Device compute units:", device.max_compute_units)
 
 		exit(True)
-				
-	import copper
-	eng = "GPU"
-	dev = None
-	if args.engine: eng = args.engine
-	if args.device: dev = int(args.device)
-	engine = copper.CreateEngine(device_type = eng, device_index = dev)
-	engine.open_project(args.project)
+	
+	# TODO: make engine reconfigurable singleton			
+	#import copper
+	#eng = "GPU"
+	#dev = None
+	#if args.engine: eng = args.engine
+	#if args.device: dev = int(args.device)
+	#engine = copper.CreateEngine(device_type = eng, device_index = dev)
+
+	if args.project:
+		engine.open_project(args.project)
+	else:
+		exit(engine.interpreter())
 
 	if args.convert:
 		engine.save_project(args.convert)

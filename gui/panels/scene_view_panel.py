@@ -82,7 +82,7 @@ class Camera(object):
         self.viewportHeightInPixels = heightInPixels
         self.viewportRadiusInPixels = 0.5*widthInPixels if (widthInPixels < heightInPixels) else 0.5*heightInPixels
 
-    def transform(self):
+    def getTransform(self):
         tangent = math.tan( self.fov_degrees/2.0 / 180.0 * math.pi )
         viewportRadius = self.near_plane * tangent
         if self.viewportWidthInPixels < self.viewportHeightInPixels:
@@ -97,8 +97,7 @@ class Camera(object):
             self.near_plane, self.far_plane
             )
 
-        M = Matrix4.lookAt(self.position, self.target, self.up, False)
-        glMultMatrixf(M.m)
+        return Matrix4.lookAt(self.position, self.target, self.up, False)
 
     # Causes the camera to "orbit" around the target point.
     # This is also called "tumbling" in some software packages.
@@ -160,6 +159,9 @@ class Camera(object):
         self.position += direction * dollyDistance
         self.target = self.position + direction * distanceFromTarget
 
+    def getBackgroundImageName(self):
+        return ""
+
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent, panel):
@@ -182,7 +184,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         # connect panel signals
         self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
 
-    def drawBackground(self):
+    def drawBackground(self, background_image_name=""):
         glDisable(GL_DEPTH_TEST)
         glBegin(GL_QUADS)
         glColor3f(0.39, 0.50, 0.55)
@@ -268,6 +270,8 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glPointSize( 3.0 )
         for node in copper.engine.node("/obj").children():
             print "Drawing node: %s" % node.path()
+            transform = node.worldTransform()
+            glMultMatrixf(transform.m)
             display_node = node.displayNode()
             if display_node:
                 print "Drawing sop node: %s" % display_node.path()
@@ -296,6 +300,8 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glClearColor(0.5, 0.5, 0.5, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
+        camera = self.cameras[self.current_camera]
+
         # Drab back plane elements
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
@@ -304,12 +310,13 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glOrtho(0.0, self.width, self.height, 0.0, -100.0, 100.0)
 
         # Background
-        self.drawBackground()
+        self.drawBackground(background_image_name = camera.getBackgroundImageName())
 
         # Draw scene
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        self.cameras[self.current_camera].transform()
+        M = camera.getTransform()
+        glMultMatrixf(M.m)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 

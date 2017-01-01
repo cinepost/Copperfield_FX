@@ -1,7 +1,7 @@
 import re, collections
 import logging 
 
-from gui.signals import signals
+#from gui.signals import signals
 from copper.op.base import OpRegistry
 from copper.op.op_node import OP_Node
 from copper.parameter import CopperParameter
@@ -91,8 +91,8 @@ class OP_Network(OP_Node):
 
 		self.__node_dict__[name] = node
 
-		if self.engine.isGuiMode():
-			signals.copperNodeCreated[str].emit(node.path())
+		if self.engine.gui_signals:
+			self.engine.gui_signals.copperNodeCreated[str].emit(node.path())
 		
 		return node
 

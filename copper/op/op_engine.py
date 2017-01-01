@@ -253,10 +253,10 @@ class Copper_Engine(OP_Network, ROOT_Types):
 		
 		ins = obj.createNode("instance")
 		
-		#geo2 = obj.createNode("geo", "geo1")
-		#box = geo2.createNode("box")
+		geo2 = obj.createNode("geo", "geo1")
+		box = geo2.createNode("box")
 
-		#geo3 = obj.createNode("geo")
+		geo3 = obj.createNode("geo")
 		#file = geo3.createNode("file")
 
 		## Create COP2_File node 

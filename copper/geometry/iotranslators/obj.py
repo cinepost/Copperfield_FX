@@ -5,7 +5,7 @@ import sys
 class ObjIO:
 
 	@staticmethod 
-	def readGeometry(filename, geometry):
+	def readGeometry(filename, geometry, swapyz=False):
 		""" Loads a Wavefront OBJ file. """
 		vertices = []
 		normals = []
@@ -19,14 +19,12 @@ class ObjIO:
 			if not values: continue
 			if values[0] == 'v':
 				# read vertex data
-				v = map(numpy.float64, values[1:4])
-				geometry.createPoint().setPosition(map(numpy.float64, values[1:4]))
+				geometry._points.append(map(float, values[1:4]))
 			elif values[0] == 'vn':
 				# read vertex normal data
-				v = map(numpy.float64, values[1:4])
 				if swapyz:
 					v = v[0], v[2], v[1]
-				normals.append(v)
+				geometry._normals.append(map(float, v[1:4]))
 			elif values[0] == 'vt':
 				# read vertex texture coordinates
 				texcoords.append(map(numpy.float64, values[1:3]))

@@ -136,23 +136,38 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
         glPointSize( 3.0 )
         for node in copper.engine.node("/obj").children():
-            print "Drawing node: %s" % node.path()
-            transform = node.worldTransform()
-            glMultMatrixf(transform.m)
-            display_node = node.displayNode()
-            if display_node:
-                print "Drawing sop node: %s" % display_node.path()
-                geometry = display_node.geometry()
-                if geometry:
-                    print "Drawing geometry for sop node: %s" % display_node.path()
-                    glColor3f(0.2,0.3,0.9)
-                    glBegin(GL_POINTS)
+            ogl_obj_cache = SceneViewWidget.ObjCache.getObjNodeGeometry(node)
 
-                    for point in geometry.points():
-                        point_pos = point.position()
-                        glVertex3f(point_pos[0], point_pos[1], point_pos[2])
+            if ogl_obj_cache:
+                print "Drawing node: %s" % node.path()
 
-                    glEnd()
+                transform = node.worldTransform()
+                glPushMatrix()
+                glMultMatrixf(transform.m)
+
+                glEnableClientState(GL_VERTEX_ARRAY)
+                glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.vbo)
+                
+                glVertexPointer (3, GL_FLOAT, 0, None)
+                glDrawArrays (GL_POINTS, 0, ogl_obj_cache.n_points)
+                
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0) # reset
+                glDisableClientState(GL_VERTEX_ARRAY)
+                glPopMatrix()
+
+            #display_node = node.displayNode()
+            #if display_node:
+            #    print "Drawing sop node: %s" % display_node.path()
+            #    geometry = display_node.geometry()
+            #    if geometry:
+            #        print "Drawing geometry for sop node: %s" % display_node.path()
+            #        glColor3f(0.2,0.3,0.9)
+            #        glBegin(GL_POINTS)
+            #
+            #        for point in geometry.raw_points():
+            #            glVertex3f(point[0], point[1], point[2])
+
+            #        glEnd()
 
     @QtCore.pyqtSlot(str)
     def updateNodeDisplay(self, node_path=None):

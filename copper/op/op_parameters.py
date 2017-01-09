@@ -1,4 +1,5 @@
 from copper.parameter import CopperParameter
+from copper.parm_template import ParmNamingScheme
 import collections
 
 class OP_Parameters(object):
@@ -24,7 +25,14 @@ class OP_Parameters(object):
 			#print "Added parameter %s %s" % (parm_name, parm)
 		else:
 			for i in range(parm_template.length()):
-				parm_name = "%s%s" % (parm_template.name(), i+1)
+				if parm_template.namingScheme() == ParmNamingScheme.XYZW:
+					parm_name = "%s%s" % (parm_template.name(), ['x','y','z','w'][i])
+				elif parm_template.namingScheme() == ParmNamingScheme.RGBA:
+					parm_name = "%s%s" % (parm_template.name(), ['r','g','b','a'][i])
+				else:
+					parm_name = "%s%s" % (parm_template.name(), i+1)
+
+
 				default_value = parm_template.defaultValue()[i]
 				
 				self.__parms__[parm_name] = CopperParameter(self, name=parm_name, parm_template=parm_template, default_value=parm_template.defaultValue()[i], spare=spare, callback=callback)

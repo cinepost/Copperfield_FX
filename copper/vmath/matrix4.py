@@ -28,9 +28,20 @@ class Matrix4:
         self.m = numpy.identity(4, dtype=numpy.float64)
 
     @staticmethod
-    def translation( vector3 ):
+    def translation( *args ):
+        nargs = len(args)
+        if nargs == 1:
+            if isinstance(args[0], Vector3):
+                vec = args[0]
+            elif isinstance(args[0], list) or isinstance(args[0], numpy.ndarray):
+                vec = args[0][:3]
+        elif nargs == 3:
+            vec = [args[0], args[1], args[2]]
+        else:
+            return None
+
         M = Matrix4(1) # identity matrix
-        M.m[3,:3] = vector3
+        M.m[3,:3] = vec
         return M
 
     @staticmethod

@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from copper_types import *
 from copper_string import CopperString
 
 from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
@@ -7,20 +6,20 @@ from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateT
 CopperLinear = 0
 CopperBezier = 2
 
-CopperParmInt = int
-CopperParmInt2 = CopperInt2
-CopperParmInt3 = CopperInt3
-CopperParmInt4 = CopperInt4
-CopperParmBool = bool
-CopperParmFloat = float 
-CopperParmFloat2 = CopperFloat2
-CopperParmFloat3 = CopperFloat3
-CopperParmFloat4 = CopperFloat4
-CopperParmString = CopperString
-CopperParmOpPath = "oppath"
-CopperParmFile = str
-CopperParmButton = "button"
-CopperParmOrderedMenu = "menu"
+#CopperParmInt = int
+#CopperParmInt2 = CopperInt2
+#CopperParmInt3 = CopperInt3
+#CopperParmInt4 = CopperInt4
+#CopperParmBool = bool
+#CopperParmFloat = float 
+#CopperParmFloat2 = CopperFloat2
+#CopperParmFloat3 = CopperFloat3
+#CopperParmFloat4 = CopperFloat4
+#CopperParmString = CopperString
+#CopperParmOpPath = "oppath"
+#CopperParmFile = str
+#CopperParmButton = "button"
+#CopperParmOrderedMenu = "menu"
 
 class CopperKeyframe(object):
 	def __init__(self, engine, time=None, value=None):

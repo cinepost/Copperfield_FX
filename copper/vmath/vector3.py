@@ -45,7 +45,7 @@ class Vector3(list):
 		return Vector3([self[0]*a, self[1]*a, self[2]*a])
 
 	def __eq__(self,other):
-		return self==other
+		return all([abs(self[0] - other[0]) < 1e-10, abs(self[1] - other[1]) < 1e-10, abs(self[2] - other[2]) < 1e-10])
 
 	def __ne__(self,other):
 		return not (self==other)

@@ -15,12 +15,53 @@ from copper.vmath import Matrix4, Vector3
 from .camera import Camera
 from .ogl_objcache import OGL_ObjCacheManager
 
+viewport_layout_types = [
+    { 
+        "name": "Single View",
+        "icon": "panels/scene_view_panel/layout_single_view.svg"
+    },
+    {
+        "name": "Four Views",
+        "icon": "panels/scene_view_panel/layout_four_views.svg" 
+    },
+    {
+        "name": "Two Views Stacked",
+        "icon": "panels/scene_view_panel/layout_two_views_stacked.svg" 
+    },
+    {
+        "name": "Two Views Side By Side",
+        "icon": "panels/scene_view_panel/layout_two_views_side_by_side.svg"
+    },
+    {
+        "name": "Three Views Split Bottom",
+        "icon": "panels/scene_view_panel/layout_three_views_split_bottom.svg"
+    },
+    {
+        "name": "Three Views Split Left",
+        "icon": "panels/scene_view_panel/layout_three_views_split_left.svg"
+    },
+    {
+        "name": "Four Views Split Bottom",
+        "icon": "panels/scene_view_panel/layout_four_views_split_bottom.svg"
+    },
+    {
+        "name": "Four Views Split Left",
+        "icon": "panels/scene_view_panel/layout_four_views_split_left.svg"
+    }
+]
+
 class SceneViewPanel(NetworkPanel):
     def __init__(self):  
         NetworkPanel.__init__(self) 
 
         self.scene_view_widget = SceneViewWidget(self, self)
         self.addWidget(self.scene_view_widget)
+
+        # create viewports layout
+        self.layout_types = viewport_layout_types
+        for layout in self.layout_types:
+            pass
+
 
     @classmethod
     def panelTypeName(cls):
@@ -146,28 +187,26 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                 glMultMatrixf(transform.m)
 
                 glEnableClientState(GL_VERTEX_ARRAY)
-                glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.vbo)
+                
+                # draw points
+                glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
                 
                 glVertexPointer (3, GL_FLOAT, 0, None)
                 glDrawArrays (GL_POINTS, 0, ogl_obj_cache.n_points)
                 
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0) # reset
+                
+                # draw polygons
+                glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ogl_obj_cache.polyIndicesVBO())
+
+                glDrawElements(GL_TRIANGLES, ogl_obj_cache.polyCount(), GL_UNSIGNED_INT, 0)
+
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+                glBindBuffer (GL_ARRAY_BUFFER, 0)
+
                 glDisableClientState(GL_VERTEX_ARRAY)
                 glPopMatrix()
-
-            #display_node = node.displayNode()
-            #if display_node:
-            #    print "Drawing sop node: %s" % display_node.path()
-            #    geometry = display_node.geometry()
-            #    if geometry:
-            #        print "Drawing geometry for sop node: %s" % display_node.path()
-            #        glColor3f(0.2,0.3,0.9)
-            #        glBegin(GL_POINTS)
-            #
-            #        for point in geometry.raw_points():
-            #            glVertex3f(point[0], point[1], point[2])
-
-            #        glEnd()
 
     @QtCore.pyqtSlot(str)
     def updateNodeDisplay(self, node_path=None):
@@ -189,7 +228,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glLoadIdentity()
         glOrtho(0.0, self.width, self.height, 0.0, -100.0, 100.0)
 
-        # Background
+        # Draw background
         self.drawBackground(background_image_name = self.viewport.getBackgroundImageName())
 
         # Draw scene
@@ -199,17 +238,49 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.viewport.buildFrustum()
         M = self.viewport.getTransform()
 
-        glMultMatrixf(M.m)
-        glMatrixMode(GL_MODELVIEW)
+        glMultMatrixf( M.m )
+        glMatrixMode( GL_MODELVIEW )
         glLoadIdentity()
 
-        # Grid
+        # Draw grid
         self.drawSceneGrid()
 
         # Scene objects
         self.drawSceneObjects()
-
         glFlush()
+
+        # Draw overlay
+        self.drawOverlay()
+
+        #glFlush()
+
+    def drawOverlay(self):
+        glClear( GL_DEPTH_BUFFER_BIT );
+
+        glPushMatrix() #reset
+        glLoadIdentity() #modelview
+
+        glMatrixMode( GL_PROJECTION ) #set ortho camera
+        glPushMatrix()
+        glLoadIdentity()
+        gluOrtho2D(0, self.width, self.height, 0)
+
+        glMatrixMode( GL_MODELVIEW )
+
+        glDisable( GL_DEPTH_TEST ) # necessary if you want to draw things in the order you call them
+
+        self.drawHUD() # Actually does the drawing
+
+        glEnable( GL_DEPTH_TEST )
+
+        glMatrixMode( GL_PROJECTION )
+        glPopMatrix()
+        glMatrixMode( GL_MODELVIEW ) 
+        glPopMatrix()
+
+
+    def drawHUD(self):
+        pass
 
 
     def resizeGL(self, widthInPixels, heightInPixels):
@@ -230,14 +301,11 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         #glEnable(GL_LINE_SMOOTH)
         glShadeModel( GL_SMOOTH )
 
-        #glMatrixMode(GL_PROJECTION)
-        ##lLoadIdentity()                    
-        #gluPerspective(45.0,1.33,0.1, 100.0) 
-        #glMatrixMode(GL_MODELVIEW)
 
     @property
     def viewport(self):
         return self.cameras[self.current_camera]
+
 
     def mousePressEvent(self, mouseEvent):
         self.orbit_mode = True
@@ -245,9 +313,11 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.old_mouse_y = mouseEvent.y()
         self.setCursor(QtCore.Qt.ClosedHandCursor)
 
+
     def mouseReleaseEvent(self, mouseEvent):
         self.orbit_mode = False
         self.setCursor(QtCore.Qt.OpenHandCursor)
+
 
     def mouseMoveEvent(self, mouseEvent):
         if int(mouseEvent.buttons()) != QtCore.Qt.NoButton :

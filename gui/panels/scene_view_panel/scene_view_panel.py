@@ -7,6 +7,7 @@ import numpy
 import copper
 import math
 
+#from gui.utils import loadIcon
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from gui.panels.base_panel import NetworkPanel
@@ -15,72 +16,56 @@ from copper.vmath import Matrix4, Vector3
 from .camera import Camera
 from .ogl_objcache import OGL_ObjCacheManager
 
-viewport_layout_types = [
-    { 
-        "name": "Single View",
-        "icon": "panels/scene_view_panel/layout_single_view.svg"
-    },
-    {
-        "name": "Four Views",
-        "icon": "panels/scene_view_panel/layout_four_views.svg" 
-    },
-    {
-        "name": "Two Views Stacked",
-        "icon": "panels/scene_view_panel/layout_two_views_stacked.svg" 
-    },
-    {
-        "name": "Two Views Side By Side",
-        "icon": "panels/scene_view_panel/layout_two_views_side_by_side.svg"
-    },
-    {
-        "name": "Three Views Split Bottom",
-        "icon": "panels/scene_view_panel/layout_three_views_split_bottom.svg"
-    },
-    {
-        "name": "Three Views Split Left",
-        "icon": "panels/scene_view_panel/layout_three_views_split_left.svg"
-    },
-    {
-        "name": "Four Views Split Bottom",
-        "icon": "panels/scene_view_panel/layout_four_views_split_bottom.svg"
-    },
-    {
-        "name": "Four Views Split Left",
-        "icon": "panels/scene_view_panel/layout_four_views_split_left.svg"
-    }
-]
+from .layouts import viewport_layout_types
+
 
 class SceneViewPanel(NetworkPanel):
     def __init__(self):  
         NetworkPanel.__init__(self) 
 
-        self.scene_view_widget = SceneViewWidget(self, self)
-        self.addWidget(self.scene_view_widget)
+        #self.scene_view_widget = SceneViewWidget(self, self)
+        #self.addWidget(self.scene_view_widget)
 
-        # create viewports layout
-        self.layout_types = viewport_layout_types
-        for layout in self.layout_types:
+        self.views_layout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
+        self.addLayout(self.views_layout)
+
+        # default viewports layout
+        self.layouts = []
+        self.layouts_button = QtGui.QPushButton("Layouts", self)
+        for layout in viewport_layout_types:
             pass
 
+        self.path_bar_widget.layout.addWidget(self.layouts_button)
+
+        # create default views layout
+        self.makeViewsLayout()
 
     @classmethod
     def panelTypeName(cls):
         return "Scene View"
 
 
+    def makeViewsLayout(self, layout_name="Single View"):
+        w1 = SceneViewWidget(self, None, self)
+        w2 = SceneViewWidget(self, w1, self)
+        self.views_layout.addWidget(w1)
+        self.views_layout.addWidget(w2)
+        pass
+
+
 class SceneViewWidget(QtOpenGL.QGLWidget):
 
     ObjCache = OGL_ObjCacheManager()
     
-    def __init__(self, parent, panel):
+    def __init__(self, parent, shareWidget=None, panel=None):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)
         format.setSamples(16)
-        QtOpenGL.QGLWidget.__init__(self, format, parent)
+        QtOpenGL.QGLWidget.__init__(self, format, parent, shareWidget)
         self.panel = panel
         self.width = 1920
         self.height = 1200
-        self.setMinimumSize(640, 360)
+        self.setMinimumSize(100, 100)
         self.orbit_mode = False
         self.old_mouse_x = self.old_mouse_y = 0
         self.cameras = {
@@ -194,16 +179,19 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                 glVertexPointer (3, GL_FLOAT, 0, None)
                 glDrawArrays (GL_POINTS, 0, ogl_obj_cache.n_points)
                 
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0) # reset
+                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
                 
                 # draw polygons
-                glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ogl_obj_cache.polyIndicesVBO())
+                if ogl_obj_cache.polyCount() > 0:
+                    print "Drawing polys for: %s" % node.path()
+                    glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
+                    glVertexPointer(3, GL_FLOAT, 0, None)
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ogl_obj_cache.polyIndicesVBO())
 
-                glDrawElements(GL_TRIANGLES, ogl_obj_cache.polyCount(), GL_UNSIGNED_INT, 0)
+                    glDrawElements(GL_TRIANGLES, ogl_obj_cache.polyCount(), GL_UNSIGNED_INT, 0)
 
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
-                glBindBuffer (GL_ARRAY_BUFFER, 0)
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
+                    glBindBuffer (GL_ARRAY_BUFFER, 0)
 
                 glDisableClientState(GL_VERTEX_ARRAY)
                 glPopMatrix()

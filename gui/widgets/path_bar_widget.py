@@ -13,9 +13,9 @@ class PathBarWidget(QtGui.QFrame):
         self.history_index = -1
         self.setObjectName("pathBar")
         
-        layout = QtGui.QHBoxLayout()
-        layout.setSpacing(2)
-        layout.setContentsMargins(0, 2, 0, 2)
+        self.layout = QtGui.QHBoxLayout()
+        self.layout.setSpacing(2)
+        self.layout.setContentsMargins(0, 2, 0, 2)
 
         self.btn_back = QtGui.QToolButton(self)
         self.btn_back.setIcon(QtGui.QIcon( "icons/main/go-previous.svg"))
@@ -40,12 +40,12 @@ class PathBarWidget(QtGui.QFrame):
         self.path_bar.setObjectName("bar")
         self.path_bar.setLayout(self.path_layout)
 
-        layout.addWidget(self.btn_back)
-        layout.addWidget(self.btn_frwd)
-        layout.addWidget(self.path_bar)
-        layout.addWidget(self.btn_pin)
+        self.layout.addWidget(self.btn_back)
+        self.layout.addWidget(self.btn_frwd)
+        self.layout.addWidget(self.path_bar)
+        self.layout.addWidget(self.btn_pin)
 
-        self.setLayout(layout)
+        self.setLayout(self.layout)
         self.setAcceptDrops(True)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
 

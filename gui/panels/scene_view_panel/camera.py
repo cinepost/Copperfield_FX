@@ -4,7 +4,10 @@ from OpenGL.GL import *
 from copper.vmath import Matrix4, Vector3
 
 class Camera(object):
-    def __init__(self, position=[5,5,5], target=[0,0,0], fov_degrees = 45.0, near_plane = 0.1, far_plane = 1000.0):
+
+    #class prijection
+
+    def __init__(self, position=[5,5,5], target=[0,0,0], fov_degrees = 41.0, near_plane = 0.1, far_plane = 1000.0):
         self.fov_degrees = self.default_fov_degrees = fov_degrees
         self.orbiting_speed_degrees_per_radians = 300.0
 

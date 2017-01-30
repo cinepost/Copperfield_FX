@@ -7,7 +7,7 @@ import numpy
 import copper
 import math
 
-#from gui.utils import loadIcon
+from gui.utils import clearLayout
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from gui.panels.base_panel import NetworkPanel
@@ -23,22 +23,47 @@ class SceneViewPanel(NetworkPanel):
     def __init__(self):  
         NetworkPanel.__init__(self) 
 
-        #self.scene_view_widget = SceneViewWidget(self, self)
-        #self.addWidget(self.scene_view_widget)
+        self.views_layout = None
 
         self.views_layout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
+        self.views_layout.setSpacing(2)
         self.addLayout(self.views_layout)
 
-        # default viewports layout
-        self.layouts = []
+        # layout switching button
         self.layouts_button = QtGui.QPushButton("Layouts", self)
-        for layout in viewport_layout_types:
-            pass
+        self.layouts_button.setIcon(QtGui.QIcon("icons/main/go-next.svg"))
 
+        mapper = QtCore.QSignalMapper(self)
+        layouts_menu = QtGui.QMenu()
+
+        for layout in viewport_layout_types:
+            action = QtGui.QAction(QtGui.QIcon(layout['icon']), layout['name'], self)
+            mapper.setMapping(action, layout['name'])
+            action.setShortcut(layout['shortcut'])
+            action.triggered.connect(mapper.map)
+            layouts_menu.addAction(action)
+
+        mapper.mapped['QString'].connect(self.makeViewsLayout)
+        self.layouts_button.setMenu(layouts_menu)
         self.path_bar_widget.layout.addWidget(self.layouts_button)
+
+        # create default viewports
+        persp = SceneViewWidget(None, self)
+        top   = SceneViewWidget(None, self, persp)
+        bottom= SceneViewWidget(None, self, persp)
+        left  = SceneViewWidget(None, self, persp)
+        right = SceneViewWidget(None, self, persp)
+        self.viewports = {
+            "persp": persp,
+            "top": top,
+            "bottom": bottom,
+            "left": left,
+            "right": right
+        }
 
         # create default views layout
         self.makeViewsLayout()
+
 
     @classmethod
     def panelTypeName(cls):
@@ -46,26 +71,36 @@ class SceneViewPanel(NetworkPanel):
 
 
     def makeViewsLayout(self, layout_name="Single View"):
-        w1 = SceneViewWidget(self, None, self)
-        w2 = SceneViewWidget(self, w1, self)
-        self.views_layout.addWidget(w1)
-        self.views_layout.addWidget(w2)
-        pass
+        print "LAYOUT NAME: %s" % layout_name
+
+        #clear views layout
+        clearLayout(self.views_layout, delete_widgets=False)
+        print "Layout : %s" % self.views_layout.count()
+
+        self.views_layout.addWidget(self.viewports["persp"])
+
+        if layout_name=="Four Views":
+            self.views_layout.addWidget(self.viewports["top"])
+            self.views_layout.addWidget(self.viewports["top"])
+            self.views_layout.addWidget(self.viewports["persp"])
 
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
 
     ObjCache = OGL_ObjCacheManager()
     
-    def __init__(self, parent, shareWidget=None, panel=None):
+    def __init__(self, parent, panel=None, share_widget=None):
         format = QtOpenGL.QGLFormat.defaultFormat()
         format.setSampleBuffers(True)
         format.setSamples(16)
-        QtOpenGL.QGLWidget.__init__(self, format, parent, shareWidget)
+
+       # QGLContext context, QWidget parent = None, QGLWidget shareWidget = None, Qt.WindowFlags flags = 0
+        
+        QtOpenGL.QGLWidget.__init__(self, format, parent, share_widget)
         self.panel = panel
         self.width = 1920
         self.height = 1200
-        self.setMinimumSize(100, 100)
+        self.setMinimumSize(160, 160)
         self.orbit_mode = False
         self.old_mouse_x = self.old_mouse_y = 0
         self.cameras = {
@@ -76,6 +111,8 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
         # connect panel signals
         self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
+
+        print "SceneViewWidget created"
 
     def drawBackground(self, background_image_name=""):
         glDisable(GL_DEPTH_TEST)
@@ -160,7 +197,6 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
     def drawSceneObjects(self):
         glTranslatef(0.0, 0.0, 0.0)
 
-        glPointSize( 3.0 )
         for node in copper.engine.node("/obj").children():
             ogl_obj_cache = SceneViewWidget.ObjCache.getObjNodeGeometry(node)
 
@@ -171,29 +207,42 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                 glPushMatrix()
                 glMultMatrixf(transform.m)
 
-                glEnableClientState(GL_VERTEX_ARRAY)
-                
+
                 # draw points
-                glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
+                if ogl_obj_cache.pointsCount() > 0:
+                    print "Drawing points for: %s" % node.path()
+                    glPointSize( 3.0 )
+                    glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
+                    print "binded"
+
+                    glEnableClientState(GL_VERTEX_ARRAY)
+
+                    glVertexPointer (3, GL_FLOAT, 0, None)
+                    glDrawArrays (GL_POINTS, 0, ogl_obj_cache.pointsCount())
+
+                    glDisableClientState(GL_VERTEX_ARRAY)
+
+                    print "drawed"
+                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
                 
-                glVertexPointer (3, GL_FLOAT, 0, None)
-                glDrawArrays (GL_POINTS, 0, ogl_obj_cache.n_points)
-                
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
-                
+
                 # draw polygons
                 if ogl_obj_cache.polyCount() > 0:
-                    print "Drawing polys for: %s" % node.path()
+                    print "Drawing %s polys for: %s" % (ogl_obj_cache.polyCount(), node.path())
                     glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
-                    glVertexPointer(3, GL_FLOAT, 0, None)
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ogl_obj_cache.polyIndicesVBO())
 
-                    glDrawElements(GL_TRIANGLES, ogl_obj_cache.polyCount(), GL_UNSIGNED_INT, 0)
+                    glEnableClientState(GL_VERTEX_ARRAY)
+
+                    glColor4f(1.0, 0.0, 0.0, 1.0)
+                    glVertexPointer (3, GL_FLOAT, 0, None)
+                    glDrawElements(GL_TRIANGLES, ogl_obj_cache.polyCount()*3, GL_UNSIGNED_INT, None)
+
+                    glDisableClientState(GL_VERTEX_ARRAY)
 
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
                     glBindBuffer (GL_ARRAY_BUFFER, 0)
 
-                glDisableClientState(GL_VERTEX_ARRAY)
                 glPopMatrix()
 
     @QtCore.pyqtSlot(str)
@@ -282,8 +331,8 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
     def initializeGL(self):
         glClearDepth( 1.0 )              
-        glDepthFunc( GL_LESS )
-        glEnable( GL_DEPTH_TEST )
+        #glDepthFunc( GL_LESS )
+        #glEnable( GL_DEPTH_TEST )
         glEnable( GL_POINT_SMOOTH )
         #glEnable(GL_MULTISAMPLE)
         #glEnable(GL_LINE_SMOOTH)

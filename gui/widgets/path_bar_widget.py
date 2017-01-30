@@ -15,7 +15,7 @@ class PathBarWidget(QtGui.QFrame):
         
         self.layout = QtGui.QHBoxLayout()
         self.layout.setSpacing(2)
-        self.layout.setContentsMargins(0, 2, 0, 2)
+        self.layout.setContentsMargins(2, 2, 2, 2)
 
         self.btn_back = QtGui.QToolButton(self)
         self.btn_back.setIcon(QtGui.QIcon( "icons/main/go-previous.svg"))

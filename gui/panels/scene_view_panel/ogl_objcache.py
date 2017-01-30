@@ -14,31 +14,47 @@ class OGL_ObjCache(object):
         
         # fill in points
         points = geometry._points
-        self.n_points = len(points)
+        self._n_points = len(points)
+
+        # generate points VBO
         self._points_vbo = glGenBuffers (1)
+
+        # bind points VBO in order to use
         glBindBuffer (GL_ARRAY_BUFFER, self._points_vbo)
-        glBufferData (GL_ARRAY_BUFFER, self.n_points*3*4, np.array(points, dtype="float32"), GL_STATIC_DRAW) # 3*4 number of bytes in point which is 3 * float32
+
+        # upload points data
+        glBufferData (GL_ARRAY_BUFFER, self._n_points*3*4, np.array(points, dtype="float32"), GL_STATIC_DRAW) # 3*4 number of bytes in point which is 3 * float32
         glBindBuffer (GL_ARRAY_BUFFER, 0)
 
         # fill in polygons
         poly_indices =[]
         self._poly_count = 0
+
+        # generate indices VBO
         self._poly_indices_vbo = glGenBuffers (1)
         
         if len(geometry.prims()) > 0:
             for prim in geometry.prims():
                 for vtx in prim.vertices()[:3]:
                     poly_indices.append(vtx.pointIndex())
-                    self._poly_count += 1
+                
+                self._poly_count += 1
 
+            # bind indices data
             glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, self._poly_indices_vbo)
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, self._poly_count*4, np.array(poly_indices, dtype="int"), GL_STATIC_DRAW)
+
+            # upload indices data
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, len(poly_indices)*4, np.array(poly_indices, dtype="uint32"), GL_STATIC_DRAW)
             glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, 0)
 
         print "Init OGL_ObjCache done"
 
     def pointsVBO(self):
         return self._points_vbo
+
+
+    def pointsCount(self):
+        return self._n_points
 
 
     def polyIndicesVBO(self):
@@ -50,6 +66,7 @@ class OGL_ObjCache(object):
 
 class OGL_ObjCacheManager(object):
     def __init__(self):
+        print "OGL_ObjCacheManager created"
         self._objects = {}
 
     def getObjNodeGeometry(self, obj_node):

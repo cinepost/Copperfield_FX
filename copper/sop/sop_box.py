@@ -58,6 +58,7 @@ class SOP_Box(SOP_Node):
 			dodivs = self.parm("dodivs").eval()
 
 			self._geometry._points = []
+			self._geometry._prims = []
 
 			if dodivs:
 				# Create divided box

@@ -14,7 +14,7 @@ from gui.panels.base_panel import NetworkPanel
 
 from copper.vmath import Matrix4, Vector3
 from .camera import Camera
-from .ogl_objcache import OGL_ObjCacheManager
+from .ogl_objcache import OGL_Scene_Manager
 
 from .layouts import viewport_layout_types
 
@@ -87,7 +87,7 @@ class SceneViewPanel(NetworkPanel):
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
 
-    ObjCache = OGL_ObjCacheManager()
+    OGL_Scene_Manager = OGL_Scene_Manager()
     
     def __init__(self, parent, panel=None, share_widget=None):
         format = QtOpenGL.QGLFormat.defaultFormat()
@@ -175,7 +175,6 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glEnd()
 
         # Draw Origin
-        glDisable(GL_DEPTH_TEST)
         glLineWidth(1.0)
         glBegin(GL_LINES)
         # X axis
@@ -192,13 +191,12 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glVertex3f(0.0, 0.0, 0.8)
         glEnd()
 
-        glEnable(GL_DEPTH_TEST)
 
     def drawSceneObjects(self):
         glTranslatef(0.0, 0.0, 0.0)
 
         for node in copper.engine.node("/obj").children():
-            ogl_obj_cache = SceneViewWidget.ObjCache.getObjNodeGeometry(node)
+            ogl_obj_cache = SceneViewWidget.OGL_Scene_Manager.getObjNodeGeometry(node)
 
             if ogl_obj_cache:
                 print "Drawing node: %s" % node.path()
@@ -207,8 +205,8 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                 glPushMatrix()
                 glMultMatrixf(transform.m)
 
-
                 # draw points
+                glColor4f(0.0, 0.0, 1.0, 1.0)
                 if ogl_obj_cache.pointsCount() > 0:
                     print "Drawing points for: %s" % node.path()
                     glPointSize( 3.0 )
@@ -227,14 +225,18 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                 
 
                 # draw polygons
+                glColor4f(1.0, 1.0, 1.0, 1.0)
+                glUseProgram(SceneViewWidget.OGL_Scene_Manager.defaultShaderProgram())
                 if ogl_obj_cache.polyCount() > 0:
                     print "Drawing %s polys for: %s" % (ogl_obj_cache.polyCount(), node.path())
+
+                    glEnable(GL_LIGHTING)
+
                     glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ogl_obj_cache.polyIndicesVBO())
 
                     glEnableClientState(GL_VERTEX_ARRAY)
 
-                    glColor4f(1.0, 0.0, 0.0, 1.0)
                     glVertexPointer (3, GL_FLOAT, 0, None)
                     glDrawElements(GL_TRIANGLES, ogl_obj_cache.polyCount()*3, GL_UNSIGNED_INT, None)
 
@@ -243,7 +245,10 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
                     glBindBuffer (GL_ARRAY_BUFFER, 0)
 
+                    glDisable(GL_LIGHTING)
+
                 glPopMatrix()
+                glUseProgram(0)
 
     @QtCore.pyqtSlot(str)
     def updateNodeDisplay(self, node_path=None):
@@ -272,12 +277,17 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
 
+        # Place viewport camera
         self.viewport.buildFrustum()
         M = self.viewport.getTransform()
 
         glMultMatrixf( M.m )
         glMatrixMode( GL_MODELVIEW )
         glLoadIdentity()
+
+        # Place default light
+        glLightfv(GL_LIGHT0, GL_POSITION, [0,0,0,0])
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, [0.5,0.5,0.5,1.0]);
 
         # Draw grid
         self.drawSceneGrid()
@@ -332,11 +342,13 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
     def initializeGL(self):
         glClearDepth( 1.0 )              
         #glDepthFunc( GL_LESS )
-        #glEnable( GL_DEPTH_TEST )
+        glEnable( GL_DEPTH_TEST )
         glEnable( GL_POINT_SMOOTH )
         #glEnable(GL_MULTISAMPLE)
         #glEnable(GL_LINE_SMOOTH)
         glShadeModel( GL_SMOOTH )
+
+        SceneViewWidget.OGL_Scene_Manager.buildShaderPrograms() # build shader programs for OGL_Scene_Manager
 
 
     @property

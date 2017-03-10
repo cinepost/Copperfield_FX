@@ -9,7 +9,7 @@ import math
 
 from gui.utils import clearLayout
 from gui.signals import signals
-from gui.widgets import PathBarWidget
+from gui.widgets import PathBarWidget, CollapsableWidget
 from gui.panels.base_panel import NetworkPanel
 
 from copper.vmath import Matrix4, Vector3
@@ -19,15 +19,32 @@ from .ogl_objcache import OGL_Scene_Manager
 from .layouts import viewport_layout_types
 
 
+class DisplayOptionsWidget(CollapsableWidget):
+    def __init__(self, parent=None):
+        CollapsableWidget.__init__(self, parent)
+
+        self.snap_to_grid_btn = QtGui.QPushButton()
+        self.snap_to_grid_btn.setCheckable(True)
+        self.snap_to_grid_btn.setIcon(QtGui.QIcon('icons/main/network_view/snap_to_grid.svg'))
+        self.snap_to_grid_btn.setStatusTip('Show/hide grid and enable/disable snapping')
+
+        self.addWidget(self.snap_to_grid_btn)
+        self.addStretch(1)
+
+
+
 class SceneViewPanel(NetworkPanel):
     def __init__(self):  
         NetworkPanel.__init__(self) 
+
+        self.display_options = DisplayOptionsWidget(self)
 
         self.views_layout = None
 
         self.views_layout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
         self.views_layout.setSpacing(2)
         self.addLayout(self.views_layout)
+        self.addWidget(self.display_options)
 
         # layout switching button
         self.layouts_button = QtGui.QPushButton("Layouts", self)
@@ -97,6 +114,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
        # QGLContext context, QWidget parent = None, QGLWidget shareWidget = None, Qt.WindowFlags flags = 0
         
         QtOpenGL.QGLWidget.__init__(self, format, parent, share_widget)
+        self.pt_font = QtGui.QFont("verdana", 8)
         self.panel = panel
         self.width = 1920
         self.height = 1200
@@ -113,6 +131,12 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
 
         print "SceneViewWidget created"
+
+    def minimumSizeHint(self):
+        return QtCore.QSize(200, 200)
+
+    def sizeHint(self):
+        return QtCore.QSize(400, 400)
 
     def drawBackground(self, background_image_name=""):
         glDisable(GL_DEPTH_TEST)
@@ -193,6 +217,9 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
 
     def drawSceneObjects(self):
+        glPolygonMode(GL_BACK, GL_LINE)
+        #glPolygonMode(GL_BACK, GL_POINT)
+
         glTranslatef(0.0, 0.0, 0.0)
 
         for node in copper.engine.node("/obj").children():
@@ -222,7 +249,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
                     print "drawed"
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
-                
+
 
                 # draw polygons
                 glColor4f(1.0, 1.0, 1.0, 1.0)

@@ -30,6 +30,9 @@ class Point(object):
 	def setPosition(self, pos):
 		self._geometry._points[self._pt_index] = pos[:3]
 
+	def index(self):
+		return self._pt_index
+
 
 class Vertex(object):
 

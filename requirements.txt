@@ -1,4 +1,4 @@
-appdirs==1.4.0
+#appdirs==1.4.0
 appnope==0.1.0
 backports.shutil-get-terminal-size==1.0.0
 cffi==1.8.3

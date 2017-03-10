@@ -115,6 +115,9 @@ class OGL_ObjCache(object):
             glBindBuffer (GL_ELEMENT_ARRAY_BUFFER, 0)
 
 
+    def sopNode(self):
+        return self._sop_node
+
     def oglManager(self):
         return self._ogl_manager
 

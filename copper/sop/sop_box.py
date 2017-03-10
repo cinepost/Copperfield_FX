@@ -102,7 +102,15 @@ class SOP_Box(SOP_Node):
 				for x in range(divsx - 1):
 					for y in range(divsy - 1):
 						poly = Polygon(self)
-						poly._vertices = [x + y*divsx, x + y*divsx+1, x + (y+1)*divsx, x + (y+1)*divsx+1]
+						poly._vertices = [x + y*divsx, x + y*divsx+1, x + (y+1)*divsx+1, x + (y+1)*divsx]
+						poly.setIsClosed()
+						self._geometry._prims.append(poly)
+
+				offset = divsx * divsy # this is the points offset between thow XY planes of box
+				for x in range(divsx - 1):
+					for y in range(divsy - 1):
+						poly = Polygon(self)
+						poly._vertices = [x + (y+1)*divsx + offset, x + (y+1)*divsx+1 + offset, x + y*divsx+1 + offset, x + y*divsx + offset]
 						poly.setIsClosed()
 						self._geometry._prims.append(poly)
 

@@ -5,6 +5,7 @@ cffi==1.8.3
 cycler==0.10.0
 decorator==4.0.10
 enum34==1.1.6
+freetype-py==1.0.2
 ipython==5.1.0
 ipython-genutils==0.1.0
 Mako==1.0.4

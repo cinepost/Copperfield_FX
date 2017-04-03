@@ -435,7 +435,7 @@ QWidget#Parameters QPushButton:pressed {
     color: #fff;
 }
 
-QWidgetf#Parameters QSlider::groove:horizontal {
+QWidget#Parameters QSlider::groove:horizontal {
     border: 1px solid #000;
     border-radius: 1px;
     height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
@@ -563,3 +563,9 @@ QGraphicsView#network_widget {
 	border-top: 1px solid black;
 }
 
+/* Play Bar Widget */
+
+QGraphicsView#time_line_widget {
+	border: 1px solid #aaa;
+	border-bottom: none;
+}

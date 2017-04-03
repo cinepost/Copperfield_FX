@@ -9,7 +9,7 @@ from PyQt4 import QtGui, QtCore, QtOpenGL
 from copper import engine
 from .tabbed_panel_manager import TabbedPanelManager
 from .dialogs import RenderNodeDialog
-from .widgets import TimeLineWidget
+from .widgets import PlayBarWidget
 
 
 class Workarea(QtGui.QWidget):
@@ -18,7 +18,7 @@ class Workarea(QtGui.QWidget):
         self.setObjectName("Workarea")
 
         # Basic widgets
-        self.timeline_widget = TimeLineWidget()
+        self.timeline_widget = PlayBarWidget()
 
         # Create layout and place widgets
         VBox = QtGui.QVBoxLayout()    

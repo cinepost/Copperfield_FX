@@ -54,8 +54,12 @@ class TimeLineScene(QtGui.QGraphicsScene):
     
     def __init__(self, parent=None):      
         super(TimeLineScene, self).__init__(parent)
-        self.initUI()
         self.tick_height = 6
+        self.start_frame = 1
+        self.end_frame = 240
+        self.fps = 25
+        self.current_frame = 10.0
+        self.initUI()
 
     def initUI(self):
         self.cursor_pos_x = 0
@@ -100,9 +104,13 @@ class TimeLineScene(QtGui.QGraphicsScene):
 class TimeLineWidget(QtGui.QGraphicsView):
     def __init__(self, parent=None):      
         super(TimeLineWidget, self).__init__(parent)
+        self.scene = TimeLineScene(self)
+
+        self.initUI()
+
+    def initUI(self):
         self.setObjectName("time_line_widget")
 
-        self.scene = TimeLineScene(self)
         self.setScene(self.scene)
         self.setFixedHeight(30)
         self.setMouseTracking(True)

@@ -6,12 +6,6 @@ from time_line import TimeLineWidget
 class PlayBarWidget(CollapsableWidget):
     def __init__(self, parent=None):
         CollapsableWidget.__init__(self, parent)
-        
-        self.start_frame = 0
-        self.end_frame = 250
-        self.current_frame = 0.0
-
-        self.isPressed = False
         self.initUI()
         
     def initUI(self):

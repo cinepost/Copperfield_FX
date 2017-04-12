@@ -222,6 +222,12 @@ QFrame#collapsable {
 	background-color: #303030;
 }
 
+QFrame#collapsable_frame {
+	border: 1px solid #555;
+	border-bottom: none;
+	border-right: none;
+}
+
 /* Path bar */
 QFrame#pathBar {
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #444, stop:1 #363636);
@@ -435,31 +441,37 @@ QWidget#Parameters QPushButton:pressed {
     color: #fff;
 }
 
-QWidgetf#Parameters QSlider::groove:horizontal {
-    border: 1px solid #000;
-    border-radius: 1px;
-    height: 8px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
-    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #25b, stop:1 #123);
+QWidget#Parameters QSlider {
+	padding: 0;
+	margin: 0;
+}
 
+QWidget#Parameters QSlider::groove:horizontal {
+    border: 1px solid #000;
+    border-radius: 2px;
+    height: 3px; /* the groove expands to the size of the slider by default. by giving it a height, it has a fixed size */
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #25b, stop:1 #123);
 }
 
 
 QWidget#Parameters QSlider::handle:horizontal {
 	border: 1px solid #000;
-	border-radius: 1px;
+	border-radius: 2px;
 	background-color: qlineargradient( x1:0 y1:0, x2:0 y2:1, stop:0 #666, stop:1 #363636);
-	margin: -8px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+	margin: -6px 0; /* handle is placed by default on the contents rect of the groove. Expand outside the groove */
+	width: 5px;
 }
 
 
 QWidget#Parameters QSlider::add-page:qlineargradient {
 	border: 1px solid #000;
+	border-left: none;
 	background: qlineargradient( x1:0 y1:0, x2:0 y2:0.5, stop:0 #888, stop:1 #444);
 	border-top-right-radius: 2px;
 	border-bottom-right-radius: 2px;
 	border-top-left-radius: 0px;
 	border-bottom-left-radius: 0px;
-	margin: 4px 0 5px 0;
+	margin: 4px 0 4px 0;
 }
 
 QWidget#Parameters QSlider::sub-page:qlineargradient {
@@ -469,7 +481,7 @@ QWidget#Parameters QSlider::sub-page:qlineargradient {
 	border-top-left-radius: 1px;
 	border-bottom-left-radius: 1px;
 	border: 1px solid #000;
-	margin: 4px 0 5px 0;
+	margin: 4px 0 4px 0;
 }
 
 /* ScrollBar */
@@ -563,3 +575,9 @@ QGraphicsView#network_widget {
 	border-top: 1px solid black;
 }
 
+/* Play Bar Widget */
+
+QGraphicsView#time_line_widget {
+	border: 1px solid #aaa;
+	border-bottom: none;
+}

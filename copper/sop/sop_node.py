@@ -12,8 +12,10 @@ class SOP_Node(OP_Network):
 		super(SOP_Node, self).__init__(engine, parent)
 		self._geometry = Geometry()
 
+
 	def cookMySop(self, lock):
 		raise NotImplementedError
+
 
 	def cookData(self, lock):
 		try:

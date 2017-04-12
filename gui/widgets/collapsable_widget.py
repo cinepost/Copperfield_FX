@@ -10,9 +10,10 @@ class CollapsableWidget(QtGui.QFrame):
 		self.layout.setSpacing(0)
 		self.layout.setContentsMargins(0, 0, 0, 0)
 		self.box_frame = QtGui.QFrame()
+		self.box_frame.setObjectName("collapsable_frame")
 		self.box_layout = QtGui.QBoxLayout(direction)
-		self.box_layout.setSpacing(4)
-		self.box_layout.setContentsMargins(4, 4, 4, 4)
+		self.box_layout.setSpacing(2)
+		self.box_layout.setContentsMargins(2, 2, 2, 2)
 		self.box_frame.setLayout(self.box_layout)
 
 		self.button_min = QtGui.QPushButton()

@@ -1,3 +1,5 @@
+import copy
+
 from copper.vmath import Vector3
 
 from .primitive import Point, Polygon
@@ -7,6 +9,8 @@ class Geometry(object):
 		self._sop_node = sop_node
 		self._points = []
 		self._prims = []
+
+		self._frozen = False
 
 
 	def raw_points(self):
@@ -28,3 +32,17 @@ class Geometry(object):
 
 	def sopNode(self):
 		return self._sop_node
+
+
+	def freeze(self):
+		"""
+		Return another Geometry object that is not linked to a particular SOP.
+		"""
+		if self._frozen:
+			return self
+		else:
+			f_geo = Geometry()
+			f_geo._points = copy.deepcopy(self._prims)
+			f_geo._prims = copy.deepcopy(self._points)
+			f_geo._frozen = True
+			return f_geo

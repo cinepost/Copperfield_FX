@@ -1,2 +1,0 @@
-#!/bin/sh
-exec arch -x86_64 pythonw2.7 /Users/max/dev/Copperfield_FX/virtualenv/lib/python2.7/site-packages/PyQt4/uic/pyuic.py ${1+"$@"}

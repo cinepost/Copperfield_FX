@@ -1,3 +1,0 @@
-target = QtScriptTools
-sources = sipQtScriptToolscmodule.cpp sipQtScriptToolsQScriptEngineDebugger.cpp
-headers = sipAPIQtScriptTools.h

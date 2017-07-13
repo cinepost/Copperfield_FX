@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 trap '{ echo "Hey, you pressed Ctrl-C.  Time to quit." ; exit 1; }' INT
 
@@ -20,7 +21,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 	brew list qt-webkit@2.3 &>/dev/null || brew install qt-webkit@2.3
 
 elif [[ "$OSTYPE" == "linux-gnu" ]]; then
-	sudo apt-get install virtualenv git wget qt4-default libqt4-dev
+	sudo apt-get install virtualenv git wget python-dev python-qt4 python-qt4-dev python-sip python-sip-dev build-essential gfortran libqt4-dev qt4-qmake libpq-dev libsqlite3-dev qt4-dev-tools qt4-doc unixodbc-dev pyqt4-dev-tools -y
 fi
 
 # Create python virtual environment if needed
@@ -74,19 +75,19 @@ if [ $? -eq 0 ]; then
 else
 	echo "Installing SIP package ..."
 	# Install and configure SIP
-	if [ ! -d "sip-4.19.3" ]; then
+	if [ ! -d "sip-4.16.7" ]; then
 		echo "Downloading SIP"
 		if [[ "$OSTYPE" == "msys"]] || [["$OSTYPE" == "cygwin" ]]; then
-			# Windows version of PyQt4
-			if [ ! -d "sip-4.19.3.zip" ]; then
-				wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.3/sip-4.19.3.zip
-				unzip sip-4.19.3.zip
+			# Windows version of SIP
+			if [ ! -d "sip-4.16.7.zip" ]; then
+				wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.16.7/sip-4.16.7.zip
+				unzip sip-4.16.7.zip
 			fi
 		elif [[ "$OSTYPE" == "linux-gnu" ]] || [[ "$OSTYPE" == "darwin"* ]]; then
-			# Linux/Macos version of PyQt4
-			if [ ! -d "sip-4.19.3.tar.gz" ]; then
-				wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.3/sip-4.19.3.tar.gz
-				tar -xvf  sip-4.19.3.tar.gz
+			# Linux/Macos version of SIP
+			if [ ! -d "sip-4.16.7.tar.gz" ]; then
+				wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.16.7/sip-4.16.7.tar.gz
+				tar -xvf sip-4.16.7.tar.gz
 			fi
 		else
 			echo "Unsupported platform ${OSTYPE} ! Abort installation"
@@ -95,7 +96,8 @@ else
 	fi
 
 	echo "Configuring SIP package ..."
-	python configure.py #-d /usr/local/lib/python2.7/site-packages/
+	cd sip-4.16.7
+	python config.py #-d /usr/local/lib/python2.7/site-packages/
 	make
 	make install
 	cd ..
@@ -109,33 +111,41 @@ else
 	if [[ "$OSTYPE" == "darwin"* ]]; then
 		# Macos version of PyQt4
 		if [ ! -d "PyQt4_gpl_mac-4.12.1" ]; then
-			echo "Downloading PyQt4 for Mac OS"
-			wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.12.1/PyQt4_gpl_mac-4.12.1.tar.gz
+			if [ ! -d "PyQt4_gpl_mac-4.12.1.tar.gz" ]; then
+				echo "Downloading PyQt4 for Mac OS"
+				wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.12.1/PyQt4_gpl_mac-4.12.1.tar.gz
+			fi
 			tar -xvf PyQt4_gpl_mac-4.12.1.tar.gz
-			cd PyQt4_gpl_mac-4.12.1
 		fi
+		cd PyQt4_gpl_mac-4.12.1
 	elif [[ "$OSTYPE" == "linux-gnu" ]]; then
 		# Linux version of PyQt4
-		if [ ! -d "PyQt4_gpl_x11-4.12.1" ]; then
-			echo "Downloading PyQt4 for GNU/Linux"
-			wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.12.1/PyQt4_gpl_x11-4.12.1.tar.gz
-			tar -xvf PyQt4_gpl_x11-4.12.1.tar.gz
-			cd PyQt4_gpl_x11-4.12.1
+		if [ ! -d "PyQt-x11-gpl-4.10.4" ]; then
+			if [ ! -d "PyQt-x11-gpl-4.10.4.tar.gz" ]; then
+				echo "Downloading PyQt4 for GNU/Linux"
+				wget https://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.10.4/PyQt-x11-gpl-4.10.4.tar.gz
+			fi
+			tar -xvf PyQt-x11-gpl-4.10.4.tar.gz
 		fi
+		cd PyQt-x11-gpl-4.10.4
 	elif [[ "$OSTYPE" == "msys"]] || [["$OSTYPE" == "cygwin" ]]; then
 		# Windows version of PyQt4
 		if [ ! -d "PyQt4_gpl_win-4.12.1" ]; then
-			wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.12.1/PyQt4_gpl_win-4.12.1.zip
+			if [ ! -d "PyQt4_gpl_win-4.12.1.zip" ]; then
+				echo "Downloading PyQt4 for Windows"
+				wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.12.1/PyQt4_gpl_win-4.12.1.zip
+			fi
 			unzip PyQt4_gpl_win-4.12.1.zip
-			cd PyQt4_gpl_win-4.12.1
 		fi
+		cd PyQt4_gpl_win-4.12.1
 	else
 		echo "Unsupported platform ${OSTYPE} ! Abort installation"
 		exit
 	fi
 
-	echo "Configuring PyQT4 package ..."
-	python configure.py --qmake=/usr/local/bin/qmake --use-arch x86_64 #--sip=/usr/local/bin/sip --sip-incdir=../sip-4.19.3/siplib  -d /usr/local/lib/python2.7/site-packages/
+	echo "Configuring PyQt4 package ..."
+	#python configure-ng.py --qmake=$(which qmake) --sip-incdir=$CWD/tmp/sip-4.19.3/siplib --confirm-license #--use-arch x86_64 --sip=/usr/local/bin/sip --sip-incdir=../sip-4.19.3/siplib  -d /usr/local/lib/python2.7/site-packages/
+	python configure-ng.py --confirm-license
 	make
 	make install
 	cd ..

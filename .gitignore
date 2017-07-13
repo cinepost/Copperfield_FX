@@ -5,8 +5,8 @@
 *.egg-info
 dist
 dist/
-deps
-deps/
+tmp
+tmp/*
 build
 eggs
 parts

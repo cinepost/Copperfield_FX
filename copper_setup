@@ -1,0 +1,15 @@
+#
+#   Environment setup script for Copperfield FX. 
+#
+#   To use this script you should "cd" to the hfs directory where this
+#   script is located and "source" it into your shell or from your
+#   .login script.
+#
+#   Note that this script modifies your search path by inserting the
+#   Houdini bin directory at the beginning. It may also sets the environment
+#   variable LD_LIBRARY_PATH which is used to search for runtime libraries.
+#
+#   To run the script in quiet mode, specify the "-q" option on the
+#   command line.
+#
+test ! -z "$tcsh" && source copper_setup_csh || . ./copper_setup_bash

@@ -42,15 +42,13 @@ class CollapsableWidget(QtGui.QFrame):
 		self.box_layout.addStretch(stretch)
 
 	def setArrow(self):
-		self.button_min.setIcon(QtGui.QIcon("icons/main/min-right.svg"))
+		self.button_min.setIcon(QtGui.QIcon("gui/icons/main/min-right.svg"))
 
 	def switchState(self):
 		if self.collapsed:
-			print "Uncollapse"
 			self.box_frame.show()
 			self.collapsed = False
 		else:
-			print "Collapse"
 			self.box_frame.hide()
 			self.collapsed = True
 

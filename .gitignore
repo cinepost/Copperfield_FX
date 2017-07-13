@@ -6,7 +6,7 @@
 dist
 dist/
 tmp
-tmp/*
+tmp/
 build
 eggs
 parts

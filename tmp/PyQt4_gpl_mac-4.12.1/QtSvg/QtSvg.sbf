@@ -1,3 +1,0 @@
-target = QtSvg
-sources = sipQtSvgcmodule.cpp sipQtSvgQSvgWidget.cpp sipQtSvgQSvgRenderer.cpp sipQtSvgQSvgGenerator.cpp sipQtSvgQGraphicsSvgItem.cpp
-headers = sipAPIQtSvg.h

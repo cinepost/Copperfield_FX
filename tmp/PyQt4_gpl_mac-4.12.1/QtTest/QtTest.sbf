@@ -1,3 +1,0 @@
-target = QtTest
-sources = sipQtTestcmodule.cpp sipQtTestQTest.cpp
-headers = sipAPIQtTest.h

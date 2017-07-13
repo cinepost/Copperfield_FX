@@ -114,7 +114,7 @@ class OP_Node(OP_Parameters):
 
 	@classmethod
 	def iconName(cls):
-		return 'icons/nodes/%s.svg' % cls.type().icon()
+		return 'gui/icons/nodes/%s.svg' % cls.type().icon()
 
 	def hasInputs(self):
 		if len(self._inputs) > 0:

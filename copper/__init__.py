@@ -21,8 +21,14 @@ from copper.op.node_type_category import NodeTypeCategoryRegistry
 def nodeTypeCategories():
 	print NodeTypeCategoryRegistry._registry_aliases
 
-def CreateEngine(device_type = None, device_index=None):
-	print "Creating engine instance of type: %s" % device_type
-	return Copper_Engine(device_type = device_type, device_index=device_index, cl_path=settings.cl_path)
+#def CreateEngine(device_type = None, device_index=None):
+#	print "Creating engine instance of type: %s" % device_type
+#	return Copper_Engine(device_type = device_type, device_index=device_index, cl_path=settings.cl_path)
 
-engine = CreateEngine("GPU",0)
+#_engine = None
+
+#def getEngine():
+#	if not _engine:
+#		_engine = CreateEngine("GPU", 0)
+#
+#	return _engine

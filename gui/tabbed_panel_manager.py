@@ -24,18 +24,18 @@ class TabbedPanelManager(QtGui.QFrame):
         self.corner_widget.setLayout(self.corner_widget_layout) 
 
         self.plus_button = QtGui.QPushButton(self)
-        self.plus_button.setIcon(QtGui.QIcon("icons/main/pane-plus.svg"))
+        self.plus_button.setIcon(QtGui.QIcon("gui/icons/main/pane-plus.svg"))
 
         self.plus_button_menu = QtGui.QMenu(self)
         self.plus_button.setMenu(self.plus_button_menu)
 
         self.maximize_button = QtGui.QPushButton(self)
         self.maximize_button.setCheckable(True)
-        self.maximize_button.setIcon(QtGui.QIcon("icons/main/pane-maximize.svg"))
+        self.maximize_button.setIcon(QtGui.QIcon("gui/icons/main/pane-maximize.svg"))
         self.maximize_button.setStatusTip('Maximize pane')
 
         self.arrow_button = QtGui.QPushButton(self)
-        self.arrow_button.setIcon(QtGui.QIcon("icons/main/pane-arrow.svg"))
+        self.arrow_button.setIcon(QtGui.QIcon("gui/icons/main/pane-arrow.svg"))
 
         self.corner_widget_layout.addWidget(self.plus_button)
         self.corner_widget_layout.addStretch(100)

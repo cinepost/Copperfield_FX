@@ -1,0 +1,3 @@
+target = QtHelp
+sources = sipQtHelpcmodule.cpp sipQtHelpQList0100QHelpSearchQuery.cpp sipQtHelpQMap0100QString0100QUrl.cpp sipQtHelpQList0100QStringList.cpp sipQtHelpQHelpSearchResultWidget.cpp sipQtHelpQHelpSearchQueryWidget.cpp sipQtHelpQHelpSearchEngine.cpp sipQtHelpQHelpSearchQuery.cpp sipQtHelpQHelpIndexWidget.cpp sipQtHelpQHelpIndexModel.cpp sipQtHelpQHelpEngine.cpp sipQtHelpQHelpEngineCore.cpp sipQtHelpQHelpContentWidget.cpp sipQtHelpQHelpContentModel.cpp sipQtHelpQHelpContentItem.cpp
+headers = sipAPIQtHelp.h

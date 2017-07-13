@@ -29,7 +29,7 @@ class SOP_File(SOP_Node):
 		templates += [
 			MenuParmTemplate(name='filemode', label='File Mode', menu_items=('auto', 'read', 'write', 'none'), menu_labels=('Automatic',
  				'Read Files', 'Write Files', 'No Operation'), default_value=1),
-			StringParmTemplate(name="filename", label="File", default_value=("media/obj/bunny.small.obj",), string_type=StringParmType.FileReference),
+			StringParmTemplate(name="filename", label="File", default_value=("copper/media/obj/bunny.small.obj",), string_type=StringParmType.FileReference),
 		]
 		
 		return templates

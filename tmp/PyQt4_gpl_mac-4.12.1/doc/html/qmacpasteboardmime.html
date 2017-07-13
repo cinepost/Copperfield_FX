@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html><head><title>QMacPasteboardMime Class Reference</title><style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }
+</style></head><body><table border="0" cellpadding="0" cellspacing="0" width="100%"><tr /><td align="left" valign="top" width="32"><img align="left" border="0" height="32" src="images/rb-logo.png" width="32" /></td><td width="1">&#160;&#160;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&#160;&#183; <a href="classes.html"><font color="#004faf">All Classes</font></a>&#160;&#183; <a href="modules.html"><font color="#004faf">Modules</font></a></td></table><h1 align="center">QMacPasteboardMime Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1><p>The QMacPasteboardMime class converts between a MIME type and a
+<a href="http://developer.apple.com/macosx/uniformtypeidentifiers.html">Uniform
+Type Identifier (UTI)</a> format. <a href="#details">More...</a></p>
+
+<h3>Types</h3><ul><li><div class="fn" />enum <b><a href="qmacpasteboardmime.html#QMacPasteboardMimeType-enum">QMacPasteboardMimeType</a></b> { MIME_DND, MIME_CLIP, MIME_QT_CONVERTOR, MIME_QT3_CONVERTOR, MIME_ALL }</li></ul><h3>Methods</h3><ul><li><div class="fn" /><b><a href="qmacpasteboardmime.html#QMacPasteboardMime">__init__</a></b> (<i>self</i>, int&#160;<i>t</i>)</li><li><div class="fn" /><b><a href="qmacpasteboardmime.html#QMacPasteboardMime-2">__init__</a></b> (<i>self</i>, QMacPasteboardMime)</li><li><div class="fn" />bool <b><a href="qmacpasteboardmime.html#canConvert">canConvert</a></b> (<i>self</i>, QString&#160;<i>mime</i>, QString&#160;<i>flav</i>)</li><li><div class="fn" />unknown-type <b><a href="qmacpasteboardmime.html#convertFromMime">convertFromMime</a></b> (<i>self</i>, QString&#160;<i>mime</i>, QVariant&#160;<i>data</i>, QString&#160;<i>flav</i>)</li><li><div class="fn" />QString <b><a href="qmacpasteboardmime.html#convertorName">convertorName</a></b> (<i>self</i>)</li><li><div class="fn" />QVariant <b><a href="qmacpasteboardmime.html#convertToMime">convertToMime</a></b> (<i>self</i>, QString&#160;<i>mime</i>, unknown-type&#160;<i>data</i>, QString&#160;<i>flav</i>)</li><li><div class="fn" />QString <b><a href="qmacpasteboardmime.html#flavorFor">flavorFor</a></b> (<i>self</i>, QString&#160;<i>mime</i>)</li><li><div class="fn" />QString <b><a href="qmacpasteboardmime.html#mimeFor">mimeFor</a></b> (<i>self</i>, QString&#160;<i>flav</i>)</li></ul><h3>Static Methods</h3><ul><li><div class="fn" />unknown-type <b><a href="qmacpasteboardmime.html#all">all</a></b> (int&#160;<i>t</i>)</li><li><div class="fn" />QMacPasteboardMime <b><a href="qmacpasteboardmime.html#convertor">convertor</a></b> (int&#160;<i>t</i>, QString&#160;<i>mime</i>, QString&#160;<i>flav</i>)</li><li><div class="fn" />QString <b><a href="qmacpasteboardmime.html#flavorToMime">flavorToMime</a></b> (int&#160;<i>t</i>, QString&#160;<i>flav</i>)</li></ul><a name="details" /><hr /><h2>Detailed Description</h2><p>The QMacPasteboardMime class converts between a MIME type and a
+<a href="http://developer.apple.com/macosx/uniformtypeidentifiers.html">Uniform
+Type Identifier (UTI)</a> format.</p>
+<p>Qt's drag and drop and clipboard facilities use the MIME
+standard. On X11, this maps trivially to the Xdnd protocol. On Mac,
+although some applications use MIME to describe clipboard contents,
+it is more common to use Apple's UTI format.</p>
+<p>QMacPasteboardMime's role is to bridge the gap between MIME and
+UTI; By subclasses this class, one can extend Qt's drag and drop
+and clipboard handling to convert to and from unsupported, or
+proprietary, UTI formats.</p>
+<p>A subclass of QMacPasteboardMime will automatically be
+registered, and active, upon instantiation.</p>
+<p>Qt has predefined support for the following UTIs:</p>
+<ul>
+<li>public.utf8-plain-text - converts to "text/plain"</li>
+<li>public.utf16-plain-text - converts to "text/plain"</li>
+<li>public.html - converts to "text/html"</li>
+<li>public.url - converts to "text/uri-list"</li>
+<li>public.file-url - converts to "text/uri-list"</li>
+<li>public.tiff - converts to "application/x-qt-image"</li>
+<li>public.vcard - converts to "text/plain"</li>
+<li>com.apple.traditional-mac-plain-text - converts to
+"text/plain"</li>
+<li>com.apple.pict - converts to "application/x-qt-image"</li>
+</ul>
+<p>When working with MIME data, Qt will interate through all
+instances of QMacPasteboardMime to find an instance that can
+convert to, or from, a specific MIME type. It will do this by
+calling <a href="qmacpasteboardmime.html#canConvert">canConvert</a>() on each
+instance, starting with (and choosing) the last created instance
+first. The actual conversions will be done by using <a href="qmacpasteboardmime.html#convertToMime">convertToMime</a>() and
+<a href="qmacpasteboardmime.html#convertFromMime">convertFromMime</a>().</p>
+<p><b>Note:</b> The API uses the term "flavor" in some cases. This
+is for backwards compatibility reasons, and should now be
+understood as UTIs.</p>
+<hr /><h2>Type Documentation</h2><h3 class="fn"><a name="QMacPasteboardMimeType-enum" />QMacPasteboardMime.QMacPasteboardMimeType</h3><hr /><h2>Method Documentation</h2><h3 class="fn"><a name="QMacPasteboardMime" />QMacPasteboardMime.__init__ (<i>self</i>, int&#160;<i>t</i>)</h3><p>Constructs a new conversion object of type <i>t</i>, adding it
+to the globally accessed list of available convertors.</p>
+
+
+<h3 class="fn"><a name="QMacPasteboardMime-2" />QMacPasteboardMime.__init__ (<i>self</i>, <a href="qmacpasteboardmime.html">QMacPasteboardMime</a>)</h3><h3 class="fn"><a name="all" />unknown-type QMacPasteboardMime.all (int&#160;<i>t</i>)</h3><p>Returns a list of all currently defined <a href="qmacpasteboardmime.html">QMacPasteboardMime</a> objects of type
+<i>t</i>.</p>
+
+
+<h3 class="fn"><a name="canConvert" />bool QMacPasteboardMime.canConvert (<i>self</i>, QString&#160;<i>mime</i>, QString&#160;<i>flav</i>)</h3><p>This method is abstract and should be reimplemented in any sub-class.</p><p>Returns true if the convertor can convert (both ways) between
+<i>mime</i> and <i>flav</i>; otherwise returns false.</p>
+<p>All subclasses must reimplement this pure virtual function.</p>
+
+
+<h3 class="fn"><a name="convertFromMime" />unknown-type QMacPasteboardMime.convertFromMime (<i>self</i>, QString&#160;<i>mime</i>, QVariant&#160;<i>data</i>, QString&#160;<i>flav</i>)</h3><p>This method is abstract and should be reimplemented in any sub-class.</p><p>Returns <i>data</i> converted from MIME type <i>mime</i> to Mac
+UTI <i>flav</i>.</p>
+<p>Note that Mac flavors must all be self-terminating. The return
+value may contain trailing data.</p>
+<p>All subclasses must reimplement this pure virtual function.</p>
+
+
+<h3 class="fn"><a name="convertor" /><a href="qmacpasteboardmime.html">QMacPasteboardMime</a> QMacPasteboardMime.convertor (int&#160;<i>t</i>, QString&#160;<i>mime</i>, QString&#160;<i>flav</i>)</h3><p>Returns the most-recently created <a href="qmacpasteboardmime.html">QMacPasteboardMime</a> of type <i>t</i>
+that can convert between the <i>mime</i> and <i>flav</i> formats.
+Returns 0 if no such convertor exists.</p>
+
+
+<h3 class="fn"><a name="convertorName" />QString QMacPasteboardMime.convertorName (<i>self</i>)</h3><p>This method is abstract and should be reimplemented in any sub-class.</p><p>Returns a name for the convertor.</p>
+<p>All subclasses must reimplement this pure virtual function.</p>
+
+
+<h3 class="fn"><a name="convertToMime" />QVariant QMacPasteboardMime.convertToMime (<i>self</i>, QString&#160;<i>mime</i>, unknown-type&#160;<i>data</i>, QString&#160;<i>flav</i>)</h3><p>This method is abstract and should be reimplemented in any sub-class.</p><p>Returns <i>data</i> converted from Mac UTI <i>flav</i> to MIME
+type <i>mime</i>.</p>
+<p>Note that Mac flavors must all be self-terminating. The input
+<i>data</i> may contain trailing data.</p>
+<p>All subclasses must reimplement this pure virtual function.</p>
+
+
+<h3 class="fn"><a name="flavorFor" />QString QMacPasteboardMime.flavorFor (<i>self</i>, QString&#160;<i>mime</i>)</h3><p>This method is abstract and should be reimplemented in any sub-class.</p><p>Returns the Mac UTI used for MIME type <i>mime</i>, or 0 if this
+convertor does not support <i>mime</i>.</p>
+<p>All subclasses must reimplement this pure virtual function.</p>
+
+
+<h3 class="fn"><a name="flavorToMime" />QString QMacPasteboardMime.flavorToMime (int&#160;<i>t</i>, QString&#160;<i>flav</i>)</h3><p>Returns a MIME type of type <i>t</i> for <i>flav</i>, or 0 if
+none exists.</p>
+
+
+<h3 class="fn"><a name="mimeFor" />QString QMacPasteboardMime.mimeFor (<i>self</i>, QString&#160;<i>flav</i>)</h3><p>This method is abstract and should be reimplemented in any sub-class.</p><p>Returns the MIME UTI used for Mac flavor <i>flav</i>, or 0 if
+this convertor does not support <i>flav</i>.</p>
+<p>All subclasses must reimplement this pure virtual function.</p>
+<address><hr /><div align="center"><table border="0" cellspacing="0" width="100%"><tr class="address"><td align="left" width="25%">PyQt&#160;4.12.1 for MacOS</td><td align="center" width="50%">Copyright &#169; <a href="http://www.riverbankcomputing.com">Riverbank&#160;Computing&#160;Ltd</a> and <a href="http://www.qt.io">The Qt Company</a> 2015</td><td align="right" width="25%">Qt&#160;4.8.7</td></tr></table></div></address></body></html>

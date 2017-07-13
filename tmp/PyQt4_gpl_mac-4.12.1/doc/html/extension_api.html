@@ -1,0 +1,389 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The PyQt4 Extension API &#8212; PyQt 4.12.1 Reference Guide</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '4.12.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/logo_tn.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="The PyQt4 Build System" href="build_system.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="build_system.html" title="The PyQt4 Build System"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyQt 4.12.1 Reference Guide</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="the-pyqt4-extension-api">
+<h1>The PyQt4 Extension API<a class="headerlink" href="#the-pyqt4-extension-api" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 4.12.</span></p>
+</div>
+<p>An important feature of PyQt4 (and SIP generated modules in general) is the
+ability for other extension modules to build on top of it.
+<a class="reference external" href="http://www.riverbankcomputing.com/software/qscintilla/">QScintilla</a> is
+such an example.</p>
+<p>PyQt4 provides an extension API that can be used by other modules.  This has
+the advantage of sharing code and also enforcing consistent behaviour.  Part of
+the API is accessable from Python and part from C++.</p>
+<div class="section" id="python-api">
+<h2>Python API<a class="headerlink" href="#python-api" title="Permalink to this headline">¶</a></h2>
+<p>The Python part of the API is accessible via the <code class="xref py py-mod docutils literal"><span class="pre">QtCore</span></code> module
+and is typically used by an extension module’s equivalent of PyQt4’s
+<strong class="program">configure.py</strong>.</p>
+<p>The API consists of <code class="xref py py-attr docutils literal"><span class="pre">PyQt4.QtCore.PYQT_CONFIGURATION</span></code> which is a dict
+that describes how PyQt4 was configured.  At the moment it contains a single
+value called <code class="docutils literal"><span class="pre">sip_flags</span></code> which is a string containing the <code class="docutils literal"><span class="pre">-t</span></code> and <code class="docutils literal"><span class="pre">-x</span></code>
+flags that were passed to the <strong class="program">sip</strong> executable by
+<strong class="program">configure.py</strong>.  Other extension modules must use the same flags in
+their configuration.</p>
+<p>This information is also provided by SIP v4’s <code class="xref py py-mod docutils literal"><span class="pre">sipconfig</span></code> module.
+However this module will not be implemented by SIP v5.</p>
+</div>
+<div class="section" id="c-api">
+<h2>C++ API<a class="headerlink" href="#c-api" title="Permalink to this headline">¶</a></h2>
+<p>The C++ API is a set of functions.  The addresses of each function is obtained
+by calling SIP’s <code class="xref c c-func docutils literal"><span class="pre">sipImportSymbol()</span></code> function with the name of the
+function required.</p>
+<p>Several of the functions are provided as a replacement for SIP v4 features
+(i.e. <code class="docutils literal"><span class="pre">SIP_ANYSLOT</span></code>, <code class="docutils literal"><span class="pre">SIP_QOBJECT</span></code>, <code class="docutils literal"><span class="pre">SIP_RXOBJ_CON</span></code>, <code class="docutils literal"><span class="pre">SIP_RXOBJ_DIS</span></code>,
+<code class="docutils literal"><span class="pre">SIP_SIGNAL</span></code>, <code class="docutils literal"><span class="pre">SIP_SLOT</span></code>, <code class="docutils literal"><span class="pre">SIP_SLOT_CON</span></code> and <code class="docutils literal"><span class="pre">SIP_SLOT_DIS</span></code>) that are
+not supported by SIP v5.</p>
+<p>The functions exported by PyQt4 are as follows:</p>
+<dl class="function">
+<dt id="_CPPv220pyqt4_from_argv_listP8PyObjectRi">
+<span id="pyqt4_from_argv_list__PyObjectP.iR"></span>char **<code class="descclassname"></code><code class="descname">pyqt4_from_argv_list</code><span class="sig-paren">(</span>PyObject *<em>argv_list</em>, int &amp;<em>argc</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv220pyqt4_from_argv_listP8PyObjectRi" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Convert a Python list to a standard C array of command line arguments and
+an argument count.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>argv_list</strong> – is the Python list of arguments.</li>
+<li><strong>argc</strong> – is updated with the number of arguments in the list.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">an array of pointers to the arguments on the heap.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv227pyqt4_from_qvariant_by_typeR8QVariantP8PyObject">
+<span id="pyqt4_from_qvariant_by_type__QVariantR.PyObjectP"></span>PyObject *<code class="descclassname"></code><code class="descname">pyqt4_from_qvariant_by_type</code><span class="sig-paren">(</span>QVariant &amp;<em>value</em>, PyObject *<em>type</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv227pyqt4_from_qvariant_by_typeR8QVariantP8PyObject" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Convert a <code class="xref py py-class docutils literal"><span class="pre">QVariant</span></code> to a Python object according to
+an optional Python type.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>value</strong> – is the value to convert.</li>
+<li><strong>type</strong> – is the Python type.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the converted value.  If it is <code class="docutils literal"><span class="pre">0</span></code> then a Python exception will have
+been raised.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv226pyqt4_get_connection_partsP8PyObjectP7QObjectPKcbPP7QObjectR10QByteArray">
+<span id="pyqt4_get_connection_parts__PyObjectP.QObjectP.cCP.b.QObjectPP.QByteArrayR"></span>sipErrorState <code class="descclassname"></code><code class="descname">pyqt4_get_connection_parts</code><span class="sig-paren">(</span>PyObject *<em>slot</em>, QObject *<em>transmitter</em>, <em class="property">const</em> char *<em>signal_signature</em>, bool <em>single_shot</em>, QObject **<em>receiver</em>, QByteArray &amp;<em>slot_signature</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv226pyqt4_get_connection_partsP8PyObjectP7QObjectPKcbPP7QObjectR10QByteArray" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the receiver object and slot signature to allow a signal to be
+connected to an optional transmitter.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>slot</strong> – is the slot and should be a callable or a bound signal.</li>
+<li><strong>transmitter</strong> – is the optional <code class="xref py py-class docutils literal"><span class="pre">QObject</span></code> transmitter.</li>
+<li><strong>signal_signature</strong> – is the signature of the signal to be connected.</li>
+<li><strong>single_shot</strong> – is <code class="docutils literal"><span class="pre">true</span></code> if the signal will only ever be emitted once.</li>
+<li><strong>receiver</strong> – is updated with the <code class="xref py py-class docutils literal"><span class="pre">QObject</span></code> receiver.  This may
+be a proxy if the slot requires it.</li>
+<li><strong>slot_signature</strong> – is updated with the signature of the slot.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the error state.  If this is <code class="xref c c-data docutils literal"><span class="pre">sipErrorFail</span></code> then a Python
+exception will have been raised.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv226pyqt4_get_pyqtsignal_partsP8PyObjectPP7QObject">
+<span id="pyqt4_get_pyqtsignal_parts__PyObjectP.QObjectPP"></span><em class="property">const</em> char *<code class="descclassname"></code><code class="descname">pyqt4_get_pyqtsignal_parts</code><span class="sig-paren">(</span>PyObject *<em>signal</em>, QObject **<em>transmitter</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv226pyqt4_get_pyqtsignal_partsP8PyObjectPP7QObject" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the signal signature (and, optionally, the transmitter object) from a
+signal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>signal</strong> – is the signal.</li>
+<li><strong>transmitter</strong> – if it is a non-zero value it is updated with the
+<code class="xref py py-class docutils literal"><span class="pre">QObject</span></code> transmitter.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the signature of the signal.  This will be zero if the signal not a
+bound signal (if the transmitter was requested) or an unbound signal.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv224pyqt4_get_pyqtslot_partsP8PyObjectPP7QObjectR10QByteArray">
+<span id="pyqt4_get_pyqtslot_parts__PyObjectP.QObjectPP.QByteArrayR"></span>sipErrorState <code class="descclassname"></code><code class="descname">pyqt4_get_pyqtslot_parts</code><span class="sig-paren">(</span>PyObject *<em>slot</em>, QObject **<em>receiver</em>, QByteArray &amp;<em>slot_signature</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv224pyqt4_get_pyqtslot_partsP8PyObjectPP7QObjectR10QByteArray" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the receiver object and slot signature from a callable decorated with
+<a class="reference internal" href="new_style_signals_slots.html#PyQt4.QtCore.pyqtSlot" title="PyQt4.QtCore.pyqtSlot"><code class="xref py py-func docutils literal"><span class="pre">pyqtSlot()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>slot</strong> – is the callable slot.</li>
+<li><strong>receiver</strong> – is updated with the <code class="xref py py-class docutils literal"><span class="pre">QObject</span></code> receiver.</li>
+<li><strong>slot_signature</strong> – is updated with the signature of the slot.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the error state.  If this is <code class="xref c c-data docutils literal"><span class="pre">sipErrorFail</span></code> then a Python
+exception will have been raised.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv216pyqt4_get_signalP8PyObject">
+<span id="pyqt4_get_signal__PyObjectP"></span><em class="property">const</em> char *<code class="descclassname"></code><code class="descname">pyqt4_get_signal</code><span class="sig-paren">(</span>PyObject *<em>signal</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv216pyqt4_get_signalP8PyObject" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check that a Python object was returned by <code class="docutils literal"><span class="pre">SIGNAL()</span></code> or a signal object
+and return the string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>signal</strong> – is the signal.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the string.  It will be 0 if the object does not refer to a signal.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv214pyqt4_get_slotP8PyObject">
+<span id="pyqt4_get_slot__PyObjectP"></span><em class="property">const</em> char *<code class="descclassname"></code><code class="descname">pyqt4_get_slot</code><span class="sig-paren">(</span>PyObject *<em>slot</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv214pyqt4_get_slotP8PyObject" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check that a Python object was returned by <code class="docutils literal"><span class="pre">SLOT()</span></code> or <code class="docutils literal"><span class="pre">SIGNAL()</span></code> and
+return the string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>slot</strong> – is the slot.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the slot.  It will be 0 if the object does not refer to a slot.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv238pyqt4_register_from_qvariant_convertorPFbPK8QVariantPP8PyObjectE">
+void <code class="descclassname"></code><code class="descname">pyqt4_register_from_qvariant_convertor</code><span class="sig-paren">(</span>bool (*<em>convertor</em>)<span class="sig-paren">(</span><em class="property">const</em> QVariant *, PyObject **<span class="sig-paren">)</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv238pyqt4_register_from_qvariant_convertorPFbPK8QVariantPP8PyObjectE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Register a convertor function that converts a
+<code class="xref py py-class docutils literal"><span class="pre">QVariant</span></code> value to a Python object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>convertor</strong> – is the convertor function.  This takes two arguments.  The first
+argument is the <code class="xref py py-class docutils literal"><span class="pre">QVariant</span></code> value to be converted.
+The second argument is updated with a reference to the result of the
+conversion and it will be <code class="docutils literal"><span class="pre">0</span></code>, and a Python exception raised, if
+there was an error.  The convertor will return <code class="docutils literal"><span class="pre">true</span></code> if the value
+was handled so that no other convertor will be tried.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv236pyqt4_register_to_qvariant_convertorPFbP8PyObjectP8QVariantPbE">
+void <code class="descclassname"></code><code class="descname">pyqt4_register_to_qvariant_convertor</code><span class="sig-paren">(</span>bool (*<em>convertor</em>)<span class="sig-paren">(</span>PyObject *, QVariant *, bool *<span class="sig-paren">)</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv236pyqt4_register_to_qvariant_convertorPFbP8PyObjectP8QVariantPbE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Register a convertor function that converts a Python object to a
+<code class="xref py py-class docutils literal"><span class="pre">QVariant</span></code> value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>convertor</strong> – is the convertor function.  This takes three arguments.  The first
+argument is the Python object to be converted. The second argument is a
+pointer to <code class="xref py py-class docutils literal"><span class="pre">QVariant</span></code> value that is updated with
+the result of the conversion.  The third argument is updated with an
+error flag which will be <code class="docutils literal"><span class="pre">false</span></code>, and a Python exception raised, if
+there was an error.  The convertor will return <code class="docutils literal"><span class="pre">true</span></code> if the value
+was handled so that no other convertor will be tried.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv241pyqt4_register_to_qvariant_data_convertorPFbP8PyObjectPviPbE">
+void <code class="descclassname"></code><code class="descname">pyqt4_register_to_qvariant_data_convertor</code><span class="sig-paren">(</span>bool (*<em>convertor</em>)<span class="sig-paren">(</span>PyObject *, void *, int, bool *<span class="sig-paren">)</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv241pyqt4_register_to_qvariant_data_convertorPFbP8PyObjectPviPbE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Register a convertor function that converts a Python object to the
+pre-allocated data of a <code class="xref py py-class docutils literal"><span class="pre">QVariant</span></code> value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>convertor</strong> – is the convertor function.  This takes four arguments.  The first
+argument is the Python object to be converted. The second argument is a
+pointer to the pre-allocated data of a <code class="xref py py-class docutils literal"><span class="pre">QVariant</span></code>
+value that is updated with the result of the conversion.  The third
+argument is the meta-type of the value.  The fourth argument is updated
+with an error flag which will be <code class="docutils literal"><span class="pre">false</span></code>, and a Python exception
+raised, if there was an error.  The convertor will return <code class="docutils literal"><span class="pre">true</span></code> if
+the value was handled so that no other convertor will be tried.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv222pyqt4_update_argv_listP8PyObjectiPPc">
+<span id="pyqt4_update_argv_list__PyObjectP.i.cPP"></span>void <code class="descclassname"></code><code class="descname">pyqt4_update_argv_list</code><span class="sig-paren">(</span>PyObject *<em>argv_list</em>, int <em>argc</em>, char **<em>argv</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv222pyqt4_update_argv_listP8PyObjectiPPc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Update a Python list from a standard C array of command line arguments and
+an argument count.  This is used in conjunction with
+<a class="reference internal" href="#_CPPv220pyqt4_from_argv_listP8PyObjectRi" title="pyqt4_from_argv_list"><code class="xref cpp cpp-func docutils literal"><span class="pre">pyqt4_from_argv_list()</span></code></a> to handle the updating of argument lists
+after calling constructors of classes such as
+<code class="xref py py-class docutils literal"><span class="pre">QCoreApplication</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>argv_list</strong> – is the Python list of arguments that will be updated.</li>
+<li><strong>argc</strong> – is the number of command line arguments.</li>
+<li><strong>argv</strong> – is the array of pointers to the arguments on the heap.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">The PyQt4 Extension API</a><ul>
+<li><a class="reference internal" href="#python-api">Python API</a></li>
+<li><a class="reference internal" href="#c-api">C++ API</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="build_system.html"
+                        title="previous chapter">The PyQt4 Build System</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="build_system.html" title="The PyQt4 Build System"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">PyQt 4.12.1 Reference Guide</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016 Riverbank Computing Limited.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

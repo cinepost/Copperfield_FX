@@ -6,6 +6,7 @@ from OpenGL.GLU import *
 from OpenGL.raw.GL.VERSION.GL_1_5 import glBufferData as rawGlBufferData
 
 import math
+import logging
 from PIL import Image
 
 import pyopencl as cl
@@ -15,6 +16,8 @@ from copper.op.node_type_category import Cop2NodeTypeCategory
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import NetworkPanel
+
+logger = logging.getLogger(__name__)
 
 class CompositeViewPanel(NetworkPanel):
     def __init__(self):
@@ -62,73 +65,56 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
     def drawCopNodeImageData(self):
         glDisable( GL_LIGHTING )
         glEnable( GL_TEXTURE_2D )
-        # bind proper texture to display
-        if self.node:
-            # texture from COP_Node iamge data
-            if self.rebuild_node_image:
-                try:
-                    self.buildCopImageDataTexture()
-                except:
-                    raise 
 
-                self.rebuild_node_image = False
+        # texture from COP_Node iamge data
+        if self.rebuild_node_image:
+            try:
+                self.buildCopImageDataTexture()
+            except:
+                raise 
 
-            # draw node extents
-            bounds = list(self.node.imageBounds())
-            bounds[0] -= self.image_width/2
-            bounds[2] -= self.image_width/2
-            bounds[1] -= self.image_height/2
-            bounds[3] -= self.image_height/2
+            self.rebuild_node_image = False
 
+        # draw node extents
+        bounds = list(self.node.imageBounds())
+        bounds[0] -= self.image_width/2
+        bounds[2] -= self.image_width/2
+        bounds[1] -= self.image_height/2
+        bounds[3] -= self.image_height/2
 
-            #draw bounds grid
-            glColor(0.25, 0.25, 0.25)
-            glBegin(GL_LINES)
-            for dx in range(1, bounds[2] - bounds[0], 256):
-                glVertex2d(bounds[0] + dx,bounds[1]);glVertex2d(bounds[0] + dx,bounds[3])
+        #draw bounds grid
+        glColor(0.25, 0.25, 0.25)
+        glBegin(GL_LINES)
+        for dx in range(1, bounds[2] - bounds[0], 256):
+            glVertex2d(bounds[0] + dx,bounds[1]);glVertex2d(bounds[0] + dx,bounds[3])
 
-            for dy in range(1, bounds[3] - bounds[1], 256):
-                glVertex2d(bounds[0], bounds[1] + dy);glVertex2d(bounds[2], bounds[1] + dy)
+        for dy in range(1, bounds[3] - bounds[1], 256):
+            glVertex2d(bounds[0], bounds[1] + dy);glVertex2d(bounds[2], bounds[1] + dy)
 
-            glEnd()
+        glEnd()
 
+        glColor(.05, .15, .85)
+        glBegin(GL_LINES)
+        glVertex2d(bounds[0],bounds[3]);glVertex2d(bounds[2],bounds[3])
+        glVertex2d(bounds[2],bounds[3]);glVertex2d(bounds[2],bounds[1])
+        glVertex2d(bounds[2],bounds[1]);glVertex2d(bounds[0],bounds[1])
+        glVertex2d(bounds[0],bounds[1]);glVertex2d(bounds[0],bounds[3])
+        glEnd()
 
-            glColor(.05, .15, .85)
-            glBegin(GL_LINES)
-            glVertex2d(bounds[0],bounds[3]);glVertex2d(bounds[2],bounds[3])
-            glVertex2d(bounds[2],bounds[3]);glVertex2d(bounds[2],bounds[1])
-            glVertex2d(bounds[2],bounds[1]);glVertex2d(bounds[0],bounds[1])
-            glVertex2d(bounds[0],bounds[1]);glVertex2d(bounds[0],bounds[3])
-            glEnd()
+        # Draw actual image data
+        glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
 
-            # Draw actual image data
-            glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
-
-            glColor(1.0, 1.0, 1.0)
-            glBegin(GL_QUADS)
-            glTexCoord2f(0.0,0.0)
-            glVertex2d(-self.image_width/2, self.image_height/2)
-            glTexCoord2f(1.0,0.0)
-            glVertex2d(self.image_width/2, self.image_height/2)
-            glTexCoord2f(1.0,1.0)
-            glVertex2d(self.image_width/2, -self.image_height/2)
-            glTexCoord2f(0.0,1.0);
-            glVertex2d(-self.image_width/2, -self.image_height/2)
-            glEnd()
-        else:
-            # default texture
-            glBindTexture(GL_TEXTURE_2D, self.null_gl_tex_id)    
-
-            glBegin(GL_QUADS)
-            glTexCoord2f(0.0,0.0)
-            glVertex2d(-self.image_width/2, -self.image_height/2)
-            glTexCoord2f(1.0,0.0)
-            glVertex2d(self.image_width/2, -self.image_height/2)
-            glTexCoord2f(1.0,1.0)
-            glVertex2d(self.image_width/2, self.image_height/2)
-            glTexCoord2f(0.0,1.0);
-            glVertex2d(-self.image_width/2, self.image_height/2)
-            glEnd()
+        glColor(1.0, 1.0, 1.0)
+        glBegin(GL_QUADS)
+        glTexCoord2f(0.0,0.0)
+        glVertex2d(-self.image_width/2, self.image_height/2)
+        glTexCoord2f(1.0,0.0)
+        glVertex2d(self.image_width/2, self.image_height/2)
+        glTexCoord2f(1.0,1.0)
+        glVertex2d(self.image_width/2, -self.image_height/2)
+        glTexCoord2f(0.0,1.0);
+        glVertex2d(-self.image_width/2, -self.image_height/2)
+        glEnd()
 
         glBindTexture(GL_TEXTURE_2D, 0)
         glDisable( GL_TEXTURE_2D )
@@ -146,9 +132,12 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
         # draw image data
-        self.drawCopNodeImageData()
+        if self.node:
+            self.drawCopNodeImageData()
 
         # draw outline
+        glDisable(GL_MULTISAMPLE)
+        glDisable(GL_LINE_SMOOTH)
         glColor(.5, .5, .5)
         glBegin(GL_LINES)
         glVertex2d(-self.image_width/2,self.image_height/2);glVertex2d(self.image_width/2,self.image_height/2)
@@ -156,6 +145,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glVertex2d(self.image_width/2,-self.image_height/2);glVertex2d(-self.image_width/2,-self.image_height/2)
         glVertex2d(-self.image_width/2,-self.image_height/2);glVertex2d(-self.image_width/2,self.image_height/2)
         glEnd()
+        glEnable(GL_MULTISAMPLE)
+        glEnable(GL_LINE_SMOOTH)
 
         # switch to 2D for text overlay
         glLoadIdentity()
@@ -199,16 +190,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glColor4f(1.0, 1.0, 1.0, 1.0)
         glTexEnvf(GL_TEXTURE_FILTER_CONTROL, GL_TEXTURE_LOD_BIAS, -1) # Uncomment to keep texture sharp
 
-        # bind default texture here  
-        self.null_gl_tex_id = self.bindTexture(QtGui.QImage("media/deftex_02.jpg"), GL_TEXTURE_2D, GL_RGBA) 
-        glBindTexture(GL_TEXTURE_2D, self.null_gl_tex_id)
-        glGenerateMipmap(GL_TEXTURE_2D)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
-        glBindTexture(GL_TEXTURE_2D, 0)
-
+        # bind display node texture
         self.node_gl_tex_id = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
@@ -235,7 +217,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.xRes(),  self.node.yRes(), 0, GL_RGB, GL_FLOAT, None)
 
 
-            print "Node size: %s %s" % (self.node.xRes(), self.node.yRes())
+            logger.debug("Node size to display: %s %s" % (self.node.xRes(), self.node.yRes()))
 
             node_gl_texture = cl.GLTexture(hou.openclContext(), cl.mem_flags.WRITE_ONLY, GL_TEXTURE_2D, 0, self.node_gl_tex_id, 2) 
 
@@ -261,7 +243,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
     def updateNodeDisplay(self, node_path=None):
         node = hou.node(node_path)
         if node and node == self.node: # ensure we a re updating the same node as shown before
-            print "Updating node display: %s" % node.path()
+            logger.debug("Updating node %s for display" % node.path())
             if node.needsToCook():
                 self.node.cook()
             
@@ -275,7 +257,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
     def setNodeToDisplay(self, node_path=None):
         node = hou.node(node_path)
         if node:
-            print "Showing node %s" % node.path()
+            logger.debug("Setting node %s as current to display" % node.path())
             node_path = str(node_path)
             if self.node != node:
                 self.node = node
@@ -332,7 +314,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.oldy = mouseEvent.y()
 
     def mouseDoubleClickEvent(self, mouseEvent):
-        print "double click"
+        pass
 
     def mousePressEvent(self, e):
         self.isPressed = True

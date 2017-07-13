@@ -1,8 +1,7 @@
 from PyQt4 import Qt, QtGui, QtCore
 
 from gui.signals import signals
-from copper import engine
-#from copper import parameter
+from copper.engine import engine
 
 class PathBarWidget(QtGui.QFrame):
     def __init__(self, parent, panel): 
@@ -18,12 +17,12 @@ class PathBarWidget(QtGui.QFrame):
         self.layout.setContentsMargins(2, 2, 2, 2)
 
         self.btn_back = QtGui.QToolButton(self)
-        self.btn_back.setIcon(QtGui.QIcon( "icons/main/go-previous.svg"))
+        self.btn_back.setIcon(QtGui.QIcon( "gui/icons/main/go-previous.svg"))
         self.btn_back.setEnabled(False)
         self.btn_back.pressed.connect(self.historyGoBack)
 
         self.btn_frwd = QtGui.QToolButton(self)
-        self.btn_frwd.setIcon(QtGui.QIcon("icons/main/go-next.svg"))
+        self.btn_frwd.setIcon(QtGui.QIcon("gui/icons/main/go-next.svg"))
         self.btn_frwd.setEnabled(False)
         self.btn_frwd.pressed.connect(self.historyGoForward)
 

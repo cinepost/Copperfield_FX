@@ -30,7 +30,7 @@ class COP2_File(COP2_Node):
 	def parmTemplates(self):
 		templates = super(COP2_File, self).parmTemplates()
 		templates += [
-			StringParmTemplate(name="filename", label="File", default_value=("media/default.png",), string_type=StringParmType.FileReference),
+			StringParmTemplate(name="filename", label="File", default_value=("copper/media/default.png",), string_type=StringParmType.FileReference),
 			MenuParmTemplate(name='overridesize', label='File Size', menu_items=('natural', 'project', 'size'), menu_labels=('Natural Resolution',
  				'Project Resolution', 'Specific Resolution'), default_value=0),
 			IntParmTemplate(name="size", label="Size", length=2, default_value=(512,512), naming_scheme=ParmNamingScheme.Base1),

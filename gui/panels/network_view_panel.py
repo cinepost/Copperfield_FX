@@ -37,7 +37,7 @@ class NetworkViewControls(CollapsableWidget):
 
         self.snap_to_grid_btn = QtGui.QPushButton()
         self.snap_to_grid_btn.setCheckable(True)
-        self.snap_to_grid_btn.setIcon(QtGui.QIcon('icons/main/network_view/snap_to_grid.svg'))
+        self.snap_to_grid_btn.setIcon(QtGui.QIcon('gui/icons/main/network_view/snap_to_grid.svg'))
         self.snap_to_grid_btn.setStatusTip('Show/hide grid and enable/disable snapping')
 
         self.addWidget(self.snap_to_grid_btn)

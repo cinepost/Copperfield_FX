@@ -4,6 +4,9 @@
 *.egg
 *.egg-info
 dist
+dist/
+tmp
+tmp/*
 build
 eggs
 parts
@@ -33,5 +36,5 @@ test/out/*
 .DS_Store
 
 #VirtualEnv
-venv
-venv/*
+virtualenv
+virtualenv/*

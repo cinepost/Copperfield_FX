@@ -6,11 +6,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 from PyQt4 import QtGui, QtCore, QtOpenGL
 
-from copper import engine
+from copper.engine import engine
 from .tabbed_panel_manager import TabbedPanelManager
 from .dialogs import RenderNodeDialog
 from .widgets import PlayBarWidget
-
 
 class Workarea(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -75,7 +74,7 @@ class Workarea(QtGui.QWidget):
 
     @QtCore.pyqtSlot()   
     def renderNode(self, node_path):
-        RenderNodeDialog.render(self.engine, node_path)
+        RenderNodeDialog.render(node_path)
 
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
@@ -107,7 +106,7 @@ class MainWindow(QtGui.QMainWindow):
             engine.save_project(fname)
 
     def load_style(self):
-        sqq_filename="media/copper.stylesheet.qss"
+        sqq_filename="gui/config/copper.stylesheet.qss"
         with open(sqq_filename,"r") as fh:
             self.setStyleSheet(fh.read())
 
@@ -118,24 +117,24 @@ class MainWindow(QtGui.QMainWindow):
         self.workarea = Workarea(self)
         self.setCentralWidget(self.workarea)
 
-        exitAction = QtGui.QAction(QtGui.QIcon('icons/main/system-log-out.svg'), 'Exit', self)
+        exitAction = QtGui.QAction(QtGui.QIcon('gui/icons/main/system-log-out.svg'), 'Exit', self)
         exitAction.setObjectName("ActionExitApp")
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(self.close)
 
-        openAction = QtGui.QAction(QtGui.QIcon('icons/main/document-open.svg'), 'Open project', self)
+        openAction = QtGui.QAction(QtGui.QIcon('gui/icons/main/document-open.svg'), 'Open project', self)
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open project')
         openAction.triggered.connect(self.open_project)
 
-        saveAction = QtGui.QAction(QtGui.QIcon('icons/main/document-save.svg'), 'Save project', self)
+        saveAction = QtGui.QAction(QtGui.QIcon('gui/icons/main/document-save.svg'), 'Save project', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.setStatusTip('Save project')
         saveAction.triggered.connect(self.save_project)
 
 
-        reloadStylAction = QtGui.QAction(QtGui.QIcon('icons/main/view-refresh.svg'), 'Reload QSS', self)
+        reloadStylAction = QtGui.QAction(QtGui.QIcon('gui/icons/main/view-refresh.svg'), 'Reload QSS', self)
         reloadStylAction.setShortcut('Ctrl+R')
         reloadStylAction.setStatusTip('Reload style')
         reloadStylAction.triggered.connect(self.load_style)

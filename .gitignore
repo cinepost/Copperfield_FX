@@ -10,7 +10,6 @@ tmp/
 build
 eggs
 parts
-bin
 var
 sdist
 develop-eggs

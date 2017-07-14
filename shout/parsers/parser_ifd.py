@@ -27,7 +27,7 @@ class ParserBase():
 class ParserIFD(ParserBase):
 
 	exit_token = 'ray_quit'
-	command = 
+	command = Word( alphas ) 
 
 	def __init__(self):
 

@@ -17,7 +17,9 @@ from copper.translators import CopperNullTranslator, boomShotTranslator
 
 from copper.root_types import ROOT_Types 
 
-class Copper_Engine(OP_Network, ROOT_Types):
+logger = logging.getLogger(__name__)
+
+class OP_Engine(OP_Network, ROOT_Types): # This is actually root node e.g.
 	__base__ = True
 	programs 	= {}
 	app 		= None
@@ -29,8 +31,8 @@ class Copper_Engine(OP_Network, ROOT_Types):
 		type_name = 'root'
 		category = DirectorNodeTypeCategory
 
-	def __init__(self, device_type="CPU", device_index=None, cl_path=""): # "cpu" or "gpu" here or "ALL"
-		super(Copper_Engine, self).__init__(self, None) # base node is the engine itself, therefore it has no parent
+	def __init__(self, device_type = settings.CL_DEVICE_TYPE, device_index=settings.CL_DEVICE_INDEX, cl_path=settings.CL_PROGRAMS_PATH): # "cpu" or "gpu" here or "ALL"
+		super(OP_Engine, self).__init__(self, None) # base node is the engine itself, therefore it has no parent
 		self._name = "/"
 		self._time = 0.0
 		self._frame = 0
@@ -57,12 +59,12 @@ class Copper_Engine(OP_Network, ROOT_Types):
 		if self._devices:		
 			self.cl_path 	= cl_path
 			self.cl_mode 	= True
-			logging.info("Using Open_CL.")
+			logger.info("Using Open_CL.")
 		else:
-			logging.error("NO OPEN_CL CAPABLE DEVICE FOUND !!!")
+			logger.error("NO OPEN_CL CAPABLE DEVICE FOUND !!!")
 			exit(1)		
 
-		logging.debug("Bundled with ops: %s \n Done." % OpRegistry._registry)
+		logger.debug("Bundled with ops: %s \n Done." % OpRegistry._registry)
 
 		# register translators
 		self.translators = {}
@@ -114,7 +116,7 @@ class Copper_Engine(OP_Network, ROOT_Types):
 				self._cl_ctx = cl.Context(	properties=get_gl_sharing_context_properties(),
 										devices = self._devices)
 
-			print "OpenCL context created: %s" % self._cl_ctx
+			logger.debug("OpenCL context created: %s" % self._cl_ctx)
 		return self._cl_ctx
 		
 	def openclQueue(self):
@@ -167,7 +169,7 @@ class Copper_Engine(OP_Network, ROOT_Types):
 		self.setFrame(frame)	
 		render_file_name = CopperString(self.engine, filename).expandedString()	
 		
-		self.log("OpenCL. Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name))
+		logger.info("OpenCL. Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), render_file_name))
 		buff = node.getOutHostBuffer()
 		image = Image.frombuffer('RGBA', node.size, buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
 

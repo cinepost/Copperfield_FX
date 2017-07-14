@@ -4,7 +4,7 @@ from OpenGL import GL
 from OpenGL.GLU import *
 
 import numpy
-import copper
+from copper import hou
 import math
 
 from gui.utils import clearLayout
@@ -222,7 +222,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
         glTranslatef(0.0, 0.0, 0.0)
 
-        for node in copper.engine.node("/obj").children():
+        for node in hou.node("/obj").children():
             ogl_obj_cache = SceneViewWidget.OGL_Scene_Manager.getObjNodeGeometry(node)
 
             if ogl_obj_cache:
@@ -249,7 +249,6 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
                     print "drawed"
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
-
 
                 # draw polygons
                 glColor4f(1.0, 1.0, 1.0, 1.0)

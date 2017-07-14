@@ -11,7 +11,7 @@ from PIL import Image
 
 import pyopencl as cl
 
-from copper import engine as hou
+from copper import hou
 from copper.op.node_type_category import Cop2NodeTypeCategory
 from gui.signals import signals
 from gui.widgets import PathBarWidget

@@ -7,7 +7,7 @@ import numpy
 import copper
 import math
 
-from copper import engine
+from copper import hou as engine
 from copper.op.base import OpRegistry
 from gui.signals import signals
 from gui.widgets import PathBarWidget, CollapsableWidget

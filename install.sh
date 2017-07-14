@@ -47,18 +47,36 @@ fi
 cd tmp
 
 
-python -c "import pyopencl"  &> /dev/null
-if [ $? -eq 0 ]; then
-	echo "PyOpenCL already installed"
+function check_pyopencl {
+	python -c "exec(\"import pyopencl\\nif not pyopencl.have_gl(): exit(1)\")"  &> /dev/null
+	[ $? -eq 0 ]
+}
+
+function check_sip {
+	python -c "import sip"  &> /dev/null
+	[ $? -eq 0 ]
+}
+
+function check_pyqt4 {
+	python -c "import PyQt4"  &> /dev/null
+	[ $? -eq 0 ]
+}
+
+if check_pyopencl; then
+	echo "PyOpenCL already installed. All good!"
 else
 	# Install and configure PyOpenCl
-	if [ ! -d "pyopencl-2017.2" ]; then
+	if [ -d "pyopencl-2017.2" ]; then
+		# clean previous build
+		rm -rf pyopencl-2017.2
+	fi 
+
+	if [ ! -f "pyopencl-2017.2.tar.gz" ]; then
 		echo "Downloading pyopencl-2017.2"
 		wget https://pypi.python.org/packages/51/cd/6142228eb3b02df9e23e5468ce6c53d1c57275bdc05bccab11e1a1e1bfec/pyopencl-2017.2.tar.gz#md5=3af7bebe41c59e12bc21d58607812445
 	else
-		echo "Removing previous build"
-		rm -rf pyopencl-2017.2/build
-		rm pyopencl-2017.2/siteconf.py
+		# clean previous build
+		rm -rf pyopencl-2017.2
 	fi
 
 	echo "Configuring PyOpenCL package"
@@ -66,93 +84,132 @@ else
 	cd pyopencl-2017.2
 	git submodule init
 	git submodule update
-	python configure.py #--cl-enable-gl
+	python configure.py --cl-enable-gl
 	python setup.py build
 	make
 	python setup.py install
 	cd ..
 fi
 
-python -c "import sip"  &> /dev/null
-if [ $? -eq 0 ]; then
-	echo "SIP already installed."
+if check_sip; then
+	echo "SIP v$SIP_VERSION already installed. All good!"
 else
 	echo "Installing SIP package ..."
 	# Install and configure SIP
-	if [ ! -d "sip-$SIP_VERSION" ]; then
-		echo "Downloading SIP"
-		if [[ "$OSTYPE" == "msys"]] || [["$OSTYPE" == "cygwin" ]]; then
-			# Windows version of SIP
-			if [ ! -d "sip-$SIP_VERSION.zip" ]; then
-				wget https://sourceforge.net/projects/pyqt/files/sip/sip-$SIP_VERSION/sip-$SIP_VERSION.zip
-				unzip sip-$SIP_VERSION.zip
-			fi
-		elif [[ "$OSTYPE" == "linux-gnu" ]] || [[ "$OSTYPE" == "darwin"* ]]; then
-			# Linux/Macos version of SIP
-			if [ ! -d "sip-$SIP_VERSION.tar.gz" ]; then
-				wget https://sourceforge.net/projects/pyqt/files/sip/sip-$SIP_VERSION/sip-$SIP_VERSION.tar.gz
-				tar -xvf sip-$SIP_VERSION.tar.gz
-			fi
-		else
-			echo "Unsupported platform ${OSTYPE} ! Abort installation"
-			exit
+	if [ -d "sip-$SIP_VERSION" ]; then
+		# clean previous build
+		rm -rf sip-$SIP_VERSION
+	fi 
+
+	echo "Downloading SIP"
+	if [[ "$OSTYPE" == "msys"]] || [["$OSTYPE" == "cygwin" ]]; then
+		# Windows version of SIP
+		if [ ! -f "sip-$SIP_VERSION.zip" ]; then
+			wget https://sourceforge.net/projects/pyqt/files/sip/sip-$SIP_VERSION/sip-$SIP_VERSION.zip
 		fi
+
+		unzip sip-$SIP_VERSION.zip
+		cd sip-$SIP_VERSION
+
+	elif [[ "$OSTYPE" == "linux-gnu" ]] || [[ "$OSTYPE" == "darwin"* ]]; then
+		# Linux/Macos version of SIP
+		if [ ! -f "sip-$SIP_VERSION.tar.gz" ]; then
+			wget https://sourceforge.net/projects/pyqt/files/sip/sip-$SIP_VERSION/sip-$SIP_VERSION.tar.gz
+		fi
+
+		tar -xvf sip-$SIP_VERSION.tar.gz
+		cd sip-$SIP_VERSION
+	
+	else
+		echo "Unsupported platform ${OSTYPE} ! Abort installation"
+		return 1
 	fi
 
 	echo "Configuring SIP package ..."
-	cd sip-$SIP_VERSION
-	python configure.py --incdir=../../virtualenv/include/python2.7 #-d /usr/local/lib/python2.7/site-packages/
+	python configure.py --incdir=../../virtualenv/include/python2.7
 	make
 	make install
 	cd ..
 fi
 
-python -c "import PyQt4"  &> /dev/null
-if [ $? -eq 0 ]; then
-	echo "PyQt4 already installed."
+if check_pyqt4; then
+	echo "PyQt4 v$PYQT4_VERSION already installed. All good!"
 else
 	echo "Installing PyQT4 package ..."
 	if [[ "$OSTYPE" == "darwin"* ]]; then
 		# Macos version of PyQt4
-		if [ ! -d "PyQt4_gpl_mac-$PYQT4_VERSION" ]; then
-			if [ ! -d "PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz" ]; then
-				echo "Downloading PyQt4 for Mac OS"
-				wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz
-			fi
-			tar -xvf PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz
+		if [ -d "PyQt4_gpl_mac-$PYQT4_VERSION" ]; then
+			# clean previous build
+			rm -rf PyQt4_gpl_mac-$PYQT4_VERSION
 		fi
+
+		if [ ! -f "PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz" ]; then
+			echo "Downloading PyQt4 for Mac OS"
+			wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz
+		fi
+		
+		tar -xvf PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz
 		cd PyQt4_gpl_mac-$PYQT4_VERSION
+
 	elif [[ "$OSTYPE" == "linux-gnu" ]]; then
 		# Linux version of PyQt4
-		if [ ! -d "PyQt4_gpl_x11-$PYQT4_VERSION" ]; then
-			if [ ! -d "PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz" ]; then
-				echo "Downloading PyQt4 for GNU/Linux"
-				wget https://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz
-			fi
-			tar -xvf PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz
+		if [ -d "PyQt4_gpl_x11-$PYQT4_VERSION" ]; then
+			# clean previous build
+			rm -rf PyQt4_gpl_x11-$PYQT4_VERSION
 		fi
+
+		if [ ! -f "PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz" ]; then
+			echo "Downloading PyQt4 for GNU/Linux"
+			wget https://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz
+		fi
+
+		tar -xvf PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz
 		cd PyQt4_gpl_x11-$PYQT4_VERSION
+	
 	elif [[ "$OSTYPE" == "msys"]] || [["$OSTYPE" == "cygwin" ]]; then
 		# Windows version of PyQt4
-		if [ ! -d "PyQt4_gpl_win-$PYQT4_VERSION" ]; then
-			if [ ! -d "PyQt4_gpl_win-$PYQT4_VERSION.zip" ]; then
-				echo "Downloading PyQt4 for Windows"
-				wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_win-$PYQT4_VERSION.zip
-			fi
-			unzip PyQt4_gpl_win-$PYQT4_VERSION.zip
+		if [ -d "PyQt4_gpl_win-$PYQT4_VERSION" ]; then
+			# clean previous build
+			rm -rf PyQt4_gpl_win-$PYQT4_VERSION
 		fi
+
+		if [ ! -f "PyQt4_gpl_win-$PYQT4_VERSION.zip" ]; then
+			echo "Downloading PyQt4 for Windows"
+			wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_win-$PYQT4_VERSION.zip
+		fi
+		
+		unzip PyQt4_gpl_win-$PYQT4_VERSION.zip
 		cd PyQt4_gpl_win-$PYQT4_VERSION
 	else
 		echo "Unsupported platform ${OSTYPE} ! Abort installation"
-		exit
+		return 1
 	fi
 
 	echo "Configuring PyQt4 package ..."
-	#python configure-ng.py --qmake=$(which qmake) --sip-incdir=$CWD/tmp/sip-4.19.3/siplib --confirm-license #--use-arch x86_64 --sip=/usr/local/bin/sip --sip-incdir=../sip-4.19.3/siplib  -d /usr/local/lib/python2.7/site-packages/
 	python configure-ng.py --confirm-license
 	make
 	make install
 	cd ..
 fi
 
+echo ""
+if [ ! check_pyopencl ]; then
+	echo "Unfortunately PyOpenCL installation failed. Please check the output ... :((("
+	return 1
+fi
+
+if [ ! check_sip ]; then 
+	echo "Unfortunately SIP v$SIP_VERSION installation failed. Please check the output ... :((("
+	return 1
+fi
+
+if [ ! check_pyqt4 ]; then
+	echo "Unfortunately PyQt4 v$PYQT4_VERSION installation failed. Please check the output ... :((("
+	return 1
+fi
+
+
+echo "Everything seems to be configured and installed OK !\n"
+cd $CWD
+. ./copper_setup
 #rm -rf tmp

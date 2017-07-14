@@ -18,7 +18,7 @@
 #   command line.
 #
 if [ ! -d copper  -o  !  -d bin ]; then
-    echo "You must cd to the Houdini installation directory before"
+    echo "You must cd to the Copperfiled FX installation directory before"
     echo "sourcing this script. This allows the script to determine"
     echo "the installed location."
 elif [ ! -d virtualenv ]; then

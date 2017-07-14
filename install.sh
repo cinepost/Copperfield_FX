@@ -1,6 +1,9 @@
 #!/bin/bash
 CWD="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+SIP_VERSION=4.19.3 
+PYQT4_VERSION=4.12.1 #4.10.4 #4.12.1
+
 trap '{ echo "Hey, you pressed Ctrl-C.  Time to quit." ; exit 1; }' INT
 
 # Install wget, git, virtualenv, qt4
@@ -21,12 +24,13 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 	brew list qt-webkit@2.3 &>/dev/null || brew install qt-webkit@2.3
 
 elif [[ "$OSTYPE" == "linux-gnu" ]]; then
-	sudo apt-get install virtualenv git wget python-dev python-qt4 python-qt4-dev python-sip python-sip-dev build-essential gfortran libqt4-dev qt4-qmake libpq-dev libsqlite3-dev qt4-dev-tools qt4-doc unixodbc-dev pyqt4-dev-tools -y
+	sudo apt-get install python-virtualenv git wget python-dev python-qt4 python-qt4-dev python-sip python-sip-dev build-essential gfortran libqt4-dev qt4-qmake libpq-dev libsqlite3-dev qt4-dev-tools qt4-doc unixodbc-dev pyqt4-dev-tools -y
 fi
 
 # Create python virtual environment if needed
 if [ ! -d "virtualenv" ]; then
-	virtualenv virtualenv --no-site-packages
+	# Use --always-copy flag, so that it doesn't just symlink the /usr/include/python2.7 directory into your virtualenv
+	virtualenv virtualenv --no-site-packages --always-copy
 fi
 
 # Activate python virtual environment
@@ -75,19 +79,19 @@ if [ $? -eq 0 ]; then
 else
 	echo "Installing SIP package ..."
 	# Install and configure SIP
-	if [ ! -d "sip-4.16.7" ]; then
+	if [ ! -d "sip-$SIP_VERSION" ]; then
 		echo "Downloading SIP"
 		if [[ "$OSTYPE" == "msys"]] || [["$OSTYPE" == "cygwin" ]]; then
 			# Windows version of SIP
-			if [ ! -d "sip-4.16.7.zip" ]; then
-				wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.16.7/sip-4.16.7.zip
-				unzip sip-4.16.7.zip
+			if [ ! -d "sip-$SIP_VERSION.zip" ]; then
+				wget https://sourceforge.net/projects/pyqt/files/sip/sip-$SIP_VERSION/sip-$SIP_VERSION.zip
+				unzip sip-$SIP_VERSION.zip
 			fi
 		elif [[ "$OSTYPE" == "linux-gnu" ]] || [[ "$OSTYPE" == "darwin"* ]]; then
 			# Linux/Macos version of SIP
-			if [ ! -d "sip-4.16.7.tar.gz" ]; then
-				wget https://sourceforge.net/projects/pyqt/files/sip/sip-4.16.7/sip-4.16.7.tar.gz
-				tar -xvf sip-4.16.7.tar.gz
+			if [ ! -d "sip-$SIP_VERSION.tar.gz" ]; then
+				wget https://sourceforge.net/projects/pyqt/files/sip/sip-$SIP_VERSION/sip-$SIP_VERSION.tar.gz
+				tar -xvf sip-$SIP_VERSION.tar.gz
 			fi
 		else
 			echo "Unsupported platform ${OSTYPE} ! Abort installation"
@@ -96,8 +100,8 @@ else
 	fi
 
 	echo "Configuring SIP package ..."
-	cd sip-4.16.7
-	python config.py #-d /usr/local/lib/python2.7/site-packages/
+	cd sip-$SIP_VERSION
+	python configure.py --incdir=../../virtualenv/include/python2.7 #-d /usr/local/lib/python2.7/site-packages/
 	make
 	make install
 	cd ..
@@ -110,34 +114,34 @@ else
 	echo "Installing PyQT4 package ..."
 	if [[ "$OSTYPE" == "darwin"* ]]; then
 		# Macos version of PyQt4
-		if [ ! -d "PyQt4_gpl_mac-4.12.1" ]; then
-			if [ ! -d "PyQt4_gpl_mac-4.12.1.tar.gz" ]; then
+		if [ ! -d "PyQt4_gpl_mac-$PYQT4_VERSION" ]; then
+			if [ ! -d "PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz" ]; then
 				echo "Downloading PyQt4 for Mac OS"
-				wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.12.1/PyQt4_gpl_mac-4.12.1.tar.gz
+				wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz
 			fi
-			tar -xvf PyQt4_gpl_mac-4.12.1.tar.gz
+			tar -xvf PyQt4_gpl_mac-$PYQT4_VERSION.tar.gz
 		fi
-		cd PyQt4_gpl_mac-4.12.1
+		cd PyQt4_gpl_mac-$PYQT4_VERSION
 	elif [[ "$OSTYPE" == "linux-gnu" ]]; then
 		# Linux version of PyQt4
-		if [ ! -d "PyQt-x11-gpl-4.10.4" ]; then
-			if [ ! -d "PyQt-x11-gpl-4.10.4.tar.gz" ]; then
+		if [ ! -d "PyQt4_gpl_x11-$PYQT4_VERSION" ]; then
+			if [ ! -d "PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz" ]; then
 				echo "Downloading PyQt4 for GNU/Linux"
-				wget https://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.10.4/PyQt-x11-gpl-4.10.4.tar.gz
+				wget https://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz
 			fi
-			tar -xvf PyQt-x11-gpl-4.10.4.tar.gz
+			tar -xvf PyQt4_gpl_x11-$PYQT4_VERSION.tar.gz
 		fi
-		cd PyQt-x11-gpl-4.10.4
+		cd PyQt4_gpl_x11-$PYQT4_VERSION
 	elif [[ "$OSTYPE" == "msys"]] || [["$OSTYPE" == "cygwin" ]]; then
 		# Windows version of PyQt4
-		if [ ! -d "PyQt4_gpl_win-4.12.1" ]; then
-			if [ ! -d "PyQt4_gpl_win-4.12.1.zip" ]; then
+		if [ ! -d "PyQt4_gpl_win-$PYQT4_VERSION" ]; then
+			if [ ! -d "PyQt4_gpl_win-$PYQT4_VERSION.zip" ]; then
 				echo "Downloading PyQt4 for Windows"
-				wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-4.12.1/PyQt4_gpl_win-4.12.1.zip
+				wget http://sourceforge.net/projects/pyqt/files/PyQt4/PyQt-$PYQT4_VERSION/PyQt4_gpl_win-$PYQT4_VERSION.zip
 			fi
-			unzip PyQt4_gpl_win-4.12.1.zip
+			unzip PyQt4_gpl_win-$PYQT4_VERSION.zip
 		fi
-		cd PyQt4_gpl_win-4.12.1
+		cd PyQt4_gpl_win-$PYQT4_VERSION
 	else
 		echo "Unsupported platform ${OSTYPE} ! Abort installation"
 		exit

@@ -6,10 +6,12 @@ logging.basicConfig(level=logging.DEBUG)
 
 from PyQt4 import QtGui, QtCore, QtOpenGL
 
-from copper.engine import engine
+from copper import hou
 from .tabbed_panel_manager import TabbedPanelManager
 from .dialogs import RenderNodeDialog
 from .widgets import PlayBarWidget
+
+logger = logging.getLogger(__name__)
 
 class Workarea(QtGui.QWidget):
     def __init__(self, parent=None):
@@ -79,8 +81,9 @@ class Workarea(QtGui.QWidget):
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        if not engine.have_gl:
-            print "OpenCL - OpenGL interoperability not supported !!! Abort."
+
+        if not hou.have_gl:
+            logger.critical("OpenCL - OpenGL interoperability not supported !!! Abort.")
             exit()
 
         self.initUI()
@@ -90,7 +93,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def open_project(self, make_test_project=False):
         if make_test_project:
-            engine.test_project()
+            hou.test_project()
             return
 
         try:
@@ -98,12 +101,12 @@ class MainWindow(QtGui.QMainWindow):
         except:
             raise
         if fname:    
-            engine.open_project(str(fname))   
+            hou.open_project(str(fname))   
 
     def save_project(self):
         fname = QtGui.QFileDialog.getSaveFileName(self, 'Save file', "/Users")    
         if fname:
-            engine.save_project(fname)
+            hou.save_project(fname)
 
     def load_style(self):
         sqq_filename="gui/config/copper.stylesheet.qss"

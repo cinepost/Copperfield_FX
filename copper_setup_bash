@@ -23,8 +23,14 @@ if [ ! -d copper  -o  !  -d bin ]; then
     echo "the installed location."
 elif [ ! -d virtualenv ]; then
         echo "You must first run install.sh from Copperfiled FX installation"
-        echo "directory to install all thirdpary packages and libraries. Then"
+        echo "directory to install all thirdparty packages and libraries. Then"
         echo "source copper_setup to start using amazing piece of art."
+        echo
+        read -p "Would you like to run install.sh now (y/n)? " -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo
+            . ./install.sh
+        fi
 else
     source virtualenv/bin/activate
 

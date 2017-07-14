@@ -28,7 +28,6 @@ PyOpenGL-accelerate==3.1.0
 pyparsing==2.1.9
 pytest==3.0.2
 python-dateutil==2.5.3
-pytools==2016.2.1
 pytz==2016.6.1
 simplegeneric==0.8.1
 six==1.10.0

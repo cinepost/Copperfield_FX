@@ -1,7 +1,7 @@
 from PyQt4 import Qt, QtGui, QtCore
 from copper import parameter
 
-from copper import engine
+from copper import hou 
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from gui.panels.base_panel import NetworkPanel
@@ -82,7 +82,7 @@ class ParametersWidget(QtGui.QWidget):
         if node_path in [None, "/"]:
             return 
 
-        node = engine.node(str(node_path))
+        node = hou.node(str(node_path))
         
         # remove old parms widgets
         clearLayout(self.header_bar)

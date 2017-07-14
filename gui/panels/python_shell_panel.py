@@ -7,7 +7,7 @@ from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 
-from copper import engine
+from copper import hou
 from base_panel import BasePanel
 
 from .python_syntax_highlighter import PythonHighlighter
@@ -47,7 +47,7 @@ class PythonShellWidget(QtGui.QTextEdit):
         self.marker()                   # make the >>> or ... marker        
         self.history            = []    # list of commands entered
         self.historyIndex       = -1
-        self.interpreterLocals  = {"hou": engine}
+        self.interpreterLocals  = {"hou": hou}
 
         # initilize interpreter with self locals
         self.initInterpreter(locals())

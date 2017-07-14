@@ -1,6 +1,6 @@
 from PyQt4 import QtGui, QtCore
 
-from copper import engine
+from copper import hou
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from base_panel import NetworkPanel
@@ -50,13 +50,13 @@ class TreeViewWidget(QtGui.QTreeWidget):
             # create root node item
             root_item = QtGui.QTreeWidgetItem(self)
             root_item.setExpanded(True)
-            root_item.setIcon(0, QtGui.QIcon(engine.iconName()))
+            root_item.setIcon(0, QtGui.QIcon(hou.iconName()))
             root_item.setText(0, "/")
             root_item.setText(1, "/")
             self.nodes_map["/"] = root_item
             self.createNodeTree(root_item, "/")
         else:
-            node = engine.node(node_path)
+            node = hou.node(node_path)
             if node:
                 for child_node in node.children():
                     item = QtGui.QTreeWidgetItem(parent)

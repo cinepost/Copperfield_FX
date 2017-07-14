@@ -3,7 +3,7 @@
 import sys, argparse, textwrap
 import logging
 
-from .parsers import PraserIFD
+from shout.parsers import ParserIFD
 
 logging.basicConfig(level = logging.DEBUG)
 logger = logging.getLogger("shout")

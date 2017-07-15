@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+
+from copper import hou
+import argparse
+
+if __name__ == "__main__":
+    exit(hou.interpreter())

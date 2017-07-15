@@ -24,7 +24,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 	brew list qt-webkit@2.3 &>/dev/null || brew install qt-webkit@2.3
 
 elif [[ "$OSTYPE" == "linux-gnu" ]]; then
-	sudo apt-get install python-virtualenv git wget python-dev python-qt4 python-qt4-dev python-sip python-sip-dev build-essential gfortran libqt4-dev qt4-qmake libpq-dev libsqlite3-dev qt4-dev-tools qt4-doc unixodbc-dev pyqt4-dev-tools -y
+	sudo apt-get install python-virtualenv git wget python-dev python-qt4 python-qt4-dev python-sip python-sip-dev build-essential gfortran libqt4-dev libqtwebkit-dev qt4-qmake libpq-dev libsqlite3-dev qt4-dev-tools qt4-doc unixodbc-dev pyqt4-dev-tools -y
 fi
 
 # Create python virtual environment if needed

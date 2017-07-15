@@ -1,4 +1,4 @@
-from pyparsing import Word, Combine, Optional, Literal, CaselessLiteral, ZeroOrMore, Forward, StringEnd, alphas, alphanums, nums
+from pyparsing import *
 
 #http://pyparsing.wikispaces.com/HowToUsePyparsing
 #https://habrahabr.ru/post/241670/
@@ -22,10 +22,7 @@ class ParserBase(object):
 	plusorminus = Literal('+') | Literal('-')
 	number = Word(nums) 
 	integer = Combine( Optional(plusorminus) + number )
-	floatnumber = Combine( integer +
-		Optional( point + Optional(number) ) +
-		Optional( e + integer )
-	)
+	floatnumber = Combine( integer + Optional( point + Optional(number) ) + Optional( e + integer ))
 	ident = Word(alphas,alphanums + '_') 
 	plus = Literal( "+" )
 	minus = Literal( "-" )
@@ -66,11 +63,31 @@ class ParserBase(object):
 	def setEchoInput(self, echo=True):
 		self._echo = echo
 
-	def parseLine(self, line):
-		if self._echo: sys.stdout.write(line)
+	def parseFile(self, filename):
+		# set up a generator to yield a line of text at a time
+		linegenerator = open(filename)
+		# line_buffer will accumulate lines until a fully parseable piece is found
+		line_buffer = ""
+
+		for line in linegenerator:
+			line_buffer += line
+
+			match = next(self.grammar.scanString(line_buffer), None)
+			while match:
+				tokens, start, end = match
+				print tokens.asList()
+
+				line_buffer = line_buffer[end:]
+				match = next(self.grammar.scanString(line_buffer), None) 
 
 	def isDone(self):
+		"""Return True when parsing is done."""
 		return self._eof_or_quit
 
-	def setDone(self):
+	def finish(self):
+		"""Call this from nested parser when exit/quit/finish token found."""
 		self._eof_or_quit = True
+
+	@property
+	def grammar(self):
+		raise NotImplementedError("Subclasses parser should implement this!")

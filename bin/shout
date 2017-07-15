@@ -43,10 +43,7 @@ if __name__ == "__main__":
 	ifd_filename = args['ifd_filename']
 	if ifd_filename:
 		logger.info('Reading IFD file: %s' % ifd_filename)
-		with open(ifd_filename) as ifd_file:
-			while not parser.isDone():
-				for line in ifd_file:
-					parser.parseLine(line)
+		parser.parseFile(ifd_filename)
 
 	else:
 		logger.info('Reading IFD from stdin')

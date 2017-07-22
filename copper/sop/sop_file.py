@@ -6,7 +6,6 @@ from copper import parameter
 
 from copper.parm_template import *
 from copper.geometry import Geometry
-from copper.geometry.iotranslators import ObjIO
 
 class SOP_File(SOP_Node):
 
@@ -44,10 +43,9 @@ class SOP_File(SOP_Node):
 			mode = self.parm("filemode").evalAsString()
 			if filename:
 				if mode == 'read':
-					self._geometry._points = []
-					ObjIO.readGeometry(filename, self._geometry)
+					self._geometry.loadFromFile(filename)
 				elif mode == 'write':
-					ObjIO.saveGeometry(filename, self._geometry)
+					self._geometry.saveToFile(filename)
 				else:
 					pass
 

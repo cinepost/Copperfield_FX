@@ -1,0 +1,28 @@
+{
+    "bricks": [
+        {
+            "file_path": "$COMPY_HOME/test/sources/abc_$F4.jpg",
+            "start_frame": 0,
+            "width":1280,
+            "height":720
+        },
+        {
+            "file_path": "$COMPY_HOME/test/sources/xyz_$F4.jpg",
+            "start_frame": 20,
+            "width":1280,
+            "height":720 
+        },
+    ],
+    "transitions": [
+        {
+            "type": "blend",
+            "brick_indexes": [0, 1],
+            "frame_range": [20, 30],
+        },
+    ],
+    "project": {
+        "frame_number": 50,
+        "resolution": {"width": 1280, "height": 720},
+        "output_file_path": "$COMPY_HOME/test/out/output_$F4.jpg",
+    }
+}    

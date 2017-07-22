@@ -5,6 +5,12 @@ from ..base import GeoBaseIO
 
 class ObjIO(GeoBaseIO):
 
+	@classmethod
+	def registerMIMETypes(cls):
+		return [
+			['application/wobj', 'obj'],
+		]
+
 	@staticmethod 
 	def readGeometry(geometry, filename, swapyz=False):
 		""" Loads a Wavefront OBJ file. """

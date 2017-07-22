@@ -1,1 +1,1 @@
-from obj import GeoIO
+from obj import ObjIO

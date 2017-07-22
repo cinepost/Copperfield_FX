@@ -3,7 +3,7 @@ import copy
 from copper.vmath import Vector3
 
 from .primitive import Point, Polygon
-from copper.geometry.iotranslators import ObjIO
+from copper.geometry.iotranslators.base import GeoIORegistry
 
 class Geometry(object):
 	def __init__(self, sop_node=None):
@@ -54,8 +54,8 @@ class Geometry(object):
 
 
 	def loadFromFile(self, filename):
-		ObjIO.readGeometry(filename, self)
+		GeoIORegistry._registry_by_ext['obj'].readGeometry(filename, self)
 
 
 	def saveToFile(self, filename):
-		ObjIO.saveGeometry(filename, self)
+		GeoIORegistry._registry_by_ext['obj'].saveGeometry(filename, self)

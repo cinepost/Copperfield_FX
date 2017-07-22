@@ -11,7 +11,7 @@ class GeoIORegistry(type):
 	_registry_by_ext = {}
 
 	def __new__(meta, name, bases, clsdict):
-		cls = super(OpRegistry, meta).__new__(meta, name, bases, clsdict)
+		cls = super(GeoIORegistry, meta).__new__(meta, name, bases, clsdict)
 		if not clsdict.pop('__base__', False):
 			meta._registry[name] = cls
 			for mime_type in cls.registerMIMETypes():
@@ -19,7 +19,7 @@ class GeoIORegistry(type):
 
 		return cls
 		
-@six.add_metaclass(OpRegistry)
+@six.add_metaclass(GeoIORegistry)
 class GeoBaseIO:
 
 	__base__ = True
@@ -31,7 +31,7 @@ class GeoBaseIO:
 	@staticmethod
 	def saveGeometry(geometry, filename):
 		raise NotImplementedError
-    
-    @classmethod
+
+	@classmethod
 	def registerMIMETypes(cls):
 		raise NotImplementedError

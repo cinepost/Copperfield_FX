@@ -17,6 +17,8 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     	brew update
 	fi
 
+	brew tap cartr/qt4
+	brew tap-pin cartr/qt4
 	brew list python &>/dev/null || brew install python
 	brew list wget &>/dev/null || brew install wget
 	brew list git &>/dev/null || brew install git
@@ -29,8 +31,7 @@ fi
 
 # Create python virtual environment if needed
 if [ ! -d "virtualenv" ]; then
-	# Use --always-copy flag, so that it doesn't just symlink the /usr/include/python2.7 directory into your virtualenv
-	virtualenv virtualenv --no-site-packages --always-copy
+	virtualenv virtualenv --no-site-packages #--always-copy
 fi
 
 # Activate python virtual environment
@@ -186,7 +187,7 @@ else
 	fi
 
 	echo "Configuring PyQt4 package ..."
-	python configure-ng.py --confirm-license
+	python configure-ng.py --confirm-license --sip-incdir $CWD/tmp/sip-$SIP_VERSION/siplib
 	make
 	make install
 	cd ..

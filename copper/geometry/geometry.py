@@ -3,6 +3,7 @@ import copy
 from copper.vmath import Vector3
 
 from .primitive import Point, Polygon
+from copper.geometry.iotranslators import ObjIO
 
 class Geometry(object):
 	def __init__(self, sop_node=None):
@@ -12,6 +13,10 @@ class Geometry(object):
 
 		self._frozen = False
 
+
+	def clear(self):
+		self._points = []
+		self._prims = []
 
 	def raw_points(self):
 		return self._points
@@ -41,8 +46,16 @@ class Geometry(object):
 		if self._frozen:
 			return self
 		else:
-			f_geo = Geometry()
-			f_geo._points = copy.deepcopy(self._prims)
-			f_geo._prims = copy.deepcopy(self._points)
-			f_geo._frozen = True
-			return f_geo
+			frozen_geo = Geometry()
+			frozen_geo._points = copy.deepcopy(self._prims)
+			frozen_geo._prims = copy.deepcopy(self._points)
+			frozen_geo._frozen = True
+			return frozen_geo
+
+
+	def loadFromFile(self, filename):
+		ObjIO.readGeometry(filename, self)
+
+
+	def saveToFile(self, filename):
+		ObjIO.saveGeometry(filename, self)

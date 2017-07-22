@@ -8,3 +8,8 @@ CL_PROGRAMS_PATH = "$COPPER_HOME/copper/cl"
 
 # Animation defaults
 DEFAULT_FPS = 24.0
+
+# Geometry translators modules
+GEO_TRANSLATORS = [
+	'copper.geometry.iotranslators.obj',
+]

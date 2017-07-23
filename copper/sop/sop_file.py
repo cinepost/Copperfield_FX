@@ -52,7 +52,7 @@ class SOP_File(SOP_Node):
 				elif mode == 'write':
 					self._geometry.saveToFile(filename)
 				elif mode == 'auto':
-					raise 
+					raise SOPCookException('Unimplemented file mode "auto" !') 
 				else:
 					pass
 

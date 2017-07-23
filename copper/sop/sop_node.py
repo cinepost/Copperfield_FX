@@ -5,6 +5,9 @@ from copper.parm_template import *
 
 from copper.geometry import Geometry
 
+class SOPCookException(Exception):
+    pass
+
 class SOP_Node(OP_Network):
 	__base__ = True
 	

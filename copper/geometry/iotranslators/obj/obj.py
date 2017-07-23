@@ -8,11 +8,11 @@ class ObjIO(GeoBaseIO):
 	@classmethod
 	def registerMIMETypes(cls):
 		return [
-			['application/wobj', 'obj'],
+			['application/wobj', '.obj'],
 		]
 
 	@staticmethod 
-	def readGeometry(geometry, filename, swapyz=False):
+	def readGeometry(filename, geometry, swapyz=False):
 		""" Loads a Wavefront OBJ file. """
 		vertices = []
 		normals = []
@@ -63,6 +63,6 @@ class ObjIO(GeoBaseIO):
  				pass
 
 	@staticmethod
-	def saveGeometry(geometry, filename, swapyz=False):
+	def saveGeometry(filename, geometry, swapyz=False):
 		raise NotImplementedError
 

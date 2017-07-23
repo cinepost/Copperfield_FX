@@ -54,8 +54,8 @@ class Geometry(object):
 
 
 	def loadFromFile(self, filename):
-		GeoIORegistry._registry_by_ext['obj'].readGeometry(filename, self)
+		GeoIORegistry._registry_by_ext['.obj'].readGeometry(filename, self)
 
 
 	def saveToFile(self, filename):
-		GeoIORegistry._registry_by_ext['obj'].saveGeometry(filename, self)
+		GeoIORegistry._registry_by_ext['.obj'].saveGeometry(filename, self)

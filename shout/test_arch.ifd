@@ -1,0 +1,66 @@
+# IFD created by Houdini Version: 15.0.244.16
+# Generation Time: Mar 17, 2018 at 11:12:28
+#   Render Target: mantra15.0
+#        HIP File: /Users/max/untitled, $T=0, $FPS=245
+#   Output driver: /out/mantra1
+ray_version VEX15.0.244.16
+ray_declare global float global:fps 245
+
+setenv HIP = "/Users/max"
+# OTL preferences from the .hip file
+otprefer "Object/geo" "$HOUDINI_USER_PREF_DIR/otls/OPcustom.hda"
+# Retained geometry
+ray_start geo	# {
+    ray_detail arch-/obj/box_object1 /Users/max/box
+ray_end	# }
+
+# Main image from /obj/cam1
+ray_time 0	# {
+    ray_declare global string render_label "/obj/cam1.beauty"
+    ray_declare plane string IPlay.s3dleftplane ""
+    ray_declare plane string IPlay.s3drightplane ""
+    ray_image "/Users/max/render/untitled.mantra1.0001.exr"
+	ray_declare plane string IPlay.rendermode "append"
+	ray_declare plane string IPlay.framerange "1 1"
+	ray_declare plane float IPlay.currentframe 1
+	ray_declare plane string IPlay.rendersource "/out/mantra1"
+	ray_declare plane int IPlay.houdiniportnum 56407
+	ray_start plane	# {
+	    ray_property plane variable "Cf+Af"
+	    ray_property plane vextype "vector4"
+	    ray_property plane channel "C"
+	ray_end	# }
+    
+    ray_property renderer verbose 0
+    ray_property renderer logcolors 0
+    ray_property renderer renderengine "raytrace"
+    ray_property renderer colorspace "gamma"
+    ray_property image samples 3 3
+    ray_property renderer pbrshader pathtracer use_renderstate 0
+    ray_property image resolution 1280 720
+    ray_property image pixelaspect 1
+    ray_property camera clip 0.00100000000000000002 10000
+    ray_property camera projection "perspective"
+    ray_property image crop 0 1 0 1
+    ray_property object velocityscale 0.00204081632653061243
+    ray_transform 0.953580723774067662 -0.155295521773823136 -0.258006015750643802 0 2.08166817117216851e-17 0.856771416590614066 -0.515696363874434183 0 0.301137515508322906 0.491758111911037799 0.817000707541410853 0 0.210733283676525052 0.000548657378153799102 -5.35013328560577506 1
+    ray_start segment	# {
+	ray_property camera orthowidth 2
+	ray_property camera zoom 1.20710550584963339
+	ray_property image window 0 1 0 1
+    ray_end	# }
+    ray_start light	# {
+	ray_transform 0.953580723774067551 0 0.301137515508322906 0 -0.155295521773823136 0.856771416590613955 0.491758111911037743 0 -0.258006015750643802 -0.515696363874434072 0.817000707541410853 0 -1.5812325658917783 -2.75951435558958069 4.30733317558314432 1
+	ray_property object name "soho_autoheadlight_light"
+	ray_property light projection "perspective"
+	ray_property light zoom 1.20710550584963339 1.20710550584963339
+    ray_end	# }
+
+    ray_start object	# {
+	ray_transform 1 0 0 0 0 1 0 0 0 0 1 0 0.00180935859680175781 -0.00147724151611328125 -0.000602960586547851562 1
+	ray_geometry arch-/obj/box_object1
+	ray_property object name "/obj/box_object1"
+    ray_end	# }
+    ray_raytrace
+# Generation time: 0.0216339 seconds
+ray_quit	# }

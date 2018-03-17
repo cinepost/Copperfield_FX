@@ -1,4 +1,5 @@
 import six
+import mimetypes
 
 class RegistryMeta(type):
     def __getitem__(meta, key):
@@ -16,9 +17,9 @@ class GeoIORegistry(type):
 		if not clsdict.pop('__base__', False):
 			meta._registry[name] = cls
 			for mime_type in cls.registerMIMETypes():
-				meta._registry_by_mime[mime_type[0]] = cls
-				if mime_type[1]:
-					meta._registry_by_ext[mime_type[1]] = cls # this is used to find a proper translator by filename extension
+				mimetypes.add_type(mime_type[0], mime_type[1], strict=True)
+				meta._registry_by_mime[mime_type[0]] = cls # this is used to find a proper translator by mime type
+				meta._registry_by_ext[mime_type[1]] = cls # this is used to find a proper translator by filename extension
 
 		return cls
 
@@ -37,11 +38,11 @@ class GeoBaseIO(object):
 	__base__ = True
 
 	@staticmethod 
-	def readGeometry(geometry, filename):
+	def readGeometry(filename, geometry):
 		raise NotImplementedError
 
 	@staticmethod
-	def saveGeometry(geometry, filename):
+	def saveGeometry(filename, geometry):
 		raise NotImplementedError
 
 	@classmethod

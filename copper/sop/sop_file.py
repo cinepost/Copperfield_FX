@@ -7,11 +7,6 @@ from copper import parameter
 from copper.parm_template import *
 from copper.geometry import Geometry
 
-class MyException(Exception):
-    pass
-
-raise MyException("My hovercraft is full of eels")
-
 class SOP_File(SOP_Node):
 
 	class NodeType(NodeTypeBase):

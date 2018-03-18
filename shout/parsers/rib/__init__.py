@@ -1,1 +1,1 @@
-from parser_rib import ParserRIB
+from .parser_rib import ParserRIB

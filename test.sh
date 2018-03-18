@@ -19,5 +19,5 @@ fi
 if check_pyqt4; then
     echo "PyQt4 already installed. All good!"
 else
-    read -p "No PyQt4 inatalled!"
+    read -p "No PyQt4 installed!"
 fi

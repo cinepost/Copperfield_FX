@@ -126,13 +126,17 @@ class ParserBase(object):
 		with file_input as f:
 			for line in f:
 				line_buffer += line
-				match = next(self.grammar.scanString(line_buffer), None)
-				while match:
-					tokens, start, end = match
-					#print tokens.asList()
+				#print("> %s" % line)
+				result = self.grammar.parseString(line)
+				#if result:
+				#	print(": %s" % result.asDict())
+				#match = next(self.grammar.parseString(line_buffer), None)
+				#while match:
+				#	tokens, start, end = match
+				#	print(tokens.asDict())
 
-					line_buffer = line_buffer[end:]
-					match = next(self.grammar.scanString(line_buffer), None)
+				#	line_buffer = line_buffer[end:]
+				#	match = next(self.grammar.scanString(line_buffer), None)
 
 	def isDone(self):
 		"""Return True when parsing is done."""

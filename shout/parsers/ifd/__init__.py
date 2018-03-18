@@ -1,1 +1,1 @@
-from parser_ifd import ParserIFD
+from .parser_ifd import ParserIFD

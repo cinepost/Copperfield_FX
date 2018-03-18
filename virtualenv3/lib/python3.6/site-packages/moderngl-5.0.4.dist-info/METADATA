@@ -1,0 +1,36 @@
+Metadata-Version: 2.0
+Name: moderngl
+Version: 5.0.4
+Summary: ModernGL: High performance rendering for Python 3
+Home-page: https://github.com/cprogrammer1994/ModernGL
+Author: Szabolcs Dombi
+Author-email: cprogrammer1994@gmail.com
+License: MIT
+Description-Content-Type: UNKNOWN
+Keywords: ModernGL,OpenGL,PyOpenGL,rendering,graphics,shader,GLSL,GPU,visualization,2D,3D
+Platform: any
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Games/Entertainment
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Multimedia :: Graphics :: 3D Rendering
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Programming Language :: Python :: 3 :: Only
+
+`Documentation <https://moderngl.readthedocs.io/>`_
+
+`ModernGL on github <https://github.com/cprogrammer1994/ModernGL>`_
+
+`Examples <https://github.com/cprogrammer1994/ModernGL/tree/master/examples>`_
+
+OpenGL is a great environment for developing portable, platform independent,
+interactive 2D and 3D graphics applications. The API implementation in Python
+is cumbersome, resulting in applications with high latency. To solve this
+problem we have developed ModernGL, a wrapper over OpenGL that simplifies the
+creation of simple graphics applications like scientific simulations, small
+games or user interfaces. Usually, acquiring in-depth knowledge of OpenGL
+requires a steep learning curve. In contrast, ModernGL is easy to learn and
+use, moreover it is capable of rendering with the same performance and quality,
+with less code written.
+

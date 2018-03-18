@@ -1,2 +1,2 @@
-from ifd import *
-from rib import *
+from .ifd import *
+from .rib import *

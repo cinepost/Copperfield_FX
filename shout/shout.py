@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 import sys
 import timeit
 import argparse
 import logging
-from itertools import imap
 from parsers.base import ParsersRegistry
 from renderer import Renderer
 
@@ -54,15 +54,15 @@ if __name__ == "__main__":
 
 	# guess file fromat from extnesion
 	if scene_filename:
-		if any(imap(scene_filename.__contains__, ['gz', 'bz2'])):
+		if any(map(scene_filename.__contains__, ['gz', 'bz2'])):
 			scene_ext = scene_filename.rsplit(".",1)[0].rsplit(".",1)[-1]
 		else:
 			scene_ext = scene_filename.rsplit(".",1)[-1]
 
 
-	print "scene_ext %s" % scene_ext
-	print "scene_filename: %s" % scene_filename
-	print "output_image_filename %s" % output_image_filename
+	print("scene_ext %s" % scene_ext)
+	print("scene_filename: %s" % scene_filename)
+	print("output_image_filename %s" % output_image_filename)
 
 	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext)
 
@@ -70,4 +70,4 @@ if __name__ == "__main__":
 	scene_parser.parseFile(scene_filename, echo=(args.V > 0), renderer=renderer)
 
 	stop = timeit.default_timer()
-	print "Time elapsed: %s" % (stop - start)
+	print("Time elapsed: %s" % (stop - start))

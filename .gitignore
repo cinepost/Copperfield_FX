@@ -37,3 +37,5 @@ test/out/*
 #VirtualEnv
 virtualenv
 virtualenv/*
+virtualenv3
+virtualenv3/*

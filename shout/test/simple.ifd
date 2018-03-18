@@ -1,0 +1,2 @@
+# IFD created by Houdini Version: 15.0.244.16
+ray_declare global string render_label "/obj/cam1.beauty"

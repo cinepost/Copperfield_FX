@@ -1,1 +1,2 @@
-from parser_ifd import ParserIFD
+from ifd import *
+from rib import *

@@ -1,8 +1,52 @@
+import sys
+import six
+import logging
+import fileinput
+import mimetypes
 from pyparsing import *
 
 #http://pyparsing.wikispaces.com/HowToUsePyparsing
 #https://habrahabr.ru/post/241670/
 #https://pyparsing.wikispaces.com/file/view/SimpleCalc.py
+
+logger = logging.getLogger(__name__)
+
+class RegistryMeta(type):
+    def __getitem__(meta, key):
+        return meta._registry[key]
+
+
+@six.add_metaclass(RegistryMeta)
+class ParsersRegistry(type):
+	_registry = {}
+	_registry_by_ext = {}
+	_registry_by_mime = {}
+	_registry_extensions = []
+
+	def __new__(meta, name, bases, clsdict):
+		cls = super(ParsersRegistry, meta).__new__(meta, name, bases, clsdict)
+		if not clsdict.pop('__base__', False):
+			meta._registry[name] = cls
+			for mime_type in cls.registerMIMETypes():
+				mimetypes.add_type(mime_type[0], mime_type[1], strict=True)
+				meta._registry_by_mime[mime_type[0]] = cls # this is used to find a proper translator by mime type
+				meta._registry_by_ext[mime_type[1]] = cls # this is used to find a proper translator by filename extension
+				meta._registry_extensions += [mime_type[1]]
+
+		return cls
+
+	@classmethod
+	def getParserByMIME(cls, mime_type):
+		return cls._registry_by_mime[mime_type]
+
+	@classmethod
+	def getParserByExt(cls, ext):
+		return cls._registry_by_ext[ext]()
+
+	@classmethod
+	def supportedTypes(cls):
+		return cls._registry_extensions
+
 
 exprStack = []
 varStack  = []
@@ -14,7 +58,10 @@ def pushFirst( str, loc, toks ):
 def assignVar( str, loc, toks ):
     varStack.append( toks[0] )
 
+@six.add_metaclass(ParsersRegistry)
 class ParserBase(object):
+
+	__base__ = True
 
 	# define grammar
 	point = Literal('.')
@@ -57,28 +104,35 @@ class ParserBase(object):
     }
 
 	def __init__(self):
+		self._renderer = None
 		self._echo = False
 		self._eof_or_quit = False # Set to True when parser finds special exit/quit/finish toket/command or EOF. In case of IFD it's 'ray_quit' command
 
 	def setEchoInput(self, echo=True):
 		self._echo = echo
 
-	def parseFile(self, filename):
-		# set up a generator to yield a line of text at a time
-		linegenerator = open(filename)
+	def parseFile(self, scene_filename, echo=False, renderer=None):
+		self._renderer=renderer
 		# line_buffer will accumulate lines until a fully parseable piece is found
 		line_buffer = ""
 
-		for line in linegenerator:
-			line_buffer += line
+		if scene_filename:
+			# read from file
+			file_input = open(scene_filename, "r")
+		else:
+			# read from stdin
+			file_input = sys.stdin
 
-			match = next(self.grammar.scanString(line_buffer), None)
-			while match:
-				tokens, start, end = match
-				print tokens.asList()
+		with file_input as f:
+			for line in f:
+				line_buffer += line
+				match = next(self.grammar.scanString(line_buffer), None)
+				while match:
+					tokens, start, end = match
+					#print tokens.asList()
 
-				line_buffer = line_buffer[end:]
-				match = next(self.grammar.scanString(line_buffer), None) 
+					line_buffer = line_buffer[end:]
+					match = next(self.grammar.scanString(line_buffer), None)
 
 	def isDone(self):
 		"""Return True when parsing is done."""
@@ -91,3 +145,7 @@ class ParserBase(object):
 	@property
 	def grammar(self):
 		raise NotImplementedError("Subclasses parser should implement this!")
+
+	@classmethod
+	def registerMIMETypes(cls):
+		raise NotImplementedError

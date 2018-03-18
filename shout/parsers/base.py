@@ -118,25 +118,19 @@ class ParserBase(object):
 
 		if scene_filename:
 			# read from file
-			file_input = open(scene_filename, "r")
+			file_input = open(scene_filename, "rb")
 		else:
 			# read from stdin
 			file_input = sys.stdin
 
-		with file_input as f:
-			for line in f:
-				line_buffer += line
-				#print("> %s" % line)
+		with file_input as fp:
+			line = fp.readline().decode('latin-1')
+			cnt = 1
+			while line:
+				#print("Line {}: {}".format(cnt, line.strip()))
 				result = self.grammar.parseString(line)
-				#if result:
-				#	print(": %s" % result.asDict())
-				#match = next(self.grammar.parseString(line_buffer), None)
-				#while match:
-				#	tokens, start, end = match
-				#	print(tokens.asDict())
-
-				#	line_buffer = line_buffer[end:]
-				#	match = next(self.grammar.scanString(line_buffer), None)
+				line = fp.readline().decode('latin-1')
+				cnt += 1
 
 	def isDone(self):
 		"""Return True when parsing is done."""

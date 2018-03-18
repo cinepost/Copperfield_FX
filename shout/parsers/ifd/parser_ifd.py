@@ -37,9 +37,12 @@ class ParserIFD(ParserBase):
 			# IFD commands
 			ray_version = Keyword('ray_version') + Word(printables).setResultsName("version")
 			
-			ray_detail_name = Word(printables)
-			ray_detail_filename = string | Word(printables)
-			ray_detail_1 = Keyword("ray_detail") + Group(Optional(Keyword("-T")) + ray_detail_name + ray_detail_filename)
+			ray_detail_name = Word(printables).setResultsName('name')
+			ray_detail_filename = (string | Word(printables)).setResultsName('filename')
+			ray_detail_temporary = Optional(Keyword("-T").setResultsName('temporary'))
+			ray_detail_stdin = Keyword('stdin') .setResultsName('stdin')
+			ray_detail_1 = Keyword("ray_detail") + ray_detail_temporary + ray_detail_name + (ray_detail_stdin | ray_detail_filename)
+			ray_detail_1.setParseAction(self.do_ray_detail_1)
 
 			ray_detail_sourcename = string | Word(printables)
 			ray_detail_2 = Keyword("ray_detail") + Group(Optional(Keyword("-v") + floatnum3) | Optional(Keyword("-V") + floatnum3 + floatnum3) + ray_detail_name + ray_detail_sourcename)
@@ -86,7 +89,7 @@ class ParserIFD(ParserBase):
 
 			otprefer = Keyword('otprefer') + string + string
 
-			ifd_grammar = Optional(set_env | ray_time | ray_start | ray_declare | ray_property)
+			ifd_grammar = Optional(set_env | ray_time | ray_start | ray_declare | ray_property | ray_detail_1)
 			ifd_grammar.ignore('#' + restOfLine) # ignore comments
 
 		return ifd_grammar
@@ -105,3 +108,6 @@ class ParserIFD(ParserBase):
 
 	def do_ray_property(self, tokens):
 		print("do_ray_property %s" % tokens.asDict())
+
+	def do_ray_detail_1(self, tokens):
+		print("do_ray_detail_1 %s" % tokens.asDict())

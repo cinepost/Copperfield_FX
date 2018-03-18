@@ -1,5 +1,5 @@
 # IFD created by Houdini Version: 15.0.244.16
-# Generation Time: Mar 17, 2018 at 11:12:28
+# Generation Time: Mar 18, 2018 at 16:59:14
 #   Render Target: mantra15.0
 #        HIP File: /Users/max/untitled, $T=0, $FPS=245
 #   Output driver: /out/mantra1
@@ -19,7 +19,7 @@ ray_time 0	# {
     ray_declare global string render_label "/obj/cam1.beauty"
     ray_declare plane string IPlay.s3dleftplane ""
     ray_declare plane string IPlay.s3drightplane ""
-    ray_image "/Users/max/render/untitled.mantra1.0001.exr"
+    ray_image "-f" "JPEG" "/Users/max/render/untitled.mantra1.0001.jpg"
 	ray_declare plane string IPlay.rendermode "append"
 	ray_declare plane string IPlay.framerange "1 1"
 	ray_declare plane float IPlay.currentframe 1
@@ -62,5 +62,5 @@ ray_time 0	# {
 	ray_property object name "/obj/box_object1"
     ray_end	# }
     ray_raytrace
-# Generation time: 0.0216339 seconds
+# Generation time: 0.0903878 seconds
 ray_quit	# }

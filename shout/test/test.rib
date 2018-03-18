@@ -1,0 +1,30 @@
+# Exemple  RIB
+ 
+Display "exemple.tif" "file" "rgb"
+Projection "perspective" "fov" 40
+Format 320 240 1
+
+ColorSamples [1 0 0 0 1 0 0 0 1] [1 0 0 0 1 0 0 0 1]
+
+LightSource "distantlight" 1 "intensity" 1 
+            "from" [1 0 0] "to" [0 0 1]
+
+LightSource "ambientlight" 2 "lightcolor" [0.3 0.3 0.3]
+
+# camera definition
+Translate 0 0 5
+Rotate 45 0 0 1
+Rotate 5 0 1 0
+
+WorldBegin
+    # yellow "pacman" sphere
+    Color 1 1 0
+    Surface "plastic" "Kd" 0.75
+    Sides 2
+    Sphere 1 -1 1 280
+
+    # giant sphere for background
+    Color [.5 .5 .5]
+    Surface "matte"
+    Sphere 10 -10 10 360
+WorldEnd

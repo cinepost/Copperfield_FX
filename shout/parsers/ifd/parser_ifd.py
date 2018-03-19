@@ -1,6 +1,7 @@
 import logging
 from pyparsing import *
 from ..base import ParserBase
+from .parser_bgeo import ParserBGEO
 
 logger = logging.getLogger(__name__)
 
@@ -8,6 +9,7 @@ ifd_grammar = None
 
 class ParserIFD(ParserBase):
 	def __init__(self):
+		self._bgeo_parser = None
 		super(ParserIFD, self).__init__()
 
 	@classmethod
@@ -15,6 +17,13 @@ class ParserIFD(ParserBase):
 		return [
 			['mantra/ifd', 'ifd'],
 		]
+
+	@property
+	def bgeo_parser(self):
+		if not self._bgeo_parser:
+			self._bgeo_parser = ParserBGEO()
+
+		return self._bgeo_parser
 
 	@property
 	def grammar(self):
@@ -41,12 +50,14 @@ class ParserIFD(ParserBase):
 			ray_detail_name = Word(printables).setResultsName('name')
 			ray_detail_filename = (string | Word(printables)).setResultsName('filename')
 			ray_detail_temporary = Optional(Keyword("-T").setResultsName('temporary'))
-			ray_detail_stdin = Keyword('stdin') .setResultsName('stdin')
+			ray_detail_stdin = Keyword('stdin').setResultsName('stdin').setParseAction(self.read_stdin_geo)
 			ray_detail_1 = Keyword("ray_detail") + ray_detail_temporary + ray_detail_name + (ray_detail_stdin | ray_detail_filename)
 			ray_detail_1.setParseAction(self.do_ray_detail_1)
 
 			ray_detail_sourcename = string | Word(printables)
-			ray_detail_2 = Keyword("ray_detail") + Group(Optional(Keyword("-v") + floatnum3) | Optional(Keyword("-V") + floatnum3 + floatnum3) + ray_detail_name + ray_detail_sourcename)
+			ray_detail_blur = Suppress(Keyword("-v")) + floatnum3.setResultsName('postblur') | Suppress(Keyword("-V")) + floatnum3.setResultsName('preblur') + floatnum3.setResultsName('postblur')
+			ray_detail_2 = Keyword("ray_detail") + Optional(ray_detail_blur) + ray_detail_name + ray_detail_sourcename.setResultsName('sourcename')
+			ray_detail_2.setParseAction(self.do_ray_detail_2)
 
 			ray_declare_style = oneOf("object global light geometry plane").setResultsName('style')
 			ray_declare_type = oneOf("float bool int vector2 vector3 vector4 matrix3 matrix4 string").setResultsName('type')
@@ -70,6 +81,7 @@ class ParserIFD(ParserBase):
 
 			ray_image_name = string
 			ray_image = Keyword('ray_image') + Group(Optional(ray_image_name) + OneOrMore(string | Word(printables)))
+			ray_image.setParseAction(self.do_ray_image)
 			
 			ray_procedural_bbox = Group(Suppress(Keyword("-m")) + floatnum3 + Suppress(Keyword("-M")) + floatnum3)
 			ray_procedural = Keyword('ray_procedural') + Optional(ray_procedural_bbox)
@@ -80,7 +92,9 @@ class ParserIFD(ParserBase):
 			ray_property = Keyword('ray_property') + ray_property_style + ray_property_token + ray_property_value
 			ray_property.setParseAction(self.do_ray_property)
 			
-			ray_transform = Keyword('ray_transform') + Group(OneOrMore(floatnum))
+			ray_transform = Keyword('ray_transform') + Group(OneOrMore(floatnum)).setResultsName("matrix")
+			ray_transform.setParseAction(self.do_ray_transform)
+
 			ray_geometry = Keyword('ray_geometry')
 			ray_raytrace = Keyword('ray_raytrace')
 			ray_deviceoption = Keyword('ray_deviceoption')
@@ -93,7 +107,8 @@ class ParserIFD(ParserBase):
 
 			otprefer = Keyword('otprefer') + string + string
 
-			ifd_grammar = Optional(set_env | ray_time | ray_start | ray_end | ray_declare | ray_property | ray_detail_1 | ray_version)
+			ifd_grammar = Optional(set_env | ray_time | ray_start | ray_end | ray_declare | ray_property | ray_detail_1 | ray_detail_1 | ray_version
+				| ray_transform | ray_image)
 			ifd_grammar.ignore('#' + restOfLine) # ignore comments
 
 		return ifd_grammar
@@ -112,7 +127,13 @@ class ParserIFD(ParserBase):
 	def do_ray_end(self, tokens):
 		logger.debug(tokens)
 
+	def do_ray_transform(self, tokens):
+		logger.debug(tokens)
+
 	def do_ray_time(self, tokens):
+		logger.debug(tokens)
+
+	def do_ray_image(self, tokens):
 		logger.debug(tokens)
 
 	def do_ray_declare(self, tokens):
@@ -122,4 +143,17 @@ class ParserIFD(ParserBase):
 		logger.debug(tokens)
 
 	def do_ray_detail_1(self, tokens):
-		print("do_ray_detail_1 %s" % tokens.asDict())
+		logger.debug(tokens)
+
+	def do_ray_detail_2(self, tokens):
+		logger.debug(tokens)
+
+	def read_stdin_geo(self, tokens):
+		logger.debug(tokens)
+		self.bgeo_parser.parseBuffer(self.fp) #, echo=(args.V > 0), renderer=renderer)
+		#while True:
+		#	line = self.fp.readline()
+		#	if not line:
+		#		break
+		#	print(line)
+

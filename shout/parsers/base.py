@@ -111,8 +111,15 @@ class ParserBase(object):
 	def setEchoInput(self, echo=True):
 		self._echo = echo
 
+	def parseBuffer(self, buff):
+		line = buff.readline()
+		while line:
+			result = self.grammar.parseString(line)
+			line = buff.readline()
+
 	def parseFile(self, scene_filename, echo=False, renderer=None):
-		self._renderer=renderer
+		self._renderer = renderer
+
 		# line_buffer will accumulate lines until a fully parseable piece is found
 		line_buffer = ""
 
@@ -123,14 +130,11 @@ class ParserBase(object):
 			# read from stdin
 			file_input = sys.stdin
 
-		with file_input as fp:
-			line = fp.readline().decode('latin-1')
-			cnt = 1
+		with file_input as self.fp:
+			line = self.fp.readline().decode('latin-1')
 			while line:
-				#print("Line {}: {}".format(cnt, line.strip()))
 				result = self.grammar.parseString(line)
-				line = fp.readline().decode('latin-1')
-				cnt += 1
+				line = self.fp.readline().decode('latin-1')
 
 	def isDone(self):
 		"""Return True when parsing is done."""

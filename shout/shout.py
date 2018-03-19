@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
 	# control options 
 	group_ctrl_opts = parser.add_argument_group('Control Options')
-	group_ctrl_opts.add_argument('-t', dest="type", metavar="type", type=str, default="ifd", help="Scene file format to use when listening to stdin")
+	group_ctrl_opts.add_argument('-t', dest="type", metavar="type", type=str, default="", help="Scene file format to use when listening to stdin")
 	group_ctrl_opts.add_argument('-f', dest="file", metavar="file", type=argparse.FileType('r'), nargs='?', help="Read scene file specified instead of reading from stdin")
 	group_ctrl_opts.add_argument('-V', metavar='val', type=int, default=0, help="Set verbose level 1-5")
 
@@ -65,6 +65,7 @@ if __name__ == "__main__":
 	print("output_image_filename %s" % output_image_filename)
 
 	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext)
+	print(scene_parser)
 
 	renderer = Renderer()
 	scene_parser.parseFile(scene_filename, echo=(args.V > 0), renderer=renderer)

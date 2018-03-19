@@ -36,6 +36,7 @@ class ParserIFD(ParserBase):
 
 			# IFD commands
 			ray_version = Keyword('ray_version') + Word(printables).setResultsName("version")
+			ray_version.setParseAction(self.do_ray_version)
 			
 			ray_detail_name = Word(printables).setResultsName('name')
 			ray_detail_filename = (string | Word(printables)).setResultsName('filename')
@@ -55,11 +56,14 @@ class ParserIFD(ParserBase):
 			ray_declare = Keyword('ray_declare') + Optional(ray_declare_array_size) + ray_declare_style + ray_declare_type + ray_declare_name + ray_declare_value
 			ray_declare.setParseAction(self.do_ray_declare)
 
+			# Begins definition of an object
 			ray_start_object_type = oneOf('material geo light fog object instance plane segment')
-			ray_start = Keyword('ray_start') + ray_start_object_type.setResultsName("type")
+			ray_start = Keyword('ray_start') + ray_start_object_type.setResultsName("object_type")
 			ray_start.setParseAction(self.do_ray_start)
 			
+			# End declaration of an object
 			ray_end = Keyword('ray_end')
+			ray_end.setParseAction(self.do_ray_end)
 
 			ray_time = Keyword('ray_time') + floatnum.setResultsName("time")
 			ray_time.setParseAction(self.do_ray_time)
@@ -89,25 +93,33 @@ class ParserIFD(ParserBase):
 
 			otprefer = Keyword('otprefer') + string + string
 
-			ifd_grammar = Optional(set_env | ray_time | ray_start | ray_declare | ray_property | ray_detail_1)
+			ifd_grammar = Optional(set_env | ray_time | ray_start | ray_end | ray_declare | ray_property | ray_detail_1 | ray_version)
 			ifd_grammar.ignore('#' + restOfLine) # ignore comments
 
 		return ifd_grammar
 
 	def do_set_env(self, tokens):
-		print("do_set_env %s" % tokens.asDict())
+		import os
+		logger.debug(tokens)
+		os.environ[tokens['key']] = tokens['value']
+
+	def do_ray_version(sefl, tokens):
+		logger.debug(tokens)
 
 	def do_ray_start(self, tokens):
-		print("do_ray_start %s" % tokens.asDict())
+		logger.debug(tokens)
+
+	def do_ray_end(self, tokens):
+		logger.debug(tokens)
 
 	def do_ray_time(self, tokens):
-		print("do_ray_time %s" % tokens.asDict())
+		logger.debug(tokens)
 
 	def do_ray_declare(self, tokens):
-		print("do_ray_declare %s" % tokens.asDict())
+		logger.debug(tokens)
 
 	def do_ray_property(self, tokens):
-		print("do_ray_property %s" % tokens.asDict())
+		logger.debug(tokens)
 
 	def do_ray_detail_1(self, tokens):
 		print("do_ray_detail_1 %s" % tokens.asDict())

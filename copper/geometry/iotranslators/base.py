@@ -38,11 +38,11 @@ class GeoBaseIO(object):
 	__base__ = True
 
 	@staticmethod
-	def readGeometry(file_name):
+	def readGeometry(file_name, geometry):
 		raise NotImplementedError
 
 	@staticmethod
-	def saveGeometry(file_name)
+	def saveGeometry(file_name, geometry)
 		raise NotImplementedError
 
 	@classmethod

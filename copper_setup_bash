@@ -32,7 +32,7 @@ elif [ ! -d virtualenv ]; then
             . ./install.sh
         fi
 else
-    source virtualenv/bin/activate
+    source virtualenv3/bin/activate
 
     export COPPER_HOME="$PWD"
 

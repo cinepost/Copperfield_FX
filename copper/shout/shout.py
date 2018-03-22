@@ -5,7 +5,7 @@ import timeit
 import argparse
 import logging
 from parsers.base import ParsersRegistry
-from renderer import Renderer
+from renderers import Renderer
 
 description = """
 Reads an IFD scene from standard input and renders the image described.
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 	print("scene_filename: %s" % scene_filename)
 	print("output_image_filename %s" % output_image_filename)
 
-	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext)
+	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext or 'ifd')
 	print(scene_parser)
 
 	renderer = Renderer()

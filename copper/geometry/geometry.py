@@ -1,3 +1,4 @@
+import os
 import copy
 
 from copper.vmath import Vector3
@@ -53,9 +54,11 @@ class Geometry(object):
 			return frozen_geo
 
 
-	def loadFromFile(self, filename):
-		GeoIORegistry.getIOTranslatorByExt('obj').readGeometry(filename, self)
+	def loadFromFile(self, file_name):
+		name, extension = os.path.splitext(file_name)
+		GeoIORegistry.getIOTranslatorByExt(extension).readGeometry(file_name, self)
 
 
-	def saveToFile(self, filename):
-		GeoIORegistry.getIOTranslatorByExt('obj').saveGeometry(filename, self)
+	def saveToFile(self, file_name):
+		name, extension = os.path.splitext(file_name)
+		GeoIORegistry.getIOTranslatorByExt(extension).saveGeometry(file_name, self)

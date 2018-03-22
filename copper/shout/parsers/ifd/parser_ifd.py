@@ -39,7 +39,7 @@ class ParserIFD(ParserBase):
 			integer = Combine( Optional(pm_sign) + number + ~FollowedBy(point)).setParseAction(lambda t: int(t[0]))
 			floatnum = (integer | Combine( Optional(pm_sign) + Optional(number) + Optional(point) + number + Optional( e + integer ))).setParseAction(lambda t: float(t[0]))
 			floatnum3 = Group(floatnum + floatnum + floatnum)
-			string = QuotedString('"', escChar=None, multiline=True,unquoteResults=True, endQuoteChar=None)
+			string = QuotedString('"', escChar=None, multiline=True, unquoteResults=True, endQuoteChar=None)
 
 			# IFD types
 
@@ -50,7 +50,7 @@ class ParserIFD(ParserBase):
 			ray_detail_name = Word(printables).setResultsName('name')
 			ray_detail_filename = (string | Word(printables)).setResultsName('filename')
 			ray_detail_temporary = Optional(Keyword("-T").setResultsName('temporary'))
-			ray_detail_stdin = Keyword('stdin').setResultsName('stdin').setParseAction(self.read_stdin_geo)
+			ray_detail_stdin = Keyword('stdin').setResultsName('stdin').setParseAction(self.do_read_stdin_geo)
 			ray_detail_1 = Keyword("ray_detail") + ray_detail_temporary + ray_detail_name + (ray_detail_stdin | ray_detail_filename)
 			ray_detail_1.setParseAction(self.do_ray_detail_1)
 
@@ -148,7 +148,7 @@ class ParserIFD(ParserBase):
 	def do_ray_detail_2(self, tokens):
 		logger.debug(tokens)
 
-	def read_stdin_geo(self, tokens):
+	def do_read_stdin_geo(self, tokens):
 		logger.debug(tokens)
 		self.bgeo_parser.parseBuffer(self.fp) #, echo=(args.V > 0), renderer=renderer)
 		#while True:

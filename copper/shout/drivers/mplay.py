@@ -12,43 +12,21 @@
 # 
 
 import os, struct, time
+from .base import BaseDisplayDriver
 
-MAGIC = (ord('h')<<24) + (ord('M')<<16) + (ord('P')<<8) + ord('0')
-DATASIZE = 1    # See .c file for meaning
-NCHANNELS = 4   # See .c file for meaning
-EO_IMAGE = -2   # End of image marker
-RES = 256
 
-COLORS = [
-    (0, 0, 0, 255),
-    (255, 0, 0, 255),
-    (0, 255, 0, 255),
-    (0, 0, 255, 255),
-    (255, 255, 0, 255),
-    (0, 255, 255, 255),
-    (255, 0, 255, 255),
-    (255, 255, 255, 255),
-]
+class MPlay(BaseDisplayDriver):
+    MAGIC = (ord('h')<<24) + (ord('M')<<16) + (ord('P')<<8) + ord('0')
+    EO_IMAGE = -2   # End of image marker
 
-def quadrant(x, y):
-    # Determine which quadrant color to use
-    n  = (x > y) * 4
-    n += (x > RES/2) * 2
-    n += (y > RES/2)
-    return n
-
-class MPlay:
-    def __init__(self, xres, yres, name="Test Application"):
-        self.XRES = xres
-        self.YRES = yres
+    def open(self):
         # Open a pipe to imdisplay
         #   -p tells imdisplay to read the data from the pipe
         #   -k tells imdisplay to keep reading data after the image has
         #      been fully written
         self.fp = os.popen('imdisplay -p -k -n "%s"' % name, 'w')
         # The header is documented in the C code examples
-        header = struct.pack('I'*8, MAGIC, xres, yres, DATASIZE,
-                                    NCHANNELS, 0, 0, 0)
+        header = struct.pack('I'*8, MAGIC, self._xres, self._yres, self._datasize, self._NCHANNELS, 0, 0, 0)
         self.fp.write(header)
 
     def close(self):
@@ -59,7 +37,7 @@ class MPlay:
         self.fp.close()
         self.fp = None
 
-    def writeTile(self, x0, x1, y0, y1, clr):
+    def writeTile(self, x, y, width, height, data):
         # The tile header is documented in the c code.
         header = struct.pack('IIII', x0, x1, y0, y1)
         self.fp.write(header)
@@ -70,21 +48,3 @@ class MPlay:
         pixel = struct.pack('BBBB', clr[0], clr[1], clr[2], clr[3])
         # Write a bunch of pixel data
         self.fp.write(pixel * size)
-
-    def render(self, step):
-        for y in range(0, self.XRES, step):
-            for x in range(0, self.YRES, step):
-                self.writeTile(x, x+step-1, y, y+step-1, COLORS[quadrant(x, y)])
-
-def main():
-    mp = MPlay(RES, RES)
-    mp.writeTile(0, RES-1, 0, RES-1, (255, 128, 64, 255))
-    step = 64
-    while step > 0:
-        #time.sleep(.5)          # Let mplay update the latest image we wrote
-        mp.render(step)
-        step /= 2
-    mp.close()
-
-if __name__ == '__main__':
-    main()

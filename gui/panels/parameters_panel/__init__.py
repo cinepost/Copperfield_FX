@@ -1,1 +1,1 @@
-from parameters_panel import ParametersPanel
+from .parameters_panel import ParametersPanel

@@ -1,1 +1,1 @@
-from tabbed_panel_manager import TabbedPanelManager
+from .tabbed_panel_manager import TabbedPanelManager

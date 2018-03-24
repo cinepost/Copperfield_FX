@@ -215,7 +215,7 @@ class OP_Engine(OP_Network, ROOT_Types): # This is actually root node e.g.
 
 		self.flush() # erase all node networks this engine holds
 		ns = {}
-		exec project_code in ns
+		exec(project_code, ns)
 		links = ns['links']
 		
 		# create nodes and fill parameters

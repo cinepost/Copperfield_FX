@@ -1,7 +1,7 @@
 import six
 import inspect 
 
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 class PanelRegistryMeta(type):
     def __getitem__(meta, key):
@@ -9,7 +9,7 @@ class PanelRegistryMeta(type):
 
 
 @six.add_metaclass(PanelRegistryMeta)
-class PanelRegistry(QtCore.pyqtWrapperType):
+class PanelRegistry(type(QtCore.QObject)):
     _registry = {}
 
     def __new__(meta, name, bases, clsdict):

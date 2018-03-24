@@ -1,23 +1,25 @@
 import six
-import inspect 
+import inspect
+import logging
+logger = logging.getLogger(__name__)
 
 from copper.op.base import OpRegistry, RegistryMeta
 
 @six.add_metaclass(RegistryMeta)
 class NodeTypeCategoryRegistry(type):
-    _registry = {}
-    _registry_aliases = {}
+	_registry = {}
+	_registry_aliases = {}
 
-    def __new__(meta, name, bases, clsdict):
-        cls = super(NodeTypeCategoryRegistry, meta).__new__(meta, name, bases, clsdict)
-        if not clsdict.pop('__base__', False):
-            meta._registry[name] = cls
-            if 'cat_name' in clsdict:
-                meta._registry[cls.cat_name] = cls
-                meta._registry_aliases[cls.cat_name] = cls
-        return cls
+	def __new__(meta, name, bases, clsdict):
+		cls = super(NodeTypeCategoryRegistry, meta).__new__(meta, name, bases, clsdict)
+		if not clsdict.pop('__base__', False):
+			meta._registry[name] = cls
+			if 'cat_name' in clsdict:
+				meta._registry[cls.cat_name] = cls
+				meta._registry_aliases[cls.cat_name] = cls
+		return cls
 
-    def __repr__(cls):
+	def __repr__(cls):
 		return "<%s for %s>" % (inspect.getmro(cls)[1].__name__, cls.cat_name)
 
 @six.add_metaclass(NodeTypeCategoryRegistry)
@@ -36,8 +38,8 @@ class NodeTypeCategory(object):
 
 	@classmethod
 	def nodeTypes(cls):
-		print "Type: %s" % cls.type_name
-		print "OpRegistry: %s" % OpRegistry._registry_by_type
+		logger.info("Type: %s" % cls.type_name)
+		logger.info("OpRegistry: %s" % OpRegistry._registry_by_type)
 		return OpRegistry._registry_by_type[cls.type_name]
 
 	@classmethod

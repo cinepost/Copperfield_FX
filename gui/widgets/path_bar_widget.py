@@ -1,11 +1,11 @@
-from PyQt4 import Qt, QtGui, QtCore
+from PyQt5 import QtWidgets, Qt, QtGui, QtCore
 
 from gui.signals import signals
 from copper import hou as engine
 
-class PathBarWidget(QtGui.QFrame):
+class PathBarWidget(QtWidgets.QFrame):
     def __init__(self, parent, panel): 
-        QtGui.QFrame.__init__(self, parent)
+        QtWidgets.QFrame.__init__(self, parent)
         self.panel = panel  
         self.pinned = False
         self.history = []

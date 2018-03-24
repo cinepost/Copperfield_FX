@@ -1,13 +1,16 @@
+import logging
 import sys, os, string, time
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui, QtCore
 from os.path import expanduser
 
-class RenderNodeDialog(QtGui.QDialog):
+logger = logging.getLogger(__name__)
+
+class RenderNodeDialog(QtWidgets.QDialog):
     def __init__(self, engine, node_path):
         super(RenderNodeDialog, self).__init__()
         self.engine = engine
         self.node = engine.node(node_path) 
-        layout = QtGui.QVBoxLayout(self)
+        layout = QtWidgets.QVBoxLayout(self)
         
         # frame range layout
         frm_layout = QtGui.QHBoxLayout()
@@ -79,7 +82,7 @@ class RenderNodeDialog(QtGui.QDialog):
             self.engine.renderToFile(self.node.path(), self.filename.text(), frame)
             progress.setValue(frame)
 
-        print "Rendering done in %s seconds." % (time.time() - start_time)
+        logger.info("Rendering done in %s seconds." % (time.time() - start_time))
         self.close()    
 
     @QtCore.pyqtSlot()

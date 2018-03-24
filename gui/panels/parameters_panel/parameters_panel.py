@@ -1,11 +1,11 @@
-from PyQt4 import Qt, QtGui, QtCore
+from PyQt5 import Qt, QtWidgets, QtGui, QtCore
 from copper import parameter
 
 from copper import hou 
 from gui.signals import signals
 from gui.widgets import PathBarWidget
 from gui.panels.base_panel import NetworkPanel
-from parameters_widgets import *
+from .parameters_widgets import *
 
 from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
@@ -29,21 +29,21 @@ class ParametersPanel(NetworkPanel):
         return "Parameters"
 
 
-class ParametersWidget(QtGui.QWidget):
+class ParametersWidget(QtWidgets.QWidget):
     def __init__(self, parent, panel):    
-        QtGui.QWidget.__init__(self, parent) 
+        QtWidgets.QWidget.__init__(self, parent) 
         self.panel = panel
 
         self.setMinimumWidth(320)
         self.setMinimumHeight(160)
 
-        self.parm_box = QtGui.QVBoxLayout(self)
+        self.parm_box = QtWidgets.QVBoxLayout(self)
         self.parm_box.setSpacing(0)
         self.parm_box.setContentsMargins(0, 0, 0, 0)
 
-        no_op_label = QtGui.QLabel("No Operator Selected")
+        no_op_label = QtWidgets.QLabel("No Operator Selected")
         no_op_label.setObjectName("info")
-        no_op_label.setSizePolicy( QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum ))
+        no_op_label.setSizePolicy( QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum ))
         no_op_label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)
 
         self.parm_box.addStretch(1)
@@ -51,20 +51,20 @@ class ParametersWidget(QtGui.QWidget):
         self.parm_box.addStretch(1)
 
         #Container Widget        
-        self.widget = QtGui.QWidget(self)
+        self.widget = QtWidgets.QWidget(self)
         self.widget.setLayout(self.parm_box)
         self.widget.setObjectName("Parameters")
 
-        self.scroll = QtGui.QScrollArea()
+        self.scroll = QtWidgets.QScrollArea()
         self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)
         self.scroll.setWidgetResizable(True)
         self.scroll.setWidget(self.widget)
 
-        self.header_bar = QtGui.QHBoxLayout()
+        self.header_bar = QtWidgets.QHBoxLayout()
         self.header_bar.setSpacing(2)
         self.header_bar.setContentsMargins(0, 0, 0, 0)
 
-        self.vbox = QtGui.QVBoxLayout()
+        self.vbox = QtWidgets.QVBoxLayout()
         self.vbox.setSpacing(0)
         self.vbox.setContentsMargins(0, 0, 0, 0)
 

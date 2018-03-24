@@ -1,15 +1,15 @@
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 from gui.signals import signals
 from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
-class ParameterBaseWidget(QtGui.QWidget):
+class ParameterBaseWidget(QtWidgets.QWidget):
 	valueChanged = QtCore.pyqtSignal()
 	def __init__(self, parent, parm):
-		QtGui.QWidget.__init__(self, parent)
+		QtWidgets.QWidget.__init__(self, parent)
 		self.parm = parm
 		self.line_edit = None # Not all type of parm widget has line edit
-		self.layout = QtGui.QHBoxLayout(self)
+		self.layout = QtWidgets.QHBoxLayout(self)
 		self.layout.setSpacing(2)
 		self.layout.setContentsMargins(0, 0, 0, 0)
 		self.setLayout(self.layout)
@@ -43,7 +43,7 @@ class ParameterBaseWidget(QtGui.QWidget):
 				if event.isAccepted():
 					self.valueChanged.emit()
 				return True
-		return QtGui.QWidget.eventFilter(self, source, event) # propagate event
+		return QtWidgets.QWidget.eventFilter(self, source, event) # propagate event
 
 
 class ParameterFloatWidget(ParameterBaseWidget):
@@ -51,7 +51,7 @@ class ParameterFloatWidget(ParameterBaseWidget):
 		ParameterBaseWidget.__init__(self, parent, parm)
 		self.resolution = 1000
 		self.slider = None
-		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsFloat())) 
+		self.line_edit = QtWidgets.QLineEdit(str(self.parm.evalAsFloat())) 
 		self.line_edit.setMinimumWidth(60)
 		self.layout.addWidget(self.line_edit)
 

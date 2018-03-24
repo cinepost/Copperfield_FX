@@ -1,1 +1,1 @@
-from render_node_dialog import RenderNodeDialog
+from .render_node_dialog import RenderNodeDialog

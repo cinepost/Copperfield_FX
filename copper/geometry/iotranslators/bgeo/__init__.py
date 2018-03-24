@@ -1,1 +1,1 @@
-from bgeo import BgeoIO
+from .bgeo import BgeoIO

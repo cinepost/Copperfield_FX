@@ -1,24 +1,25 @@
 import os
+import logging 
+logger = logging.getLogger(__name__)
+
 os.environ["PYOPENCL_COMPILER_OUTPUT"] = "1"
 os.environ["PYOPENCL_NO_CACHE"] = "1"
 
 if not os.environ.get("COPPER_HOME"):
     cwd = os.getcwd()
-    print "Using current directory %s as $COPPER_HOME" % cwd
+    logger.info("Using current directory %s as $COPPER_HOME" % cwd)
     os.environ["COPPER_HOME"] = cwd
 
-import logging
-import settings
+from copper import settings
 
-from rop import *
-from obj import *
-from cop2 import *
-from sop import *
+from .rop import *
+from .obj import *
+from .cop2 import *
+from .sop import *
 
 from copper.op.node_type_category import NodeTypeCategoryRegistry
 from copper.op.op_engine import OP_Engine
 
-logger = logging.getLogger(__name__)
 
 def nodeTypeCategories():
     logger.debug(NodeTypeCategoryRegistry._registry_aliases)

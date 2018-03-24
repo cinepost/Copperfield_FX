@@ -23,8 +23,8 @@ class SOP_Node(OP_Network):
 	def cookData(self, lock):
 		try:
 			self.cookMySop(lock)
-		except Exception, e:
-			logging.error(str(e))
+		except Exception as e:
+			logging.exception("Error cooking SOP data !!!")
 			return False
 
 		self._needs_to_cook = False

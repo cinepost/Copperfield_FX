@@ -1,5 +1,8 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from collections import OrderedDict
-from copper_string import CopperString
+from .copper_string import CopperString
 
 from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
@@ -104,7 +107,7 @@ class CopperParameter(object):
 	def set(self, value):
 		self.value = value
 		self.invalidateNode()
-		print "Parameter value set to: %s of type %s" % (self.value, type(self.value))
+		logger.debug("Parameter value set to: %s of type %s" % (self.value, type(self.value)))
 
 	def animated(self):
 		if self.__keyframes__:

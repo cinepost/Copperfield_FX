@@ -1,1 +1,1 @@
-from play_bar_widget import PlayBarWidget
+from .play_bar_widget import PlayBarWidget

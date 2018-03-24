@@ -1,7 +1,11 @@
+import logging
+
 from copper.op.op_network import OP_Network
 import copper.parameter as parameter
 
 from copper.parm_template import *
+
+logger = logging.getLogger(__name__)
 
 class ROP_Node(OP_Network):
 	'''
@@ -38,6 +42,5 @@ class ROP_Node(OP_Network):
 			try:
 				self.renderFrame(frame)
 			except Exception as e:
-				print e.__doc__
-				print e.message
+				logger.exception("Unable to render frame !")
 				return

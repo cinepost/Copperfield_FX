@@ -1,4 +1,4 @@
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 from functools import wraps
 import six
 import inspect
@@ -8,13 +8,13 @@ import gui.signals
 from .panel_registry import PanelRegistry
 
 @six.add_metaclass(PanelRegistry)
-class BasePanel(QtGui.QFrame):
+class BasePanel(QtWidgets.QFrame):
     __base__ = True
 
     def __init__(self):
-        QtGui.QFrame.__init__(self)
+        QtWidgets.QFrame.__init__(self)
         self.signals = gui.signals
-        self.panel_layout = QtGui.QVBoxLayout()
+        self.panel_layout = QtWidgets.QVBoxLayout()
         self.panel_layout.setSpacing(0)
         self.panel_layout.setContentsMargins(0, 0, 0, 0)
 

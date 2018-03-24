@@ -1,40 +1,40 @@
-from PyQt4 import Qt, QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui, QtCore
 from copper import parameter
 
-class TabbedPanelManager(QtGui.QFrame):
+class TabbedPanelManager(QtWidgets.QFrame):
     def __init__(self, parent=None):      
-        QtGui.QFrame.__init__(self, parent)
+        QtWidgets.QFrame.__init__(self, parent)
         self.setObjectName("tabbedPanel")
 
         self.maximized = False
 
-        self.layout = QtGui.QVBoxLayout()
+        self.layout = QtWidgets.QVBoxLayout()
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.tabs = QtGui.QTabWidget(self)
+        self.tabs = QtWidgets.QTabWidget(self)
         self.tabs.setTabsClosable(True)
         self.tabs.setMovable(True)
 
         ### Corner widget
-        self.corner_widget = QtGui.QWidget(self)
-        self.corner_widget_layout = QtGui.QHBoxLayout()
+        self.corner_widget = QtWidgets.QWidget(self)
+        self.corner_widget_layout = QtWidgets.QHBoxLayout()
         self.corner_widget_layout.setSpacing(0)
         self.corner_widget_layout.setContentsMargins(0, 0, 0, 0)
         self.corner_widget.setLayout(self.corner_widget_layout) 
 
-        self.plus_button = QtGui.QPushButton(self)
+        self.plus_button = QtWidgets.QPushButton(self)
         self.plus_button.setIcon(QtGui.QIcon("gui/icons/main/pane-plus.svg"))
 
-        self.plus_button_menu = QtGui.QMenu(self)
+        self.plus_button_menu = QtWidgets.QMenu(self)
         self.plus_button.setMenu(self.plus_button_menu)
 
-        self.maximize_button = QtGui.QPushButton(self)
+        self.maximize_button = QtWidgets.QPushButton(self)
         self.maximize_button.setCheckable(True)
         self.maximize_button.setIcon(QtGui.QIcon("gui/icons/main/pane-maximize.svg"))
         self.maximize_button.setStatusTip('Maximize pane')
 
-        self.arrow_button = QtGui.QPushButton(self)
+        self.arrow_button = QtWidgets.QPushButton(self)
         self.arrow_button.setIcon(QtGui.QIcon("gui/icons/main/pane-arrow.svg"))
 
         self.corner_widget_layout.addWidget(self.plus_button)
@@ -42,7 +42,7 @@ class TabbedPanelManager(QtGui.QFrame):
         self.corner_widget_layout.addWidget(self.maximize_button)
         self.corner_widget_layout.addWidget(self.arrow_button)
 
-        self.corner_widget.setSizePolicy( QtGui.QSizePolicy( QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Preferred ))
+        self.corner_widget.setSizePolicy( QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred ))
 
         self.tabs.setCornerWidget(self.corner_widget)
 

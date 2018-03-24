@@ -1,11 +1,14 @@
-from PyQt4 import QtGui, QtCore, QtOpenGL
+import logging
+from PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL
+
+logger = logging.getLogger(__name__)
 
 
-class CursorItem(QtGui.QGraphicsItem):
+class CursorItem(QtWidgets.QGraphicsItem):
     def __init__(self, frame=0):      
-        QtGui.QGraphicsItem.__init__(self)
+        QtWidgets.QGraphicsItem.__init__(self)
         #self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
         #self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
 
         self.setX(frame)
@@ -34,11 +37,8 @@ class CursorItem(QtGui.QGraphicsItem):
         ''' direct argument shows us that shit node wa selected inside the items scene. Otherwise don't propagate copperNodeSelected signal.
             Just change item state.
         '''
-        print "change:"
-        print change
-        if change == QtGui.QGraphicsItem.ItemPositionChange:
+        if change == QtWidgets.QGraphicsItem.ItemPositionChange:
             # snap to grid code here
-            print "snap"
             new_pos = value.toPointF()
 
             snapped_x = round(new_pos.x())
@@ -50,7 +50,7 @@ class CursorItem(QtGui.QGraphicsItem):
         return super(CursorItem, self).itemChange(change, value)
 
 
-class TimeLineScene(QtGui.QGraphicsScene):
+class TimeLineScene(QtWidgets.QGraphicsScene):
     
     def __init__(self, parent=None):      
         super(TimeLineScene, self).__init__(parent)
@@ -101,7 +101,7 @@ class TimeLineScene(QtGui.QGraphicsScene):
     #    self.cursor_moves = False                 
 
 
-class TimeLineWidget(QtGui.QGraphicsView):
+class TimeLineWidget(QtWidgets.QGraphicsView):
     def __init__(self, parent=None):      
         super(TimeLineWidget, self).__init__(parent)
         self.scene = TimeLineScene(self)
@@ -124,5 +124,5 @@ class TimeLineWidget(QtGui.QGraphicsView):
         format.setSampleBuffers(True)
         format.setSamples(16)
         self.setViewport( QtOpenGL.QGLWidget(format) ) # Force OpenGL rendering mode.
-        self.setViewportUpdateMode( QtGui.QGraphicsView.FullViewportUpdate )
+        self.setViewportUpdateMode( QtWidgets.QGraphicsView.FullViewportUpdate )
 

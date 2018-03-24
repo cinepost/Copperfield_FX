@@ -1,10 +1,8 @@
-#!/usr/local/bin/python
-
 import sys, os
 import logging
 logging.basicConfig(level=logging.DEBUG)
 
-from PyQt4 import QtGui, QtCore, QtOpenGL
+from PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL
 
 from copper import hou
 from .tabbed_panel_manager import TabbedPanelManager
@@ -13,19 +11,19 @@ from .widgets import PlayBarWidget
 
 logger = logging.getLogger(__name__)
 
-class Workarea(QtGui.QWidget):
+class Workarea(QtWidgets.QWidget):
     def __init__(self, parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
         self.setObjectName("Workarea")
 
         # Basic widgets
         self.timeline_widget = PlayBarWidget()
 
         # Create layout and place widgets
-        VBox = QtGui.QVBoxLayout()    
+        VBox = QtWidgets.QVBoxLayout()    
         VBox.setSpacing(0)
         VBox.setContentsMargins(0, 0, 0, 0)
-        HBox = QtGui.QHBoxLayout()
+        HBox = QtWidgets.QHBoxLayout()
         HBox.setSpacing(0)
         HBox.setContentsMargins(0, 0, 0, 0)
     
@@ -47,12 +45,12 @@ class Workarea(QtGui.QWidget):
         panelMgr3.setSizePolicy(QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding))
 
         # Set Up inital splitters layout
-        VSplitter = QtGui.QSplitter(QtCore.Qt.Vertical)
+        VSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         VSplitter.setMinimumWidth(370)
         VSplitter.addWidget(panelMgr2)
         VSplitter.addWidget(panelMgr3)
 
-        HSplitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
+        HSplitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
         HSplitter.addWidget(panelMgr1)
         HSplitter.addWidget(VSplitter)
         HSplitter.setStretchFactor (0, 1)
@@ -72,13 +70,13 @@ class Workarea(QtGui.QWidget):
 
     @QtCore.pyqtSlot()
     def maximizePanelManager(self):
-        print "Maximize panel: "
+        logger.debug("Maximize panel: %s" % self)
 
     @QtCore.pyqtSlot()   
     def renderNode(self, node_path):
         RenderNodeDialog.render(node_path)
 
-class MainWindow(QtGui.QMainWindow):
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 

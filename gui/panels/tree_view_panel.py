@@ -1,9 +1,10 @@
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui, QtCore
 
 from copper import hou
 from gui.signals import signals
 from gui.widgets import PathBarWidget
-from base_panel import NetworkPanel
+
+from .base_panel import NetworkPanel
 
 class TreeViewPanel(NetworkPanel):
     def __init__(self):      
@@ -17,9 +18,9 @@ class TreeViewPanel(NetworkPanel):
         return "Tree View"
 
 
-class TreeViewWidget(QtGui.QTreeWidget):
+class TreeViewWidget(QtWidgets.QTreeWidget):
     def __init__(self, parent=None):      
-        QtGui.QTreeWidget.__init__(self, parent)
+        QtWidgets.QTreeWidget.__init__(self, parent)
         self.nodes_map = {}
         self.setDragEnabled(True)
         self.setObjectName("QTreeView")
@@ -28,7 +29,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
         self.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 
         self.setAlternatingRowColors(True)
-        vbox = QtGui.QVBoxLayout(self)
+        vbox = QtWidgets.QVBoxLayout(self)
         vbox.setContentsMargins(0, 0, 0, 0)
         
         self.header().close()
@@ -48,7 +49,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
         """Builds node tree from node"""
         if not node_path:
             # create root node item
-            root_item = QtGui.QTreeWidgetItem(self)
+            root_item = QtWidgets.QTreeWidgetItem(self)
             root_item.setExpanded(True)
             root_item.setIcon(0, QtGui.QIcon(hou.iconName()))
             root_item.setText(0, "/")
@@ -59,7 +60,7 @@ class TreeViewWidget(QtGui.QTreeWidget):
             node = hou.node(node_path)
             if node:
                 for child_node in node.children():
-                    item = QtGui.QTreeWidgetItem(parent)
+                    item = QtWidgets.QTreeWidgetItem(parent)
                     item.setExpanded(True)
 
                     if child_node.iconName():

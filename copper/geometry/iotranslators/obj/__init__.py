@@ -1,1 +1,1 @@
-from obj import ObjIO
+from .obj import ObjIO

@@ -11,7 +11,7 @@ class Matrix4:
         return self.m
 
     def __str__(self):
-    	return str(self.m)
+        return str(self.m)
         
     def get(self):
         return self.m
@@ -22,7 +22,7 @@ class Matrix4:
         return M
 
     def setToZero(self):
-    	self.m = numpy.zeros((4,4), dtype=numpy.float64)
+        self.m = numpy.zeros((4,4), dtype=numpy.float64)
     
     def setToIdentity(self):
         self.m = numpy.identity(4, dtype=numpy.float64)
@@ -83,24 +83,24 @@ class Matrix4:
 
     @staticmethod
     def rotationMatrix( angleInRadians, axisVector, point=None):
-		sina = math.sin(angleInRadians)
-		cosa = math.cos(angleInRadians)
-		direction = axisVector.normalized()
-		# rotation matrix around unit vector
-		R = numpy.diag([cosa, cosa, cosa])		
-		R += numpy.outer(direction, direction) * (1.0 - cosa)
-		direction *= sina
-		R += numpy.array([[ 0.0, -direction[2], direction[1]],
-			 [ direction[2], 0.0, -direction[0]],
-			 [-direction[1], direction[0],  0.0]])
-		M = Matrix4(1) # identity matrix
-		M.m[:3, :3] = R
-		if point is not None:
-			# rotation not around origin
-			point = numpy.array(point[:3], dtype=numpy.float64, copy=False)
-			M.m[:3, 3] = point - numpy.dot(R, point)
+        sina = math.sin(angleInRadians)
+        cosa = math.cos(angleInRadians)
+        direction = axisVector.normalized()
+        # rotation matrix around unit vector
+        R = numpy.diag([cosa, cosa, cosa])		
+        R += numpy.outer(direction, direction) * (1.0 - cosa)
+        direction *= sina
+        R += numpy.array([[ 0.0, -direction[2], direction[1]],
+            [ direction[2], 0.0, -direction[0]],
+            [-direction[1], direction[0],  0.0]])
+        M = Matrix4(1) # identity matrix
+        M.m[:3, :3] = R
+        if point is not None:
+            # rotation not around origin
+            point = numpy.array(point[:3], dtype=numpy.float64, copy=False)
+            M.m[:3, 3] = point - numpy.dot(R, point)
 
-		return M
+        return M
 
     @staticmethod
     def rotation( angleInRadians, axisVector, originPoint ):
@@ -148,4 +148,4 @@ class Matrix4:
             # We treat the vector as if its (homogeneous) 4th component were zero.
             return Vector3(a.m[:3,:3].dot(b))
         else:
-			raise BaseException("%s __mul__ %s not supported !!!" % (a.__class__, b.__class__))
+            raise BaseException("%s __mul__ %s not supported !!!" % (a.__class__, b.__class__))

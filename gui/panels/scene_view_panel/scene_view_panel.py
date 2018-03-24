@@ -1,8 +1,9 @@
-from PyQt4 import QtGui, QtCore, QtOpenGL, Qt
+from PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL, Qt
 from OpenGL.GL import *
 from OpenGL import GL
 from OpenGL.GLU import *
 
+import logging
 import numpy
 from copper import hou
 import math
@@ -17,6 +18,8 @@ from .camera import Camera
 from .ogl_objcache import OGL_Scene_Manager
 
 from .layouts import viewport_layout_types
+
+logger = logging.getLogger(__name__)
 
 
 class DisplayOptionsWidget(CollapsableWidget):
@@ -88,11 +91,11 @@ class SceneViewPanel(NetworkPanel):
 
 
     def makeViewsLayout(self, layout_name="Single View"):
-        print "LAYOUT NAME: %s" % layout_name
+        logger.debug("LAYOUT NAME: %s" % layout_name)
 
         #clear views layout
         clearLayout(self.views_layout, delete_widgets=False)
-        print "Layout : %s" % self.views_layout.count()
+        logger.debug("Layout : %s" % self.views_layout.count())
 
         self.views_layout.addWidget(self.viewports["persp"])
 
@@ -130,7 +133,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
         # connect panel signals
         self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
 
-        print "SceneViewWidget created"
+        logger.debug("SceneViewWidget created")
 
     def minimumSizeHint(self):
         return QtCore.QSize(200, 200)
@@ -226,7 +229,7 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
             ogl_obj_cache = SceneViewWidget.OGL_Scene_Manager.getObjNodeGeometry(node)
 
             if ogl_obj_cache:
-                print "Drawing node: %s" % node.path()
+                logger.debug("Drawing node: %s" % node.path())
 
                 transform = node.worldTransform()
                 glPushMatrix()
@@ -235,10 +238,9 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                 # draw points
                 glColor4f(0.0, 0.0, 1.0, 1.0)
                 if ogl_obj_cache.pointsCount() > 0:
-                    print "Drawing points for: %s" % node.path()
+                    logger.debug("Drawing points for: %s" % node.path())
                     glPointSize( 3.0 )
                     glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
-                    print "binded"
 
                     glEnableClientState(GL_VERTEX_ARRAY)
 
@@ -247,14 +249,13 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
 
                     glDisableClientState(GL_VERTEX_ARRAY)
 
-                    print "drawed"
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
 
                 # draw polygons
                 glColor4f(1.0, 1.0, 1.0, 1.0)
                 glUseProgram(SceneViewWidget.OGL_Scene_Manager.defaultShaderProgram())
                 if ogl_obj_cache.polyCount() > 0:
-                    print "Drawing %s polys for: %s" % (ogl_obj_cache.polyCount(), node.path())
+                    logger.debug("Drawing %s polys for: %s" % (ogl_obj_cache.polyCount(), node.path()))
 
                     glEnable(GL_LIGHTING)
 

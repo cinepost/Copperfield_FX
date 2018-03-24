@@ -1,7 +1,11 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 class baseCopperTranslator(object):
 
 	def registerExtension(self):
-		raise BaseException("Unimlemented baseCopperTranslator.registerExtension(self) !!! Skipping translator.")
+		logger.error("Unimlemented baseCopperTranslator.registerExtension(self) !!! Skipping translator.")
 
 	def translateToFile(self, source_project_file_name, dest_project_file_name):
 		project_file = open( dest_project_file_name, "wb")
@@ -13,7 +17,7 @@ class CopperNullTranslator(baseCopperTranslator):
 		return "cpy"
 
 	def translateToString(self, source_project_file_name):
-		print "Translating CPY project"
+		logger.debug("Translating CPY project")
 		source_project_file = open(source_project_file_name, "rb")
 		project_string = source_project_file.read()
 		source_project_file.close()
@@ -25,7 +29,7 @@ class boomShotTranslator(baseCopperTranslator):
 		return "bsp"	
 
 	def translateToString(self, source_project_file_name):
-		print "Translating BSP project"
+		logger.debug("Translating BSP project")
 		project_string = ""
 		links = []
 
@@ -39,7 +43,7 @@ class boomShotTranslator(baseCopperTranslator):
 		prefs = ns.get("prefs")
 
 		if not prefs:
-			print "Warning! No preferences specified in project %s. Using defaults." % source_project_file_name
+			logger.warning("Warning! No preferences specified in project %s. Using defaults." % source_project_file_name)
 			prefs = {
 				"engine": "GPU"
 			}	
@@ -104,7 +108,7 @@ class boomShotTranslator(baseCopperTranslator):
 
 		# generate outputs
 		if not output_parms:
-			print "Warning! No output specified in project %s. Using defaults." % source_project_file_name
+			logger.warning("Warning! No output specified in project %s. Using defaults." % source_project_file_name)
 		else:	
 			nodes += [{
 				"name": "composite1",

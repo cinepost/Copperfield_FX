@@ -1,3 +1,6 @@
+import logging
+logger = logger = logging.getLogger(__name__)
+
 from pyopencl.tools import get_gl_sharing_context_properties
 import threading
 import logging
@@ -13,9 +16,8 @@ class OpCookingQueue(object):
 		return op.cookData(lock)
 
 	def execute(self, frame_range=()):
-		print "Executing queues:"
 		for queue in self.op_queues:
-			print "Executing queue: %s" % [op.path() for op in queue]
+			logger.debug("Executing queue: %s" % [op.path() for op in queue])
 
 			lock = threading.Lock()
 			threads = [threading.Thread(target=self.cook, args=(lock,op)) for op in queue]
@@ -52,6 +54,6 @@ class OpCookingQueue(object):
 
 			i+=1
 
-		print queue_stat
+		logger.debug(queue_stat)
 
 

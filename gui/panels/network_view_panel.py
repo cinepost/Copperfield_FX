@@ -1,4 +1,6 @@
-from PyQt4 import QtGui, QtCore, QtOpenGL, Qt
+import logging
+
+from PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL, Qt
 from OpenGL.GL import *
 from OpenGL import GL
 from OpenGL.GLU import *
@@ -11,7 +13,11 @@ from copper import hou as engine
 from copper.op.base import OpRegistry
 from gui.signals import signals
 from gui.widgets import PathBarWidget, CollapsableWidget
-from base_panel import NetworkPanel
+
+from .base_panel import NetworkPanel
+
+logger = logging.getLogger(__name__)
+
 
 def next_greater_power_of_2(x):  
     return 2**(x-1).bit_length()
@@ -44,9 +50,9 @@ class NetworkViewControls(CollapsableWidget):
         self.addStretch(1)
 
 
-class NodeLinkItem(QtGui.QGraphicsItem):
+class NodeLinkItem(QtWidgets.QGraphicsItem):
     def __init__(self, parent, socket_from, socket_to):
-        QtGui.QGraphicsItem.__init__(self, parent)
+        QtWidgets.QGraphicsItem.__init__(self, parent)
 
         self._socket_from = socket_from
         self._socket_to = socket_to
@@ -56,7 +62,7 @@ class NodeLinkItem(QtGui.QGraphicsItem):
 
 
 
-class NodeSocketItem(QtGui.QGraphicsItem):
+class NodeSocketItem(QtWidgets.QGraphicsItem):
     INPUT_SOCKET = 1
     OUTPUT_SOCKET = 2
 
@@ -66,7 +72,7 @@ class NodeSocketItem(QtGui.QGraphicsItem):
     STACK_BOTTOM = 4
 
     def __init__(self, parent, socket_type=None, stack_side=STACK_TOP):
-        QtGui.QGraphicsItem.__init__(self, parent)
+        QtWidgets.QGraphicsItem.__init__(self, parent)
         self.stack_side = stack_side
         self.node = parent.node
         self._socket_type = socket_type
@@ -126,9 +132,9 @@ class NodeSocketItem(QtGui.QGraphicsItem):
             pass
 
 
-class NodeItem(QtGui.QGraphicsItem):
+class NodeItem(QtWidgets.QGraphicsItem):
     def __init__(self, node):      
-        QtGui.QGraphicsItem.__init__(self)
+        QtWidgets.QGraphicsItem.__init__(self)
         self.node = node
         self._inputs = {NodeSocketItem.STACK_TOP: [], NodeSocketItem.STACK_LEFT: [], NodeSocketItem.STACK_RIGHT: [], NodeSocketItem.STACK_BOTTOM: []}
         self._outputs = {NodeSocketItem.STACK_TOP: [], NodeSocketItem.STACK_LEFT: [], NodeSocketItem.STACK_RIGHT: [], NodeSocketItem.STACK_BOTTOM: []}
@@ -255,12 +261,12 @@ class NodeItem(QtGui.QGraphicsItem):
         if change == QtGui.QGraphicsItem.ItemSelectedChange:
             if value == True:
                 # do stuff if selected
-                print "Node %s selected!" % self.node.name()
+                logger.debug("Node %s selected!" % self.node.name())
                 if not self._selected_indirect:
                     signals.copperNodeSelected[str].emit(self.node.path()) 
             else:
                 # do stuff if not selected
-                print "Node %s not selected!" % self.node.name()
+                logger.debug("Node %s not selected!" % self.node.name())
                 pass
 
         elif change == QtGui.QGraphicsItem.ItemPositionChange:
@@ -281,12 +287,12 @@ class NodeItem(QtGui.QGraphicsItem):
         return super(NodeItem, self).itemChange(change, value)
 
     def contextMenuEvent(self, event):
-        print "Context menu"
+        logger.debug("Context menu")
 
 
-class NodeFlowScene(QtGui.QGraphicsScene):
+class NodeFlowScene(QtWidgets.QGraphicsScene):
     def __init__(self, parent=None):      
-        QtGui.QGraphicsScene.__init__(self, parent) 
+        QtWidgets.QGraphicsScene.__init__(self, parent) 
         self.nodes_map = {}
 
         self.gridSizeWidth = 60
@@ -395,9 +401,9 @@ class NodeFlowScene(QtGui.QGraphicsScene):
         network_node.createNode(action.data().toPyObject())
 
 
-class NetworkViewWidget(QtGui.QGraphicsView):
+class NetworkViewWidget(QtWidgets.QGraphicsView):
     def __init__(self, parent):  
-        QtGui.QGraphicsView.__init__(self, parent)
+        QtWidgets.QGraphicsView.__init__(self, parent)
         self.setObjectName("network_widget")
 
         self.scene = NodeFlowScene(self)

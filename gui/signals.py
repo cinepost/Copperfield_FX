@@ -1,4 +1,4 @@
-from PyQt4 import QtCore
+from PyQt5 import QtCore
 
 class Signals(QtCore.QObject):
 	copperNodeSelected = QtCore.pyqtSignal(str, name='copperNodeSelected')

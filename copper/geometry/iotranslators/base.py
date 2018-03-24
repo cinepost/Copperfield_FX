@@ -42,7 +42,7 @@ class GeoBaseIO(object):
 		raise NotImplementedError
 
 	@staticmethod
-	def saveGeometry(file_name, geometry)
+	def saveGeometry(file_name, geometry):
 		raise NotImplementedError
 
 	@classmethod

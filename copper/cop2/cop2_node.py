@@ -14,6 +14,8 @@ from copper.cop2.cop_plane import COP_Plane
 
 from copper.parm_template import *
 
+logger = logging.getLogger(__name__)
+
 class COP2_Node(OP_Network):
 	__base__ = True
 	type_name = None # This is a TYPE name for the particular compositing OP ...
@@ -123,7 +125,7 @@ class COP2_Node(OP_Network):
 
 	def saveImage(file_name, frame_range=()):
 		for frame in frame_range:
-			print "Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), filename)
+			logger.info("Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), filename))
 			
 			if self.needsToCook():
 				self.cook()
@@ -153,7 +155,7 @@ class COP2_Node(OP_Network):
 	def cookData(self, lock):
 		try:
 			self.compute(lock, self.engine.openclContext(), self.engine.openclQueue())
-		except Exception, e:
+		except Exception as e:
 			logging.error(str(e))
 			return False
 

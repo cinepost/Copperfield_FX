@@ -1,14 +1,15 @@
+import logging
 import time                                                
 
-def timeit(method):
+logger = logging.getLogger(__name__)
 
+def timeit(method):
     def timed(*args, **kw):
         ts = time.time()
         result = method(*args, **kw)
         te = time.time()
 
-        print '%r (%r, %r) %2.2f sec' % \
-              (method.__name__, args, kw, te-ts)
+        logger.debug('%r (%r, %r) %2.2f sec' % (method.__name__, args, kw, te-ts))
         return result
 
     return timed

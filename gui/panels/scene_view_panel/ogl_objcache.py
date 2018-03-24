@@ -1,3 +1,4 @@
+import logging
 import math
 from OpenGL.GL import *
 from OpenGL.arrays.vbo import VBO
@@ -5,6 +6,8 @@ from ctypes import c_float
 import numpy as np
 
 from copper.vmath import Matrix4, Vector3
+
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_VERTEX_SHADER = """
@@ -59,12 +62,12 @@ def link_shader_program(vertex_shader, fragment_shader):
 class OGL_ObjCache(object):
 
     def __init__(self, ogl_manager, sop_node):
-        print "Init OGL_ObjCache"
+        logger.debug("Init OGL_ObjCache")
         self._ogl_manager = ogl_manager
         self._sop_node = sop_node
 
         self.buildFromSOP()
-        print "Init OGL_ObjCache done"
+        logger.debug("Init OGL_ObjCache done")
 
     def buildFromSOP(self):
         geometry = self._sop_node.geometry()
@@ -142,7 +145,7 @@ class OGL_Scene_Manager(object):
         self._objects = {}
         self._shader_programs = {}
         self._default_shader_program = None
-        print "OGL_Scene_Manager created"
+        logger.debug("OGL_Scene_Manager created")
 
     def getObjNodeGeometry(self, obj_node):
         display_node = obj_node.displayNode()

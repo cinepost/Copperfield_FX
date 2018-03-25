@@ -1,4 +1,4 @@
-from PyQt4 import QtGui, QtCore, QtOpenGL
+from PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL
 from OpenGL.GL import *
 from OpenGL import GL
 from OpenGL.GLU import *
@@ -15,7 +15,7 @@ from copper import hou
 from copper.op.node_type_category import Cop2NodeTypeCategory
 from gui.signals import signals
 from gui.widgets import PathBarWidget
-from base_panel import NetworkPanel
+from .base_panel import NetworkPanel
 
 logger = logging.getLogger(__name__)
 
@@ -77,10 +77,12 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
         # draw node extents
         bounds = list(self.node.imageBounds())
-        bounds[0] -= self.image_width/2
-        bounds[2] -= self.image_width/2
-        bounds[1] -= self.image_height/2
-        bounds[3] -= self.image_height/2
+        bounds[0] -= self.image_width//2
+        bounds[2] -= self.image_width//2
+        bounds[1] -= self.image_height//2
+        bounds[3] -= self.image_height//2
+
+        print("Bounds: %s" % bounds)
 
         #draw bounds grid
         glColor(0.25, 0.25, 0.25)

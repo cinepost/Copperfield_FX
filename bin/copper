@@ -3,7 +3,7 @@
 import sys, os
 import logging
 
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWebEngineWidgets, QtWidgets, QtGui, QtCore
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     window.load_style()
 
     # Move main window to desktop center
-    desktop = QtGui.QApplication.desktop()
+    desktop = QtWidgets.QApplication.desktop()
     screenWidth = desktop.width()
     screenHeight = desktop.height()
     x = (screenWidth - window.width()) / 2

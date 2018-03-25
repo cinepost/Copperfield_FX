@@ -58,7 +58,12 @@ class TabbedPanelManager(QtWidgets.QFrame):
             panelTitle = panel.panelTypeName()
 
         tab_index = self.tabs.addTab(panel, panelTitle)
-        self.tabs.tabBar().tabButton(tab_index, QtGui.QTabBar.RightSide).resize(12,12)
+        
+        try:
+            self.tabs.tabBar().tabButton(tab_index, QtWidgets.QTabBar.RightSide).resize(12,12)
+        except:
+            pass
+        
         self.buildPlusButtonMenu() # Rebuild menu
         return tab_index
 
@@ -101,7 +106,8 @@ class TabbedPanelManager(QtWidgets.QFrame):
 
         for panel_type_name in PanelRegistry._registry:
             action = new_tab_type_submenu.addAction(PanelRegistry._registry[panel_type_name].panelTypeName())
-            action.triggered[()].connect(lambda arg=panel_type_name: self.addNewPaneTabByType(arg))
+            print("Connecting action %s triggered signal" % dir(action.triggered))
+            action.triggered.connect(lambda arg=panel_type_name: self.addNewPaneTabByType(arg))
 
         self.plus_button_menu.addSeparator()
         currentTabIndex = self.tabs.currentIndex()
@@ -110,6 +116,6 @@ class TabbedPanelManager(QtWidgets.QFrame):
             action.setCheckable(True)
             if index is currentTabIndex:
                 action.setChecked(True)
-            action.triggered[()].connect(lambda arg=index: self.setActive(arg))
+            action.triggered.connect(lambda arg=index: self.setActive(arg))
 
 

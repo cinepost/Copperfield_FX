@@ -6,6 +6,9 @@ from copper.op.base import OpRegistry
 from copper.op.op_node import OP_Node
 from copper.parameter import CopperParameter
 
+logger = logging.getLogger(__name__)
+
+
 lastNum = re.compile(r'(?:[^\d]*(\d+)[^\d]*)+')
 
 class OP_Network(OP_Node):
@@ -188,7 +191,7 @@ class OP_Network(OP_Node):
 			return None
 			
 		# check it path is string, if no then try to convert it
-		if not isinstance(path, basestring):
+		if not isinstance(path, str):
 			try:
 				path = str(path)
 			except:
@@ -197,13 +200,13 @@ class OP_Network(OP_Node):
 		if path == "/":
 			return self.root()
 
-		path_list = filter(lambda a: a != '', path.split("/"))
+		path_list = [a for a in path.split("/") if a != '']
 		if path[0] == "":
 			# traverse from root
 			return self.root().traverse(path_list)
-		else:	
-			# traverse from this
-			return self.traverse(path_list)		
+
+		# traverse from this
+		return self.traverse(path_list)		
 
 	#def __str__(self):
 	#	return self.__class__.__name__
@@ -243,6 +246,7 @@ class OP_Network(OP_Node):
 
 		# traverse nodes from this
 	def traverse(self, path_list):
+		print(list(path_list))
 		node = self.__node_dict__.get(path_list[0])
 		if not node: raise BaseException("Unable to get node %s in %s.traverse(self, path_list)" % (path_list[0], self))
 		if len(path_list[1::]) > 0:

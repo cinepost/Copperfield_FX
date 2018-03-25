@@ -44,14 +44,14 @@ class Vector3(list):
 	def __mul__(self, a):
 		return Vector3([self[0]*a, self[1]*a, self[2]*a])
 
-	def __eq__(self,other):
+	def __eq__(self, other):
 		return all([abs(self[0] - other[0]) < 1e-10, abs(self[1] - other[1]) < 1e-10, abs(self[2] - other[2]) < 1e-10])
 
-	def __ne__(self,other):
+	def __ne__(self, other):
 		return not (self==other)
 
-	def __div__(self, d):
-		return Vector3([self[0]/d, self[1]/d, self[2]/d])
+	def __truediv__(self, d):
+		return Vector3([self[0] / d, self[1] / d, self[2] / d])
 
 	def lengthSquared(self):
 		return self[0]*self[0] + self[1]*self[1] + self[2]*self[2]

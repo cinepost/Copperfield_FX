@@ -29,29 +29,33 @@ class Workarea(QtWidgets.QWidget):
     
 
         # Add initial panels
-        panelMgr1 = TabbedPanelManager(self)
-        panelMgr1.addNewPaneTabByType("SceneViewPanel")
-        panelMgr1.addNewPaneTabByType("CompositeViewPanel")
-        panelMgr1.setSizePolicy(QtGui.QSizePolicy( QtGui.QSizePolicy.Maximum, QtGui.QSizePolicy.Expanding))
+        panel_mgrs = []
+        panel_mgr_1 = TabbedPanelManager(self)
+        panel_mgr_1.addNewPaneTabByType("SceneViewPanel")
+        panel_mgr_1.addNewPaneTabByType("CompositeViewPanel")
+        panel_mgr_1.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Expanding))
+        panel_mgrs += [panel_mgr_1]
 
-        panelMgr2 = TabbedPanelManager(self)
-        panelMgr2.addNewPaneTabByType("ParametersPanel")
-        panelMgr2.setSizePolicy(QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding))
+        panel_mgr_2 = TabbedPanelManager(self)
+        panel_mgr_2.addNewPaneTabByType("ParametersPanel")
+        panel_mgr_2.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
+        panel_mgrs += [panel_mgr_2]
 
-        panelMgr3 = TabbedPanelManager(self)
-        panelMgr3.addNewPaneTabByType("NetworkViewPanel")
-        panelMgr3.addNewPaneTabByType("TreeViewPanel")
+        panel_mgr_3 = TabbedPanelManager(self)
+        panel_mgr_3.addNewPaneTabByType("NetworkViewPanel")
+        panel_mgr_3.addNewPaneTabByType("TreeViewPanel")
         #panelMgr3.addNewPaneTabByType("PythonShellPanel")
-        panelMgr3.setSizePolicy(QtGui.QSizePolicy( QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding))
+        panel_mgr_3.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
+        panel_mgrs += [panel_mgr_3]        
 
         # Set Up inital splitters layout
         VSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)
         VSplitter.setMinimumWidth(370)
-        VSplitter.addWidget(panelMgr2)
-        VSplitter.addWidget(panelMgr3)
+        VSplitter.addWidget(panel_mgr_2)
+        VSplitter.addWidget(panel_mgr_3)
 
         HSplitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
-        HSplitter.addWidget(panelMgr1)
+        HSplitter.addWidget(panel_mgr_1)
         HSplitter.addWidget(VSplitter)
         HSplitter.setStretchFactor (0, 1)
         HSplitter.setStretchFactor (1, 0)  
@@ -61,9 +65,8 @@ class Workarea(QtWidgets.QWidget):
         self.setLayout(VBox)
 
         # Connect signals
-        self.connect(panelMgr1.maximize_button, QtCore.SIGNAL("clicked()"), self.maximizePanelManager)
-        self.connect(panelMgr2.maximize_button, QtCore.SIGNAL("clicked()"), self.maximizePanelManager)
-        self.connect(panelMgr3.maximize_button, QtCore.SIGNAL("clicked()"), self.maximizePanelManager)
+        for panel_mgr in panel_mgrs:
+            panel_mgr.maximize_button.clicked.connect(self.maximizePanelManager)
 
         # Show workspace
         self.show()
@@ -95,14 +98,14 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         try:
-            fname = QtGui.QFileDialog.getOpenFileName(self, 'Open file', "/Users")
+            fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', "/Users")
         except:
             raise
         if fname:    
             hou.open_project(str(fname))   
 
     def save_project(self):
-        fname = QtGui.QFileDialog.getSaveFileName(self, 'Save file', "/Users")    
+        fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Save file', "/Users")    
         if fname:
             hou.save_project(fname)
 
@@ -118,24 +121,24 @@ class MainWindow(QtWidgets.QMainWindow):
         self.workarea = Workarea(self)
         self.setCentralWidget(self.workarea)
 
-        exitAction = QtGui.QAction(QtGui.QIcon('gui/icons/main/system-log-out.svg'), 'Exit', self)
+        exitAction = QtWidgets.QAction(QtGui.QIcon('gui/icons/main/system-log-out.svg'), 'Exit', self)
         exitAction.setObjectName("ActionExitApp")
         exitAction.setShortcut('Ctrl+Q')
         exitAction.setStatusTip('Exit application')
         exitAction.triggered.connect(self.close)
 
-        openAction = QtGui.QAction(QtGui.QIcon('gui/icons/main/document-open.svg'), 'Open project', self)
+        openAction = QtWidgets.QAction(QtGui.QIcon('gui/icons/main/document-open.svg'), 'Open project', self)
         openAction.setShortcut('Ctrl+O')
         openAction.setStatusTip('Open project')
         openAction.triggered.connect(self.open_project)
 
-        saveAction = QtGui.QAction(QtGui.QIcon('gui/icons/main/document-save.svg'), 'Save project', self)
+        saveAction = QtWidgets.QAction(QtGui.QIcon('gui/icons/main/document-save.svg'), 'Save project', self)
         saveAction.setShortcut('Ctrl+S')
         saveAction.setStatusTip('Save project')
         saveAction.triggered.connect(self.save_project)
 
 
-        reloadStylAction = QtGui.QAction(QtGui.QIcon('gui/icons/main/view-refresh.svg'), 'Reload QSS', self)
+        reloadStylAction = QtWidgets.QAction(QtGui.QIcon('gui/icons/main/view-refresh.svg'), 'Reload QSS', self)
         reloadStylAction.setShortcut('Ctrl+R')
         reloadStylAction.setStatusTip('Reload style')
         reloadStylAction.triggered.connect(self.load_style)

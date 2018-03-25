@@ -100,7 +100,7 @@ class OGL_ObjCache(object):
                 vertices = prim.vertices()
                 root_vtx = vertices[0]
 
-                for indices in [vertices[i:i+2] for i in xrange(1,len(vertices)-1,1)]:
+                for indices in [vertices[i:i+2] for i in range(1,len(vertices)-1,1)]:
                     poly_indices.append(root_vtx.pointIndex())
                     poly_indices.append(indices[0].pointIndex())
                     poly_indices.append(indices[1].pointIndex())

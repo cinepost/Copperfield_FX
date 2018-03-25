@@ -12,30 +12,30 @@ class PathBarWidget(QtWidgets.QFrame):
         self.history_index = -1
         self.setObjectName("pathBar")
         
-        self.layout = QtGui.QHBoxLayout()
+        self.layout = QtWidgets.QHBoxLayout()
         self.layout.setSpacing(2)
         self.layout.setContentsMargins(2, 2, 2, 2)
 
-        self.btn_back = QtGui.QToolButton(self)
+        self.btn_back = QtWidgets.QToolButton(self)
         self.btn_back.setIcon(QtGui.QIcon( "gui/icons/main/go-previous.svg"))
         self.btn_back.setEnabled(False)
         self.btn_back.pressed.connect(self.historyGoBack)
 
-        self.btn_frwd = QtGui.QToolButton(self)
+        self.btn_frwd = QtWidgets.QToolButton(self)
         self.btn_frwd.setIcon(QtGui.QIcon("gui/icons/main/go-next.svg"))
         self.btn_frwd.setEnabled(False)
         self.btn_frwd.pressed.connect(self.historyGoForward)
 
-        self.btn_pin = QtGui.QToolButton(self)
+        self.btn_pin = QtWidgets.QToolButton(self)
         self.btn_pin.setObjectName("pin")
         self.btn_pin.setCheckable(True)
         self.btn_pin.pressed.connect(self.pinPressed)
 
-        self.path_layout = QtGui.QHBoxLayout()
+        self.path_layout = QtWidgets.QHBoxLayout()
         self.path_layout.setSpacing(0)
         self.path_layout.setContentsMargins(0, 0, 0, 0)
 
-        self.path_bar = QtGui.QFrame()
+        self.path_bar = QtWidgets.QFrame()
         self.path_bar.setObjectName("bar")
         self.path_bar.setLayout(self.path_layout)
 
@@ -46,7 +46,7 @@ class PathBarWidget(QtWidgets.QFrame):
 
         self.setLayout(self.layout)
         self.setAcceptDrops(True)
-        self.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
         self.buildPathBar(node_path="/obj")
 
@@ -102,7 +102,7 @@ class PathBarWidget(QtWidgets.QFrame):
         if not node:
             return False
         elif node.isRoot():
-            btn = QtGui.QPushButton()
+            btn = QtWidgets.QPushButton()
         else:
             parent = node.parent()
             if parent.isRoot():
@@ -116,12 +116,12 @@ class PathBarWidget(QtWidgets.QFrame):
             path_nodes = parent.pathAsNodeList()
 
             for node in path_nodes:
-                btn = QtGui.QPushButton()
+                btn = QtWidgets.QPushButton()
                 btn.setIcon(QtGui.QIcon(node.iconName()))
                 btn.setText(node.name())
-                btn.setSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Fixed)
+                btn.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
 
-                menu = QtGui.QMenu()
+                menu = QtWidgets.QMenu()
                 menu.addAction('This is Action 1')
                 menu.addAction('This is Action 2')
                 btn.setMenu(menu)
@@ -129,7 +129,7 @@ class PathBarWidget(QtWidgets.QFrame):
                 self.path_layout.addWidget(btn)
 
         if btn:
-            btn.setSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+            btn.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
         return True
 

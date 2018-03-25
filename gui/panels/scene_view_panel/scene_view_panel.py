@@ -26,7 +26,7 @@ class DisplayOptionsWidget(CollapsableWidget):
     def __init__(self, parent=None):
         CollapsableWidget.__init__(self, parent)
 
-        self.snap_to_grid_btn = QtGui.QPushButton()
+        self.snap_to_grid_btn = QtWidgets.QPushButton()
         self.snap_to_grid_btn.setCheckable(True)
         self.snap_to_grid_btn.setIcon(QtGui.QIcon('gui/icons/main/network_view/snap_to_grid.svg'))
         self.snap_to_grid_btn.setStatusTip('Show/hide grid and enable/disable snapping')
@@ -44,20 +44,20 @@ class SceneViewPanel(NetworkPanel):
 
         self.views_layout = None
 
-        self.views_layout = QtGui.QBoxLayout(QtGui.QBoxLayout.LeftToRight)
+        self.views_layout = QtWidgets.QBoxLayout(QtWidgets.QBoxLayout.LeftToRight)
         self.views_layout.setSpacing(2)
         self.addLayout(self.views_layout)
         self.addWidget(self.display_options)
 
         # layout switching button
-        self.layouts_button = QtGui.QPushButton("Layouts", self)
+        self.layouts_button = QtWidgets.QPushButton("Layouts", self)
         self.layouts_button.setIcon(QtGui.QIcon("gui/icons/main/go-next.svg"))
 
         mapper = QtCore.QSignalMapper(self)
-        layouts_menu = QtGui.QMenu()
+        layouts_menu = QtWidgets.QMenu()
 
         for layout in viewport_layout_types:
-            action = QtGui.QAction(QtGui.QIcon(layout['icon']), layout['name'], self)
+            action = QtWidgets.QAction(QtGui.QIcon(layout['icon']), layout['name'], self)
             mapper.setMapping(action, layout['name'])
             action.setShortcut(layout['shortcut'])
             action.triggered.connect(mapper.map)

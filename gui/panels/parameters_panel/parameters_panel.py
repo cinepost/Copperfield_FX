@@ -94,14 +94,14 @@ class ParametersWidget(QtWidgets.QWidget):
         else:
             icon = self.default_icon
 
-        node_btn = QtGui.QToolButton()
+        node_btn = QtWidgets.QToolButton()
         node_btn.setIcon(icon)
         node_btn.setIconSize(QtCore.QSize(24,24))
 
-        node_type = QtGui.QLabel(node.label())
+        node_type = QtWidgets.QLabel(node.label())
         node_type.setStyleSheet("font-weight: bold")
    
-        node_name = QtGui.QLineEdit(node.name())
+        node_name = QtWidgets.QLineEdit(node.name())
 
         self.header_bar.addWidget(node_btn)
         self.header_bar.addWidget(node_type)
@@ -112,7 +112,7 @@ class ParametersWidget(QtWidgets.QWidget):
         for parm_template in node.parmGroups().keys():
             parm_template_type = parm_template.type()
 
-            parms_layout = QtGui.QHBoxLayout()
+            parms_layout = QtWidgets.QHBoxLayout()
             parms_layout.setSpacing(1)
             parms_layout.setContentsMargins(0, 0, 0, 0)
             for parm in node.parmGroups()[parm_template]:
@@ -143,9 +143,9 @@ class ParametersWidget(QtWidgets.QWidget):
                 parms_layout.addWidget(widget) 
                 
 
-            hbox = QtGui.QHBoxLayout()
+            hbox = QtWidgets.QHBoxLayout()
             if parm_template_type not in [ParmTemplateType.Toggle, ParmTemplateType.Button]:
-                label = QtGui.QLabel(parm_template.label())
+                label = QtWidgets.QLabel(parm_template.label())
                 if parm_template.numComponents() == 1:
                     label.setToolTip("Parameter: %s" % parm.name())
                 else:

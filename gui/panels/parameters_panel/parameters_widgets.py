@@ -57,7 +57,7 @@ class ParameterFloatWidget(ParameterBaseWidget):
 
 		if parm.parmTemplate().numComponents() == 1:
 			self.line_edit.setMaximumWidth(140)
-			self.slider = QtGui.QSlider(self)
+			self.slider = QtWidgets.QSlider(self)
 			self.slider.setOrientation(QtCore.Qt.Horizontal)
 			self.slider.setMinimum(self.parm.parmTemplate().min() * self.resolution)
 			self.slider.setMaximum(self.parm.parmTemplate().max() * self.resolution)
@@ -84,20 +84,20 @@ class ParameterIntWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 		self.slider = None
-		self.line_edit = QtGui.QLineEdit(str(self.parm.evalAsInt())) 
+		self.line_edit = QtWidgets.QLineEdit(str(self.parm.evalAsInt())) 
 		self.line_edit.setMinimumWidth(60)
 		self.layout.addWidget(self.line_edit)
 
 		if parm.parmTemplate().numComponents() == 1:
 			self.line_edit.setMaximumWidth(140)
-			self.slider = QtGui.QSlider(self)
+			self.slider = QtWidgets.QSlider(self)
 			self.slider.setOrientation(QtCore.Qt.Horizontal)
 			self.slider.setMinimum(parm.parmTemplate().min())
 			self.slider.setMaximum(parm.parmTemplate().max())
 			self.slider.setValue(self.parm.evalAsInt())
 			self.slider.setTracking(True)
 			self.slider.setTickInterval(1)
-			self.slider.setTickPosition(QtGui.QSlider.TicksBelow)
+			self.slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
 			self.slider.valueChanged.connect(self.processSlider)
 			self.layout.addWidget(self.slider)
 
@@ -119,10 +119,10 @@ class ParameterToggleWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
-		self.checkbox = QtGui.QCheckBox(self)
+		self.checkbox = QtWidgets.QCheckBox(self)
 		self.checkbox.setCheckState(self.parm.evalAsBool())
 
-		self.label = QtGui.QLabel(parm.parmTemplate().label())
+		self.label = QtWidgets.QLabel(parm.parmTemplate().label())
 		self.label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)
 		self.label.setStatusTip(parm.name())
 
@@ -138,7 +138,7 @@ class ParameterMenuWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
-		self.combobox = QtGui.QComboBox(self)
+		self.combobox = QtWidgets.QComboBox(self)
 		for item_label in self.parm.menuLabels():
 			self.combobox.addItem(item_label)
 
@@ -157,7 +157,7 @@ class ParameterButtonWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
-		self.button = QtGui.QPushButton(parm.parmTemplate().label(), self)
+		self.button = QtWidgets.QPushButton(parm.parmTemplate().label(), self)
 		self.button.setMinimumWidth(60)
 
 		self.layout.addWidget(self.button)
@@ -174,22 +174,22 @@ class ParameterStringWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
 
-		self.line_edit = QtGui.QLineEdit(parm.evalAsString())
+		self.line_edit = QtWidgets.QLineEdit(parm.evalAsString())
 		self.line_edit.setDragEnabled(True)
 		self.line_edit.setAcceptDrops(True)
 		self.line_edit.installEventFilter(self) # process drag'n'drop
 		self.layout.addWidget(self.line_edit)
 
 		if parm.parmTemplate().stringType() is StringParmType.FileReference:
-			self.file_button = QtGui.QToolButton(self)
+			self.file_button = QtWidgets.QToolButton(self)
 			self.file_button.setObjectName("file")
 			self.file_button.clicked.connect(self.BrowseFile)
 			self.layout.addWidget(self.file_button)
 		elif parm.parmTemplate().stringType() is StringParmType.NodeReference:
-			self.op_jump_button = QtGui.QToolButton(self)
+			self.op_jump_button = QtWidgets.QToolButton(self)
 			self.op_jump_button.setObjectName("op_jump")
 
-			self.op_path_button = QtGui.QToolButton(self)
+			self.op_path_button = QtWidgets.QToolButton(self)
 			self.op_path_button.setObjectName("op_path")
 			self.op_path_button.clicked.connect(self.BrowseOp)
 
@@ -200,12 +200,12 @@ class ParameterStringWidget(ParameterBaseWidget):
 		self.line_edit.editingFinished.connect(self.parmChanged)
 
 	def BrowseFile(self, lineEdit):
-		file_name = QtGui.QFileDialog.getOpenFileName()
+		file_name = QtWidgets.QFileDialog.getOpenFileName()
 		self.line_edit.setText(file_name)
 		self.valueChanged.emit()
 
 	def BrowseOp(self, lineEdit):
-		op_path = QtGui.QFileDialog.getOpenFileName()
+		op_path = QtWidgets.QFileDialog.getOpenFileName()
 		self.line_edit.setText(op_path)
 		self.valueChanged.emit()
 

@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtCore import pyqtSignal
 
 from copper import hou
 from gui.signals import signals
@@ -42,7 +43,8 @@ class TreeViewWidget(QtWidgets.QTreeWidget):
         signals.copperNodeSelected[str].connect(self.nodeSelected)
 
         ### Connect internal signals
-        self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
+        #self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
+        self.customContextMenuRequested.connect(self.menuContextMenu)
         self.itemClicked.connect(self.handleItemClicked)
 
     def createNodeTree(self, parent, node_path=None):

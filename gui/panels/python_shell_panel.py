@@ -1,16 +1,14 @@
-import os
-import re
-import sys
+import os, sys, logging
 import code
 
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5 import QtWidgets, QtGui, QtCore
 
 from copper import hou
-from base_panel import BasePanel
+from .base_panel import BasePanel
 
 from .python_syntax_highlighter import PythonHighlighter
+
+logger = logging.getLogger(__name__)
 
 class PythonShellPanel(BasePanel):
     def __init__(self):
@@ -26,7 +24,7 @@ class PythonShellPanel(BasePanel):
     def hasNetworkControls(cls):
         return False
 
-class PythonShellWidget(QtGui.QTextEdit):
+class PythonShellWidget(QtWidgets.QTextEdit):
 
     class InteractiveInterpreter(code.InteractiveInterpreter):
         def __init__(self, locals):
@@ -35,7 +33,7 @@ class PythonShellWidget(QtGui.QTextEdit):
             code.InteractiveInterpreter.runsource(self, command)
 
     def __init__(self,  parent):
-        QtGui.QTextEdit.__init__(self, parent)
+        QtWidgets.QTextEdit.__init__(self, parent)
         self.setObjectName("PythonShellWidget")
 
         sys.stdout              = self
@@ -98,7 +96,7 @@ class PythonShellWidget(QtGui.QTextEdit):
     def recallHistory(self):
         # used when using the arrow keys to scroll through history
         self.clearCurrentBlock()
-        if self.historyIndex <> -1:
+        if self.historyIndex > -1 or self.historyIndex < -1:
             self.insertPlainText(self.history[self.historyIndex])
         return True
 

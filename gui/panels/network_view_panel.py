@@ -41,7 +41,7 @@ class NetworkViewControls(CollapsableWidget):
     def __init__(self, parent=None):
         CollapsableWidget.__init__(self, parent)
 
-        self.snap_to_grid_btn = QtGui.QPushButton()
+        self.snap_to_grid_btn = QtWidgets.QPushButton()
         self.snap_to_grid_btn.setCheckable(True)
         self.snap_to_grid_btn.setIcon(QtGui.QIcon('gui/icons/main/network_view/snap_to_grid.svg'))
         self.snap_to_grid_btn.setStatusTip('Show/hide grid and enable/disable snapping')
@@ -146,9 +146,9 @@ class NodeItem(QtWidgets.QGraphicsItem):
             self.icon = None
         
         self.setAcceptHoverEvents(True)
-        self.setFlag(QtGui.QGraphicsItem.ItemSendsGeometryChanges)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemSendsGeometryChanges)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
 
         # create input sockets
         for socket in self.node.inputs():
@@ -258,7 +258,7 @@ class NodeItem(QtWidgets.QGraphicsItem):
         ''' direct argument shows us that shit node wa selected inside the items scene. Otherwise don't propagate copperNodeSelected signal.
             Just change item state.
         '''
-        if change == QtGui.QGraphicsItem.ItemSelectedChange:
+        if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
             if value == True:
                 # do stuff if selected
                 logger.debug("Node %s selected!" % self.node.name())
@@ -269,10 +269,10 @@ class NodeItem(QtWidgets.QGraphicsItem):
                 logger.debug("Node %s not selected!" % self.node.name())
                 pass
 
-        elif change == QtGui.QGraphicsItem.ItemPositionChange:
+        elif change == QtWidgets.QGraphicsItem.ItemPositionChange:
             # snap to grid code here
             scene = self.scene()
-            new_pos = value.toPointF()
+            new_pos = value #QtCore.QPointF(value.toPointF()
 
             snapped_x = round((new_pos.x() / scene.gridSizeWidth)) * scene.gridSizeWidth
             snapped_y = round((new_pos.y() / scene.gridSizeHeight)) * scene.gridSizeHeight
@@ -419,8 +419,8 @@ class NetworkViewWidget(QtWidgets.QGraphicsView):
         format.setSampleBuffers(True)
         format.setSamples(16)
         self.setViewport( QtOpenGL.QGLWidget(format) ) # Force OpenGL rendering mode.
-        self.setViewportUpdateMode( QtGui.QGraphicsView.FullViewportUpdate )
-        self.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
+        self.setViewportUpdateMode( QtWidgets.QGraphicsView.FullViewportUpdate )
+        self.setDragMode( QtWidgets.QGraphicsView.RubberBandDrag )
 
         ## As a debug we always set new panel widget to "/"
         self.setNetworkLevel("/img")

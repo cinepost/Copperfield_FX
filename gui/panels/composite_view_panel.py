@@ -82,8 +82,6 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         bounds[1] -= self.image_height//2
         bounds[3] -= self.image_height//2
 
-        print("Bounds: %s" % bounds)
-
         #draw bounds grid
         glColor(0.25, 0.25, 0.25)
         glBegin(GL_LINES)
@@ -288,7 +286,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         zoomOutFactor = 1 / zoomInFactor
 
         # Zoom
-        if event.delta() > 0:
+        if event.pixelDelta().y() > 0:
             zoomFactor = zoomInFactor
         else:
             zoomFactor = zoomOutFactor

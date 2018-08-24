@@ -1,7 +1,7 @@
 #
 #   Environment setup script for Copperfield FX. 
 #
-#   To use this script you should "cd" to the hfs directory where this
+#   To use this script you should "cd" to the cfs directory where this
 #   script is located and "source" it into your shell or from your
 #   .login script.
 #

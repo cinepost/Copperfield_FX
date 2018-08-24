@@ -246,7 +246,6 @@ class OP_Network(OP_Node):
 
 		# traverse nodes from this
 	def traverse(self, path_list):
-		print(list(path_list))
 		node = self.__node_dict__.get(path_list[0])
 		if not node: raise BaseException("Unable to get node %s in %s.traverse(self, path_list)" % (path_list[0], self))
 		if len(path_list[1::]) > 0:

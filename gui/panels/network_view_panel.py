@@ -191,7 +191,7 @@ class NodeItem(QtWidgets.QGraphicsItem):
         node_rect = self.boundingRect().adjusted(device_scale_factor, device_scale_factor, -device_scale_factor, -device_scale_factor)
         node_outline_rect = self.boundingRect()
         node_color = QtGui.QColor(160, 160, 160)
-        if option.state & QtGui.QStyle.State_Selected:
+        if option.state & QtWidgets.QStyle.State_Selected:
             node_color = QtGui.QColor(196, 196, 196)
             # Draw selection border
             painter.fillPath(self.outlinePath(painter), QtGui.QBrush(QtGui.QColor(250, 190, 64)))
@@ -261,12 +261,10 @@ class NodeItem(QtWidgets.QGraphicsItem):
         if change == QtWidgets.QGraphicsItem.ItemSelectedChange:
             if value == True:
                 # do stuff if selected
-                logger.debug("Node %s selected!" % self.node.name())
                 if not self._selected_indirect:
                     signals.copperNodeSelected[str].emit(self.node.path()) 
             else:
-                # do stuff if not selected
-                logger.debug("Node %s not selected!" % self.node.name())
+                # do stuff if unselected
                 pass
 
         elif change == QtWidgets.QGraphicsItem.ItemPositionChange:
@@ -353,7 +351,7 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
         pass
 
     def mousePressEvent(self, event):
-        picked_item = self.itemAt(event.scenePos())
+        picked_item = self.itemAt(event.scenePos(), self.transform())
 
         # Bring picked items to front
         if picked_item:
@@ -449,14 +447,14 @@ class NetworkViewWidget(QtWidgets.QGraphicsView):
         zoomOutFactor = 1 / zoomInFactor
 
         # Set Anchors
-        self.setTransformationAnchor(QtGui.QGraphicsView.NoAnchor)
-        self.setResizeAnchor(QtGui.QGraphicsView.NoAnchor)
+        self.setTransformationAnchor(QtWidgets.QGraphicsView.NoAnchor)
+        self.setResizeAnchor(QtWidgets.QGraphicsView.NoAnchor)
 
         # Save the scene pos
         oldPos = self.mapToScene(event.pos())
 
         # Zoom
-        if event.delta() > 0:
+        if event.angleDelta().y() > 0:
             zoomFactor = zoomInFactor
         else:
             zoomFactor = zoomOutFactor

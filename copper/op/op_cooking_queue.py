@@ -1,10 +1,10 @@
 import logging
-logger = logger = logging.getLogger(__name__)
+import threading
 
 from pyopencl.tools import get_gl_sharing_context_properties
-import threading
-import logging
 import pyopencl as cl
+
+logger = logging.getLogger(__name__)
 
 class OpCookingQueue(object):
 	def __init__(self, op):

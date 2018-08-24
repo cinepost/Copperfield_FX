@@ -103,8 +103,8 @@ class ParserBase(object):
         "^" : ( lambda a,b: a ** b )
     }
 
-	def __init__(self):
-		self._renderer = None
+	def __init__(self, renderer):
+		self._renderer = renderer
 		self._echo = False
 		self._eof_or_quit = False # Set to True when parser finds special exit/quit/finish toket/command or EOF. In case of IFD it's 'ray_quit' command
 
@@ -117,7 +117,7 @@ class ParserBase(object):
 			result = self.grammar.parseString(line)
 			line = buff.readline()
 
-	def parseFile(self, scene_filename, echo=False, renderer=None):
+	def parseFile(self, scene_filename, echo=False):
 		self._renderer = renderer
 
 		# line_buffer will accumulate lines until a fully parseable piece is found

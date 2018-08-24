@@ -106,7 +106,6 @@ class TabbedPanelManager(QtWidgets.QFrame):
 
         for panel_type_name in PanelRegistry._registry:
             action = new_tab_type_submenu.addAction(PanelRegistry._registry[panel_type_name].panelTypeName())
-            print("Connecting action %s triggered signal" % dir(action.triggered))
             action.triggered.connect(lambda arg=panel_type_name: self.addNewPaneTabByType(arg))
 
         self.plus_button_menu.addSeparator()

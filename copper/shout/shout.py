@@ -7,13 +7,15 @@ import logging
 from parsers.base import ParsersRegistry
 from renderers import Renderer
 
+logger = logging.getLogger(__name__)
+
 description = """
-Reads an IFD scene from standard input and renders the image described.
+Reads an geometry scene from standard input and renders the image described.
 
 If the first argument after options ends in .ifd, .ifd.gz, .ifd.bz2,
 .rib or any other supported scene file format, shout will read the 
 scene description from that file.  If the argument does not have an 
-IFD extension it will be used as the output image/device
+supported scene extension it will be used as the output image/device
 """
 
 if __name__ == "__main__":
@@ -60,15 +62,14 @@ if __name__ == "__main__":
 			scene_ext = scene_filename.rsplit(".",1)[-1]
 
 
-	print("scene_ext %s" % scene_ext)
-	print("scene_filename: %s" % scene_filename)
-	print("output_image_filename %s" % output_image_filename)
-
-	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext or 'ifd')
-	print(scene_parser)
+	logger.debug("scene_ext %s" % scene_ext)
+	logger.debug("scene_filename: %s" % scene_filename)
+	logger.debug("output_image_filename %s" % output_image_filename)
 
 	renderer = Renderer()
-	scene_parser.parseFile(scene_filename, echo=(args.V > 0), renderer=renderer)
+
+	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext or 'ifd', renderer)
+	scene_parser.parseFile(scene_filename, echo=(args.V > 0))
 
 	stop = timeit.default_timer()
-	print("Time elapsed: %s" % (stop - start))
+	logger.info("Time elapsed: %s" % (stop - start))

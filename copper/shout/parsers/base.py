@@ -5,6 +5,8 @@ import fileinput
 import mimetypes
 from pyparsing import *
 
+ParserElement.setDefaultWhitespaceChars(' \t\n')
+
 #http://pyparsing.wikispaces.com/HowToUsePyparsing
 #https://habrahabr.ru/post/241670/
 #https://pyparsing.wikispaces.com/file/view/SimpleCalc.py
@@ -63,50 +65,13 @@ class ParserBase(object):
 
 	__base__ = True
 
-	# define grammar
-	point = Literal('.')
-	e = CaselessLiteral('E')
-	plusorminus = Literal('+') | Literal('-')
-	number = Word(nums) 
-	integer = Combine( Optional(plusorminus) + number )
-	floatnumber = Combine( integer + Optional( point + Optional(number) ) + Optional( e + integer ))
-	ident = Word(alphas,alphanums + '_') 
-	plus = Literal( "+" )
-	minus = Literal( "-" )
-	mult = Literal( "*" )
-	div = Literal( "/" )
-	lpar = Literal( "(" ).suppress()
-	rpar = Literal( ")" ).suppress()
-	addop = plus | minus
-	multop = mult | div
-	expop = Literal( "^" )
-	assign = Literal( "=" )
-
-	expr = Forward()
-	atom = ( ( e | floatnumber | integer | ident ).setParseAction(pushFirst) | ( lpar + expr.suppress() + rpar ))
-	    
-	factor = Forward()
-	factor << atom + ZeroOrMore( ( expop + factor ).setParseAction( pushFirst ) )
-	    
-	term = factor + ZeroOrMore( ( multop + factor ).setParseAction( pushFirst ) )
-	expr << term + ZeroOrMore( ( addop + term ).setParseAction( pushFirst ) )
-	bnf = Optional((ident + assign).setParseAction(assignVar)) + expr
-
-	pattern =  bnf + StringEnd()
-
-	# map operator symbols to corresponding arithmetic operations
-	opn = {
-		"+" : ( lambda a,b: a + b ),
-        "-" : ( lambda a,b: a - b ),
-        "*" : ( lambda a,b: a * b ),
-        "/" : ( lambda a,b: a / b ),
-        "^" : ( lambda a,b: a ** b )
-    }
-
-	def __init__(self, renderer):
-		self._renderer = renderer
+	def __init__(self):
+		self._renderer = None
 		self._echo = False
 		self._eof_or_quit = False # Set to True when parser finds special exit/quit/finish toket/command or EOF. In case of IFD it's 'ray_quit' command
+
+	def setRenderer(self, renderer):
+		self._renderer = renderer
 
 	def setEchoInput(self, echo=True):
 		self._echo = echo
@@ -118,23 +83,32 @@ class ParserBase(object):
 			line = buff.readline()
 
 	def parseFile(self, scene_filename, echo=False):
-		self._renderer = renderer
+		from functools import partial
 
-		# line_buffer will accumulate lines until a fully parseable piece is found
-		line_buffer = ""
+		# line_buff will accumulate lines until a fully parseable piece is found
+		line_buff = ""
 
 		if scene_filename:
 			# read from file
-			file_input = open(scene_filename, "rb")
+			file_input = open(scene_filename, "r")
 		else:
 			# read from stdin
 			file_input = sys.stdin
 
-		with file_input as self.fp:
-			line = self.fp.readline().decode('latin-1')
-			while line:
-				result = self.grammar.parseString(line)
-				line = self.fp.readline().decode('latin-1')
+		# read text file 
+		with file_input as openfileobject:
+			for line in openfileobject:
+				if line.lstrip().startswith(self.keywords):
+					result = self.grammar.parseString(line_buff)
+					line_buff = line
+				else:
+					line_buff += line
+
+		# snippet to read binary read binary
+		#with open('somefile', 'rb') as openfileobject:
+		#	for chunk in iter(partial(openfileobject.read, 1024), ''):
+		#		pass
+
 
 	def isDone(self):
 		"""Return True when parsing is done."""

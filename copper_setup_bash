@@ -29,7 +29,7 @@ elif [ ! -d virtualenv ]; then
         read -p "Would you like to run install.sh now (y/n)? " -n 1 -r
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             echo
-            . ./install.sh
+            . ./copper.install
         fi
 else
     source virtualenv3/bin/activate

@@ -68,7 +68,8 @@ if __name__ == "__main__":
 
 	renderer = Renderer()
 
-	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext or 'ifd', renderer)
+	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext or 'ifd')
+	#scene_parser.setRenderer(renderer)
 	scene_parser.parseFile(scene_filename, echo=(args.V > 0))
 
 	stop = timeit.default_timer()

@@ -31,7 +31,7 @@ class ParametersPanel(NetworkPanel):
 
 class ParametersWidget(QtWidgets.QWidget):
     def __init__(self, parent, panel):    
-        QtWidgets.QWidget.__init__(self, parent) 
+        QtWidgets.QWidget.__init__(self, parent)
         self.panel = panel
 
         self.setMinimumWidth(320)
@@ -76,6 +76,7 @@ class ParametersWidget(QtWidgets.QWidget):
 
         # connect panel signals
         self.panel.signals.copperNodeSelected.connect(self.nodeSelected)
+
 
     @QtCore.pyqtSlot(str)
     def nodeSelected(self, node_path=None):
@@ -165,3 +166,4 @@ class ParametersWidget(QtWidgets.QWidget):
             i+=1
 
         self.parm_box.addStretch(1)
+

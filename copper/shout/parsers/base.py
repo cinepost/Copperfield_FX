@@ -104,6 +104,8 @@ class ParserBase(object):
 				else:
 					line_buff += line
 
+			result = self.grammar.parseString(line_buff)
+
 		# snippet to read binary read binary
 		#with open('somefile', 'rb') as openfileobject:
 		#	for chunk in iter(partial(openfileobject.read, 1024), ''):

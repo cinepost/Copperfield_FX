@@ -1,6 +1,5 @@
 import sys, os
 import logging
-logging.basicConfig(level=logging.DEBUG)
 
 from PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL
 

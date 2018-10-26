@@ -20,7 +20,7 @@ class ParserRIB(ParserBase):
 	def keywords(self):
 		return (
 			'Format', 'Display', 'Sphere', 'Translate', 'Transform', 'Rotate', 'ConcatTransform', 'Opacity', 'Color', 'WorldBegin', 'WorldEnd',
-			'AttributeBegin', 'AttributeEnd', 'Attribute'
+			'AttributeBegin', 'AttributeEnd', 'Attribute', 'PointsPolygons'
 		)
 
 	@property
@@ -40,11 +40,18 @@ class ParserRIB(ParserBase):
 			floatnum4 = Optional(Suppress("[")) + Group(floatnum + floatnum + floatnum + floatnum) + Optional(Suppress("]"))
 			matrix3x3 = Optional(Suppress("[")) + Group(floatnum3 + floatnum3 + floatnum3) + Optional(Suppress("]"))
 			matrix4x4 = Optional(Suppress("[")) + Group(floatnum4 + floatnum4 + floatnum4 + floatnum4) + Optional(Suppress("]"))
+			array_int = Suppress("[") + Group(OneOrMore(integer)) + Suppress("]")
+			array_float = Suppress("[") + Group(OneOrMore(floatnum)) + Suppress("]")
 			string = QuotedString('"', escChar=None, multiline=True,unquoteResults=True, endQuoteChar=None)
+
+			poly_parameterlist = OneOrMore( Dict(Group(string + array_float)))
 
 			# RIB types
 
 			# RIB commands
+			rib_points_polygons = Keyword('PointsPolygons') + array_int + array_int + poly_parameterlist
+			rib_points_polygons.setParseAction(self._do_points_polygons)
+
 			rib_attribute_begin = Keyword('AttributeBegin')
 			rib_attribute_begin.setParseAction(self._do_attribute_begin)
 			
@@ -84,12 +91,14 @@ class ParserRIB(ParserBase):
 			rib_world_end = Keyword('WorldEnd')
 			rib_world_end.setParseAction(self._do_world_end)
 
-			rib_grammar = Optional(rib_format | rib_world_begin | rib_world_end | rib_translate | rib_transform | rib_concat_transform | rib_rotate | rib_color | rib_opacity |
-				rib_sphere | rib_display | rib_attribute_begin | rib_attribute_end)
+			rib_grammar = Optional(rib_points_polygons | rib_format | rib_world_begin | rib_world_end | rib_translate | rib_transform | rib_concat_transform | rib_rotate | rib_color | rib_opacity |
+				rib_sphere | rib_display | rib_attribute_begin | rib_attribute_end )
 			rib_grammar.ignore('#' + restOfLine) # ignore comments
-			rib_grammar.setDefaultWhitespaceChars(' \t\n')
 
 		return rib_grammar
+
+	def _do_points_polygons(self, toks):
+		logger.debug(toks)
 
 	def _do_attribute_begin(self, toks):
 		logger.debug(toks)

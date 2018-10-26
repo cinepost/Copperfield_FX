@@ -14,7 +14,7 @@ Integrator "PxrVCM" "PxrVCM"
   "int mergePaths" [1]
   "int connectPaths" [1]
 PixelVariance .007
-Format 500 500 1.0
+Format 800 800 1.0
 ShadingRate 1.0
 Projection "perspective" "fov" [ 39.14625166082039 ] # lens 45.0, aspect 1.0
 Rotate 180 0 1 0 # right handed
@@ -46,15 +46,15 @@ WorldBegin
     Attribute "visibility" "int indirect" [0]
     ShadingRate 10000
     Geometry "rectlight"
-    # PointsPolygons
-    #   [ 4 ]
-    #   [ 0 1 2 3 ]
-    #   "P" [
-    #     -65.00001525878906 0.0 -52.49998474121094
-    #     65.0 0.0 -52.5
-    #     65.0 0.0 52.5
-    #     -65.0 0.0 52.5
-    #   ]
+    PointsPolygons
+      [ 4 ]
+      [ 0 1 2 3 ]
+      "P" [
+        -65.00001525878906 0.0 -52.49998474121094
+        65.0 0.0 -52.5
+        65.0 0.0 52.5
+        -65.0 0.0 52.5
+      ]
   AttributeEnd
   # large_box
   Attribute "identifier" "name" "large_box"
@@ -200,3 +200,5 @@ WorldBegin
       ]
   AttributeEnd
 WorldEnd
+Color [1 2 3] # lslsls
+Color [3 4 5] 1 2 3

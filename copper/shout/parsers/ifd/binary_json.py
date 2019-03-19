@@ -543,7 +543,7 @@ class Parser:
             v1 = self._readBytes(n-1)
             if v1 == None:
                 return None
-            return ''.join([v, v1])
+            return v+v1
         else:
             self.ReadCount += n
             v = self.Stream.read(n)
@@ -729,7 +729,7 @@ class Parser:
                 return None
             return _jValue(JID_STRING, v)
         if token == JID_TOKENREF:
-            v = self.binaryStringToken()
+            v = self.binaryStringToken().decode("UTF-8")
             if v == None:
                 return None
             return _jValue(JID_STRING, v)
@@ -748,31 +748,31 @@ class Parser:
 
     def _readQuotedString(self):
         ''' Read a quoted string one character at a time '''
-        word = []
+        word = b""
         while True:
             c = self._readBytes(1)
             if c == None:
                 self.error('Missing end-quote for string')
                 return None
-            if c == '\\':
+            if c == b'\\':
                 c = self._readBytes(1)
-                if c in '"\\/': word.append(c)
-                elif c == 'b':  word.append('\b')
-                elif c == 'f':  word.append('\f')
-                elif c == 'n':  word.append('\n')
-                elif c == 'r':  word.append('\r')
-                elif c == 't':  word.append('\t')
-                elif c == 'u':
+                if c in b'"\\/': word.append(c)
+                elif c == b'b':  word.append('\b')
+                elif c == b'f':  word.append('\f')
+                elif c == b'n':  word.append('\n')
+                elif c == b'r':  word.append('\r')
+                elif c == b't':  word.append('\t')
+                elif c == b'u':
                     if self._readBytes(4) == None:
                         return False
                     self.error('UNICODE string escape not supported')
                 else:
                     word.append('\\')
                     word.append(c)
-            elif c == '"':
-                return ''.join(word)
+            elif c == b'"':
+                return word.decode("UTF-8")
             else:
-                word.append(c)
+                word += c
 
     def _readNumber(self, char):
         '''
@@ -838,21 +838,21 @@ class Parser:
             char = self._readBytes(1)
             if char == None:
                 return None
-        if char == '/':
+        if char == b'/':
             char = self._readBytes(1)
-            if char == '/':     # We support // style comments
+            if char == b'/':     # We support // style comments
                 while char != None:
                     char = self._readBytes(1)
-                    if char == '\n' or char == '\r':
+                    if char == b'\n' or char == b'\r':
                         return self._readToken()
                 return None
-        if char == '{': return _jValue(JID_MAP_BEGIN, None)
-        if char == '}': return _jValue(JID_MAP_END, None)
-        if char == '[': return _jValue(JID_ARRAY_BEGIN, None)
-        if char == ']': return _jValue(JID_ARRAY_END, None)
-        if char == ',': return _jValue(JID_VALUE_SEPARATOR, None)
-        if char == ':': return _jValue(JID_KEY_SEPARATOR, None)
-        if char == '"':
+        if char == b'{': return _jValue(JID_MAP_BEGIN, None)
+        if char == b'}': return _jValue(JID_MAP_END, None)
+        if char == b'[': return _jValue(JID_ARRAY_BEGIN, None)
+        if char == b']': return _jValue(JID_ARRAY_END, None)
+        if char == b',': return _jValue(JID_VALUE_SEPARATOR, None)
+        if char == b':': return _jValue(JID_KEY_SEPARATOR, None)
+        if char == b'"':
             v = self._readQuotedString()
             if v == None:
                 return None

@@ -75,7 +75,7 @@ class MHandle(bson.Handle):
 	
 	def jsonString(self, parser, value):
 		#print("jsonString %s" % value)
-		self._pushValue(value.decode("UTF-8"))
+		self._pushValue(value)
 		return True
 
 	def jsonNull(self, parser):

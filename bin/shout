@@ -1,3 +1,2 @@
-#!/bin/bash
-
-/usr/bin/env python $COPPER_HOME/copper/shout/shout.py "$@"
+#!/bin/bash $COPPER_HOME/copper/shout/shout.py
+#"$@"

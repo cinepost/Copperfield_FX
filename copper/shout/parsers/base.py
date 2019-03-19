@@ -76,40 +76,49 @@ class ParserBase(object):
 	def setEchoInput(self, echo=True):
 		self._echo = echo
 
+
 	def parseBuffer(self, buff):
 		line = buff.readline()
 		while line:
 			result = self.grammar.parseString(line)
 			line = buff.readline()
 
-	def parseFile(self, scene_filename, echo=False):
-		from functools import partial
+	@staticmethod
+	def readWordBinary(f):
+		word = b''
+		while True:
+			b = f.read(1)
+			if not b:  # empty => EOF
+				break
+			
+			if b in (b" ", b"\n"):
+				if word:
+					break
+			else:
+				word += b
 
+		return word
+
+	@staticmethod
+	def readWord(f):
+		return ParserBase.readWordBinary(f).decode("UTF-8")
+
+	def parseFile(self, scene_filename, echo=False):
 		# line_buff will accumulate lines until a fully parseable piece is found
 		line_buff = ""
 
 		if scene_filename:
 			# read from file
-			file_input = open(scene_filename, "r")
+			file_input_stream = open(scene_filename, "rb")
 		else:
 			# read from stdin
-			file_input = sys.stdin
+			file_input_stream = sys.stdin.buffer
 
-		# read text file 
-		with file_input as openfileobject:
-			for line in openfileobject:
-				if line.lstrip().startswith(self.keywords):
-					result = self.grammar.parseString(line_buff)
-					line_buff = line
-				else:
-					line_buff += line
+		with file_input_stream:
+			self.parseStream(file_input_stream)
 
-			result = self.grammar.parseString(line_buff)
-
-		# snippet to read binary read binary
-		#with open('somefile', 'rb') as openfileobject:
-		#	for chunk in iter(partial(openfileobject.read, 1024), ''):
-		#		pass
+	def parseStream(self, input):
+		raise NotImplementedError("Subclasses parser should implement this!")
 
 
 	def isDone(self):

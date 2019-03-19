@@ -15,10 +15,25 @@ import os, struct, time
 from .base import BaseDisplayDriver
 
 
-class MPlay(BaseDisplayDriver):
-    MAGIC = (ord('h')<<24) + (ord('M')<<16) + (ord('P')<<8) + ord('0')
-    EO_IMAGE = -2   # End of image marker
+MAGIC = (ord('h')<<24) + (ord('M')<<16) + (ord('P')<<8) + ord('0')
+DATASIZE = 1    # See .c file for meaning
+NCHANNELS = 4   # See .c file for meaning
+EO_IMAGE = -2   # End of image marker
+RES = 256
 
+COLORS = [
+    (0, 0, 0, 255),
+    (255, 0, 0, 255),
+    (0, 255, 0, 255),
+    (0, 0, 255, 255),
+    (255, 255, 0, 255),
+    (0, 255, 255, 255),
+    (255, 0, 255, 255),
+    (255, 255, 255, 255),
+]
+
+
+class MPlay(BaseDisplayDriver):
     def open(self):
         # Open a pipe to imdisplay
         #   -p tells imdisplay to read the data from the pipe

@@ -91,7 +91,7 @@ class ParserBase(object):
 			if not b:  # empty => EOF
 				break
 			
-			if b in (b" ", b"\n"):
+			if b in (b" \r\n\t"):
 				if word:
 					break
 			else:

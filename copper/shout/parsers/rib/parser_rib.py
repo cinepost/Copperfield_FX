@@ -42,7 +42,7 @@ class ParserRIB(ParserBase):
 			matrix4x4 = Optional(Suppress("[")) + Group(floatnum4 + floatnum4 + floatnum4 + floatnum4) + Optional(Suppress("]"))
 			array_int = Suppress("[") + Group(OneOrMore(integer)) + Suppress("]")
 			array_float = Suppress("[") + Group(OneOrMore(floatnum)) + Suppress("]")
-			string = QuotedString('"', escChar=None, multiline=True,unquoteResults=True, endQuoteChar=None)
+			string = QuotedString('"', escChar=None, multiline=True, unquoteResults=True, endQuoteChar=None)
 
 			poly_parameterlist = OneOrMore( Dict(Group(string + array_float)))
 

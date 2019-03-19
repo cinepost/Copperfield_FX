@@ -4,6 +4,7 @@ backports.shutil-get-terminal-size==1.0.0
 cffi==1.8.3
 cPyparsing==2.3.2.1.0.0
 cycler==0.10.0
+Cython==0.29.6
 decorator==4.0.10
 enum34==1.1.6
 freetype-py==1.0.2
@@ -38,6 +39,7 @@ python-dateutil==2.5.3
 pytools==2018.3
 pytz==2016.6.1
 simplegeneric==0.8.1
+simplejson==3.16.0
 sip==4.19.8
 six==1.10.0
 traitlets==4.3.1

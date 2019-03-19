@@ -118,7 +118,7 @@ class ParserIFD(ParserBase):
 			ray_time.setParseAction(self.do_ray_time)
 
 			ray_image_name = string
-			ray_image = pp.Keyword('ray_image') + pp.Group(pp.Optional(ray_image_name) + pp.OneOrMore(string | pp.Word(pp.printables)))
+			ray_image = pp.Keyword('ray_image') + ray_image_name + pp.Optional(pp.Group(pp.OneOrMore(string | pp.Word(pp.printables))))
 			ray_image.setParseAction(self.do_ray_image)
 			
 			ray_procedural_bbox = pp.Group(pp.Suppress(pp.Keyword("-m")) + floatnum3 + pp.Suppress(pp.Keyword("-M")) + floatnum3)

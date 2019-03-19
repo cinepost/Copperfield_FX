@@ -2,6 +2,7 @@
     Module to interpret the schema of Houdini's JSON geometry format.
 '''
 from __future__ import print_function
+from functools import reduce
 import os, sys, time
 import numpy
 
@@ -130,7 +131,7 @@ def _rawPageDataToTupleArray(raw, packing, pagesize, constflags, total_tuples):
         else:
             for j in xrange(0, n_tuples):
                 result.append(raw[pv_offsets[0]])
-                pv_offsets = map(operator.add, pv_offsets, pv_steps)
+                pv_offsets = list(map(operator.add, pv_offsets, pv_steps))
 
         consumed = n_varying * n_tuples + (tuple_size - n_varying)
         raw_index += consumed

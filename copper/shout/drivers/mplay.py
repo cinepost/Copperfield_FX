@@ -12,6 +12,7 @@
 # 
 
 import os, struct, time
+import subprocess
 from .base import BaseDisplayDriver
 
 
@@ -39,10 +40,12 @@ class MPlay(BaseDisplayDriver):
         #   -p tells imdisplay to read the data from the pipe
         #   -k tells imdisplay to keep reading data after the image has
         #      been fully written
-        self.fp = os.popen('imdisplay -p -k -n "%s"' % name, 'w')
+        #self.fp = os.popen('imdisplay -p -k -n "%s"' % self._name, mode='w')
+        self.fp = subprocess.Popen(['imdisplay -p -k -n "%s"' % self._name], stdin=subprocess.PIPE)
         # The header is documented in the C code examples
-        header = struct.pack('I'*8, MAGIC, self._xres, self._yres, self._datasize, self._NCHANNELS, 0, 0, 0)
-        self.fp.write(header)
+        header = struct.pack('I'*8, MAGIC, self._xres, self._yres, self._datasize, self._nchannels, 0, 0, 0)
+        #self.fp.write(header)
+        proc.communicate(header)
 
     def close(self):
         # To tell imdisplay that the image has been finished, we send a special

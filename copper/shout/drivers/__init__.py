@@ -1,1 +1,1 @@
-from mplay import MPlay
+from .mplay import MPlay

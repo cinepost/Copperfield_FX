@@ -4,14 +4,12 @@ from ..base import ParserBase
 
 logger = logging.getLogger(__name__)
 
-try:
-	from . import bson
-	logger.debug("Using fast bson cython module !!!")
-except:
-	logger.warning("Using slow binary_json pure python module !!!")
-	from . import binary_json as bson
+from copper.lib import bson
 
 from . import hgeo
+from copper.lib import ubjson
+
+print("_ubjson %s" % ubjson.EXTENSION_ENABLED)
 
 bgeo_grammar = None
 
@@ -31,11 +29,16 @@ class ParserBGEO(ParserBase):
 
 			logger.debug("Parsing stdin json geometry with binary_json.py")
 
+			geo = None
+
 			try:
 				parser = bson.Parser()
 				#handle = MHandle()
-				handle = bson.MHandle()
-				geo = parser.parse(input_stream, handle)
+				handle = bson.JSONHandle()
+				parser.parse(input_stream, handle)
+
+				#geo = ubjson.load(input_stream)
+				#geo = handle.list_stack.pop()[0]
 			except:
 				raise
 
@@ -48,11 +51,11 @@ class ParserBGEO(ParserBase):
 				logger.debug("bgeo json parsed ok!")
 
 				#logger.debug("check with hgeo")
-				#d = hgeo.Detail()
-				#d.loadJSON(jsn)
-				#print('%12d Points' % d.pointCount())
-				#print('%12d Vertices' % d.vertexCount())
-				#print('%12d Primitives' % d.primitiveCount())
+				d = hgeo.Detail()
+				d.loadJSON(geo)
+				print('%12d Points' % d.pointCount())
+				print('%12d Vertices' % d.vertexCount())
+				print('%12d Primitives' % d.primitiveCount())
 
 			else:
 				logger.error("error parsing bgeo!")

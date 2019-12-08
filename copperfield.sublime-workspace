@@ -4,6 +4,110 @@
 		"selected_items":
 		[
 			[
+				"outp",
+				"output_driver"
+			],
+			[
+				"Rea",
+				"ReadCount"
+			],
+			[
+				"N",
+				"None"
+			],
+			[
+				"Par",
+				"ParseError"
+			],
+			[
+				"Error",
+				"Errors"
+			],
+			[
+				"byt",
+				"bytes"
+			],
+			[
+				"co",
+				"command_buff"
+			],
+			[
+				"UT",
+				"UTF-8"
+			],
+			[
+				"att",
+				"attrib_list"
+			],
+			[
+				"fil",
+				"file"
+			],
+			[
+				"de",
+				"debug"
+			],
+			[
+				"di",
+				"dict_stack"
+			],
+			[
+				"appen",
+				"append"
+			],
+			[
+				"li",
+				"list_stack"
+			],
+			[
+				"cur_",
+				"cur_map"
+			],
+			[
+				"E",
+				"Errors"
+			],
+			[
+				"p",
+				"print"
+			],
+			[
+				"logg",
+				"logger"
+			],
+			[
+				"in",
+				"input_stream"
+			],
+			[
+				"par",
+				"parser"
+			],
+			[
+				"Bg",
+				"ParserBGEO"
+			],
+			[
+				"DETAIL",
+				"ray_detail_1"
+			],
+			[
+				"prin",
+				"print"
+			],
+			[
+				"read",
+				"readWordBinary"
+			],
+			[
+				"lin",
+				"line_buf"
+			],
+			[
+				"ifd",
+				"ifd_commands"
+			],
+			[
 				"st",
 				"string"
 			],
@@ -64,10 +168,6 @@
 				"name"
 			],
 			[
-				"in",
-				"int"
-			],
-			[
 				"if",
 				"iface"
 			],
@@ -104,15 +204,7 @@
 				"rib_attribute_end"
 			],
 			[
-				"read",
-				"readed_line"
-			],
-			[
 				"line",
-				"line_buff"
-			],
-			[
-				"lin",
 				"line_buff"
 			],
 			[
@@ -212,10 +304,6 @@
 				"do_ray_declare"
 			],
 			[
-				"ifd",
-				"ifd_grammar"
-			],
-			[
 				"parse",
 				"parseString"
 			],
@@ -240,20 +328,12 @@
 				"mime_type"
 			],
 			[
-				"de",
-				"default"
-			],
-			[
 				"des",
 				"description"
 			],
 			[
 				"add",
 				"add_subparsers"
-			],
-			[
-				"p",
-				"printables"
 			],
 			[
 				"ray_deta",
@@ -434,86 +514,6 @@
 			[
 				"_po",
 				"_poly_count"
-			],
-			[
-				"_pol",
-				"_poly_indices_vbo"
-			],
-			[
-				"obj",
-				"ogl_obj_cache"
-			],
-			[
-				"divs",
-				"divsx"
-			],
-			[
-				"Po",
-				"Point"
-			],
-			[
-				"prim",
-				"primType"
-			],
-			[
-				"parm",
-				"parm_template"
-			],
-			[
-				"class",
-				"classmethod"
-			],
-			[
-				"size",
-				"sizez"
-			],
-			[
-				"half",
-				"halfz"
-			],
-			[
-				"ha",
-				"halfy"
-			],
-			[
-				"d",
-				"divsy"
-			],
-			[
-				"displ",
-				"display_node"
-			],
-			[
-				"dis",
-				"distanceFromTarget"
-			],
-			[
-				"len",
-				"length"
-			],
-			[
-				"ob",
-				"obj_cache"
-			],
-			[
-				"is",
-				"isGuiMode"
-			],
-			[
-				"node_",
-				"node_path"
-			],
-			[
-				"node",
-				"node_name"
-			],
-			[
-				"end",
-				"endl"
-			],
-			[
-				"name",
-				"name_string"
 			]
 		]
 	},
@@ -546,10 +546,154 @@
 			}
 		},
 		{
-			"file": "gui/panels/tree_view_panel.py",
+			"file": "copper/shout/parsers/base.py",
 			"settings":
 			{
-				"buffer_size": 4497,
+				"buffer_size": 3294,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/shout/parsers/rib/parser_rib.py",
+			"settings":
+			{
+				"buffer_size": 4596,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/shout/parsers/ifd/parser_ifd.py",
+			"settings":
+			{
+				"buffer_size": 7255,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/setup.py",
+			"settings":
+			{
+				"buffer_size": 525,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "from distutils.core import setup"
+			}
+		},
+		{
+			"file": "copper/shout/parsers/ifd/parser_bgeo.py",
+			"settings":
+			{
+				"buffer_size": 1313,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/shout/shout.py",
+			"settings":
+			{
+				"buffer_size": 3215,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/lib/bson.pyx",
+			"settings":
+			{
+				"buffer_size": 56747,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/lib/ubjson/markers.py",
+			"settings":
+			{
+				"buffer_size": 1230,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/lib/ubjson/decoder.py",
+			"settings":
+			{
+				"buffer_size": 15404,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/shout/parsers/ifd/hgeo.py",
+			"settings":
+			{
+				"buffer_size": 37080,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/shout/drivers/mplay.py",
+			"settings":
+			{
+				"buffer_size": 2273,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/shout/drivers/__init__.py",
+			"settings":
+			{
+				"buffer_size": 25,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/shout/drivers/base.py",
+			"settings":
+			{
+				"buffer_size": 511,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "test/geometry/untitled.bgeo",
+			"settings":
+			{
+				"buffer_size": 1226,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "test/mantra/test.ifd",
+			"settings":
+			{
+				"buffer_size": 3738,
+				"encoding": "Western (Windows 1252)",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "test/mantra/tmp.ifd",
+			"settings":
+			{
+				"buffer_size": 3331,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "test/mantra/box.asc.ifd",
+			"settings":
+			{
+				"buffer_size": 3596,
 				"line_ending": "Unix"
 			}
 		},
@@ -603,12 +747,30 @@
 		"/Users/max/dev/Copperfield_FX",
 		"/Users/max/dev/Copperfield_FX/bin",
 		"/Users/max/dev/Copperfield_FX/copper",
+		"/Users/max/dev/Copperfield_FX/copper/geometry",
+		"/Users/max/dev/Copperfield_FX/copper/geometry/iotranslators",
+		"/Users/max/dev/Copperfield_FX/copper/geometry/iotranslators/bgeo",
+		"/Users/max/dev/Copperfield_FX/copper/geometry/iotranslators/obj",
+		"/Users/max/dev/Copperfield_FX/copper/lib",
+		"/Users/max/dev/Copperfield_FX/copper/shout",
+		"/Users/max/dev/Copperfield_FX/copper/shout/drivers",
+		"/Users/max/dev/Copperfield_FX/copper/shout/parsers",
+		"/Users/max/dev/Copperfield_FX/copper/shout/parsers/ifd",
+		"/Users/max/dev/Copperfield_FX/copper/shout/parsers/rib",
 		"/Users/max/dev/Copperfield_FX/gui",
 		"/Users/max/dev/Copperfield_FX/gui/panels",
 		"/Users/max/dev/Copperfield_FX/gui/panels/parameters_panel"
 	],
 	"file_history":
 	[
+		"/Users/max/dev/Copperfield_FX/test/mantra/tmp.ifd",
+		"/Users/max/dev/Copperfield_FX/copper/lib/bson.pyx",
+		"/Users/max/dev/Copperfield_FX/copper/lib/bson.pxd",
+		"/Users/max/dev/Copperfield_FX/copper/lib/bson.pyx.dev",
+		"/Users/max/dev/Copperfield_FX/copper/lib/bson.pyx.old",
+		"/Users/max/dev/Copperfield_FX/copper/shout/parsers/ifd/binary_json.py",
+		"/Users/max/dev/Copperfield_FX/test/mantra/hipoly.ifd",
+		"/Users/max/dev/Copperfield_FX/test/mantra/simple.ifd",
 		"/Users/max/dev/shout/src/shout_lib/utils.cpp",
 		"/Users/max/dev/shout/src/shout_lib/utils.h",
 		"/Users/max/dev/shout/src/shout_cmd/shout_cmd.cpp",
@@ -728,15 +890,7 @@
 		"/Users/max/dev/Copperfield_FX/gui/widgets/__init__.py",
 		"/Users/max/dev/Copperfield_FX/gui/dialogs/render_node_dialog.py",
 		"/Users/max/dev/Copperfield_FX/gui/dialogs/__init__.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/parameters_panel/__init__.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/panel_registry.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/base_panel.py",
-		"/Users/max/dev/Copperfield_FX/gui/utils.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/__init__.py",
-		"/Users/max/dev/Copperfield_FX/copper/settings.py",
-		"/Users/max/dev/Copperfield_FX/copper/op/node_type_category.py",
-		"/Users/max/dev/Copperfield_FX/copper/op/node_type.py",
-		"/Users/max/dev/Copperfield_FX/copper/vmath/matrix4.py"
+		"/Users/max/dev/Copperfield_FX/gui/panels/parameters_panel/__init__.py"
 	],
 	"find":
 	{
@@ -755,6 +909,12 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"self._token",
+			"_binaryToken",
+			"Invalid binary token",
+			"cdef",
+			"self.Token",
+			"_rawPageDataToTupleArray",
 			"logging.basicConfig"
 		],
 		"highlight": true,
@@ -763,6 +923,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"self.Token",
+			"self._token",
+			"        ''' Initialize _jValue '''\n        self.Token = token\n        self.Value = value\n        self.Type = 0\n\n    def event(self, parser, key=False):\n        '''\n            Method invoked to send an event to a Handle.  This invokes the\n            appropriate callback on the handle.\n        '''\n        handle = parser.Handle\n        if self.Token == JID_STRING:\n            if key:\n                return handle.jsonKey(parser, self.Value)\n            return handle.jsonString(parser, self.Value)\n        if self.Token == JID_BOOL:\n            return handle.jsonBool(parser, self.Value)\n        if self.Token in {JID_INT8:1,JID_INT16:1,JID_INT32:1,JID_INT64:1}:\n            return handle.jsonInt(parser, self.Value)\n        if self.Token in {JID_UINT8:1,JID_UINT16:1}:\n            return handle.jsonInt(parser, self.Value)\n        if self.Token in {JID_REAL16:1,JID_REAL32:1,JID_REAL64:1}:\n            return handle.jsonReal(parser, self.Value)\n        if self.Token == JID_MAP_BEGIN:\n            return handle.jsonBeginMap(parser)\n        if self.Token == JID_MAP_END:\n            return handle.jsonEndMap(parser)\n        if self.Token == JID_ARRAY_BEGIN:\n            return handle.jsonBeginArray(parser)\n        if self.Token == JID_ARRAY_END:\n            return handle.jsonEndArray(parser)\n        if self.Token == JID_NULL:\n            return handle.jsonNull(parser)\n        if self.Token == JID_UNIFORM_ARRAY:\n            if self.Type == JID_BOOL:"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -773,7 +936,7 @@
 	"groups":
 	[
 		{
-			"selected": 3,
+			"selected": 9,
 			"sheets":
 			[
 				{
@@ -800,10 +963,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 166.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 19,
 					"type": "text"
 				},
 				{
@@ -830,10 +993,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 5.0,
-						"translation.y": 371.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 18,
 					"type": "text"
 				},
 				{
@@ -860,27 +1023,203 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 79.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 17,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "gui/panels/tree_view_panel.py",
-					"semi_transient": true,
+					"file": "copper/shout/parsers/base.py",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4497,
+						"buffer_size": 3294,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								2275,
+								2275
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "copper/shout/parsers/rib/parser_rib.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4596,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1786,
+								1786
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 14,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "copper/shout/parsers/ifd/parser_ifd.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7255,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								85,
+								85
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "copper/setup.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 525,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								480,
+								480
+							]
+						],
+						"settings":
+						{
+							"auto_name": "from distutils.core import setup",
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "copper/shout/parsers/ifd/parser_bgeo.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1313,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								759,
+								759
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "copper/shout/shout.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3215,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2806,
+								2806
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "copper/lib/bson.pyx",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 56747,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9321,
+								9321
 							]
 						],
 						"settings":
@@ -890,14 +1229,306 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1178.0,
+						"translation.y": 5494.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
+					"buffer": 10,
+					"file": "copper/lib/ubjson/markers.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1230,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1041,
+								1041
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "copper/lib/ubjson/decoder.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15404,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								14407,
+								14407
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "copper/shout/parsers/ifd/hgeo.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 37080,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5045,
+								5045
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "copper/shout/drivers/mplay.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2273,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1262,
+								1262
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "copper/shout/drivers/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 25,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6,
+								6
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 15,
+					"file": "copper/shout/drivers/base.py",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 511,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								204,
+								219
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "test/geometry/untitled.bgeo",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1226,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "test/mantra/test.ifd",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3738,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								434,
+								435
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 18,
+					"file": "test/mantra/tmp.ifd",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3331,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								427,
+								427
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 19,
+					"file": "test/mantra/box.asc.ifd",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3596,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								668,
+								668
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				},
+				{
+					"buffer": 20,
 					"semi_transient": false,
 					"settings":
 					{
@@ -963,7 +1594,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 20,
 					"type": "text"
 				}
 			]
@@ -1000,6 +1631,10 @@
 		]
 	},
 	"menu_visible": true,
+	"output.SublimeLinter":
+	{
+		"height": 0.0
+	},
 	"output.find_results":
 	{
 		"height": 0.0

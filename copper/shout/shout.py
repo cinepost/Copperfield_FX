@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import sys
 import timeit
@@ -6,6 +6,10 @@ import argparse
 import logging
 from parsers.base import ParsersRegistry
 from renderers import Renderer
+
+import pyximport
+pyximport.install()
+
 
 logger = logging.getLogger(__name__)
 
@@ -66,11 +70,24 @@ if __name__ == "__main__":
 	logger.debug("scene_filename: %s" % scene_filename)
 	logger.debug("output_image_filename %s" % output_image_filename)
 
+	import cProfile
+	 
+	#pr = cProfile.Profile()
+	#pr.enable()
+
 	renderer = Renderer()
 
 	scene_parser = ParsersRegistry.getParserByExt(args.type or scene_ext or 'ifd')
-	#scene_parser.setRenderer(renderer)
 	scene_parser.parseFile(scene_filename, echo=(args.V > 0))
 
+	#from drivers import MPlay
+	#output_driver = MPlay(800, 600, nchannels=4, datasize=1, name="Test Application")
+	#output_driver.open()
+	#output_driver.close()
+
+	#pr.disable()
+	#pr.print_stats(sort='cumtime')
+
 	stop = timeit.default_timer()
-	logger.info("Time elapsed: %s" % (stop - start))
+	logger.info("Scene read in : %s secs." % (stop - start))
+	print("Scene read in : %s secs." % (stop - start))

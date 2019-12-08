@@ -63,10 +63,10 @@ class Camera(object):
         self.viewportRadiusInPixels = 0.5*widthInPixels if (widthInPixels < heightInPixels) else 0.5*heightInPixels
 
     def buildFrustum(self):
-        tangent = math.tan( self.fov_degrees/2.0 / 180.0 * math.pi )
+        tangent = math.tan( self.fov_degrees / 2.0 / 180.0 * math.pi )
         viewportRadius = self.near_plane * tangent
         if self.viewportWidthInPixels < self.viewportHeightInPixels:
-            viewportWidth = 2.0*viewportRadius
+            viewportWidth = 2.0 *viewportRadius
             viewportHeight = viewportWidth * self.viewportHeightInPixels / float(self.viewportWidthInPixels)
         else:
             viewportHeight = 2.0*viewportRadius

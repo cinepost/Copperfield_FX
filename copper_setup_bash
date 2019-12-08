@@ -17,11 +17,14 @@
 #   To run the script in quiet mode, specify the "-q" option on the
 #   command line.
 #
+VENV=venv
+
+
 if [ ! -d copper  -o  !  -d bin ]; then
     echo "You must cd to the Copperfiled FX installation directory before"
     echo "sourcing this script. This allows the script to determine"
     echo "the installed location."
-elif [ ! -d virtualenv ]; then
+elif [ ! -d $VENV ]; then
         echo "You must first run install.sh from Copperfiled FX installation"
         echo "directory to install all thirdparty packages and libraries. Then"
         echo "source copper_setup to start using amazing piece of art."
@@ -32,7 +35,7 @@ elif [ ! -d virtualenv ]; then
             . ./copper.install
         fi
 else
-    source virtualenv3/bin/activate
+    source $VENV/bin/activate
 
     export COPPER_HOME="$PWD"
 

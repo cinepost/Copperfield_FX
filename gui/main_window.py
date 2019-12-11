@@ -32,7 +32,8 @@ class Workarea(QtWidgets.QWidget):
         panel_mgr_1 = TabbedPanelManager(self)
         panel_mgr_1.addNewPaneTabByType("SceneViewPanel")
         panel_mgr_1.addNewPaneTabByType("CompositeViewPanel")
-        panel_mgr_1.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Expanding))
+        #panel_mgr_1.addNewPaneTabByType("PythonShellPanel")
+        panel_mgr_1.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))
         panel_mgrs += [panel_mgr_1]
 
         panel_mgr_2 = TabbedPanelManager(self)
@@ -43,7 +44,6 @@ class Workarea(QtWidgets.QWidget):
         panel_mgr_3 = TabbedPanelManager(self)
         panel_mgr_3.addNewPaneTabByType("NetworkViewPanel")
         panel_mgr_3.addNewPaneTabByType("TreeViewPanel")
-        #panelMgr3.addNewPaneTabByType("PythonShellPanel")
         panel_mgr_3.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
         panel_mgrs += [panel_mgr_3]        
 
@@ -113,9 +113,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.setStyleSheet(fh.read())
 
     def initUI(self):
-        self.setMinimumWidth(740)
-        self.setMinimumHeight(540)
-        self.resize(1400, 900)
+        self.setMinimumWidth(960)
+        self.setMinimumHeight(640)
+        self.resize(1800, 1000)
         self.workarea = Workarea(self)
         self.setCentralWidget(self.workarea)
 

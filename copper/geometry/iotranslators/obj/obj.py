@@ -18,7 +18,7 @@ class ObjIO(GeoBaseIO):
 		normals = []
 		texcoords = []
 		faces = []
- 
+
 		material = None
 		for line in open(filename, "r"):
 			if line.startswith('#'): continue
@@ -26,12 +26,13 @@ class ObjIO(GeoBaseIO):
 			if not values: continue
 			if values[0] == 'v':
 				# read vertex data
-				geometry._points.append(map(float, values[1:4]))
+				#vertices.append(list(map(numpy.float32, values[1:4])))
+				geometry._points.append(values[1:4])
 			elif values[0] == 'vn':
 				# read vertex normal data
 				if swapyz:
-					v = v[0], v[2], v[1]
-				geometry._normals.append(map(float, v[1:4]))
+					values[1:4] = values[1], values[3], values[2]
+				normals.append(map(numpy.float32, values[1:4]))
 			elif values[0] == 'vt':
 				# read vertex texture coordinates
 				texcoords.append(map(numpy.float64, values[1:3]))
@@ -45,22 +46,22 @@ class ObjIO(GeoBaseIO):
 				pass
 			elif values[0] == 'f':
 				# read face/primitive information
-				#face = []
-				#texcoords = []
-				#norms = []
-				#for v in values[1:]:
-				#	w = v.split('/')
-				#	face.append(int(w[0]))
-				#	if len(w) >= 2 and len(w[1]) > 0:
-				#		texcoords.append(int(w[1]))
-				#	else:
-				#		texcoords.append(0)
-				#	if len(w) >= 3 and len(w[2]) > 0:
-				#		norms.append(int(w[2]))
-				#	else:
-				#		norms.append(0)
-				#faces.append((face, norms, texcoords, material))
- 				pass
+				face = []
+				texcoords = []
+				norms = []
+				for v in values[1:]:
+					w = v.split('/')
+					face.append(int(w[0]))
+					if len(w) >= 2 and len(w[1]) > 0:
+						texcoords.append(int(w[1]))
+					else:
+						texcoords.append(0)
+					if len(w) >= 3 and len(w[2]) > 0:
+						norms.append(int(w[2]))
+					else:
+						norms.append(0)
+				faces.append((face, norms, texcoords, material))
+				pass
 
 	@staticmethod
 	def saveGeometry(filename, geometry, swapyz=False):

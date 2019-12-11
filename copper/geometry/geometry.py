@@ -6,6 +6,20 @@ from copper.vmath import Vector3
 from .primitive import Point, Polygon
 from copper.geometry.iotranslators.base import GeoIORegistry
 
+
+class FrozenGeometryMedifyExcpetion(Exception):
+	def __init__(self):
+		Exception.__init__(self, "Cannot modify frozen geometry !") 
+
+def check_frozen(f):
+	def wrapper(*args):
+		if args[0]._frozen:
+			raise FrozenGeometryMedifyExcpetion()
+		
+		return f(*args)
+	
+	return wrapper
+
 class Geometry(object):
 	def __init__(self, sop_node=None):
 		self._sop_node = sop_node
@@ -35,6 +49,9 @@ class Geometry(object):
 		self._points.append([0,0,0])
 		return Point(self, len(self._points)-1)
 
+	def appendPoint(self, x, y, z):
+		self._points.append([x, y, z])
+
 
 	def sopNode(self):
 		return self._sop_node
@@ -53,9 +70,10 @@ class Geometry(object):
 			frozen_geo._frozen = True
 			return frozen_geo
 
-
+	@check_frozen
 	def loadFromFile(self, file_name):
 		name, extension = os.path.splitext(file_name)
+		self.clear()
 		GeoIORegistry.getIOTranslatorByExt(extension).readGeometry(file_name, self)
 
 

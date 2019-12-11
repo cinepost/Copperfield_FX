@@ -18,6 +18,8 @@ class NetworkViewWidget(QtWidgets.QGraphicsView):
         self.setMouseTracking(True)
         self.setInteractive(True) 
 
+        self.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.Expanding))
+
         ## No need to see scroll bars in flow editor
         self.setHorizontalScrollBarPolicy ( QtCore.Qt.ScrollBarAlwaysOff )
         self.setVerticalScrollBarPolicy ( QtCore.Qt.ScrollBarAlwaysOff )
@@ -35,6 +37,9 @@ class NetworkViewWidget(QtWidgets.QGraphicsView):
         ## Connect panel signals
         self.parent().signals.copperNodeCreated[str].connect(self.copperNodeCreated)
         self.parent().signals.copperNodeSelected[str].connect(self.copperNodeSelected)
+
+    def sizeHint(self):
+        return QtCore.QSize(200, 200)
 
     @QtCore.pyqtSlot(str)
     def copperNodeCreated(self, node_path):

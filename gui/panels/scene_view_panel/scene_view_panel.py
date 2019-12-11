@@ -46,8 +46,10 @@ class SceneViewPanel(NetworkPanel):
 
         self.views_layout = QtWidgets.QBoxLayout(QtWidgets.QBoxLayout.LeftToRight)
         self.views_layout.setSpacing(2)
-        self.addLayout(self.views_layout)
+        self.views_layout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self.addWidget(self.display_options)
+        self.addLayout(self.views_layout)
+        
 
         # layout switching button
         self.layouts_button = QtWidgets.QPushButton("Layouts", self)

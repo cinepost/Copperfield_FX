@@ -30,6 +30,11 @@ class CollapsableWidget(QtWidgets.QFrame):
 		self.setLayout(self.layout)
 		self.setArrow()
 
+		if direction == QtWidgets.QBoxLayout.LeftToRight:
+			self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+		else:
+			self.setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
+
 		self.setObjectName("collapsable")
 
 	def addWidget(self, widget):

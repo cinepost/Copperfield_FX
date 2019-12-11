@@ -1,12 +1,19 @@
 import six
 import inspect 
+import logging
 
 from PyQt5 import QtCore
 
+
+logger = logging.getLogger(__name__)
+
 class PanelRegistryMeta(type):
     def __getitem__(meta, key):
-        return meta._registry[key]
+        if key in meta._registry.keys():
+            return meta._registry[key]
 
+        logger.error("Error getting panel class \"%s\" from panel registry!!!" % key)
+        return None
 
 @six.add_metaclass(PanelRegistryMeta)
 class PanelRegistry(type(QtCore.QObject)):

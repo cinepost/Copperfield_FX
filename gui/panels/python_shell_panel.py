@@ -1,7 +1,8 @@
-import os, sys, logging
+import os, sys, logging, re
 import code
 
 from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtCore import Qt
 
 from copper import hou
 from .base_panel import BasePanel
@@ -10,10 +11,13 @@ from .python_syntax_highlighter import PythonHighlighter
 
 logger = logging.getLogger(__name__)
 
+
 class PythonShellPanel(BasePanel):
     def __init__(self):
         BasePanel.__init__(self)
         self.python_shell_widget = PythonShellWidget(self)
+        self.syntax = PythonHighlighter(self.python_shell_widget.document())
+
         self.addWidget(self.python_shell_widget)
 
     @classmethod
@@ -24,12 +28,14 @@ class PythonShellPanel(BasePanel):
     def hasNetworkControls(cls):
         return False
 
+
 class PythonShellWidget(QtWidgets.QTextEdit):
 
     class InteractiveInterpreter(code.InteractiveInterpreter):
         def __init__(self, locals):
             code.InteractiveInterpreter.__init__(self, locals)
         def runIt(self, command):
+            logger.debug("run cmd: %s" % command)
             code.InteractiveInterpreter.runsource(self, command)
 
     def __init__(self,  parent):
@@ -49,11 +55,11 @@ class PythonShellWidget(QtWidgets.QTextEdit):
 
         # initilize interpreter with self locals
         self.initInterpreter(locals())
-
+    
     def printBanner(self):
         self.write(sys.version)
         self.write(' on ' + sys.platform + '\n')
-        self.write('CopperFX python interpreter on PyQt ' + PYQT_VERSION_STR + '\n')
+        self.write('CopperFX python interpreter on PyQt ' + QtCore.PYQT_VERSION_STR + '\n')
         msg = 'Type !hist for a history view and !hist(n) history index recall'
         self.write(msg + '\n')
 
@@ -134,7 +140,6 @@ class PythonShellWidget(QtWidgets.QTextEdit):
         return False
 
     def keyPressEvent(self, event):
-
         if event.key() == Qt.Key_Escape:
             # proper exit
             self.interpreter.runIt('exit()')

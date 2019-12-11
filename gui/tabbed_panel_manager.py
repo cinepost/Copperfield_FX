@@ -1,6 +1,8 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from copper import parameter
 
+from .panels.panel_registry import PanelRegistry
+
 class TabbedPanelManager(QtWidgets.QFrame):
     def __init__(self, parent=None):      
         QtWidgets.QFrame.__init__(self, parent)
@@ -83,11 +85,12 @@ class TabbedPanelManager(QtWidgets.QFrame):
 
     @QtCore.pyqtSlot()
     def addNewPaneTabByType(self, panel_type_name):
-        from .panels.panel_registry import PanelRegistry
+        panelWidgetClass = PanelRegistry[panel_type_name]
         
-        panelWidget = PanelRegistry[panel_type_name]()
-        tab_index = self._addPanel(panelWidget, panelWidget.panelTypeName())
-        self.tabs.tabBar().setCurrentIndex(tab_index)
+        if panelWidgetClass:
+            panelWidget = panelWidgetClass()
+            tab_index = self._addPanel(panelWidget, panelWidget.panelTypeName())
+            self.tabs.tabBar().setCurrentIndex(tab_index)
 
     def setActive(self, index):
         self.tabs.setCurrentIndex(index)
@@ -106,7 +109,8 @@ class TabbedPanelManager(QtWidgets.QFrame):
 
         for panel_type_name in PanelRegistry._registry:
             action = new_tab_type_submenu.addAction(PanelRegistry._registry[panel_type_name].panelTypeName())
-            action.triggered.connect(lambda arg=panel_type_name: self.addNewPaneTabByType(arg))
+            action.setCheckable(False)
+            action.triggered.connect(lambda checked, arg=panel_type_name: self.addNewPaneTabByType(arg))
 
         self.plus_button_menu.addSeparator()
         currentTabIndex = self.tabs.currentIndex()
@@ -115,6 +119,6 @@ class TabbedPanelManager(QtWidgets.QFrame):
             action.setCheckable(True)
             if index is currentTabIndex:
                 action.setChecked(True)
-            action.triggered.connect(lambda arg=index: self.setActive(arg))
+            action.triggered.connect(lambda checked, arg=index: self.setActive(arg))
 
 

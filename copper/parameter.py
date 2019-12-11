@@ -1,10 +1,13 @@
 import logging
-logger = logging.getLogger(__name__)
+
+from PyQt5 import QtCore
 
 from collections import OrderedDict
 from .copper_string import CopperString
 
 from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
+
+logger = logging.getLogger(__name__)
 
 CopperLinear = 0
 CopperBezier = 2
@@ -53,6 +56,13 @@ class CopperKeyframe(object):
 	def __repr__(self):
 		return "<CopperKeyframe: t:%s v:%s>"	% (self.t, self.v)				
 
+
+class ParmSignals(QtCore.QObject):
+	parameterChanged = QtCore.pyqtSignal()
+
+	def __init__(self):  
+		QtCore.QObject.__init__(self)
+
 		
 class CopperParameter(object):
 	def __init__(self, node, name, parm_template, default_value=None, callback = None, spare=True):
@@ -62,6 +72,8 @@ class CopperParameter(object):
 		self._name = name
 		self._parm_template = parm_template
 		self._spare = spare
+
+		self.signals = ParmSignals()
 
 	def isSpare(self):
 		return self._spare
@@ -104,10 +116,10 @@ class CopperParameter(object):
 		self.node.invalidate()
 		# call this method to force recook node. e.g. parameter changed
 
-	def set(self, value):
-		self.value = value
-		self.invalidateNode()
-		logger.debug("Parameter value set to: %s of type %s" % (self.value, type(self.value)))
+	#def set(self, value):
+	#	self.value = value
+	#	self.invalidateNode()
+	#	logger.debug("Parameter value set to: %s of type %s" % (self.value, type(self.value)))
 
 	def animated(self):
 		if self.__keyframes__:
@@ -202,6 +214,7 @@ class CopperParameter(object):
 				# Constant parameter
 				self.value = value
 
+		self.signals.parameterChanged.emit() # emit signal to GUI
 		self.node().setModified(True) # This is important ! We need to say node that it needs to recook itself when needed, because some parameter was changed
 				
 	def setKeyframe(self, keyframe):

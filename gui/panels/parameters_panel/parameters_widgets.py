@@ -23,10 +23,12 @@ class ParameterBaseWidget(QtWidgets.QWidget):
 		self.layout.setContentsMargins(0, 0, 0, 0)
 		self.setLayout(self.layout)
 
+		# connect signals
 		self.signals.valueChanged.connect(self.parmChanged)
+		self.parm.signals.parameterChanged.connect(self.updateWidget) # sent by CopperParameter
 
-	def _lineEditChanged(self):
-		self._line_edit_changed = True
+	def updateWidget(self):
+		pass # TODO: raise uniplemented exception
 
 	@QtCore.pyqtSlot(object)
 	def parmChanged(self, value):
@@ -39,10 +41,6 @@ class ParameterBaseWidget(QtWidgets.QWidget):
 			self.parm.set(str(value))
 		elif parm_type is ParmTemplateType.Menu:
 			self.parm.set(int(value))
-
-	@QtCore.pyqtSlot()
-	def setParmValueInt(self, value):
-		self.parm.set(value)
 
 	'''
 	Handle drop event. Validate dropped data and set parameter.
@@ -58,22 +56,31 @@ class ParameterBaseWidget(QtWidgets.QWidget):
 		return QtWidgets.QWidget.eventFilter(self, source, event) # propagate event
 
 
-class ParameterFloatWidget(ParameterBaseWidget):
+class ParameterNumericalBaseWidget(ParameterBaseWidget):
 	def __init__(self, parent, parm):
 		ParameterBaseWidget.__init__(self, parent, parm)
-		self.resolution = 1000
-		self.slider = None
-		self.line_edit = QtWidgets.QLineEdit(str(self.parm.evalAsFloat())) 
-		self.line_edit.setMinimumWidth(60)
-		self.layout.addWidget(self.line_edit)
 
-		if parm.parmTemplate().numComponents() == 1:
+		parm_template = self.parm.parmTemplate()
+
+		if parm_template.type() is ParmTemplateType.Int:
+			self.slider_resolution = 1
+		else:
+			self.slider_resolution = 1000
+
+		self.line_edit = QtWidgets.QLineEdit(self.calcLineEditValueFromParm())
+		self.line_edit.setMinimumWidth(60)
+		self.line_edit_needs_update = False
+		self.layout.addWidget(self.line_edit)
+		self.slider = None
+
+		if self.parm.parmTemplate().numComponents() == 1:
 			self.line_edit.setMaximumWidth(140)
+			self.slider_needs_update = False
 			self.slider = QtWidgets.QSlider(self)
 			self.slider.setOrientation(QtCore.Qt.Horizontal)
-			self.slider.setMinimum(self.parm.parmTemplate().min() * self.resolution)
-			self.slider.setMaximum(self.parm.parmTemplate().max() * self.resolution)
-			self.slider.setValue(self.parm.evalAsFloat() * self.resolution)
+			self.slider.setMinimum(parm_template.min() * self.slider_resolution)
+			self.slider.setMaximum(parm_template.max() * self.slider_resolution)
+			self.slider.setValue(self.calcSliderValueFromParm())
 			self.slider.setSingleStep(1)
 			self.slider.setTracking(True)
 			self.slider.sliderMoved[int].connect(self.processSlider)
@@ -81,54 +88,44 @@ class ParameterFloatWidget(ParameterBaseWidget):
 
 		# connect signals
 		self.line_edit.editingFinished.connect(self.processLineEdit)
-		self.line_edit.textChanged.connect(self._lineEditChanged)
+		#self.line_edit.textChanged.connect(self._lineEditChanged)
 
+	def calcLineEditValueFromParm(self):
+		return str(self.parm.eval())
+
+	def calcSliderValueFromParm(self):
+		return self.parm.eval() * self.slider_resolution
+
+	@QtCore.pyqtSlot()
+	def updateWidget(self):
+		if self.line_edit_needs_update:
+			self.line_edit.setText(self.calcLineEditValueFromParm())
+			self.line_edit_needs_update = False
+
+		if self.slider_needs_update and self.slider:
+			self.slider.setValue(self.calcSliderValueFromParm())
+			self.slider_needs_update = False
+
+	@QtCore.pyqtSlot(int)
 	def processSlider(self, value):
+		self.line_edit_needs_update = True
 		value = self.slider.value()
-		self.line_edit.setText(str(float(value)/self.resolution))
-		self.signals.valueChanged.emit(float(value)/self.resolution)
+		self.signals.valueChanged.emit(float(value)/self.slider_resolution)
 
+	@QtCore.pyqtSlot()
 	def processLineEdit(self):
+		self.slider_needs_update = True
 		value = self.line_edit.text()
-		if self.slider:
-			self.slider.setValue(float(value)*self.resolution)
-
 		self.signals.valueChanged.emit(value)
-			
-class ParameterIntWidget(ParameterBaseWidget):
+
+class ParameterFloatWidget(ParameterNumericalBaseWidget):
 	def __init__(self, parent, parm):
-		ParameterBaseWidget.__init__(self, parent, parm)
-		self.slider = None
-		self.line_edit = QtWidgets.QLineEdit(str(self.parm.evalAsInt())) 
-		self.line_edit.setMinimumWidth(60)
-		self.layout.addWidget(self.line_edit)
+		ParameterNumericalBaseWidget.__init__(self, parent, parm)
 
-		if parm.parmTemplate().numComponents() == 1:
-			self.line_edit.setMaximumWidth(140)
-			self.slider = QtWidgets.QSlider(self)
-			self.slider.setOrientation(QtCore.Qt.Horizontal)
-			self.slider.setMinimum(parm.parmTemplate().min())
-			self.slider.setMaximum(parm.parmTemplate().max())
-			self.slider.setValue(self.parm.evalAsInt())
-			self.slider.setTracking(True)
-			self.slider.setTickInterval(1)
-			self.slider.setTickPosition(QtWidgets.QSlider.TicksBelow)
-			self.slider.sliderMoved[int].connect(self.processSlider)
-			self.layout.addWidget(self.slider)
 
-		# connect signals
-		self.line_edit.editingFinished.connect(self.processLineEdit)
-
-	def processSlider(self, value):
-		self.line_edit.setText(str(value))
-		self.signals.valueChanged.emit(value)
-
-	def processLineEdit(self):
-		value = self.line_edit.text()
-		if self.slider: 
-			self.slider.setValue(value)
-
-		self.signals.valueChanged.emit(value)
+class ParameterIntWidget(ParameterNumericalBaseWidget):
+	def __init__(self, parent, parm):
+		ParameterNumericalBaseWidget.__init__(self, parent, parm)
 
 
 class ParameterToggleWidget(ParameterBaseWidget):
@@ -220,7 +217,7 @@ class ParameterStringWidget(ParameterBaseWidget):
 			self.layout.addWidget(self.op_path_button)	
 
 		# connect signals
-		self.line_edit.editingFinished.connect(self.parmChanged)
+		self.line_edit.editingFinished.connect(self.processLineEdit)
 
 	def processLineEdit(self):
 		value = self.line_edit.text()

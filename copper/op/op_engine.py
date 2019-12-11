@@ -57,8 +57,13 @@ class OP_Engine(OP_Network, ROOT_Types): # This is actually root node e.g.
 				self._devices = None	
 			
 		if self._devices:		
+<<<<<<< HEAD
 			self.cl_path = cl_path
 			self.cl_mode = True
+=======
+			self.cl_path 	= cl_path
+			self.cl_mode 	= True
+>>>>>>> f491cb0099a6caff6cd7a553f4ffa1e53f14a017
 			logger.info("Using Open_CL.")
 		else:
 			logger.error("NO OPEN_CL CAPABLE DEVICE FOUND !!!")

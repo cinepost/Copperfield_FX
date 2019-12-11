@@ -84,7 +84,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if not hou.have_gl:
             logger.warning("OpenCL - OpenGL interoperability not supported !!!")
-            #exit()
 
         self.initUI()
 

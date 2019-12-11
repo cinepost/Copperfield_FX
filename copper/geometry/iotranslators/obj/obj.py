@@ -8,7 +8,7 @@ class ObjIO(GeoBaseIO):
 	@classmethod
 	def registerMIMETypes(cls):
 		return [
-			['application/wobj', 'obj'],
+			['application/wobj', '.obj'],
 		]
 
 	@staticmethod 

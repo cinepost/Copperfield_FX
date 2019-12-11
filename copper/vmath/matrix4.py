@@ -114,6 +114,12 @@ class Matrix4:
         return M
 
     @staticmethod
+    def scale( sx, sy, sz, originPoint=None):
+        M = Matrix4(1) # identity matrix
+        M.m[:3,:3] *= [sx, sy, sz]
+        return M
+
+    @staticmethod
     def uniformScale( scaleFactor, originPoint ):
         v = originPoint.asVector3()
         return Matrix4.translation(v) * Matrix4.uniformScaleAroundOrigin(scaleFactor) * Matrix4.translation(- v)

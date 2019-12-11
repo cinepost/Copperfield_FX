@@ -122,8 +122,9 @@ class PathBarWidget(QtWidgets.QFrame):
                 btn.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
 
                 menu = QtWidgets.QMenu()
-                menu.addAction('This is Action 1')
-                menu.addAction('This is Action 2')
+                for child in node.parent().children():
+                    menu.addAction(child.name())
+
                 btn.setMenu(menu)
 
                 self.path_layout.addWidget(btn)

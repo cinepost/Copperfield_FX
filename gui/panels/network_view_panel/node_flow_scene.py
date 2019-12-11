@@ -88,7 +88,8 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
     def selectNode(self, node_path):
         if node_path not in self.nodes_map:
             # If node is not in map we need to rebuild visual network
-            self.buildNetworkLevel(engine.node(node_path).parent().path())
+            node = engine.node(node_path)
+            self.buildNetworkLevel(node.parent().path())
 
         # highlight selected node
         self.nodes_map[node_path].select()
@@ -115,4 +116,4 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
 
     def addOperator(self, action):
         network_node = engine.node(self.network_level)
-        network_node.createNode(action.data().toPyObject())
+        network_node.createNode(action.data())

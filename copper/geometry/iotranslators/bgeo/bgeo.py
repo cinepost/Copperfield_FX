@@ -7,8 +7,8 @@ class BgeoIO(GeoBaseIO):
 	@classmethod
 	def registerMIMETypes(cls):
 		return [
-			['application/houdini', 'geo'],
-			['application/houdini', 'bgeo']
+			['application/houdini', '.geo'],
+			['application/houdini', '.bgeo']
 		]
 
 	@staticmethod 

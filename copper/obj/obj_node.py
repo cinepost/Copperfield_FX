@@ -49,6 +49,9 @@ class OBJ_Node(OP_Network):
 
 
 	def worldTransform(self):
+		x_ord = self.parm('xOrd').evalAsString()
+		r_ord = self.parm('rOrd').evalAsString()
+
 		tx = self.parm('tx').evalAsFloat()
 		ty = self.parm('ty').evalAsFloat()
 		tz = self.parm('tz').evalAsFloat()
@@ -59,6 +62,37 @@ class OBJ_Node(OP_Network):
 		ry = self.parm('ry').evalAsFloat()
 		rz = self.parm('rz').evalAsFloat()
 
+		if r_ord == 'xzy':
+			rx, ry, rz = rx, rz, ry
+		elif r_ord == 'yxz':
+			rx, ry, rz = ry, rx, rz
+		elif r_ord == 'yzx':
+			rx, ry, rz = ry, rz, rx
+		elif r_ord == 'zxy':
+			rx, ry, rz = rz, rx, ry
+		elif r_ord == 'zyx':
+			rx, ry, rz = rz, ry, rx
+
 		Mr = Matrix4.eulerToMatrixDegrees(rx, ry, rz)
 
-		return Mr * Mt
+		u_scale = self.parm('scale').evalAsFloat()
+		sx = self.parm('sx').evalAsFloat()
+		sy = self.parm('sy').evalAsFloat()
+		sz = self.parm('sz').evalAsFloat()
+
+		Ms = Matrix4.scale(sx, sy, sz)
+
+		t_mat = Ms * Mr * Mt
+
+		if x_ord == 'str':
+			t_mat = Ms * Mt * Mr
+		elif x_ord == 'rst':
+			t_mat = Mr * Ms * Mt
+		elif x_ord == 'rts':
+			t_mat = Mr * Mt * Ms
+		elif x_ord == 'tsr':
+			t_mat = Mt * Ms * Mr
+		elif x_ord == 'trs':
+			t_mat = Mt * Mr * Ms
+
+		return t_mat

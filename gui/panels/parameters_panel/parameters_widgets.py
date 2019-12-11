@@ -1,3 +1,4 @@
+import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 from gui.signals import signals
@@ -200,8 +201,8 @@ class ParameterStringWidget(ParameterBaseWidget):
 		self.line_edit.editingFinished.connect(self.parmChanged)
 
 	def BrowseFile(self, lineEdit):
-		file_name = QtWidgets.QFileDialog.getOpenFileName()
-		self.line_edit.setText(file_name)
+		file_path, wildcard = QtWidgets.QFileDialog.getOpenFileName()
+		self.line_edit.setText(file_path)
 		self.valueChanged.emit()
 
 	def BrowseOp(self, lineEdit):

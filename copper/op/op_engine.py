@@ -40,7 +40,7 @@ class OP_Engine(OP_Network, ROOT_Types): # This is actually root node e.g.
 		self._cl_ctx = None
 		self._cl_queue = None
 
-		logging.debug("Initializing engine of type %s" % device_type)
+		logger.debug("Initializing engine of type %s" % device_type)
 		self._devices = []
 		platforms = cl.get_platforms()
 		for platform in platforms:
@@ -57,8 +57,8 @@ class OP_Engine(OP_Network, ROOT_Types): # This is actually root node e.g.
 				self._devices = None	
 			
 		if self._devices:		
-			self.cl_path 	= cl_path
-			self.cl_mode 	= True
+			self.cl_path = cl_path
+			self.cl_mode = True
 			logger.info("Using Open_CL.")
 		else:
 			logger.error("NO OPEN_CL CAPABLE DEVICE FOUND !!!")
@@ -109,11 +109,14 @@ class OP_Engine(OP_Network, ROOT_Types): # This is actually root node e.g.
 
 	def openclContext(self, device_index=0):
 		if not self._cl_ctx:
+			cl_context_properties = []
+			if self.have_gl:
+				cl_context_properties += get_gl_sharing_context_properties()
 			if device_index:
-				self._cl_ctx = cl.Context(	properties=get_gl_sharing_context_properties(),
+				self._cl_ctx = cl.Context(	properties=cl_context_properties,
 										devices = [self._devices[device_index]])
-			else:	
-				self._cl_ctx = cl.Context(	properties=get_gl_sharing_context_properties(),
+			else:
+				self._cl_ctx = cl.Context(	properties=cl_context_properties,
 										devices = self._devices)
 
 			logger.debug("OpenCL context created: %s" % self._cl_ctx)

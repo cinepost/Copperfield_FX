@@ -13,7 +13,7 @@ __kernel void fast_blur_h(
 	float4 sum = read_imagef(image_in, sampler, sample_coord); // central pixel of a blur kernel
 
     if(blur_diameter > 0.0f) {
-    	float blur_radius_in_pixels = img_width * (blur_diameter / 2.0);
+    	float blur_radius_in_pixels = img_width * (blur_diameter / 2.0f);
 		int side_samples = floor(blur_radius_in_pixels); // half number of full samples, e.g. for a blur diameter 5.2 pixels side_samples would be 2.
 
 		float total_weights = 1.f; // the weight of a central sample
@@ -23,8 +23,8 @@ __kernel void fast_blur_h(
 		for(int i = 1; i <= side_samples; i++){
 			sample_weight = (side_samples - i) / blur_radius_in_pixels;
 			total_weights += sample_weight * 2;
-			sum += read_imagef(image_in, sampler, sample_coord + (float2)(i, 0)) * sample_weight;
-			sum += read_imagef(image_in, sampler, sample_coord - (float2)(i, 0)) * sample_weight;
+			sum += read_imagef(image_in, sampler, sample_coord + (float2)(i, 0.0f)) * sample_weight;
+			sum += read_imagef(image_in, sampler, sample_coord - (float2)(i, 0.0f)) * sample_weight;
 		}
 
     	sum /= total_weights;
@@ -47,7 +47,7 @@ __kernel void fast_blur_v(
 	float4 sum = read_imagef(image_in, sampler, sample_coord); // central pixel of a blur kernel
 
     if(blur_diameter > 0.0f) {
-    	float blur_radius_in_pixels = img_height * (blur_diameter / 2.0);
+    	float blur_radius_in_pixels = img_height * (blur_diameter / 2.0f);
 		int side_samples = floor(blur_radius_in_pixels); // half number of full samples, e.g. for a blur diameter 5.2 pixels side_samples would be 2.
 
 		float total_weights = 1.f; // the weight of a central sample
@@ -57,8 +57,8 @@ __kernel void fast_blur_v(
 		for(int i = 1; i <= side_samples; i++){
 			sample_weight = (side_samples - i) / blur_radius_in_pixels;
 			total_weights += sample_weight * 2;
-			sum += read_imagef(image_in, sampler, sample_coord + (float2)(0 , i)) * sample_weight;
-			sum += read_imagef(image_in, sampler, sample_coord - (float2)(0 , i)) * sample_weight;
+			sum += read_imagef(image_in, sampler, sample_coord + (float2)(0.0f , i)) * sample_weight;
+			sum += read_imagef(image_in, sampler, sample_coord - (float2)(0.0f , i)) * sample_weight;
 		}
 
     	sum /= total_weights;

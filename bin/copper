@@ -34,7 +34,7 @@ def parse_command_line(argv):
 
 if __name__ == '__main__':
     """Main program. Sets up logging and do some work."""
-    logging.basicConfig(stream=sys.stderr, level=logging.WARNING,
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
                         format='%(name)s (%(levelname)s): %(message)s')
 
     try:

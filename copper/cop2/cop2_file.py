@@ -13,6 +13,8 @@ from copper import parameter
 
 from copper.parm_template import *
 
+logger = logging.getLogger(__name__)
+
 class COP2_File(COP2_Node):
 	
 	class NodeType(NodeTypeBase):
@@ -72,6 +74,7 @@ class COP2_File(COP2_Node):
 		return False
 
 	def loadJPG(self, filename, cl_context):
+		logger.debug("Loading jpg image %s" % filename)
 		img = Image.open(filename).convert("RGBA")
 		im = numpy.asarray(img)
 		
@@ -93,17 +96,23 @@ class COP2_File(COP2_Node):
 		b = numpy.array(im[:,:,2],dtype=numpy.uint8)
 		a = numpy.array(im[:,:,3],dtype=numpy.uint8)
 
-		self.devInBufferR = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), 
+		self.devInBufferR = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.R, cl.channel_type.UNORM_INT8), 
 			shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=r)
+		#self.devInBufferR = cl.image_from_array(cl_context, r, num_channels=1)
+		#self.devInBufferG = cl.image_from_array(cl_context, g, num_channels=1)
+		#self.devInBufferB = cl.image_from_array(cl_context, b, num_channels=1)
+		#self.devInBufferA = cl.image_from_array(cl_context, a, num_channels=1)
 		
-		self.devInBufferG = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), 
+		self.devInBufferG = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.R, cl.channel_type.UNORM_INT8), 
 			shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=g)
 		
-		self.devInBufferB = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), 
+		self.devInBufferB = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.R, cl.channel_type.UNORM_INT8), 
 			shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=b)
 		
-		self.devInBufferA = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.UNORM_INT8), 
+		self.devInBufferA = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.R, cl.channel_type.UNORM_INT8), 
 			shape=(self.source_width, self.source_height,), pitches=(self.source_width,), hostbuf=a)
+
+		logger.debug("Jpg image %s loaded" % filename)
 
 	def loadEXR(self, filename, cl_context):
 		import OpenEXR
@@ -165,9 +174,10 @@ class COP2_File(COP2_Node):
 		self.image_height = self.parm("size2").eval()
 
 		if os.path.isfile(imagefile):	 
-			ext = imagefile.split(".")[-1]
+			ext = imagefile.rsplit(".")[-1]
 			if ext.lower() in ["jpg", "jpeg", "png"]:
 				self.loadJPG(imagefile, cl_context)
+				logger.debug("Creating compute image for %s image" % ext)
 				self.devOutBuffer = cl.Image(cl_context, cl.mem_flags.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
 				exec_evt = self.program.run_jpg(cl_queue, (self.image_width, self.image_height), None, 
 					self.devInBufferR, # red channel buffer
@@ -184,6 +194,7 @@ class COP2_File(COP2_Node):
 
 			elif ext.lower() == "exr":
 				self.loadEXR(imagefile, cl_context)
+				logger.debug("Creating compute image for %s image" % ext)
 				self.devOutBuffer = cl.Image(cl_context, cl.mem_flags.READ_WRITE, self.image_format, shape=(self.image_width, self.image_height))
 				exec_evt = self.program.run_exr(cl_queue, (self.image_width, self.image_height), None, 
 					self.devInBufferR, # red channel buffer

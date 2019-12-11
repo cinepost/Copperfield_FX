@@ -11,10 +11,10 @@ __kernel void run_jpg(	__read_only image2d_t img_in_r,
 	float2 coord = (float2)((float)x / (float)out_width, (float)y / (float)out_height);
 	float4 val = 1.0f;
 
-		val.w = read_imagef(img_in_a, sampler, coord).x;
-		val.x = read_imagef(img_in_r, sampler, coord).x * val.w;
-		val.y = read_imagef(img_in_g, sampler, coord).x * val.w;
-		val.z = read_imagef(img_in_b, sampler, coord).x * val.w;
+		val.a = read_imagef(img_in_a, sampler, coord).r;
+		val.r = read_imagef(img_in_r, sampler, coord).r * val.a;
+		val.g = read_imagef(img_in_g, sampler, coord).r * val.a;
+		val.b = read_imagef(img_in_b, sampler, coord).r * val.a;
 		write_imagef(img_out, (int2)(x, y), val);
 }
 

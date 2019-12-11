@@ -9,6 +9,7 @@ import math
 import logging
 from PIL import Image
 
+import numpy as np
 import pyopencl as cl
 
 from copper import hou
@@ -206,37 +207,47 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.updateGL()
 
     def buildCopImageDataTexture(self):
-        if not cl.have_gl():
-            raise BaseException("No OpenGL interop !!!")
+        if not self.node:
+            return
 
-        if self.node:
-            # bind texture from current compy node
-            cl_image_buffer = self.node.getCookedData()
+        image_width, image_height = self.node.xRes(), self.node.yRes()
+        logger.debug("Node size to display: %s %s" % (image_width, image_height))
 
-            glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, self.node.xRes(),  self.node.yRes(), 0, GL_RGB, GL_FLOAT, None)
+        cl_image = self.node.getCookedData()
+        cl_ctx = hou.openclContext()
+        cl_queue = hou.openclQueue()
 
+        event = None
 
-            logger.debug("Node size to display: %s %s" % (self.node.xRes(), self.node.yRes()))
+        glBindTexture(GL_TEXTURE_2D, self.node_gl_tex_id)
 
-            node_gl_texture = cl.GLTexture(hou.openclContext(), cl.mem_flags.WRITE_ONLY, GL_TEXTURE_2D, 0, self.node_gl_tex_id, 2) 
+        if cl.have_gl():
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, image_width, image_height, 0, GL_RGB, GL_FLOAT, None)
+            node_gl_texture = cl.GLTexture(cl_ctx, cl.mem_flags.WRITE_ONLY, GL_TEXTURE_2D, 0, self.node_gl_tex_id, 2) 
 
             # Aquire OpenGL texture object
-            cl.enqueue_acquire_gl_objects(hou.openclQueue(), [node_gl_texture])
+            cl.enqueue_acquire_gl_objects(cl_queue, [node_gl_texture])
             
             # copy OpenCL buffer to OpenGl texture
-            cl.enqueue_copy_image(hou.openclQueue(), cl_image_buffer, node_gl_texture, (0,0), (0,0), (self.node.xRes(), self.node.yRes()), wait_for=None)
+            cl.enqueue_copy_image(cl_queue, cl_image, node_gl_texture, (0,0), (0,0), (image_width, image_height), wait_for=(event,))
 
             # Release OpenGL texturte object
-            cl.enqueue_release_gl_objects(hou.openclQueue(), [node_gl_texture])
+            cl.enqueue_release_gl_objects(cl_queue, [node_gl_texture])
             hou.openclQueue().finish()
+        else:
+            mapped_buff = cl.enqueue_map_image(cl_queue, cl_image, cl.map_flags.READ, (0,0), (image_width, image_height), (image_height, image_width, 4), np.float32, 'C')
+            texture_data = mapped_buff[0].copy()
+            mapped_buff[0].base.release(cl_queue)
 
-            glGenerateMipmap(GL_TEXTURE_2D)  #Generate mipmaps now!!!
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
-            glBindTexture(GL_TEXTURE_2D, 0)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, image_width, image_height, 0, GL_RGBA, GL_FLOAT, texture_data)
+
+
+        glGenerateMipmap(GL_TEXTURE_2D)  #Generate mipmaps now!!!
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
+        glBindTexture(GL_TEXTURE_2D, 0)
 
 
     @QtCore.pyqtSlot(str)
@@ -286,7 +297,9 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         zoomOutFactor = 1 / zoomInFactor
 
         # Zoom
-        if event.pixelDelta().y() > 0:
+        delta = event.angleDelta() / 8
+
+        if delta.y() > 0:
             zoomFactor = zoomInFactor
         else:
             zoomFactor = zoomOutFactor

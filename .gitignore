@@ -37,6 +37,8 @@ test/out/*
 .DS_Store
 
 #VirtualEnv
+venv
+venv/*
 virtualenv
 virtualenv/*
 virtualenv3

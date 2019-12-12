@@ -37,7 +37,7 @@ class SOP_File(SOP_Node):
 	def label(cls):
 		return "File"
 
-	def cookMySop(self, lock):
+	def cookMySop(self, lock, context):
 		with lock:
 			filename = self.parm("filename").evalAsString()
 			mode = self.parm("filemode").evalAsString()

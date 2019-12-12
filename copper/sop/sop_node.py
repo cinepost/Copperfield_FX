@@ -16,13 +16,13 @@ class SOP_Node(OP_Network):
 		self._geometry = Geometry()
 
 
-	def cookMySop(self, lock):
+	def cookMySop(self, lock, context):
 		raise NotImplementedError
 
 
-	def cookData(self, lock):
+	def cookData(self, lock, context={}):
 		try:
-			self.cookMySop(lock)
+			self.cookMySop(lock. context)
 		except Exception as e:
 			logging.exception("Error cooking SOP data !!!")
 			return False

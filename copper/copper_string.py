@@ -1,6 +1,7 @@
 from string import Template
 import os
 
+
 class CopperString(str):
 	def __new__(cls, *args, **kw):
 		return str.__new__(cls, *args, **kw)
@@ -16,8 +17,7 @@ class CopperString(str):
 		if "frame" in context:
 			frame = context["frame"]
 		else:
-			pass	
-			#frame = engine.frame()
+			pass
 		
 		string_subs = string_template.substitute({
 			'F': frame,

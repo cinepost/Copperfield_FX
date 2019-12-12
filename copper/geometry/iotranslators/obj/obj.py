@@ -2,6 +2,7 @@ import numpy
 import sys
 
 from ..base import GeoBaseIO
+from copper.geometry import Polygon
 
 class ObjIO(GeoBaseIO):
 
@@ -63,6 +64,13 @@ class ObjIO(GeoBaseIO):
 				faces.append((face, norms, texcoords, material))
 				pass
 
+		for face in faces:
+			#print(face)
+			poly = Polygon(geometry)
+			poly._vertices = list(face[0])
+			poly.setIsClosed()
+			geometry._prims.append(poly)
+			
 	@staticmethod
 	def saveGeometry(filename, geometry, swapyz=False):
 		raise NotImplementedError

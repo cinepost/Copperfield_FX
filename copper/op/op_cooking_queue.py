@@ -13,7 +13,7 @@ class OpCookingQueue(object):
 		self._build()
 
 	def cook(self, lock, op):
-		return op.cookData(lock)
+		return op.cookData(lock, context={})
 
 	def execute(self, frame_range=()):
 		for queue in self.op_queues:

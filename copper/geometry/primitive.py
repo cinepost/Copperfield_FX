@@ -26,9 +26,11 @@ class Point(object):
 	def position(self):
 		return self._geometry._points[self._pt_index]
 
-
 	def setPosition(self, pos):
 		self._geometry._points[self._pt_index] = pos[:3]
+
+	def setPosition(self, x, y, z):
+		self._geometry._points[self._pt_index] = [x, y, z]
 
 	def index(self):
 		return self._pt_index
@@ -70,7 +72,7 @@ class Polygon(object):
 	
 	prim_type = primType.Polygon
 	
-	def __init__(self, geometry):
+	def __init__(self, geometry=None):
 		self._geometry = geometry
 		self._vertices = [] # this is actually just a list of point numbers, so index is vertex number and value is point number in geometry._points
 		self._closed = False

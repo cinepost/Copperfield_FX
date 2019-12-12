@@ -262,12 +262,12 @@ class OP_Engine(OP_Network, ROOT_Types): # This is actually root node e.g.
 		box = geo2.createNode("box")
 
 		geo3 = obj.createNode("geo")
-		#file = geo3.createNode("file")
+		file = geo3.createNode("file")
 
 		## Create COP2_File node 
 		file1 = comp.createNode("file")
 		file1.setPosition((10, 10))
-		file1.setParms({"size1": 1280, "size2": 720, "filename": "/Users/max/Desktop/mythbuster.jpg"})
+		file1.setParms({"size1": 1280, "size2": 720, "filename": "~/Desktop/mythbuster.jpg"})
 
 		## Create COP2_blur node
 		blur1 = comp.createNode("blur")

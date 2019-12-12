@@ -154,7 +154,7 @@ class COP2_Node(OP_Network):
 	def compute(self):
 		logging.debug("Computing %s" % self.path())
 
-	def cookData(self, lock):
+	def cookData(self, lock, context={}):
 		try:
 			self.compute(lock, self.engine.openclContext(), self.engine.openclQueue())
 		except Exception as e:

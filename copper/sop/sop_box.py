@@ -43,7 +43,7 @@ class SOP_Box(SOP_Node):
 
 
 	@timeit
-	def cookMySop(self, lock):
+	def cookMySop(self, lock, context):
 		with lock:
 			scale = self.parm("scale").evalAsFloat()
 

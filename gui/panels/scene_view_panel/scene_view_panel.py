@@ -26,12 +26,13 @@ class DisplayOptionsWidget(CollapsableWidget):
     def __init__(self, parent=None):
         CollapsableWidget.__init__(self, parent)
 
-        self.snap_to_grid_btn = QtWidgets.QPushButton()
-        self.snap_to_grid_btn.setCheckable(True)
-        self.snap_to_grid_btn.setIcon(QtGui.QIcon('gui/icons/main/network_view/snap_to_grid.svg'))
-        self.snap_to_grid_btn.setStatusTip('Show/hide grid and enable/disable snapping')
+        self.toggle_points_btn = QtWidgets.QToolButton(self)
+        self.toggle_points_btn.setCheckable(True)
+        self.toggle_points_btn.setObjectName("show_points")
+        self.toggle_points_btn.setIcon(QtGui.QIcon('gui/icons/main/scene_view/points.svg'))
+        self.toggle_points_btn.setStatusTip('Show/hide geometry points')
 
-        self.addWidget(self.snap_to_grid_btn)
+        self.addWidget(self.toggle_points_btn)
         self.addStretch(1)
 
 
@@ -40,7 +41,9 @@ class SceneViewPanel(NetworkPanel):
     def __init__(self):  
         NetworkPanel.__init__(self) 
 
+        self._show_points = False
         self.display_options = DisplayOptionsWidget(self)
+        self.display_options.toggle_points_btn.pressed.connect(self.toggleShowPoints)
 
         self.views_layout = None
 
@@ -105,6 +108,12 @@ class SceneViewPanel(NetworkPanel):
             self.views_layout.addWidget(self.viewports["top"])
             self.views_layout.addWidget(self.viewports["top"])
             self.views_layout.addWidget(self.viewports["persp"])
+
+    @QtCore.pyqtSlot()
+    def toggleShowPoints(self):
+        self._show_points = not self._show_points
+        for view in self.views_layout.children():
+            view.repaint()
 
 
 class SceneViewWidget(QtOpenGL.QGLWidget):
@@ -238,20 +247,21 @@ class SceneViewWidget(QtOpenGL.QGLWidget):
                 glMultMatrixf(transform.m)
 
                 # draw points
-                glColor4f(0.0, 0.0, 1.0, 1.0)
-                if ogl_obj_cache.pointsCount() > 0:
-                    logger.debug("Drawing points for: %s" % node.path())
-                    glPointSize( 3.0 )
-                    glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
+                if self.panel._show_points:
+                    glColor4f(0.0, 0.0, 1.0, 1.0)
+                    if ogl_obj_cache.pointsCount() > 0:
+                        logger.debug("Drawing points for: %s" % node.path())
+                        glPointSize( 3.0 )
+                        glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
 
-                    glEnableClientState(GL_VERTEX_ARRAY)
+                        glEnableClientState(GL_VERTEX_ARRAY)
 
-                    glVertexPointer (3, GL_FLOAT, 0, None)
-                    glDrawArrays (GL_POINTS, 0, ogl_obj_cache.pointsCount())
+                        glVertexPointer (3, GL_FLOAT, 0, None)
+                        glDrawArrays (GL_POINTS, 0, ogl_obj_cache.pointsCount())
 
-                    glDisableClientState(GL_VERTEX_ARRAY)
+                        glDisableClientState(GL_VERTEX_ARRAY)
 
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
+                        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
 
                 # draw polygons
                 glColor4f(1.0, 1.0, 1.0, 1.0)

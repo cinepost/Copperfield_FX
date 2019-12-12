@@ -1,7 +1,6 @@
 import logging
 
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5 import QtCore
 
 from copper.op.op_network import OP_Network
 import copper.parameter as parameter
@@ -31,7 +30,11 @@ class ROP_Node(OP_Network):
 	def renderFrame(self, frame):
 		raise NotImplementedError
 
-	def render(self, frame_range=None):
+	@QtCore.pyqtSlot()
+	def interrupt(self):
+		pass
+
+	def render(self, frame_range=None, progress_cb=None):
 		if frame_range:
 			f1 = frame_range[0]
 			f2 = frame_range[1]
@@ -41,24 +44,12 @@ class ROP_Node(OP_Network):
 			f2 = self.parm("f2").evalAsInt()
 			f3 = self.parm("f3").evalAsInt()
 		
-		render_modal = QDialog()
-		render_modal.setWindowTitle("Cooking ROP: %s ..." % self.name())
-		render_modal.setLayout(QVBoxLayout())
-
-		progress_label = QLabel("Progress: ...")
-		progress_label.setMinimumWidth(400)
-		progress_label.setMinimumHeight(350)
-
-		render_modal.layout().addWidget(progress_label)
-
-
-		render_modal.show() 
 		for frame in range(f1, f2, f3):
+			if progress_cb:
+				progress_cb(float(f2 - f1)/frame)
 			try:
 				self.renderFrame(frame)
 			except Exception as e:
 				logger.exception("Unable to render frame !")
-				
-		render_modal.done(0)
 
 		return

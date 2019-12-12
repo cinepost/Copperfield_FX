@@ -47,12 +47,16 @@ class ParameterBaseWidget(QtWidgets.QWidget):
 	'''
 	def eventFilter(self, source, event):
 		if (event.type() == QtCore.QEvent.Drop and source is self.line_edit):
-			if self.line_edit:
-				self.line_edit.setText("")
-				self.line_edit.dropEvent(event)
-				if event.isAccepted():
-					self.valueChanged.emit()
-				return True
+			self.line_edit.setText("")
+			self.parm.set(event.mimeData().text())
+			#if self.line_edit:
+			#	self.line_edit.setText("")
+			#	self.line_edit.dropEvent(event)
+			#	if event.isAccepted():
+					#self.valueChanged.emit()
+			#		self.parm.set(str(value))
+			#	return True
+		
 		return QtWidgets.QWidget.eventFilter(self, source, event) # propagate event
 
 

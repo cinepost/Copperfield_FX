@@ -205,7 +205,7 @@ class OP_Node(OP_Parameters):
 	def bypass(self, on_off):
 		self._bypass = on_off
 
-	def setModified(self, on_off):
+	def setModified(self, on_off=True):
 		''' 
 		Call this method to instruct node it needs to recook itself next time needed. For example when parameter was changes
 		'''

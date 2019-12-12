@@ -59,13 +59,15 @@ class CopperKeyframe(object):
 
 class ParmSignals(QtCore.QObject):
 	parameterChanged = QtCore.pyqtSignal()
+	setParameter = QtCore.pyqtSignal(object) # fired by GUI ParameterWidget... maybe not only by GUI... hmmm
 
 	def __init__(self):  
 		QtCore.QObject.__init__(self)
 
 		
-class CopperParameter(object):
+class CopperParameter(QtCore.QObject):
 	def __init__(self, node, name, parm_template, default_value=None, callback = None, spare=True):
+		QtCore.QObject.__init__(self)
 		self.__keyframes__ = []
 		self.value = default_value
 		self._node = node
@@ -74,6 +76,9 @@ class CopperParameter(object):
 		self._spare = spare
 
 		self.signals = ParmSignals()
+
+		# connect signals
+		self.signals.setParameter.connect(self._setParameter)
 
 	def isSpare(self):
 		return self._spare
@@ -198,6 +203,10 @@ class CopperParameter(object):
 
 	def unexpandedString(self):
 		raise BaseException("Unimplemented unexpandedString(self) in %s" % self)
+
+	@QtCore.pyqtSlot(object)
+	def _setParameter(self, value):
+		self.set(value)
 
 	def set(self, value):
 		if type(value) in [list, tuple]:

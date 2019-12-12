@@ -34,13 +34,13 @@ class ParameterBaseWidget(QtWidgets.QWidget):
 	def parmChanged(self, value):
 		parm_type = self.parm.parmTemplate().type()
 		if parm_type is ParmTemplateType.Float:
-			self.parm.set(float(value))
+			self.parm.signals.setParameter.emit(float(value))
 		elif parm_type is ParmTemplateType.Int:
-			self.parm.set(int(value))
+			self.parm.signals.setParameter.emit(int(value))
 		elif parm_type is ParmTemplateType.String:
-			self.parm.set(str(value))
+			self.parm.signals.setParameter.emit(str(value))
 		elif parm_type is ParmTemplateType.Menu:
-			self.parm.set(int(value))
+			self.parm.signals.setParameter.emit(int(value))
 
 	'''
 	Handle drop event. Validate dropped data and set parameter.
@@ -48,7 +48,7 @@ class ParameterBaseWidget(QtWidgets.QWidget):
 	def eventFilter(self, source, event):
 		if (event.type() == QtCore.QEvent.Drop and source is self.line_edit):
 			self.line_edit.setText("")
-			self.parm.set(event.mimeData().text())
+			self.parm.signals.setParameter.emit(event.mimeData().text())
 			#if self.line_edit:
 			#	self.line_edit.setText("")
 			#	self.line_edit.dropEvent(event)

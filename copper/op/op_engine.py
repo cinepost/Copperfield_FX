@@ -244,7 +244,7 @@ class OP_Engine(OP_Network, ROOT_Types): # This is actually root node e.g.
 
 		## Create composite output driver
 		out_comp = out.createNode("comp")
-		out_comp.setParms({"coppath": "/img/img1/file1", "copoutput": "/Users/max/Desktop/copper_test/img_test.jpg", "f1": 0, "f2": 25, "f3":1})
+		out_comp.setParms({"coppath": "/img/img1/file1", "copoutput": "~/Desktop/copper_test/img_test_$F4.jpg", "f1": 0, "f2": 25, "f3":1})
 
 		## First get image network
 		img = self.node("img")

@@ -148,7 +148,7 @@ class CopperParameter(object):
 		if self.parmTemplate().type() == ParmTemplateType.Menu:
 			return self.menuItems()[self.eval()]
 
-		return str(self.eval())
+		return CopperString(self.eval())
 
 	def evalAtTime(self, time):
 		lesser_keys = sorted([k for k in self.__keyframes__ if k.t <= time], key=lambda x: x.t)

@@ -123,19 +123,21 @@ class COP2_Node(OP_Network):
 	def setRenderFlag(self, on):
 		self._render_flag = on
 
-	def saveImage(file_name, frame_range=()):
-		for frame in frame_range:
-			logger.info("Rendering frame %s for node %s to file: %s" % (render_frame, node.path(), filename))
+	def saveImage(self, filename, frame=None, img_format='JPEG'):
+		logger.info("Rendering frame %s of node %s to file: %s" % (frame, self.path(), filename))
 			
-			if self.needsToCook():
-				self.cook()
+		if self.needsToCook():
+			self.cook()
 
-			buff = node.getOutHostBuffer()
-			image = Image.frombuffer('RGBA', node.shape(), buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
+		buff = self.getOutHostBuffer()
+		image = Image.frombuffer('RGBA', self.shape(), buff.astype(numpy.uint8), 'raw', 'RGBA', 0, 1)			
 
-			if "lin" in sys.platform : image = image.transpose(Image.FLIP_TOP_BOTTOM) # Flip image vertically
+		#if "lin" in sys.platform : image = image.transpose(Image.FLIP_TOP_BOTTOM) # Flip image vertically
 
-			image.save(filename, 'JPEG', quality=100)
+		if img_format == 'JPEG':
+			image.convert("RGB").save(filename, 'JPEG', quality=100)
+		else:
+			image.save(filename, 'PNG')
 
 	def getPlane(self, plane_name):
 		return self.__planes__.get(plane_name)	
@@ -173,7 +175,7 @@ class COP2_Node(OP_Network):
 		host_buffer = numpy.empty((self.xRes(), self.yRes(), 4), dtype = numpy.float16)
 		self.engine.openclQueue().finish()
 		
-		quantized_buffer = cl.Image(self.engine.openclContext(), self.engine.mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.shape())	
+		quantized_buffer = cl.Image(self.engine.openclContext(), cl.mem_flags.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.HALF_FLOAT), shape=self.shape())	
 		
 		with self.engine.openclQueue() as queue:
 			evt = self.common_program.quantize_show(queue, self.shape(), None, device_buffer, quantized_buffer )

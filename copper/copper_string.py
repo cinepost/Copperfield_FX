@@ -1,31 +1,30 @@
 from string import Template
 import os
 
-class CopperString(object):
-	
-	def __init__(self, string_val):
-		self.string_val = str(string_val)
-	
+class CopperString(str):
+	def __new__(cls, *args, **kw):
+		return str.__new__(cls, *args, **kw)
+
 	def __str__(self):
-		return self.string_val
+		return str.__str__(self)
 
 	def unexpandedString(self):
-		return self.string_val	
+		return self.__str__()	
 
 	def expandedString(self, context = {}):
-		string_template = Template( os.path.expandvars(self.string_val) )
+		string_template = Template( self.__str__() )
 		if "frame" in context:
 			frame = context["frame"]
 		else:
 			pass	
 			#frame = engine.frame()
 		
-		string_expanded = string_template.substitute({
+		string_subs = string_template.substitute({
 			'F': frame,
 			'F2': '%02d' % frame,
 			'F3': '%03d' % frame,
 			'F4': '%04d' % frame,
-			'F5': '%04d' % frame,
+			'F5': '%05d' % frame,
         })
 
-		return string_expanded
+		return os.path.expandvars(os.path.expanduser(string_subs))

@@ -173,7 +173,10 @@ class OP_Network(OP_Node):
 		return True
 
 	def isRoot(self):
-		False
+		if not self.__parent__:
+			return True
+
+		return False
 
 	def isSelected(self):
 		return False
@@ -236,7 +239,10 @@ class OP_Network(OP_Node):
 
 	# return root node
 	def root(self):
-		return self.__engine__
+		if self.isRoot():
+			return self
+
+		return self.__parent__.root()
 
 	def setName(self, name):
 		self._name = name

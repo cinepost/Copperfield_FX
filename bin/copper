@@ -11,6 +11,7 @@ module = sys.modules['__main__'].__file__
 logger = logging.getLogger(module)
 
 os.environ['PYOPENCL_COMPILER_OUTPUT'] = "1"
+os.environ['MESA_GL_VERSION_OVERRIDE'] = "4.5"
 
 
 def parse_command_line(argv):
@@ -57,7 +58,7 @@ if __name__ == '__main__':
     app.processEvents()
 
     # Create main window
-    from gui.main_window import MainWindow
+    from copper.ui.main_window import MainWindow
 
     window = MainWindow()
     window.load_style()

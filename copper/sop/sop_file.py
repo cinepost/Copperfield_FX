@@ -28,7 +28,7 @@ class SOP_File(SOP_Node):
 		templates += [
 			MenuParmTemplate(name='filemode', label='File Mode', menu_items=('auto', 'read', 'write', 'none'), menu_labels=('Automatic',
  				'Read Files', 'Write Files', 'No Operation'), default_value=1),
-			StringParmTemplate(name="filename", label="File", default_value=("copper/media/obj/bunny.small.obj",), string_type=StringParmType.FileReference),
+			StringParmTemplate(name="filename", label="File", default_value=("",), string_type=StringParmType.FileReference),
 		]
 		
 		return templates
@@ -43,7 +43,11 @@ class SOP_File(SOP_Node):
 			mode = self.parm("filemode").evalAsString()
 			if filename:
 				if mode == 'read':
-					self._geometry.loadFromFile(filename)
+					try:
+						self._geometry.loadFromFile(filename)
+					except:
+						self._errors.append("Unable to read geometry from file: %s" % filename)
+						raise
 				elif mode == 'write':
 					self._geometry.saveToFile(filename)
 				elif mode == 'auto':

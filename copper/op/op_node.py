@@ -4,10 +4,20 @@ import logging
 import datetime
 from collections import OrderedDict
 
+from PyQt5 import QtCore
+
 from .base import OpRegistry
 from .op_parameters import OP_Parameters
 from .op_connection import OP_Connection
 from .op_cooking_queue import OpCookingQueue
+
+class OpSignals(QtCore.QObject):
+	opCookingFailed = QtCore.pyqtSignal()
+	opCookingStarted = QtCore.pyqtSignal()
+	opCookingDone = QtCore.pyqtSignal()
+
+	def __init__(self, parent=None):  
+		QtCore.QObject.__init__(self, parent)
 
 @six.add_metaclass(OpRegistry)
 class OP_Node(OP_Parameters):
@@ -23,6 +33,8 @@ class OP_Node(OP_Parameters):
 		self._selected = False
 		self._bypass = False
 
+		self._errors = []
+
 		self._inputs = ()
 		self._outputs = ()
 
@@ -32,14 +44,26 @@ class OP_Node(OP_Parameters):
 		self._height = 32
 		self._color = (0.4, 0.4, 0.4, 1.0,)
 
+		self.signals = OpSignals()
+
 	def color(self):
 		'''
 		Return the color of this node's tile in the network editor.
 		'''
 		return self._color
 
+	def errors(self):
+		return self._errors
+
+	def hasErrors(self):
+		if self._errors:
+			return True
+
+		return False
+
 	def cook(self, force=False, frame_range=()):
-		if self.needsToCook():
+		if self.needsToCook() or force:
+			self._errors = []
 			queue = OpCookingQueue(self)
 			queue.execute(frame_range=frame_range)
 
@@ -134,7 +158,7 @@ class OP_Node(OP_Parameters):
 		'''
 		Return a tuple of the nodes connected to this node's inputs.
 		'''
-		return tuple([op_connection.node() for op_connection in self._inputs if op_connection.connected()])
+		return tuple([op_connection.node() for op_connection in self._inputs])
 
 	def inputAncestors(self, include_ref_inputs=True, follow_subnets=False):
 		'''
@@ -153,28 +177,28 @@ class OP_Node(OP_Parameters):
 		return tuple([op_connection.name() for op_connection in self._inputs])
 
 	def inputConnections(self):
-		return []
+		return tuple([op_connection for op_connection in self._inputs if op_connection.connected()])
 
 	def inputConnectors(self):
-		return []
+		return tuple([op_connection for op_connection in self._inputs])
 
 	def isCurrent(self):
 		raise NotImplementedError
 
 	def outputs(self):
-		return tuple([op_connection.node() for op_connection in self._outputs if op_connection.connected()])
+		return tuple([op_connection.node() for op_connection in self._outputs])
 
 	def outputNames(self):
 		""" Returns dict of output names eg: ["Input 1", "Input 2"] """
 		return tuple([op_connection.name() for op_connection in self._outputs])
 
 	def outputConnections(self):
-		return []
+		return tuple([op_connection for op_connection in self._outputs if op_connection.connected()])
 
 	def outputConnectors(self):
-		return []
+		return tuple([op_connection for op_connection in self._outputs])
 
-	def setInput(self, input_index, node):
+	def setInput(self, input_index, node=None, output_index=0):
 		try:
 			inp = self._inputs[input_index]					
 		except:
@@ -211,13 +235,10 @@ class OP_Node(OP_Parameters):
 		'''
 		self._needs_to_cook = on_off
 		if on_off == True:
-			from gui.signals import signals
+			from copper.ui.signals import signals
 			signals.copperNodeModified[str].emit(self.path())
 
 	def needsToCook(self, time=None):
-		if not time:
-			cook_time = self.root().time()
-
 		return self._needs_to_cook
 
 	def warnings(self):

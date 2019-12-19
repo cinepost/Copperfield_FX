@@ -18,10 +18,10 @@ from .cop2 import *
 from .sop import *
 
 from copper.op.node_type_category import NodeTypeCategoryRegistry
-from copper.op.op_engine import OP_Engine
+from copper.engine import Engine
 
 
 def nodeTypeCategories():
     logger.debug(NodeTypeCategoryRegistry._registry_aliases)
 
-hou = OP_Engine(device_type = settings.CL_DEVICE_TYPE, device_index=settings.CL_DEVICE_INDEX, cl_path=settings.CL_PROGRAMS_PATH)
+hou = Engine(device_type = settings.CL_DEVICE_TYPE, device_index=settings.CL_DEVICE_INDEX, cl_path=settings.CL_PROGRAMS_PATH)

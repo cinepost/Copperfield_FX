@@ -1,1 +1,0 @@
-from .tabbed_panel_manager import TabbedPanelManager

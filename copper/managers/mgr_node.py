@@ -14,7 +14,7 @@ class MGR_Node(OP_Network):
 
 	@classmethod
 	def label(cls):
-		return "Composite"
+		raise NotImplementedError("To be implemented")
 
 	def cook(self, force=False, frame_range=()):
 		pass

@@ -395,6 +395,12 @@ QTreeView::item:selected {
     background-color: #653;
 }
 
+QTreeView::item[failed=true] {
+    border-left: none;
+    border-right: none;
+    background-color: #f40;
+}
+
 QTreeView::branch:selected {
     border-top: 1px solid #b82;
     border-bottom: 1px solid #b82;

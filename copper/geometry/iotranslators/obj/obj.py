@@ -52,7 +52,7 @@ class ObjIO(GeoBaseIO):
 				norms = []
 				for v in values[1:]:
 					w = v.split('/')
-					face.append(int(w[0]))
+					face.append(int(w[0])-1) # .obj face uses vertex indices 1-n...
 					if len(w) >= 2 and len(w[1]) > 0:
 						texcoords.append(int(w[1]))
 					else:

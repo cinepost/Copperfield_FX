@@ -188,23 +188,23 @@ class OP_Network(OP_Node):
 	def name(self):
 		return self._name
 
-	# return node object by it's path	
-	def node(self, path):
-		if not path:
+	def node(self, node_path):
+		"""Return the node at the given path, or None if no such node exists."""
+		if not node_path:
 			return None
 			
 		# check it path is string, if no then try to convert it
-		if not isinstance(path, str):
+		if not isinstance(node_path, str):
 			try:
-				path = str(path)
+				path = str(node_path)
 			except:
 				raise
 
-		if path == "/":
+		if node_path == "/":
 			return self.root()
 
-		path_list = [a for a in path.split("/") if a != '']
-		if path[0] == "":
+		path_list = [a for a in node_path.split("/") if a != '']
+		if node_path[0] == "/":
 			# traverse from root
 			return self.root().traverse(path_list)
 
@@ -213,6 +213,10 @@ class OP_Network(OP_Node):
 
 	#def __str__(self):
 	#	return self.__class__.__name__
+
+	def nodes(self, node_path_tuple):
+		"""This is like node() but takes multiple paths and returns multiple Node objects."""
+		return [self.node(node_path) for node_path in node_path_tuple]
 
 	def parent(self):
 		return self.__parent__	
@@ -250,8 +254,13 @@ class OP_Network(OP_Node):
 	def selectedChildren(self):
 		return []
 
-		# traverse nodes from this
+	# traverse nodes from this
 	def traverse(self, path_list):
+		if path_list[0] == "..":
+			return self.parent().traverse(path_list[1:])
+		elif path_list[0] == ".":
+			return self.traverse(path_list[1:])
+
 		node = self.__node_dict__.get(path_list[0])
 		if not node: raise BaseException("Unable to get node %s in %s.traverse(self, path_list)" % (path_list[0], self))
 		if len(path_list[1::]) > 0:

@@ -6,10 +6,12 @@ from collections import OrderedDict
 
 from PyQt5 import QtCore
 
+from copper.copper_object import CopperObject
 from .base import OpRegistry
 from .op_parameters import OP_Parameters
 from .op_connection import OP_Connection
 from .op_cooking_queue import OpCookingQueue
+
 
 class OpSignals(QtCore.QObject):
 	opCookingFailed = QtCore.pyqtSignal()
@@ -20,13 +22,15 @@ class OpSignals(QtCore.QObject):
 		QtCore.QObject.__init__(self, parent)
 
 @six.add_metaclass(OpRegistry)
-class OP_Node(OP_Parameters):
+class OP_Node(CopperObject, OP_Parameters):
 	""" Node base class """
 
 	__base__ = True
 
 	def __init__(self):
+		CopperObject.__init__(self)
 		OP_Parameters.__init__(self)
+
 		self._creation_time = datetime.datetime.now()
 		self._hidden = False
 		self._needs_to_cook = True
@@ -246,3 +250,21 @@ class OP_Node(OP_Parameters):
 		Return the text of any warnings from the last cook of this node, or the empty string ("" ) if there were no warnings.			
 		'''
 		return self._warnings
+
+	def __eq__(self, node):
+		'''
+		Implements == between Node objects.
+		'''
+		if not node:
+			return False
+
+		return self.uuid() == node.uuid()
+
+	def __ne__(self, node):
+		'''
+		Implements != between Node objects.
+		'''
+		if not node:
+			return True
+			
+		return self.uuid() != node.uuid()

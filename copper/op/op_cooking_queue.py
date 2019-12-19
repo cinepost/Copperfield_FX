@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 class OpCookingQueue(object):
 	def __init__(self, op):
 		self.root_op = op
-		self.op_queues = []
+		self.op_queues = [] # queue of queues
 		self._build()
 
 	def cook(self, lock, op):
@@ -19,7 +19,7 @@ class OpCookingQueue(object):
 		else:
 			op.signals.opCookingDone.emit()
 
-	def execute(self, frame_range=(), blocking=False):
+	def execute(self, frame_range=(), blocking=True):
 		for queue in self.op_queues:
 			logger.debug("Executing queue: %s" % [op.path() for op in queue])
 

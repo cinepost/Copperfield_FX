@@ -2,6 +2,7 @@ import sys, os
 import pyopencl as cl
 import pickle
 import numpy
+import uuid
 import logging
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
@@ -15,9 +16,17 @@ from copper.managers import ROOT_Network, OBJ_Network, COP_Network, ROP_Network
 from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
 
+from .copper_cache import OpDataCache
+
 from copper.root_types import ROOT_Types 
 
 logger = logging.getLogger(__name__)
+
+#class EngineSignals(QtCore.QObject):
+#	cookNodeData = QtCore.pyqtSignal(uuid.UUID)
+#
+#	def __init__(self, parent=None):  
+#		QtCore.QObject.__init__(self, parent)
 
 class Engine(): # This is actually root node e.g.
 	programs 	= {}
@@ -31,7 +40,13 @@ class Engine(): # This is actually root node e.g.
 		self.__fps__ = 25.0
 		self._cl_ctx = None
 		self._cl_queue = None
+
+#		self.signals = EngineSignals()
+
+		self._data_cache = OpDataCache(maxsize=1024) # One gig memory cache for op data
+
 		self._root = ROOT_Network(self)
+
 
 		logger.debug("Initializing engine of type %s" % device_type)
 		self._devices = []
@@ -65,8 +80,8 @@ class Engine(): # This is actually root node e.g.
 		for translator in translators:
 			self.translators[translator.registerExtension()] = translator
 	
-	def createNode(self, p, n):
-		self._root.createNode(p, n)
+	#def __createNode(self, p, n):
+	#	self._root.createNode(p, n)
 
 	def node(self, path):
 		return self._root.node(path)
@@ -94,14 +109,13 @@ class Engine(): # This is actually root node e.g.
 		program_file.close()
 		return cl.Program(self.openclContext(), program_code).build()
 
-	@property 
 	def have_gl(self):
 		return cl.have_gl()	
 
 	def openclContext(self, device_index=0):
 		if not self._cl_ctx:
 			cl_context_properties = []
-			if self.have_gl:
+			if self.have_gl():
 				cl_context_properties += get_gl_sharing_context_properties()
 			if device_index:
 				self._cl_ctx = cl.Context(	properties=cl_context_properties,
@@ -138,10 +152,6 @@ class Engine(): # This is actually root node e.g.
 	def setFrame(self, frame):
 		self.__frame__ = frame
 		self.__time__ = float(frame) / float(self.__fps__)			
-
-	@property	
-	def engine(self):
-		return self
 
 	def flush(self):
 		for net_name in self.__node_dict__:
@@ -223,7 +233,7 @@ class Engine(): # This is actually root node e.g.
 
 		self.call_network_changed_callback()
 
-	def test_project(self):
+	def build_test_project(self):
 		#### ---- create simple scene for debug purposes
 		
 		## Create out composite node

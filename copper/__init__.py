@@ -3,7 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 os.environ["PYOPENCL_COMPILER_OUTPUT"] = "1"
-os.environ["PYOPENCL_NO_CACHE"] = "1"
+os.environ["PYOPENCL_NO_CACHE"] = "0"
 
 if not os.environ.get("COPPER_HOME"):
     cwd = os.getcwd()
@@ -23,5 +23,3 @@ from .copper_object import CopperObject
 
 def nodeTypeCategories():
     logger.debug(NodeTypeCategoryRegistry._registry_aliases)
-
-hou = Engine(device_type = settings.CL_DEVICE_TYPE, device_index=settings.CL_DEVICE_INDEX, cl_path=settings.CL_PROGRAMS_PATH)

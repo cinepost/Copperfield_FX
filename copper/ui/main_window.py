@@ -82,7 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        if not hou.have_gl:
+        if not hou.OpenCL.have_gl():
             logger.warning("OpenCL - OpenGL interoperability not supported !!!")
 
         self.initUI()
@@ -92,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def open_project(self, make_test_project=False):
         if make_test_project:
-            hou.test_project()
+            hou.hipFile.load(None) # build test project
             return
 
         try:

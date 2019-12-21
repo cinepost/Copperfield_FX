@@ -4,6 +4,62 @@
 		"selected_items":
 		[
 			[
+				"in",
+				"index"
+			],
+			[
+				"__",
+				"__data_dict__"
+			],
+			[
+				"data",
+				"data_index"
+			],
+			[
+				"Not",
+				"NotImplementedError"
+			],
+			[
+				"path",
+				"path_list"
+			],
+			[
+				"node_",
+				"node_path"
+			],
+			[
+				"node_p",
+				"node_path_tuple"
+			],
+			[
+				"sock",
+				"socket_to"
+			],
+			[
+				"link",
+				"link_item"
+			],
+			[
+				"node",
+				"nodes_map"
+			],
+			[
+				"up",
+				"updateNodeDisplay"
+			],
+			[
+				"is",
+				"isRoot"
+			],
+			[
+				"create",
+				"createNode"
+			],
+			[
+				"ROO",
+				"ROOT_Network"
+			],
+			[
 				"c",
 				"ctx"
 			],
@@ -42,10 +98,6 @@
 			[
 				"F",
 				"FAILED"
-			],
-			[
-				"node",
-				"node_path"
 			],
 			[
 				"coo",
@@ -260,10 +312,6 @@
 				"logger"
 			],
 			[
-				"in",
-				"input_stream"
-			],
-			[
 				"par",
 				"parser"
 			],
@@ -466,54 +514,6 @@
 			[
 				"ray_de",
 				"ray_detail_1"
-			],
-			[
-				"do_",
-				"do_ray_declare"
-			],
-			[
-				"parse",
-				"parseString"
-			],
-			[
-				"One",
-				"OneOrMore"
-			],
-			[
-				"_re",
-				"_renderer"
-			],
-			[
-				"scen",
-				"scene_filename"
-			],
-			[
-				"scene",
-				"scene_ext"
-			],
-			[
-				"mim",
-				"mime_type"
-			],
-			[
-				"des",
-				"description"
-			],
-			[
-				"add",
-				"add_subparsers"
-			],
-			[
-				"ray_deta",
-				"ray_detail_1"
-			],
-			[
-				"HOM",
-				"HOM_Point"
-			],
-			[
-				"H",
-				"HOM_Point"
 			]
 		]
 	},
@@ -523,13 +523,16 @@
 			"file": "bin/copper",
 			"settings":
 			{
-				"buffer_size": 2696,
+				"buffer_size": 2702,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
+			"contents": "from PyQt5 import Qt, QtWidgets, QtGui, QtCore\nfrom copper import parameter\n\nfrom copper import hou \nfrom gui.signals import signals\nfrom gui.widgets import PathBarWidget\nfrom gui.panels.base_panel import NetworkPanel\nfrom .parameters_widgets import *\n\nfrom copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType\n\ndef clearLayout(layout):\n    while layout.count():\n        child = layout.takeAt(0)\n        if child.widget() is not None:\n            child.widget().deleteLater()\n        elif child.layout() is not None:\n            clearLayout(child.layout())\n\n\nclass ParametersPanel(NetworkPanel):\n    def __init__(self):      \n        NetworkPanel.__init__(self)   \n\n        self.parameters_widget = ParametersWidget(self, self)\n        self.addWidget(self.parameters_widget)\n\n    @classmethod\n    def panelTypeName(cls):\n        return \"Parameters\"\n\n\nclass ParametersWidget(QtWidgets.QWidget):\n    def __init__(self, parent, panel):    \n        QtWidgets.QWidget.__init__(self, parent)\n        self.panel = panel\n\n        self.setMinimumWidth(320)\n        self.setMinimumHeight(160)\n\n        self.parm_box = QtWidgets.QVBoxLayout(self)\n        self.parm_box.setSpacing(0)\n        self.parm_box.setContentsMargins(0, 0, 0, 0)\n\n        no_op_label = QtWidgets.QLabel(\"No Operator Selected\")\n        no_op_label.setObjectName(\"info\")\n        no_op_label.setSizePolicy( QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum ))\n        no_op_label.setAlignment(QtCore.Qt.AlignHCenter | QtCore.Qt.AlignVCenter)\n\n        self.parm_box.addStretch(1)\n        self.parm_box.addWidget(no_op_label)\n        self.parm_box.addStretch(1)\n\n        #Container Widget        \n        self.widget = QtWidgets.QWidget(self)\n        self.widget.setLayout(self.parm_box)\n        self.widget.setObjectName(\"Parameters\")\n\n        self.scroll = QtWidgets.QScrollArea()\n        self.scroll.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAsNeeded)\n        self.scroll.setWidgetResizable(True)\n        self.scroll.setWidget(self.widget)\n\n        self.header_bar = QtWidgets.QHBoxLayout()\n        self.header_bar.setSpacing(2)\n        self.header_bar.setContentsMargins(0, 0, 0, 0)\n\n        self.vbox = QtWidgets.QVBoxLayout()\n        self.vbox.setSpacing(0)\n        self.vbox.setContentsMargins(0, 0, 0, 0)\n\n        self.vbox.addLayout(self.header_bar)\n        self.vbox.addWidget(self.scroll)\n\n        self.setLayout(self.vbox)\n        self.setAcceptDrops(True)\n\n        # connect panel signals\n        self.panel.signals.copperNodeSelected.connect(self.nodeSelected)\n\n\n    @QtCore.pyqtSlot(str)\n    def nodeSelected(self, node_path=None):\n        if node_path in [None, \"/\"]:\n            return \n\n        node = hou.node(str(node_path))\n        \n        # remove old parms widgets\n        clearLayout(self.header_bar)\n        clearLayout(self.parm_box)\n\n        # build header\n        if node.iconName():\n            icon = QtGui.QIcon(node.iconName())\n        else:\n            icon = self.default_icon\n\n        node_btn = QtWidgets.QToolButton()\n        node_btn.setIcon(icon)\n        node_btn.setIconSize(QtCore.QSize(24,24))\n\n        node_type = QtWidgets.QLabel(node.label())\n        node_type.setStyleSheet(\"font-weight: bold\")\n   \n        node_name = QtWidgets.QLineEdit(node.name())\n\n        self.header_bar.addWidget(node_btn)\n        self.header_bar.addWidget(node_type)\n        self.header_bar.addWidget(node_name)\n        \n        # build new parms widgets\n        i = 1\n        for parm_template in node.parmGroups().keys():\n            parm_template_type = parm_template.type()\n\n            parms_layout = QtWidgets.QHBoxLayout()\n            parms_layout.setSpacing(1)\n            parms_layout.setContentsMargins(0, 0, 0, 0)\n            for parm in node.parmGroups()[parm_template]:\n                if parm_template_type is ParmTemplateType.Int:\n                    # Int\n                    widget = ParameterIntWidget(self, parm)\n\n                elif parm_template_type is ParmTemplateType.Float:\n                    # Float\n                    widget = ParameterFloatWidget(self, parm)\n                \n                elif parm_template_type is ParmTemplateType.Button:\n                    # Button\n                    widget = ParameterButtonWidget(self, parm)\n\n                elif parm_template_type is ParmTemplateType.Menu:\n                    # Menu\n                    widget = ParameterMenuWidget(self, parm)\n\n                elif parm_template_type is ParmTemplateType.Toggle:\n                    # Toggle\n                    widget = ParameterToggleWidget(self, parm)\n\n                elif parm_template_type is ParmTemplateType.String:\n                    # String\n                    widget = ParameterStringWidget(self, parm)\n\n                parms_layout.addWidget(widget) \n                \n\n            hbox = QtWidgets.QHBoxLayout()\n            if parm_template_type not in [ParmTemplateType.Toggle, ParmTemplateType.Button]:\n                \n                label = QtWidgets.QLabel(parm_template.label())\n                for parm_widget in parms_layout.children():\n                    parm_widget.signals.toggleParmExpand.emit()\n                \n                if parm_template.numComponents() == 1:\n                    label.setToolTip(\"Parameter: %s\" % parm.name())\n                else:\n                    label.setToolTip(\"Parameters: %s\" % [parm.name() for parm in node.parmGroups()[parm_template]])\n\n                label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)\n                label.setStatusTip(parm.name())\n                label.setFixedWidth(140)\n                hbox.addWidget(label)\n            else:\n                hbox.addSpacing(143)\n\n            hbox.addLayout(parms_layout)\n\n            self.parm_box.addLayout(hbox)\n\n            i+=1\n\n        self.parm_box.addStretch(1)\n",
 			"file": "gui/panels/parameters_panel/parameters_panel.py",
+			"file_size": 5894,
+			"file_write_time": 132206549333687419,
 			"settings":
 			{
 				"buffer_size": 5894,
@@ -546,11 +549,13 @@
 			}
 		},
 		{
+			"contents": "try:\n    from PyQt5 import QtWidgets, Qt, QtGui, QtCore\nexcept:\n    frpm\n\nfrom gui.signals import signals\nfrom copper import hou as engine\n\nclass PathBarWidget(QtWidgets.QFrame):\n    def __init__(self, parent, panel): \n        QtWidgets.QFrame.__init__(self, parent)\n        self.panel = panel  \n        self.pinned = False\n        self.history = []\n        self.history_index = -1\n        self.setObjectName(\"pathBar\")\n        \n        self.layout = QtWidgets.QHBoxLayout()\n        self.layout.setSpacing(2)\n        self.layout.setContentsMargins(2, 2, 2, 2)\n\n        self.btn_back = QtWidgets.QToolButton(self)\n        self.btn_back.setIcon(QtGui.QIcon( \"gui/icons/main/go-previous.svg\"))\n        self.btn_back.setEnabled(False)\n        self.btn_back.pressed.connect(self.historyGoBack)\n\n        self.btn_frwd = QtWidgets.QToolButton(self)\n        self.btn_frwd.setIcon(QtGui.QIcon(\"gui/icons/main/go-next.svg\"))\n        self.btn_frwd.setEnabled(False)\n        self.btn_frwd.pressed.connect(self.historyGoForward)\n\n        self.btn_pin = QtWidgets.QToolButton(self)\n        self.btn_pin.setObjectName(\"pin\")\n        self.btn_pin.setCheckable(True)\n        self.btn_pin.pressed.connect(self.pinPressed)\n\n        self.path_layout = QtWidgets.QHBoxLayout()\n        self.path_layout.setSpacing(0)\n        self.path_layout.setContentsMargins(0, 0, 0, 0)\n\n        self.path_bar = QtWidgets.QFrame()\n        self.path_bar.setObjectName(\"bar\")\n        self.path_bar.setLayout(self.path_layout)\n\n        self.layout.addWidget(self.btn_back)\n        self.layout.addWidget(self.btn_frwd)\n        self.layout.addWidget(self.path_bar)\n        self.layout.addWidget(self.btn_pin)\n\n        self.setLayout(self.layout)\n        self.setAcceptDrops(True)\n        self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)\n\n        self.buildPathBar(node_path=\"/obj\")\n\n        # connect panel signals\n        self.panel.signals.copperNodeSelected[str].connect(self.nodeSelected)\n\n    def historyGoBack(self):\n        if self.history_index > 0:\n            self.history_index -= 1\n            #print \"History back to: %s with index %s\" % (self.history[self.history_index], self.history_index)\n            self.btn_frwd.setEnabled(True)\n            if self.history_index == 0:\n                self.btn_back.setEnabled(False)\n\n            signals.copperNodeSelected.emit(self.history[self.history_index])\n\n    def historyGoForward(self):\n        if self.history_index < (len(self.history) - 1):\n            self.history_index += 1\n            #print \"History fwd to: %s with index %s\" % (self.history[self.history_index], self.history_index)\n            self.btn_back.setEnabled(True)\n            if self.history_index == (len(self.history) - 1):\n                self.btn_frwd.setEnabled(False)\n\n            signals.copperNodeSelected.emit(self.history[self.history_index])\n\n    def pinPressed(self):\n        if self.pinned == False:\n            self.pinned = True\n        else:\n            self.pinned = False\n\n    def isPinned(self):\n        return self.pinned\n\n    @QtCore.pyqtSlot(str)\n    def nodeSelected(self, node_path=None):\n        if node_path == \"/\":\n            return\n\n        if self.buildPathBar(node_path):\n            if self.history:\n                if self.history[-1] == node_path:\n                    return\n\n            self.history += [node_path]\n            self.history_index += 1\n            #print \"History added: %s at index %s\" % (node_path, self.history_index)\n            self.btn_back.setEnabled(True)\n\n    def buildPathBar(self, node_path=None):\n        node = engine.node(node_path)\n        if not node:\n            return False\n        elif node.isRoot():\n            btn = QtWidgets.QPushButton()\n        else:\n            parent = node.parent()\n            if parent.isRoot():\n                parent = node\n\n            for i in reversed(range(self.path_layout.count())): \n                self.path_layout.itemAt(i).widget().deleteLater()\n\n            btn = None\n\n            path_nodes = parent.pathAsNodeList()\n\n            for node in path_nodes:\n                btn = QtWidgets.QPushButton()\n                btn.setIcon(QtGui.QIcon(node.iconName()))\n                btn.setText(node.name())\n                btn.setSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)\n\n                menu = QtWidgets.QMenu()\n                for child in node.parent().children():\n                    menu.addAction(child.name())\n\n                btn.setMenu(menu)\n\n                self.path_layout.addWidget(btn)\n\n        if btn:\n            btn.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)\n\n        return True\n\n\n",
 			"file": "gui/widgets/path_bar_widget.py",
+			"file_size": 4665,
+			"file_write_time": 132205542470038231,
 			"settings":
 			{
-				"buffer_size": 4665,
-				"encoding": "UTF-8",
+				"buffer_size": 4691,
 				"line_ending": "Unix"
 			}
 		},
@@ -567,7 +572,7 @@
 			"file": "copper/op/op_cooking_queue.py",
 			"settings":
 			{
-				"buffer_size": 1638,
+				"buffer_size": 1623,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -582,7 +587,10 @@
 			}
 		},
 		{
+			"contents": "import sys, os\nimport logging\n\nfrom PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL\n\nfrom copper import hou\nfrom .tabbed_panel_manager import TabbedPanelManager\nfrom .dialogs import RenderNodeDialog\nfrom .widgets import PlayBarWidget\n\nlogger = logging.getLogger(__name__)\n\nclass Workarea(QtWidgets.QWidget):\n    def __init__(self, parent=None):\n        QtWidgets.QWidget.__init__(self, parent)\n        self.setObjectName(\"Workarea\")\n\n        # Basic widgets\n        self.timeline_widget = PlayBarWidget()\n\n        # Create layout and place widgets\n        VBox = QtWidgets.QVBoxLayout()    \n        VBox.setSpacing(0)\n        VBox.setContentsMargins(0, 0, 0, 0)\n        HBox = QtWidgets.QHBoxLayout()\n        HBox.setSpacing(0)\n        HBox.setContentsMargins(0, 0, 0, 0)\n    \n\n        # Add initial panels\n        panel_mgrs = []\n        panel_mgr_1 = TabbedPanelManager(self)\n        panel_mgr_1.addNewPaneTabByType(\"SceneViewPanel\")\n        panel_mgr_1.addNewPaneTabByType(\"CompositeViewPanel\")\n        #panel_mgr_1.addNewPaneTabByType(\"PythonShellPanel\")\n        panel_mgr_1.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))\n        panel_mgrs += [panel_mgr_1]\n\n        panel_mgr_2 = TabbedPanelManager(self)\n        panel_mgr_2.addNewPaneTabByType(\"ParametersPanel\")\n        panel_mgr_2.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))\n        panel_mgrs += [panel_mgr_2]\n\n        panel_mgr_3 = TabbedPanelManager(self)\n        panel_mgr_3.addNewPaneTabByType(\"NetworkViewPanel\")\n        panel_mgr_3.addNewPaneTabByType(\"TreeViewPanel\")\n        panel_mgr_3.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))\n        panel_mgrs += [panel_mgr_3]        \n\n        # Set Up inital splitters layout\n        VSplitter = QtWidgets.QSplitter(QtCore.Qt.Vertical)\n        VSplitter.setMinimumWidth(370)\n        VSplitter.addWidget(panel_mgr_2)\n        VSplitter.addWidget(panel_mgr_3)\n\n        HSplitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)\n        HSplitter.addWidget(panel_mgr_1)\n        HSplitter.addWidget(VSplitter)\n        HSplitter.setStretchFactor (0, 1)\n        HSplitter.setStretchFactor (1, 0)  \n\n        VBox.addWidget(HSplitter)\n        VBox.addWidget(self.timeline_widget)\n        self.setLayout(VBox)\n\n        # Connect signals\n        for panel_mgr in panel_mgrs:\n            panel_mgr.maximize_button.clicked.connect(self.maximizePanelManager)\n\n        # Show workspace\n        self.show()\n\n    @QtCore.pyqtSlot()\n    def maximizePanelManager(self):\n        logger.debug(\"Maximize panel: %s\" % self)\n\n    @QtCore.pyqtSlot()   \n    def renderNode(self, node_path):\n        RenderNodeDialog.render(node_path)\n\nclass MainWindow(QtWidgets.QMainWindow):\n    def __init__(self):\n        super(MainWindow, self).__init__()\n\n        if not hou.have_gl:\n            logger.warning(\"OpenCL - OpenGL interoperability not supported !!!\")\n\n        self.initUI()\n\n    def close(self):\n        exit()\n\n    def open_project(self, make_test_project=False):\n        if make_test_project:\n            hou.test_project()\n            return\n\n        try:\n            fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', \"/Users\")\n        except:\n            raise\n        if fname:    \n            hou.open_project(str(fname))   \n\n    def save_project(self):\n        fname = QtWidgets.QFileDialog.getSaveFileName(self, 'Save file', \"/Users\")    \n        if fname:\n            hou.save_project(fname)\n\n    def load_style(self):\n        sqq_filename=\"gui/config/copper.stylesheet.qss\"\n        with open(sqq_filename,\"r\") as fh:\n            self.setStyleSheet(fh.read())\n\n    def initUI(self):\n        self.setMinimumWidth(960)\n        self.setMinimumHeight(640)\n        self.resize(1800, 1000)\n        self.workarea = Workarea(self)\n        self.setCentralWidget(self.workarea)\n\n        exitAction = QtWidgets.QAction(QtGui.QIcon('gui/icons/main/system-log-out.svg'), 'Exit', self)\n        exitAction.setObjectName(\"ActionExitApp\")\n        exitAction.setShortcut('Ctrl+Q')\n        exitAction.setStatusTip('Exit application')\n        exitAction.triggered.connect(self.close)\n\n        openAction = QtWidgets.QAction(QtGui.QIcon('gui/icons/main/document-open.svg'), 'Open project', self)\n        openAction.setShortcut('Ctrl+O')\n        openAction.setStatusTip('Open project')\n        openAction.triggered.connect(self.open_project)\n\n        saveAction = QtWidgets.QAction(QtGui.QIcon('gui/icons/main/document-save.svg'), 'Save project', self)\n        saveAction.setShortcut('Ctrl+S')\n        saveAction.setStatusTip('Save project')\n        saveAction.triggered.connect(self.save_project)\n\n\n        reloadStylAction = QtWidgets.QAction(QtGui.QIcon('gui/icons/main/view-refresh.svg'), 'Reload QSS', self)\n        reloadStylAction.setShortcut('Ctrl+R')\n        reloadStylAction.setStatusTip('Reload style')\n        reloadStylAction.triggered.connect(self.load_style)\n\n        menubar = self.menuBar()\n\n        fileMenu = menubar.addMenu('&File')\n        fileMenu.addAction(reloadStylAction)\n        fileMenu.addAction(openAction)\n        fileMenu.addAction(saveAction)\n        fileMenu.addAction(exitAction)\n\n        viewMenu = menubar.addMenu('&View')\n\n        helpManu = menubar.addMenu('&Help')\n        \n        toolbar = self.addToolBar('Toolbar')\n        toolbar.addAction(reloadStylAction)\n        toolbar.addAction(openAction)\n        toolbar.addAction(saveAction)\n        toolbar.addAction(exitAction)\n        \n        self.setWindowTitle(\"Copperfield\")\n        self.statusBar().showMessage('Ready...')",
 			"file": "gui/main_window.py",
+			"file_size": 5671,
+			"file_write_time": 132205646927228603,
 			"settings":
 			{
 				"buffer_size": 5671,
@@ -635,7 +643,10 @@
 			}
 		},
 		{
+			"contents": "import os\nfrom PyQt5 import QtWidgets, QtCore, QtGui\n\nfrom gui.signals import signals\nfrom copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType\n\nclass ParmSignals(QtCore.QObject):\n\tvalueChanged = QtCore.pyqtSignal(object)\n\ttoggleParmExpand =QtCore.pyqtSignal()\n\n\tdef __init__(self, parent=None):  \n\t\tQtCore.QObject.__init__(self, parent)\n\nclass ParameterBaseWidget(QtWidgets.QWidget):\n\tdef __init__(self, parent, parm):\n\t\tQtWidgets.QWidget.__init__(self, parent)\n\t\tself.signals = ParmSignals()\n\t\tself.parm = parm\n\t\tself.line_edit = None # Not all type of parm widget has line edit\n\t\tself._line_edit_changed = False\n\n\t\tself.layout = QtWidgets.QHBoxLayout(self)\n\t\tself.layout.setSpacing(2)\n\t\tself.layout.setContentsMargins(0, 0, 0, 0)\n\t\tself.setLayout(self.layout)\n\n\t\t# connect signals\n\t\tself.signals.valueChanged.connect(self.parmChanged)\n\t\tself.signals.toggleParmExpand.connect(self.toggleParmExpand)\n\t\tself.parm.signals.parameterChanged.connect(self.updateWidget) # sent by CopperParameter\n\n\tdef updateWidget(self):\n\t\tpass # TODO: raise uniplemented exception\n\n\t@QtCore.pyqtSlot()\n\tdef toggleParmExpand(self):\n\t\tpass\n\n\t@QtCore.pyqtSlot(object)\n\tdef parmChanged(self, value):\n\t\tparm_type = self.parm.parmTemplate().type()\n\t\tif parm_type is ParmTemplateType.Float:\n\t\t\tself.parm.signals.setParameter.emit(float(value))\n\t\telif parm_type is ParmTemplateType.Int:\n\t\t\tself.parm.signals.setParameter.emit(int(value))\n\t\telif parm_type is ParmTemplateType.String:\n\t\t\tself.parm.signals.setParameter.emit(str(value))\n\t\telif parm_type is ParmTemplateType.Menu:\n\t\t\tself.parm.signals.setParameter.emit(int(value))\n\n\t'''\n\tHandle drop event. Validate dropped data and set parameter.\n\t'''\n\tdef eventFilter(self, source, event):\n\t\tif (event.type() == QtCore.QEvent.Drop and source is self.line_edit):\n\t\t\tself.line_edit.setText(\"\")\n\t\t\tself.parm.signals.setParameter.emit(event.mimeData().text())\n\t\t\t#if self.line_edit:\n\t\t\t#\tself.line_edit.setText(\"\")\n\t\t\t#\tself.line_edit.dropEvent(event)\n\t\t\t#\tif event.isAccepted():\n\t\t\t\t\t#self.valueChanged.emit()\n\t\t\t#\t\tself.parm.set(str(value))\n\t\t\t#\treturn True\n\t\t\n\t\treturn QtWidgets.QWidget.eventFilter(self, source, event) # propagate event\n\n\nclass ParameterNumericalBaseWidget(ParameterBaseWidget):\n\tdef __init__(self, parent, parm):\n\t\tParameterBaseWidget.__init__(self, parent, parm)\n\n\t\tparm_template = self.parm.parmTemplate()\n\n\t\tif parm_template.type() is ParmTemplateType.Int:\n\t\t\tself.slider_resolution = 1\n\t\telse:\n\t\t\tself.slider_resolution = 1000\n\n\t\tself.line_edit = QtWidgets.QLineEdit(self.calcLineEditValueFromParm())\n\t\tself.line_edit.setMinimumWidth(60)\n\t\tself.line_edit_needs_update = False\n\t\tself.layout.addWidget(self.line_edit)\n\t\tself.slider = None\n\n\t\tif self.parm.parmTemplate().numComponents() == 1:\n\t\t\tself.line_edit.setMaximumWidth(140)\n\t\t\tself.slider_needs_update = False\n\t\t\tself.slider = QtWidgets.QSlider(self)\n\t\t\tself.slider.setOrientation(QtCore.Qt.Horizontal)\n\t\t\tself.slider.setMinimum(parm_template.min() * self.slider_resolution)\n\t\t\tself.slider.setMaximum(parm_template.max() * self.slider_resolution)\n\t\t\tself.slider.setValue(self.calcSliderValueFromParm())\n\t\t\tself.slider.setSingleStep(1)\n\t\t\tself.slider.setTracking(True)\n\t\t\tself.slider.sliderMoved[int].connect(self.processSlider)\n\t\t\tself.layout.addWidget(self.slider)\n\n\t\t# connect signals\n\t\tself.line_edit.editingFinished.connect(self.processLineEdit)\n\t\t#self.line_edit.textChanged.connect(self._lineEditChanged)\n\n\tdef calcLineEditValueFromParm(self):\n\t\treturn str(self.parm.eval())\n\n\tdef calcSliderValueFromParm(self):\n\t\treturn self.parm.eval() * self.slider_resolution\n\n\t@QtCore.pyqtSlot()\n\tdef updateWidget(self):\n\t\tif self.line_edit_needs_update:\n\t\t\tself.line_edit.setText(self.calcLineEditValueFromParm())\n\t\t\tself.line_edit_needs_update = False\n\n\t\tif self.slider_needs_update and self.slider:\n\t\t\tself.slider.setValue(self.calcSliderValueFromParm())\n\t\t\tself.slider_needs_update = False\n\n\t@QtCore.pyqtSlot(int)\n\tdef processSlider(self, value):\n\t\tself.line_edit_needs_update = True\n\t\tvalue = self.slider.value()\n\t\tself.signals.valueChanged.emit(float(value)/self.slider_resolution)\n\n\t@QtCore.pyqtSlot()\n\tdef processLineEdit(self):\n\t\tself.slider_needs_update = True\n\t\tvalue = self.line_edit.text()\n\t\tself.signals.valueChanged.emit(value)\n\nclass ParameterFloatWidget(ParameterNumericalBaseWidget):\n\tdef __init__(self, parent, parm):\n\t\tParameterNumericalBaseWidget.__init__(self, parent, parm)\n\n\nclass ParameterIntWidget(ParameterNumericalBaseWidget):\n\tdef __init__(self, parent, parm):\n\t\tParameterNumericalBaseWidget.__init__(self, parent, parm)\n\n\nclass ParameterToggleWidget(ParameterBaseWidget):\n\tdef __init__(self, parent, parm):\n\t\tParameterBaseWidget.__init__(self, parent, parm)\n\n\t\tself.checkbox = QtWidgets.QCheckBox(self)\n\t\tself.checkbox.setCheckState(self.parm.evalAsBool())\n\t\tself.checkbox.setTristate(on=False)\n\n\t\tself.label = QtWidgets.QLabel(parm.parmTemplate().label())\n\t\tself.label.setAlignment(QtCore.Qt.AlignLeft | QtCore.Qt.AlignVCenter)\n\t\tself.label.setStatusTip(parm.name())\n\n\t\tself.layout.addWidget(self.checkbox)\n\t\tself.layout.addWidget(self.label)\n\t\tself.layout.addStretch(1)\n\n\t\t# connect signals\n\t\tself.checkbox.stateChanged.connect(self.processCheckbox)\n\n\tdef processCheckbox(self, state):\n\t\tself.signals.valueChanged.emit(state)\n\n\nclass ParameterMenuWidget(ParameterBaseWidget):\n\tdef __init__(self, parent, parm):\n\t\tParameterBaseWidget.__init__(self, parent, parm)\n\n\t\tself.combobox = QtWidgets.QComboBox(self)\n\t\tfor item_label in self.parm.menuLabels():\n\t\t\tself.combobox.addItem(item_label)\n\n\t\tself.combobox.setCurrentIndex(parm.evalAsInt())\n\n\t\tself.layout.addWidget(self.combobox)\n\n\t\tif parm.parmTemplate().numComponents() == 1:\n\t\t\tself.layout.addStretch(1)\n\n\t\t# connect signals\n\t\tself.combobox.currentIndexChanged.connect(self.processMenu)\n\n\tdef processMenu(self, item):\n\t\tself.signals.valueChanged.emit(item)\n\n\nclass ParameterButtonWidget(ParameterBaseWidget):\n\tdef __init__(self, parent, parm):\n\t\tParameterBaseWidget.__init__(self, parent, parm)\n\n\t\tself.button = QtWidgets.QPushButton(parm.parmTemplate().label(), self)\n\t\tself.button.setMinimumWidth(60)\n\n\t\tself.layout.addWidget(self.button)\n\t\t\n\t\tif parm.parmTemplate().numComponents() == 1:\n\t\t\tself.button.setMaximumWidth(140)\n\t\t\tself.layout.addStretch(1)\n\n\t\t# connect signals\n\t\tself.button.clicked.connect(parm.pressButton)\n\n\nclass ParameterStringWidget(ParameterBaseWidget):\n\tdef __init__(self, parent, parm):\n\t\tParameterBaseWidget.__init__(self, parent, parm)\n\n\t\tself.line_edit = QtWidgets.QLineEdit(parm.evalAsString())\n\t\tself.line_edit.setDragEnabled(True)\n\t\tself.line_edit.setAcceptDrops(True)\n\t\tself.line_edit.installEventFilter(self) # process drag'n'drop\n\t\tself.layout.addWidget(self.line_edit)\n\n\t\tif parm.parmTemplate().stringType() is StringParmType.FileReference:\n\t\t\tself.file_button = QtWidgets.QToolButton(self)\n\t\t\tself.file_button.setObjectName(\"file\")\n\t\t\tself.file_button.clicked.connect(self.browseFile)\n\t\t\tself.layout.addWidget(self.file_button)\n\t\telif parm.parmTemplate().stringType() is StringParmType.NodeReference:\n\t\t\tself.op_jump_button = QtWidgets.QToolButton(self)\n\t\t\tself.op_jump_button.setObjectName(\"op_jump\")\n\n\t\t\tself.op_path_button = QtWidgets.QToolButton(self)\n\t\t\tself.op_path_button.setObjectName(\"op_path\")\n\t\t\tself.op_path_button.clicked.connect(self.browseOp)\n\n\t\t\tself.layout.addWidget(self.op_jump_button)\n\t\t\tself.layout.addWidget(self.op_path_button)\t\n\n\t\t# connect signals\n\t\tself.line_edit.editingFinished.connect(self.processLineEdit)\n\n\tdef processLineEdit(self):\n\t\tvalue = self.line_edit.text()\n\t\tself.signals.valueChanged.emit(value)\n\n\tdef browseFile(self, lineEdit):\n\t\tfile_path, wildcard = QtWidgets.QFileDialog.getOpenFileName()\n\t\tself.line_edit.setText(file_path)\n\t\tself.signals.valueChanged.emit(file_path)\n\n\tdef browseOp(self, lineEdit):\n\t\t#op_path = QtWidgets.QFileDialog.getOpenFileName()\n\t\t#self.line_edit.setText(op_path)\n\t\t#self.valueChanged.emit()\n\t\tpass\n\n\n\n\n\n\n\n",
 			"file": "gui/panels/parameters_panel/parameters_widgets.py",
+			"file_size": 7931,
+			"file_write_time": 132206549796959886,
 			"settings":
 			{
 				"buffer_size": 7931,
@@ -662,6 +673,18 @@
 			}
 		},
 		{
+			"contents": "PyQt_API_Impl = None\nPyQt_API = None\n\ntry:\n\timport PyQt5 as PyQt_API\n\tPyQt_API_Impl = \"PyQt5\"\nexcept ImportError:\n\tpass\n\ntry:\n\timport PySide2 as PyQt_API\n\tPyQt_API_Impl = \"PySide2\"\nexcept ImportError:\n\tpass\n\nif PyQt_API_Impl == None:\n\traise Exception(\"No Qt for Python implementation found !!! PyQt5 or PySide2 required.\")\n\n#from .tabbed_panel_manager import TabbedPanelManager",
+			"file": "gui/__init__.py",
+			"file_size": 377,
+			"file_write_time": 132211742200444358,
+			"settings":
+			{
+				"buffer_size": 377,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "copper/op/op_parameters.py",
 			"settings":
 			{
@@ -674,16 +697,7 @@
 			"file": "copper/op/op_node.py",
 			"settings":
 			{
-				"buffer_size": 6361,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/tree_view_panel.py",
-			"settings":
-			{
-				"buffer_size": 5226,
+				"buffer_size": 6975,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -716,101 +730,10 @@
 			}
 		},
 		{
-			"file": "gui/signals.py",
+			"file": "copper/ui/widgets/path_bar_widget.py",
 			"settings":
 			{
-				"buffer_size": 529,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/composite_view_panel.py",
-			"settings":
-			{
-				"buffer_size": 12336,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/network_view_panel/network_view_widget.py",
-			"settings":
-			{
-				"buffer_size": 3748,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/panel_registry.py",
-			"settings":
-			{
-				"buffer_size": 797,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/tabbed_panel_manager.py",
-			"settings":
-			{
-				"buffer_size": 4557,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/python_shell_panel.py",
-			"settings":
-			{
-				"buffer_size": 8926,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/python_syntax_highlighter.py",
-			"settings":
-			{
-				"buffer_size": 6264,
-				"encoding": "UTF-8",
-				"line_ending": "Unix",
-				"name": "import sys"
-			}
-		},
-		{
-			"file": "gui/panels/network_view_panel/__init__.py",
-			"settings":
-			{
-				"buffer_size": 48,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/network_view_panel/network_view_panel.py",
-			"settings":
-			{
-				"buffer_size": 1387,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/network_view_panel/node_item.py",
-			"settings":
-			{
-				"buffer_size": 11178,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/network_view_panel/node_flow_scene.py",
-			"settings":
-			{
-				"buffer_size": 3574,
+				"buffer_size": 4671,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -852,37 +775,138 @@
 			}
 		},
 		{
-			"file": "gui/panels/scene_view_panel/scene_view_panel.py",
-			"settings":
-			{
-				"buffer_size": 14434,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/panels/scene_view_panel/ogl_objcache.py",
-			"settings":
-			{
-				"buffer_size": 6950,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "gui/widgets/collapsable_widget.py",
-			"settings":
-			{
-				"buffer_size": 2068,
-				"encoding": "UTF-8",
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "copper/geometry/geometry.py",
 			"settings":
 			{
 				"buffer_size": 1707,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/__init__.py",
+			"settings":
+			{
+				"buffer_size": 323,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/tabbed_panel_manager.py",
+			"settings":
+			{
+				"buffer_size": 4588,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/scene_view_panel.py",
+			"settings":
+			{
+				"buffer_size": 14470,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/parameters_panel/parameters_panel.py",
+			"settings":
+			{
+				"buffer_size": 5924,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/base_panel.py",
+			"settings":
+			{
+				"buffer_size": 3999,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/composite_view_panel.py",
+			"settings":
+			{
+				"buffer_size": 12629,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/help_browser_panel.py",
+			"settings":
+			{
+				"buffer_size": 647,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/tree_view_panel.py",
+			"settings":
+			{
+				"buffer_size": 5260,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/network_view_panel/network_view_panel.py",
+			"settings":
+			{
+				"buffer_size": 1417,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "import logging\n\nfrom PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL, Qt\nfrom OpenGL.GL import *\nfrom OpenGL import GL\nfrom OpenGL.GLU import *\n\nimport numpy\nimport copper\nimport math\n\nfrom copper import hou as engine\nfrom copper.op.base import OpRegistry\nfrom copper.ui.signals import signals\n\n\nfrom .node_item import NodeItem, NodeLinkItem\n\nlogger = logging.getLogger(__name__)\n\n\nclass NodeFlowScene(QtWidgets.QGraphicsScene):\n    def __init__(self, parent=None):      \n        QtWidgets.QGraphicsScene.__init__(self, parent) \n        self.nodes_map = {}\n\n        self.gridSizeWidth = 60\n        self.gridSizeHeight = 30 \n        self.zoomLevel = 1.0\n        self.setSceneRect(-100000, -100000, 200000, 200000)\n\n    @QtCore.pyqtSlot()\n    def addNode(self, node_path=None):\n        if node_path:\n            node = engine.node(node_path)\n            if node:\n                node_item= NodeItem(node)\n                self.addItem(node_item)\n                self.nodes_map[node_path] = node_item\n                node_item.autoPlace()\n\n    def buildNetworkLevel(self, node_path=None):\n        node = engine.node(node_path)\n        if node:\n            self.network_level = node_path\n            self.nodes_map = {}\n            self.clear()\n\n            # build node boxes\n            for child in node.children():\n                self.addNode(child.path())\n\n            # build links\n            for node_item in self.nodes_map.values():\n                for connection in node_item.inputConnections():\n                    socket_to = \n                    link_item = NodeLinkItem(socket_from, socket_to)\n                    self.addItem(link_item)\n\n    def zoom(self, zoomFactor):\n        self.zoomLevel *= zoomFactor\n\n    def drawBackground(self, painter, rect):\n        painter.fillRect(rect, QtGui.QColor(42, 42, 42))\n\n        if self.zoomLevel > 0.1:\n            # Draw grid\n            left = rect.left() - (rect.left() % self.gridSizeWidth)\n            top = rect.top() - (rect.top() % self.gridSizeHeight)\n     \n            lines = []\n     \n            x = left\n            while x < rect.right():\n                lines.append( QtCore.QLineF(x, rect.top(), x, rect.bottom()) )\n                x += self.gridSizeWidth\n\n            y = top\n            while y < rect.bottom():\n                lines.append( QtCore.QLineF(rect.left(), y, rect.right(), y) )\n                y += self.gridSizeHeight\n\n            pen = QtGui.QPen(QtGui.QColor(64, 64, 64), 1)\n            pen.setCosmetic(True)\n            painter.setPen(pen)\n            painter.drawLines(lines)\n\n    def drawForeground(self, painter, rect):\n        #painter.drawText(rect, \"Network type name\")\n        pass\n\n\n    def selectNode(self, node_path):\n        if node_path not in self.nodes_map:\n            # If node is not in map we need to rebuild visual network\n            node = engine.node(node_path)\n            self.buildNetworkLevel(node.parent().path())\n\n        # highlight selected node\n        self.nodes_map[node_path].select()\n\n    def contextMenuEvent(self, event):\n        network_node = engine.node(self.network_level)\n\n        menu = QtWidgets.QMenu(event.widget())\n        group = QtWidgets.QActionGroup(menu)\n        menu.addAction('Tool Menu...')\n\n        add_operators_menu = menu.addMenu(\"Add\")\n\n        node_types = network_node.childTypeCategory().nodeTypes()\n        for node_type_name, node_class in node_types.items():\n            icon = QtGui.QIcon(node_class.iconName())\n            action = add_operators_menu.addAction(icon, node_type_name)\n            action.setActionGroup(group)\n            action.setData(node_type_name)\n        \n        group.triggered.connect(self.addOperator)\n\n        menu.exec_(event.screenPos())\n\n    def addOperator(self, action):\n        network_node = engine.node(self.network_level)\n        network_node.createNode(action.data())\n",
+			"file": "copper/ui/panels/network_view_panel/node_flow_scene.py",
+			"file_size": 3723,
+			"file_write_time": 132212528885069715,
+			"settings":
+			{
+				"buffer_size": 3858,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/network_view_panel/network_view_widget.py",
+			"settings":
+			{
+				"buffer_size": 3748,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/network_view_panel/node_item.py",
+			"settings":
+			{
+				"buffer_size": 11289,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/widgets/play_bar_widget/time_line.py",
+			"settings":
+			{
+				"buffer_size": 4124,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/parameters_panel/parameters_widgets.py",
+			"settings":
+			{
+				"buffer_size": 7937,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -906,12 +930,88 @@
 			}
 		},
 		{
-			"file": "copper/op/op_engine.py",
+			"file": "copper/engine.py",
 			"settings":
 			{
-				"buffer_size": 7985,
+				"buffer_size": 7988,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "import logging\n\nlogger = logging.getLogger(__main__)\n\nclass OpDataCache():\n\t'''\n\tImplements simplest possible cache for cooked op data\n\t'''\n\tdef __init__(self, maxzise=None):\n\t\tself.__max_size__ = maxzise\n\t\tself.__data_dict__ = {}\n\n\tdef putData(self, node, data_index, data):\n\t\tlogger.debug(\"Putting data %s of node %s with index %s into cache\" % (data.__cls__, node.path(), data_index))\n\t\tkey = (node.uuid(), data_index)\n\t\tself.__data_dict__[key] = data\n\n\tdef getData(self, node, data_index):\n\t\tlogger.debug(\"Getting data of node %s with index %s from cache\" % (node.path(), data_index))\n\t\tkey = (node.uuid(), data_index)\n\t\tif key not in self.__data_dict__:\n\t\t\tlogger.error(\"Cache miss for data of node %s with index %s\" % (node.path(), data_index))\n\t\treturn self.__data_dict__[key]",
+			"file": "copper/copper_cache.py",
+			"file_size": 793,
+			"file_write_time": 132213409471279789,
+			"settings":
+			{
+				"buffer_size": 783,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/__init__.py",
+			"settings":
+			{
+				"buffer_size": 773,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/copper_object.py",
+			"settings":
+			{
+				"buffer_size": 127,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/managers/__init__.py",
+			"settings":
+			{
+				"buffer_size": 149,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/managers/root_network.py",
+			"settings":
+			{
+				"buffer_size": 731,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/op/op_network.py",
+			"settings":
+			{
+				"buffer_size": 7440,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/managers/mgr_node.py",
+			"settings":
+			{
+				"buffer_size": 471,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/singleton.py",
+			"settings":
+			{
+				"buffer_size": 847,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "# Taken from here: https://stackoverflow.com/quest"
 			}
 		},
 		{
@@ -1015,7 +1115,7 @@
 			}
 		},
 		{
-			"file": "copper/op/op_connection.py",
+			"file": "copper/op/op_data_socket.py",
 			"settings":
 			{
 				"buffer_size": 339,
@@ -1099,26 +1199,36 @@
 		"/home/max/dev/Copperfield_FX",
 		"/home/max/dev/Copperfield_FX/bin",
 		"/home/max/dev/Copperfield_FX/copper",
-		"/home/max/dev/Copperfield_FX/copper/cl",
 		"/home/max/dev/Copperfield_FX/copper/cop2",
-		"/home/max/dev/Copperfield_FX/copper/geometry",
-		"/home/max/dev/Copperfield_FX/copper/geometry/iotranslators",
-		"/home/max/dev/Copperfield_FX/copper/geometry/iotranslators/obj",
-		"/home/max/dev/Copperfield_FX/copper/obj",
+		"/home/max/dev/Copperfield_FX/copper/managers",
 		"/home/max/dev/Copperfield_FX/copper/op",
-		"/home/max/dev/Copperfield_FX/copper/rop",
-		"/home/max/dev/Copperfield_FX/copper/sop",
-		"/home/max/dev/Copperfield_FX/copper/vmath",
-		"/home/max/dev/Copperfield_FX/gui",
-		"/home/max/dev/Copperfield_FX/gui/config",
-		"/home/max/dev/Copperfield_FX/gui/panels",
-		"/home/max/dev/Copperfield_FX/gui/panels/network_view_panel",
-		"/home/max/dev/Copperfield_FX/gui/panels/parameters_panel",
-		"/home/max/dev/Copperfield_FX/gui/panels/scene_view_panel",
-		"/home/max/dev/Copperfield_FX/gui/widgets"
+		"/home/max/dev/Copperfield_FX/copper/ui",
+		"/home/max/dev/Copperfield_FX/copper/ui/__pycache__",
+		"/home/max/dev/Copperfield_FX/copper/ui/panels",
+		"/home/max/dev/Copperfield_FX/copper/ui/panels/network_view_panel",
+		"/home/max/dev/Copperfield_FX/copper/ui/panels/parameters_panel",
+		"/home/max/dev/Copperfield_FX/copper/ui/panels/scene_view_panel",
+		"/home/max/dev/Copperfield_FX/copper/ui/widgets",
+		"/home/max/dev/Copperfield_FX/copper/ui/widgets/play_bar_widget"
 	],
 	"file_history":
 	[
+		"/home/max/dev/Copperfield_FX/gui/widgets/collapsable_widget.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/scene_view_panel/ogl_objcache.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/scene_view_panel/scene_view_panel.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/network_view_panel/node_flow_scene.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/network_view_panel/node_item.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/network_view_panel/network_view_panel.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/network_view_panel/__init__.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/python_syntax_highlighter.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/python_shell_panel.py",
+		"/home/max/dev/Copperfield_FX/gui/tabbed_panel_manager.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/panel_registry.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/network_view_panel/network_view_widget.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/tree_view_panel.py",
+		"/home/max/dev/Copperfield_FX/gui/signals.py",
+		"/home/max/dev/Copperfield_FX/gui/panels/composite_view_panel.py",
+		"/home/max/dev/Copperfield_FX/copper/op/op_root.py",
 		"/home/max/dev/Copperfield_FX/gui/dialogs/render_modal_dialog.py",
 		"/home/max/dev/Copperfield_FX/test/mantra/box.asc.ifd",
 		"/home/max/dev/Copperfield_FX/test/mantra/tmp.ifd",
@@ -1230,23 +1340,7 @@
 		"/Users/max/htzr_stor1.ovpn",
 		"/Users/max/dev/Copperfield_FX/test/mantra/test.ifd",
 		"/Users/max/dev/Copperfield_FX/gui/panels/network_view_panel.py",
-		"/Users/max/dev/Copperfield_FX/copper/shout/parsers/ifd/parser_bgeo.py",
-		"/Users/max/dev/Copperfield_FX/copper/op/op_network.py",
-		"/Users/max/dev/Copperfield_FX/copper/vmath/vector3.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/tree_view_panel.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/scene_view_panel/ogl_objcache.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/parameters_panel/parameters_widgets.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/parameters_panel/parameters_panel.py",
-		"/Users/max/dev/Copperfield_FX/gui/widgets/path_bar_widget.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/composite_view_panel.py",
-		"/Users/max/dev/Copperfield_FX/copper/op/op_cooking_queue.py",
-		"/Users/max/dev/Copperfield_FX/copper/op/op_base.py",
-		"/Users/max/dev/Copperfield_FX/copper/op/base.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/python_shell_panel.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/python_syntax_highlighter.py",
-		"/Users/max/dev/Copperfield_FX/gui/tabbed_panel_manager.py",
-		"/Users/max/dev/Copperfield_FX/gui/panels/help_browser_panel.py",
-		"/Users/max/dev/Copperfield_FX/gui/widgets/collapsable_widget.py"
+		"/Users/max/dev/Copperfield_FX/copper/shout/parsers/ifd/parser_bgeo.py"
 	],
 	"find":
 	{
@@ -1265,6 +1359,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"None",
+			"OP_Engine",
 			"opCookingStarted",
 			"emit",
 			"clCreateImage failed:",
@@ -1282,6 +1378,8 @@
 		"regex": false,
 		"replace_history":
 		[
+			"Engine",
+			"OP_Root",
 			"self.Token",
 			"self._token",
 			"        ''' Initialize _jValue '''\n        self.Token = token\n        self.Value = value\n        self.Type = 0\n\n    def event(self, parser, key=False):\n        '''\n            Method invoked to send an event to a Handle.  This invokes the\n            appropriate callback on the handle.\n        '''\n        handle = parser.Handle\n        if self.Token == JID_STRING:\n            if key:\n                return handle.jsonKey(parser, self.Value)\n            return handle.jsonString(parser, self.Value)\n        if self.Token == JID_BOOL:\n            return handle.jsonBool(parser, self.Value)\n        if self.Token in {JID_INT8:1,JID_INT16:1,JID_INT32:1,JID_INT64:1}:\n            return handle.jsonInt(parser, self.Value)\n        if self.Token in {JID_UINT8:1,JID_UINT16:1}:\n            return handle.jsonInt(parser, self.Value)\n        if self.Token in {JID_REAL16:1,JID_REAL32:1,JID_REAL64:1}:\n            return handle.jsonReal(parser, self.Value)\n        if self.Token == JID_MAP_BEGIN:\n            return handle.jsonBeginMap(parser)\n        if self.Token == JID_MAP_END:\n            return handle.jsonEndMap(parser)\n        if self.Token == JID_ARRAY_BEGIN:\n            return handle.jsonBeginArray(parser)\n        if self.Token == JID_ARRAY_END:\n            return handle.jsonEndArray(parser)\n        if self.Token == JID_NULL:\n            return handle.jsonNull(parser)\n        if self.Token == JID_UNIFORM_ARRAY:\n            if self.Type == JID_BOOL:"
@@ -1295,7 +1393,7 @@
 	"groups":
 	[
 		{
-			"selected": 37,
+			"selected": 45,
 			"sheets":
 			[
 				{
@@ -1304,7 +1402,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2696,
+						"buffer_size": 2702,
 						"regions":
 						{
 						},
@@ -1322,10 +1420,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 714.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 28,
 					"type": "text"
 				},
 				{
@@ -1355,7 +1453,7 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 41,
 					"type": "text"
 				},
 				{
@@ -1385,7 +1483,7 @@
 						"translation.y": 14857.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 13,
+					"stack_index": 42,
 					"type": "text"
 				},
 				{
@@ -1394,15 +1492,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4665,
+						"buffer_size": 4691,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1152,
-								1152
+								72,
+								72
 							]
 						],
 						"settings":
@@ -1412,10 +1510,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 306.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 30,
+					"stack_index": 35,
 					"type": "text"
 				},
 				{
@@ -1444,7 +1542,7 @@
 						"translation.y": 816.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 25,
+					"stack_index": 48,
 					"type": "text"
 				},
 				{
@@ -1453,15 +1551,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1638,
+						"buffer_size": 1623,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								373,
-								373
+								520,
+								520
 							]
 						],
 						"settings":
@@ -1470,10 +1568,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 255.0,
+						"translation.y": 102.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 13,
 					"type": "text"
 				},
 				{
@@ -1503,7 +1601,7 @@
 						"translation.y": 1530.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 38,
+					"stack_index": 52,
 					"type": "text"
 				},
 				{
@@ -1533,7 +1631,7 @@
 						"translation.y": 153.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 35,
+					"stack_index": 50,
 					"type": "text"
 				},
 				{
@@ -1561,7 +1659,7 @@
 						"translation.y": 357.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 45,
+					"stack_index": 54,
 					"type": "text"
 				},
 				{
@@ -1589,7 +1687,7 @@
 						"translation.y": 102.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 44,
+					"stack_index": 53,
 					"type": "text"
 				},
 				{
@@ -1617,7 +1715,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 50,
+					"stack_index": 59,
 					"type": "text"
 				},
 				{
@@ -1645,7 +1743,7 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 49,
+					"stack_index": 58,
 					"type": "text"
 				},
 				{
@@ -1674,7 +1772,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 48,
+					"stack_index": 57,
 					"type": "text"
 				},
 				{
@@ -1703,7 +1801,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 40,
 					"type": "text"
 				},
 				{
@@ -1732,7 +1830,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 26,
+					"stack_index": 49,
 					"type": "text"
 				},
 				{
@@ -1761,11 +1859,39 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 28,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
 					"buffer": 16,
+					"file": "gui/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 377,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								153,
+								153
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 34,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
 					"file": "copper/op/op_parameters.py",
 					"semi_transient": false,
 					"settings":
@@ -1790,24 +1916,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 19,
+					"stack_index": 16,
 					"type": "text"
 				},
 				{
-					"buffer": 17,
+					"buffer": 18,
 					"file": "copper/op/op_node.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6361,
+						"buffer_size": 6975,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								357,
-								357
+								6938,
+								6938
 							]
 						],
 						"settings":
@@ -1816,40 +1942,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3738.0,
+						"translation.y": 3723.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
-					"type": "text"
-				},
-				{
-					"buffer": 18,
-					"file": "gui/panels/tree_view_panel.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 5226,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3479,
-								3479
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1224.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 8,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
@@ -1877,7 +1973,7 @@
 						"translation.y": 6324.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 43,
 					"type": "text"
 				},
 				{
@@ -1906,7 +2002,7 @@
 						"translation.y": 459.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 21,
+					"stack_index": 46,
 					"type": "text"
 				},
 				{
@@ -1935,338 +2031,41 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 24,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
 					"buffer": 22,
-					"file": "gui/signals.py",
+					"file": "copper/ui/widgets/path_bar_widget.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 529,
+						"buffer_size": 4671,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								26,
-								26
+								271,
+								271
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 32,
+					"stack_index": 30,
 					"type": "text"
 				},
 				{
 					"buffer": 23,
-					"file": "gui/panels/composite_view_panel.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 12336,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								7441,
-								7441
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1826.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 33,
-					"type": "text"
-				},
-				{
-					"buffer": 24,
-					"file": "gui/panels/network_view_panel/network_view_widget.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3748,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								3747,
-								3747
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1275.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 14,
-					"type": "text"
-				},
-				{
-					"buffer": 25,
-					"file": "gui/panels/panel_registry.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 797,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								336,
-								336
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 41,
-					"type": "text"
-				},
-				{
-					"buffer": 26,
-					"file": "gui/tabbed_panel_manager.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4557,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								4076,
-								4076
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 816.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 31,
-					"type": "text"
-				},
-				{
-					"buffer": 27,
-					"file": "gui/panels/python_shell_panel.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 8926,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1843,
-								1843
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 561.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 39,
-					"type": "text"
-				},
-				{
-					"buffer": 28,
-					"file": "gui/panels/python_syntax_highlighter.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6264,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1054,
-								1054
-							]
-						],
-						"settings":
-						{
-							"auto_name": "import sys",
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 476.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 40,
-					"type": "text"
-				},
-				{
-					"buffer": 29,
-					"file": "gui/panels/network_view_panel/__init__.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 48,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6,
-								6
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 43,
-					"type": "text"
-				},
-				{
-					"buffer": 30,
-					"file": "gui/panels/network_view_panel/network_view_panel.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1387,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								185,
-								185
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 27,
-					"type": "text"
-				},
-				{
-					"buffer": 31,
-					"file": "gui/panels/network_view_panel/node_item.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11178,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5326,
-								5326
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1989.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 15,
-					"type": "text"
-				},
-				{
-					"buffer": 32,
-					"file": "gui/panels/network_view_panel/node_flow_scene.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 3574,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								881,
-								881
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 153.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 16,
-					"type": "text"
-				},
-				{
-					"buffer": 33,
 					"file": "copper/geometry/iotranslators/obj/obj.py",
 					"semi_transient": false,
 					"settings":
@@ -2291,11 +2090,11 @@
 						"translation.y": 561.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 37,
 					"type": "text"
 				},
 				{
-					"buffer": 34,
+					"buffer": 24,
 					"file": "test/geometry/cube.obj",
 					"semi_transient": false,
 					"settings":
@@ -2320,11 +2119,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 38,
 					"type": "text"
 				},
 				{
-					"buffer": 35,
+					"buffer": 25,
 					"file": "test/geometry/skeleton.obj",
 					"semi_transient": false,
 					"settings":
@@ -2348,11 +2147,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 20,
+					"stack_index": 45,
 					"type": "text"
 				},
 				{
-					"buffer": 36,
+					"buffer": 26,
 					"file": "copper/geometry/primitive.py",
 					"semi_transient": false,
 					"settings":
@@ -2377,100 +2176,11 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 29,
+					"stack_index": 23,
 					"type": "text"
 				},
 				{
-					"buffer": 37,
-					"file": "gui/panels/scene_view_panel/scene_view_panel.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 14434,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								8580,
-								8580
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 4072.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 38,
-					"file": "gui/panels/scene_view_panel/ogl_objcache.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 6950,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								5766,
-								5780
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 3162.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 39,
-					"file": "gui/widgets/collapsable_widget.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2068,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1330,
-								1330
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 36,
-					"type": "text"
-				},
-				{
-					"buffer": 40,
+					"buffer": 27,
 					"file": "copper/geometry/geometry.py",
 					"semi_transient": false,
 					"settings":
@@ -2492,14 +2202,431 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
+						"translation.y": 408.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 33,
+					"type": "text"
+				},
+				{
+					"buffer": 28,
+					"file": "copper/ui/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 323,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								323,
+								323
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 34,
+					"stack_index": 32,
+					"type": "text"
+				},
+				{
+					"buffer": 29,
+					"file": "copper/ui/tabbed_panel_manager.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4588,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								30,
+								30
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 31,
+					"type": "text"
+				},
+				{
+					"buffer": 30,
+					"file": "copper/ui/panels/scene_view_panel/scene_view_panel.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14470,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1244,
+								1244
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 31,
+					"file": "copper/ui/panels/parameters_panel/parameters_panel.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5924,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								718,
+								718
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 32,
+					"file": "copper/ui/panels/base_panel.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3999,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1572,
+								1572
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 33,
+					"file": "copper/ui/panels/composite_view_panel.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12629,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10062,
+								10062
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4080.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 34,
+					"file": "copper/ui/panels/help_browser_panel.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 647,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								85,
+								85
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 29,
+					"type": "text"
+				},
+				{
+					"buffer": 35,
+					"file": "copper/ui/panels/tree_view_panel.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5260,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								321,
+								321
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 51.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 22,
+					"type": "text"
+				},
+				{
+					"buffer": 36,
+					"file": "copper/ui/panels/network_view_panel/network_view_panel.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1417,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1100,
+								1100
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 37,
+					"file": "copper/ui/panels/network_view_panel/node_flow_scene.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3858,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1534,
+								1534
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 38,
+					"file": "copper/ui/panels/network_view_panel/network_view_widget.py",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 3748,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 39,
+					"file": "copper/ui/panels/network_view_panel/node_item.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11289,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								473,
+								473
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 102.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 21,
+					"type": "text"
+				},
+				{
+					"buffer": 40,
+					"file": "copper/ui/widgets/play_bar_widget/time_line.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4124,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								744,
+								744
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 408.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 20,
 					"type": "text"
 				},
 				{
 					"buffer": 41,
+					"file": "copper/ui/panels/parameters_panel/parameters_widgets.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7937,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								193,
+								193
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 42,
 					"file": "copper/geometry/iotranslators/bgeo/bgeo.py",
 					"semi_transient": false,
 					"settings":
@@ -2524,11 +2651,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 37,
+					"stack_index": 51,
 					"type": "text"
 				},
 				{
-					"buffer": 42,
+					"buffer": 43,
 					"file": "copper/cl/source_image.cl",
 					"semi_transient": false,
 					"settings":
@@ -2553,24 +2680,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 46,
+					"stack_index": 55,
 					"type": "text"
 				},
 				{
-					"buffer": 43,
-					"file": "copper/op/op_engine.py",
+					"buffer": 44,
+					"file": "copper/engine.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7985,
+						"buffer_size": 7988,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7644,
-								7644
+								1437,
+								1437
 							]
 						],
 						"settings":
@@ -2579,14 +2706,246 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3994.0,
+						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 44,
+					"buffer": 45,
+					"file": "copper/copper_cache.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 783,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								783,
+								783
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 46,
+					"file": "copper/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 773,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								538,
+								538
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
+					"type": "text"
+				},
+				{
+					"buffer": 47,
+					"file": "copper/copper_object.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 127,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								127,
+								127
+							]
+						],
+						"settings":
+						{
+							"auto_name": "",
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 48,
+					"file": "copper/managers/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 149,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10,
+								10
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 26,
+					"type": "text"
+				},
+				{
+					"buffer": 49,
+					"file": "copper/managers/root_network.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 731,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								512,
+								512
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 25,
+					"type": "text"
+				},
+				{
+					"buffer": 50,
+					"file": "copper/op/op_network.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7440,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6890,
+								6890
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 18,
+					"type": "text"
+				},
+				{
+					"buffer": 51,
+					"file": "copper/managers/mgr_node.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 471,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								417,
+								417
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 24,
+					"type": "text"
+				},
+				{
+					"buffer": 52,
+					"file": "copper/singleton.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 847,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								847,
+								847
+							]
+						],
+						"settings":
+						{
+							"auto_name": "# Taken from here: https://stackoverflow.com/quest",
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 27,
+					"type": "text"
+				},
+				{
+					"buffer": 53,
 					"file": "copper/shout/parsers/base.py",
 					"semi_transient": false,
 					"settings":
@@ -2611,11 +2970,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 59,
+					"stack_index": 68,
 					"type": "text"
 				},
 				{
-					"buffer": 45,
+					"buffer": 54,
 					"file": "copper/shout/parsers/rib/parser_rib.py",
 					"semi_transient": false,
 					"settings":
@@ -2640,11 +2999,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 58,
+					"stack_index": 67,
 					"type": "text"
 				},
 				{
-					"buffer": 46,
+					"buffer": 55,
 					"file": "copper/shout/parsers/ifd/parser_ifd.py",
 					"semi_transient": false,
 					"settings":
@@ -2669,11 +3028,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 57,
+					"stack_index": 66,
 					"type": "text"
 				},
 				{
-					"buffer": 47,
+					"buffer": 56,
 					"file": "copper/shout/parsers/ifd/parser_bgeo.py",
 					"semi_transient": false,
 					"settings":
@@ -2698,11 +3057,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 52,
+					"stack_index": 61,
 					"type": "text"
 				},
 				{
-					"buffer": 48,
+					"buffer": 57,
 					"file": "copper/shout/shout.py",
 					"semi_transient": false,
 					"settings":
@@ -2727,11 +3086,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 51,
+					"stack_index": 60,
 					"type": "text"
 				},
 				{
-					"buffer": 49,
+					"buffer": 58,
 					"file": "copper/shout/parsers/ifd/hgeo.py",
 					"semi_transient": false,
 					"settings":
@@ -2757,11 +3116,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 56,
+					"stack_index": 65,
 					"type": "text"
 				},
 				{
-					"buffer": 50,
+					"buffer": 59,
 					"file": "copper/shout/drivers/mplay.py",
 					"semi_transient": false,
 					"settings":
@@ -2787,11 +3146,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 53,
+					"stack_index": 62,
 					"type": "text"
 				},
 				{
-					"buffer": 51,
+					"buffer": 60,
 					"file": "copper/shout/drivers/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -2815,11 +3174,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 54,
+					"stack_index": 63,
 					"type": "text"
 				},
 				{
-					"buffer": 52,
+					"buffer": 61,
 					"file": "test/mantra/test.ifd",
 					"semi_transient": false,
 					"settings":
@@ -2845,11 +3204,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 55,
+					"stack_index": 64,
 					"type": "text"
 				},
 				{
-					"buffer": 53,
+					"buffer": 62,
 					"semi_transient": false,
 					"settings":
 					{
@@ -2915,11 +3274,11 @@
 						"translation.y": 836.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 47,
+					"stack_index": 56,
 					"type": "text"
 				},
 				{
-					"buffer": 54,
+					"buffer": 63,
 					"file": "copper/cop2/cop2_file.py",
 					"semi_transient": false,
 					"settings":
@@ -2944,12 +3303,12 @@
 						"translation.y": 2652.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 22,
+					"stack_index": 47,
 					"type": "text"
 				},
 				{
-					"buffer": 55,
-					"file": "copper/op/op_connection.py",
+					"buffer": 64,
+					"file": "copper/op/op_data_socket.py",
 					"semi_transient": false,
 					"settings":
 					{
@@ -2960,8 +3319,8 @@
 						"selection":
 						[
 							[
-								149,
-								149
+								49,
+								49
 							]
 						],
 						"settings":
@@ -2973,11 +3332,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 42,
+					"stack_index": 19,
 					"type": "text"
 				},
 				{
-					"buffer": 56,
+					"buffer": 65,
 					"file": "copper/cop2/cop2_node.py",
 					"semi_transient": false,
 					"settings":
@@ -2999,14 +3358,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2295.0,
+						"translation.y": 2225.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 23,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
-					"buffer": 57,
+					"buffer": 66,
 					"file": "copper/sop/sop_node.py",
 					"semi_transient": false,
 					"settings":
@@ -3031,11 +3390,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 39,
 					"type": "text"
 				},
 				{
-					"buffer": 58,
+					"buffer": 67,
 					"file": "copper/sop/sop_file.py",
 					"semi_transient": false,
 					"settings":
@@ -3060,11 +3419,11 @@
 						"translation.y": 255.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 36,
 					"type": "text"
 				},
 				{
-					"buffer": 59,
+					"buffer": 68,
 					"file": "copper/sop/sop_box.py",
 					"semi_transient": false,
 					"settings":
@@ -3089,7 +3448,7 @@
 						"translation.y": 306.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 18,
+					"stack_index": 44,
 					"type": "text"
 				}
 			]
@@ -3142,7 +3501,7 @@
 	"project": "copperfield.sublime-project",
 	"replace":
 	{
-		"height": 48.0
+		"height": 70.0
 	},
 	"save_all_on_build": true,
 	"select_file":

@@ -214,8 +214,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         logger.debug("Node size to display: %s %s" % (image_width, image_height))
 
         cl_image = self.node.getCookedData()
-        cl_ctx = hou.openclContext()
-        cl_queue = hou.openclQueue()
+        cl_ctx = hou.OpenCL.context()
+        cl_queue = hou.OpenCL.queue()
 
         event = None
 

@@ -3,11 +3,19 @@ from PyQt5 import QtWidgets, Qt, QtGui, QtCore
 from copper.ui.signals import signals
 from copper import hou as engine
 
+from PyQt5 import QtCore
+
+class PathBarWidgetSignals(QtCore.QObject):
+    pinPressed = QtCore.pyqtSignal()
+
+    def __init__(self):  
+        QtCore.QObject.__init__(self)
+
+
 class PathBarWidget(QtWidgets.QFrame):
     def __init__(self, parent, panel): 
         QtWidgets.QFrame.__init__(self, parent)
         self.panel = panel  
-        self.pinned = False
         self.history = []
         self.history_index = -1
         self.setObjectName("pathBar")
@@ -50,6 +58,7 @@ class PathBarWidget(QtWidgets.QFrame):
 
         self.buildPathBar(node_path="/obj")
 
+        self.signals = PathBarWidgetSignals()
         # connect panel signals
         self.panel.signals.copperNodeSelected[str].connect(self.nodeSelected)
 
@@ -73,14 +82,9 @@ class PathBarWidget(QtWidgets.QFrame):
 
             signals.copperNodeSelected.emit(self.history[self.history_index])
 
+    @QtCore.pyqtSlot()
     def pinPressed(self):
-        if self.pinned == False:
-            self.pinned = True
-        else:
-            self.pinned = False
-
-    def isPinned(self):
-        return self.pinned
+        self.signals.pinPressed.emit()
 
     @QtCore.pyqtSlot(str)
     def nodeSelected(self, node_path=None):

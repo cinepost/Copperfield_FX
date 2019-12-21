@@ -22,8 +22,7 @@ logger = logging.getLogger(__name__)
 
 class CompositeViewPanel(PathBasedPaneTab):
     def __init__(self):
-        PathBasedPaneTab.__init__(self, network_controls=True)
-
+        PathBasedPaneTab.__init__(self, network_controls=True, accept_drops=True)
         self.image_view_widget = CompositeViewWidget(self, self)
         self.addWidget(self.image_view_widget)
 
@@ -32,19 +31,19 @@ class CompositeViewPanel(PathBasedPaneTab):
         return "Composite View"
 
 
-class CompositeViewWidget(QtOpenGL.QGLWidget):
+class CompositeViewWidget(QtWidgets.QOpenGLWidget):
     def __init__(self, parent, panel):
-        format = QtOpenGL.QGLFormat.defaultFormat()
-        format.setSampleBuffers(True)
+        QtWidgets.QOpenGLWidget.__init__(self, parent)
+        format = QtGui.QSurfaceFormat.defaultFormat()
+        #format.setSampleBuffers(True)
         format.setSamples(16)
-        QtOpenGL.QGLWidget.__init__(self, format, parent)
+        self.setFormat(format)
 
-        if not self.isValid():
-            raise OSError("OpenGL not supported.")
+        #if not self.isValid():
+        #    raise OSError("OpenGL not supported.")
 
         self.panel = panel
         self.setMouseTracking(True)
-        self.setAcceptDrops(True)
         self.isPressed = False
         self.oldx = 0
         self.oldy = 0
@@ -52,9 +51,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.font = QtGui.QFont("verdana", 12)
         self.setCursor(QtCore.Qt.CrossCursor)
 
-        self.zoom = 1.0 
+        self.zoom = 1.0
 
-        self.node = None
         self.rebuild_node_image = False
         self.emptyView()
 
@@ -124,6 +122,8 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         if not self.isValid():
             return
 
+        painter = QtGui.QPainter(self)
+
         glClearColor(0.0, 0.0, 0.0, 1.0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -156,11 +156,12 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         glOrtho( 0, self.view_width, self.view_height, 0, -1, 1 )
 
         if self.node:
-            glColor3f(0, 1, 0)
-            self.renderText( 10, 20, self.node.path(), self.font )
+            painter.setFont(self.font)
+            painter.setPen(QtGui.QColor(0, 255, 0))
+            painter.drawText( 10, 20, self.node.path())
 
-            glColor3f(.5, .5, .5)
-            self.renderText( 10, 34, "%sx%s" % (self.image_width, self.image_height), self.font )
+            painter.setPen(QtGui.QColor(128, 128, 128))
+            painter.drawText( 10, 34, "%sx%s" % (self.image_width, self.image_height))
 
         # revert to 3D
         glLoadIdentity()
@@ -270,7 +271,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
         self.image_height = self.node.yRes()
         self.rebuild_node_image = True
 
-        self.updateGL()
+        self.update()
 
     @QtCore.pyqtSlot(str)    
     def setNodeToDisplay(self, node_path=None):
@@ -313,7 +314,7 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
             zoomFactor = zoomOutFactor
 
         self.zoom *= zoomFactor
-        self.updateGL()
+        self.update()
 
     def mouseMoveEvent(self, mouseEvent):
         if int(mouseEvent.buttons()) != QtCore.Qt.NoButton :
@@ -342,18 +343,3 @@ class CompositeViewWidget(QtOpenGL.QGLWidget):
 
     def mouseReleaseEvent(self, e):
         self.isPressed = False
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasFormat("text/plain"):
-            node_path = str(event.mimeData().text())
-            node = hou.node(node_path)
-            if node:
-                if node.type().category().name() == "Cop2":
-                    event.acceptProposedAction()
-
-    def dropEvent(self, event):
-        node_path = event.mimeData().text()
-        signals.copperSetCompositeViewNode.emit(str(node_path))
-        event.acceptProposedAction()
-
-

@@ -7,6 +7,24 @@ from copper.ui.widgets import PathBarWidget
 
 from .base_panel import PathBasedPaneTab
 
+class NodeMimeData(QtCore.QMimeData):
+    def __init__(self, node):      
+        QtCore.QMimeData.__init__(self)
+        self._node_type = node.type()
+        self._node_path = node.path()
+
+    def nodeType(self):
+        return self._node_type
+
+    def nodePath(self):
+        return self._node_path
+
+    def hasFormat(self, fmt):
+        if fmt in ["node/path", "node/type"]:
+            return True
+
+        return False
+
 class TreeViewPanel(PathBasedPaneTab):
     def __init__(self):      
         PathBasedPaneTab.__init__(self) 
@@ -145,10 +163,9 @@ class TreeViewWidget(QtWidgets.QTreeWidget):
         menu.exec_(QtGui.QCursor.pos())
 
     def mimeData(self, items):
-        mime_data = QtCore.QMimeData()
-        mime_data.setText(items[0].text(1))
+        from copper import hou
+
+        node_path = items[0].text(1)
+        node = hou.node(node_path)
+        mime_data = NodeMimeData(node)
         return mime_data
-
-
-
-

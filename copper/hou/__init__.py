@@ -38,17 +38,14 @@ class hipFile():
 		else:
 			_engine.load(filename)
 
-def node(path):
-	return _engine.node(path)
 
-def fps():
-	_engine.fps()
+node = _engine.node
 
-def time():
-	_engine.time()
+fps =_engine.fps
 
-def frame():
-	_engine.frame()	
+time = _engine.time
+
+frame = _engine.frame	
 
 def setFps(fps):
 	_engine.setFps(fps)	

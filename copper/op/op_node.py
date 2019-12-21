@@ -6,6 +6,7 @@ from collections import OrderedDict
 
 from PyQt5 import QtCore
 
+from copper import hou
 from copper.copper_object import CopperObject
 from .base import OpRegistry
 from .op_parameters import OP_Parameters
@@ -17,6 +18,7 @@ class OpSignals(QtCore.QObject):
 	opCookingFailed = QtCore.pyqtSignal()
 	opCookingStarted = QtCore.pyqtSignal()
 	opCookingDone = QtCore.pyqtSignal()
+	needsToCook = QtCore.pyqtSignal() # fired when node parameter is changed or any of the inputs is changed
 
 	def __init__(self, parent=None):  
 		QtCore.QObject.__init__(self, parent)
@@ -239,10 +241,9 @@ class OP_Node(CopperObject, OP_Parameters):
 		'''
 		self._needs_to_cook = on_off
 		if on_off == True:
-			from copper.ui.signals import signals
-			signals.copperNodeModified[str].emit(self.path())
+			self.signals.needsToCook.emit()
 
-	def needsToCook(self, time=None):
+	def needsToCook(self, time=hou.time()):
 		return self._needs_to_cook
 
 	def warnings(self):

@@ -4,29 +4,28 @@ import pickle
 import numpy
 import uuid
 import logging
+from lazy import lazy
 from pyopencl.tools import get_gl_sharing_context_properties
 from PIL import Image
+
+from PyQt5 import QtCore
 
 from copper import settings
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import DirectorNodeTypeCategory, ManagerNodeTypeCategory
 from copper.op.base import OpRegistry
-from copper.op.op_network import OP_Network
-from copper.managers import ROOT_Network, OBJ_Network, COP_Network, ROP_Network
 from copper.copper_string import CopperString
 from copper.translators import CopperNullTranslator, boomShotTranslator
-
-from .copper_cache import OpDataCache
-
 from copper.root_types import ROOT_Types 
 
 logger = logging.getLogger(__name__)
 
-#class EngineSignals(QtCore.QObject):
-#	cookNodeData = QtCore.pyqtSignal(uuid.UUID)
-#
-#	def __init__(self, parent=None):  
-#		QtCore.QObject.__init__(self, parent)
+class EngineSignals(QtCore.QObject):
+	cookNodeData = QtCore.pyqtSignal(uuid.UUID) # ask engine to cook node data using node uuid
+	cookNodeData = QtCore.pyqtSignal(str)       # ask engine to cook node data using node path
+
+	def __init__(self):  
+		QtCore.QObject.__init__(self)
 
 class Engine(): # This is actually root node e.g.
 	programs 	= {}
@@ -41,12 +40,10 @@ class Engine(): # This is actually root node e.g.
 		self._cl_ctx = None
 		self._cl_queue = None
 
-#		self.signals = EngineSignals()
+		self.signals = EngineSignals()
 
+		from copper.copper_cache import OpDataCache
 		self._data_cache = OpDataCache(maxsize=1024) # One gig memory cache for op data
-
-		self._root = ROOT_Network(self)
-
 
 		logger.debug("Initializing engine of type %s" % device_type)
 		self._devices = []
@@ -83,8 +80,14 @@ class Engine(): # This is actually root node e.g.
 	#def __createNode(self, p, n):
 	#	self._root.createNode(p, n)
 
+	@lazy 
+	def root(self):
+		from copper.managers import ROOT_Network
+		self._root = ROOT_Network(self)
+		return self._root
+
 	def node(self, path):
-		return self._root.node(path)
+		return self.root.node(path)
 
 	@property
 	def gui_signals(self):
@@ -155,7 +158,13 @@ class Engine(): # This is actually root node e.g.
 
 	def flush(self):
 		for net_name in self.__node_dict__:
-			self.__node_dict__[net_name].flush()	
+			self.__node_dict__[net_name].flush()
+
+	@QtCore.pyqtSlot(str)
+	def cookNodeByPath(self, node_path):
+		node = self.root.node()
+		if node:
+			node.cook()
 
 	def renderToFile(self, node_path, filename, frame = None):
 		node = self.node(node_path)

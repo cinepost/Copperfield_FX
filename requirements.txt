@@ -1,7 +1,6 @@
 appdirs==1.4.3
 appnope==0.1.0
 backports.shutil-get-terminal-size==1.0.0
-cffi==1.8.3
 cPyparsing==2.3.2.1.0.0
 cycler==0.10.0
 Cython==0.29.6

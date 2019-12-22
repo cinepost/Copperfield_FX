@@ -1,7 +1,9 @@
 import math
+import numpy as np
 from OpenGL.GL import *
 
 from copper.vmath import Matrix4, Vector3
+from pyrr import Matrix44
 
 class Camera(object):
 
@@ -42,6 +44,8 @@ class Camera(object):
         self.viewportHeightInPixels = 10
         self.viewportRadiusInPixels = 5
 
+        self.aspect_ratio = 1.0
+
         self.build_up()
 
     def reset(self):
@@ -62,23 +66,44 @@ class Camera(object):
         self.viewportHeightInPixels = heightInPixels
         self.viewportRadiusInPixels = 0.5*widthInPixels if (widthInPixels < heightInPixels) else 0.5*heightInPixels
 
-    def buildFrustum(self):
+    def getProjection(self):
         tangent = math.tan( self.fov_degrees / 2.0 / 180.0 * math.pi )
         viewportRadius = self.near_plane * tangent
         if self.viewportWidthInPixels < self.viewportHeightInPixels:
-            viewportWidth = 2.0 *viewportRadius
+            viewportWidth = 2.0 * viewportRadius
             viewportHeight = viewportWidth * self.viewportHeightInPixels / float(self.viewportWidthInPixels)
         else:
-            viewportHeight = 2.0*viewportRadius
+            viewportHeight = 2.0* viewportRadius
             viewportWidth = viewportHeight * self.viewportWidthInPixels / float(self.viewportHeightInPixels)
 
-        glFrustum(
-            - 0.5 * viewportWidth,  0.5 * viewportWidth,    # left, right
-            - 0.5 * viewportHeight, 0.5 * viewportHeight,   # bottom, top
-            self.near_plane, self.far_plane
-        )
+        left =  0.5 * viewportWidth
+        right = - 0.5 * viewportWidth
+        bottom = - 0.5 * viewportHeight
+        top = 0.5 * viewportHeight
+
+        A = (right + left) / float(right - left)
+        B = (top + bottom) / float(top - bottom)
+        C = (self.far_plane + self.near_plane) / float(self.far_plane - self.near_plane)
+        D = 2.0 * self.far_plane * self.near_plane / float(self.far_plane - self.near_plane)
+        E = 2.0 * self.near_plane / float(right - left)
+        F = 2.0 * self.near_plane / float(top - bottom)
+
+        return Matrix44.perspective_projection_bounds(left, right, top, bottom, self.near_plane, self.far_plane)
+        #return Matrix44.perspective_projection(self.fov_degrees, self.aspect_ratio, self.near_plane, self.far_plane)
+        return M
+
+        M = Matrix4()
+
+        M.m = np.array((
+            (E, 0, 0, 0),
+            (0, F, 0, 0),
+            (A, B, C, 1),
+            (0, 0, D, 0),
+        ), dtype=np.float64)
+        return M
 
     def getTransform(self):
+        return Matrix44.look_at(self.position, self.target, -self.up)
         return Matrix4.lookAt(self.position, self.target, self.up, False)
 
     # Causes the camera to "orbit" around the target point.

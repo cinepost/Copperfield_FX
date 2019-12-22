@@ -274,7 +274,7 @@ class Engine(QtCore.QObject): # This is actually root node e.g.
 		## Create COP2_File node 
 		file1 = comp.createNode("file")
 		file1.setPosition((10, 10))
-		file1.setParms({"size1": 1280, "size2": 720, "filename": "~/Desktop/mythbuster.jpg"})
+		#file1.setParms({"size1": 1280, "size2": 720, "filename": "~/Desktop/mythbuster.jpg"})
 
 		## Create COP2_blur node
 		blur1 = comp.createNode("blur")

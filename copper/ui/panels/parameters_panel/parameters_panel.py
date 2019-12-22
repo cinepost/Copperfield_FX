@@ -73,7 +73,6 @@ class ParametersWidget(QtWidgets.QWidget):
         self.vbox.addWidget(self.scroll)
 
         self.setLayout(self.vbox)
-        self.setAcceptDrops(True)
 
         # connect panel signals
         self.panel.signals.copperNodeSelected.connect(self.nodeSelected)

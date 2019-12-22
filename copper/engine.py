@@ -27,13 +27,14 @@ class EngineSignals(QtCore.QObject):
 	def __init__(self):  
 		QtCore.QObject.__init__(self)
 
-class Engine(): # This is actually root node e.g.
+class Engine(QtCore.QObject): # This is actually root node e.g.
 	programs 	= {}
 	app 		= None
 	filters		= {}
 	network_cb  = None
 
 	def __init__(self, device_type = settings.CL_DEVICE_TYPE, device_index=settings.CL_DEVICE_INDEX, cl_path=settings.CL_PROGRAMS_PATH): # "cpu" or "gpu" here or "ALL"
+		QtCore.QObject.__init__(self)
 		self._time = 0.0
 		self._frame = 0
 		self.__fps__ = 25.0
@@ -77,8 +78,8 @@ class Engine(): # This is actually root node e.g.
 		for translator in translators:
 			self.translators[translator.registerExtension()] = translator
 	
-	#def __createNode(self, p, n):
-	#	self._root.createNode(p, n)
+		# connect signals
+		self.signals.cookNodeData[str].connect(self.cookNodeData)
 
 	@lazy 
 	def root(self):
@@ -161,7 +162,7 @@ class Engine(): # This is actually root node e.g.
 			self.__node_dict__[net_name].flush()
 
 	@QtCore.pyqtSlot(str)
-	def cookNodeByPath(self, node_path):
+	def cookNodeData(self, node_path):
 		node = self.root.node()
 		if node:
 			node.cook()

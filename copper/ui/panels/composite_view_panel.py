@@ -57,7 +57,7 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
         self.emptyView()
 
         # connect panel signals
-        self.panel.signals.copperSetCompositeViewNode[str].connect(self.setNodeToDisplay)
+        self.panel.signals.nodeDropped[str].connect(self.setNodeToDisplay)
         #self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
 
 
@@ -205,7 +205,7 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
         self.scale = 0.0 
         self.pivot_x = 0.0
         self.pivot_y = 0.0
-        self.updateGL()
+        self.update()
 
     def buildCopImageDataTexture(self):
         if not self.node:
@@ -250,6 +250,10 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
         glBindTexture(GL_TEXTURE_2D, 0)
 
+    @property
+    def node(self):
+        return self.panel.node
+    
 
     @QtCore.pyqtSlot(str)
     def updateNodeDisplayOld(self, node_path=None):
@@ -275,27 +279,23 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
 
     @QtCore.pyqtSlot(str)    
     def setNodeToDisplay(self, node_path=None):
-        node = hou.node(node_path)
-        if node:
-            if self.node != node:
-                logger.debug("Setting node %s as current to display" % node_path)
-                self.node = node
-                self.node.signals.opCookingDone.connect(self.updateNodeDisplay)
-                if self.node.needsToCook():
-                    self.node.cook()
+        if self.node:
+            logger.debug("Setting node %s as current to display" % node_path)
+            #self.node = node
+            self.node.signals.opCookingDone.connect(self.updateNodeDisplay)
+            if self.node.needsToCook():
+                self.node.cook()
                 
-                #self.image_width = self.node.xRes()
-                #self.image_height = self.node.yRes()
-                self.rebuild_node_image = True
+            #self.image_width = self.node.xRes()
+            #self.image_height = self.node.yRes()
+            self.rebuild_node_image = True
   
         else:
             self.emptyView()
 
-        #self.updateGL()
+        self.update()
 
     def emptyView(self):
-        self.node = None
-        self.node_path = None
         self.image_width = 1280
         self.image_height = 720
         self.ar = 1.0 * self.image_height / self.image_width

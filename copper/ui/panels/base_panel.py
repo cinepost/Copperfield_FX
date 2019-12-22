@@ -1,3 +1,4 @@
+import uuid
 from PyQt5 import QtCore, QtGui, QtWidgets, Qt
 from functools import wraps
 import six
@@ -5,6 +6,7 @@ import inspect
 
 from copper.ui.widgets import PathBarWidget
 import copper.ui.signals as ui_signals
+from copper.ui.signals import Signals
 from .panel_registry import PanelRegistry
 
 class Overlay(QtWidgets.QWidget):
@@ -94,6 +96,14 @@ class BasePanel(QtWidgets.QFrame):
         self.panel_layout.addWidget(widget)
 
 
+class PathBasedPaneTabSignals(Signals):
+    nodeDropped = QtCore.pyqtSignal(uuid.UUID)
+    nodeDropped = QtCore.pyqtSignal(str)
+
+    def __init__(self):  
+        Signals.__init__(self)
+
+
 class PathBasedPaneTab(BasePanel):
     __base__ = True
 
@@ -106,7 +116,7 @@ class PathBasedPaneTab(BasePanel):
 
         self.pinned = None
         self.node = None
-        self._signals = ui_signals.Signals() # copy of signals, because gui.signals.signals is a singleton
+        self._signals = PathBasedPaneTabSignals() # copy of signals, because gui.signals.signals is a singleton
         self.path_bar_widget = PathBarWidget(self, self)
         self.panel_layout.addWidget(self.path_bar_widget)
 
@@ -152,6 +162,9 @@ class PathBasedPaneTab(BasePanel):
 
     def setCurrentNode(self, node, pick_node = True):
         self.node = node
+        if pick_node:
+            # TODO: send signal to pick node
+            pass
 
     @QtCore.pyqtSlot()
     def togglePin(self):
@@ -189,6 +202,11 @@ class PathBasedPaneTab(BasePanel):
 
     def dropEvent(self, event):
         if event.mimeData().hasFormat("node/path"):
-            node_path = event.mimeData().nodePath()
-            self.signals.copperSetCompositeViewNode.emit(str(node_path))
+            if not self.isPin():
+                from copper import hou
+                node_path = event.mimeData().nodePath()
+                node = hou.node(node_path)
+                self.setCurrentNode(node, pick_node=False)
+                self.signals.nodeDropped.emit(node_path)
+            
             event.acceptProposedAction()

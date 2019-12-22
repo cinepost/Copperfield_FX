@@ -5,6 +5,15 @@ from copper.ui.signals import signals
 from copper.ui.panels.base_panel import OverlayFilter
 from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
+
+class LineEdit(QtWidgets.QLineEdit):
+    def __init__(self, text, parent=None):
+        QtWidgets.QLineEdit.__init__(self, text, parent)
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        self.home(False)
+
 class ParmSignals(QtCore.QObject):
     valueChanged = QtCore.pyqtSignal(object)
     toggleParmExpand =QtCore.pyqtSignal()
@@ -64,6 +73,7 @@ class ParameterBaseWidget(QtWidgets.QWidget):
             node_path = event.mimeData().nodePath()
             self.parm.signals.setParameter.emit(str(node_path))
             event.acceptProposedAction()
+
     '''
     def eventFilter(self, source, event):
         print("s: %s" % source)
@@ -220,7 +230,7 @@ class ParameterStringWidget(ParameterBaseWidget):
     def __init__(self, parent, parm):
         ParameterBaseWidget.__init__(self, parent, parm)
 
-        self.line_edit = QtWidgets.QLineEdit(self.parm.evalAsString())
+        self.line_edit = LineEdit(self.parm.evalAsString())
         self.line_edit.setDragEnabled(True)
         self.line_edit.setAcceptDrops(True)
         self.line_edit.installEventFilter(self) # process drag'n'drop

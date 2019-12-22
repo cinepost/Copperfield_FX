@@ -45,8 +45,8 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
         self.panel = panel
         self.setMouseTracking(True)
         self.isPressed = False
-        self.oldx = 0
-        self.oldy = 0
+        self.pivot_x = self.curr_mouse_x = 0
+        self.pivot_y = self.curr_mouse_y = 0
 
         self.font = QtGui.QFont("verdana", 12)
         self.setCursor(QtCore.Qt.CrossCursor)
@@ -128,7 +128,7 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glLoadIdentity()
-        glTranslated (0.0, 0.0, -10.0)
+        glTranslated (self.pivot_x, self.pivot_y, -10.0)
         glScaled (1.0 * self.zoom, 1.0 * self.zoom, 1.0)
         glColor4f(1.0, 1.0, 1.0, 1.0)
 
@@ -250,25 +250,12 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
         glBindTexture(GL_TEXTURE_2D, 0)
 
+        self.rebuild_node_image = False
+
     @property
     def node(self):
         return self.panel.node
     
-
-    @QtCore.pyqtSlot(str)
-    def updateNodeDisplayOld(self, node_path=None):
-        node = hou.node(node_path)
-        if node and node == self.node: # ensure we a re updating the same node as shown before
-            logger.debug("Updating node %s for display" % node.path())
-            if node.needsToCook():
-                self.node.cook()
-            
-            #self.image_width = self.node.xRes()
-            #self.image_height = self.node.yRes()
-            #self.rebuild_node_image = True
-
-            #self.updateGL()
-
     @QtCore.pyqtSlot()
     def updateNodeDisplay(self):
         self.image_width = self.node.xRes()
@@ -281,19 +268,23 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
     def setNodeToDisplay(self, node_path=None):
         if self.node:
             logger.debug("Setting node %s as current to display" % node_path)
-            #self.node = node
+
             self.node.signals.opCookingDone.connect(self.updateNodeDisplay)
+            self.node.signals.needsToCook.connect(self.requestDisplayNodeDataCook)
             if self.node.needsToCook():
-                self.node.cook()
+                self.requestDisplayNodeDataCook()
                 
-            #self.image_width = self.node.xRes()
-            #self.image_height = self.node.yRes()
             self.rebuild_node_image = True
   
         else:
             self.emptyView()
 
         self.update()
+
+    @QtCore.pyqtSlot()    
+    def requestDisplayNodeDataCook(self):    
+        if self.node:
+            hou.engine().signals.cookNodeData.emit(self.node.path())
 
     def emptyView(self):
         self.image_width = 1280
@@ -314,26 +305,29 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
             zoomFactor = zoomOutFactor
 
         self.zoom *= zoomFactor
+
+        self.pivot_x *= zoomFactor
+        self.pivot_y *= zoomFactor
+        
         self.update()
 
     def mouseMoveEvent(self, mouseEvent):
         if int(mouseEvent.buttons()) != QtCore.Qt.NoButton :
             # user is dragging
-            delta_x = mouseEvent.x() - self.oldx
-            delta_y = self.oldy - mouseEvent.y()
-            if int(mouseEvent.buttons()) & QtCore.Qt.LeftButton :
-                if int(mouseEvent.buttons()) & QtCore.Qt.MidButton :
-                    pass
-                    #self.camera.dollyCameraForward( 3*(delta_x+delta_y), False )
-                else:
-                    pass
-                    #self.camera.orbit(self.oldx,self.oldy,mouseEvent.x(),mouseEvent.y())
-            elif int(mouseEvent.buttons()) & QtCore.Qt.MidButton :
+            delta_x = mouseEvent.x() - self.curr_mouse_x
+            delta_y = self.curr_mouse_y - mouseEvent.y()
+            if int(mouseEvent.buttons()) & QtCore.Qt.LeftButton:
+                # color picker
                 pass
-                #self.camera.translateSceneRightAndUp( delta_x, delta_y )
+            elif int(mouseEvent.buttons()) & QtCore.Qt.MidButton:
+                # dragging
+                self.pivot_x += delta_x 
+                self.pivot_y += delta_y
+
             self.update()
-        self.oldx = mouseEvent.x()
-        self.oldy = mouseEvent.y()
+
+        self.curr_mouse_x = mouseEvent.x()
+        self.curr_mouse_y = mouseEvent.y()
 
     def mouseDoubleClickEvent(self, mouseEvent):
         pass

@@ -204,13 +204,15 @@ class OP_Node(CopperObject, OP_Parameters):
 	def outputConnectors(self):
 		return tuple([op_connection for op_connection in self._outputs])
 
-	def setInput(self, input_index, node=None, output_index=0):
+	def setInput(self, input_index, node, output_index=0):
 		try:
 			inp = self._inputs[input_index]					
+			out = node._outputs[output_index]
 		except:
 			raise
 
 		inp.setNode(node)
+		out.setNode(self)
 
 	def setSelected(on, clear_all_selected=False, show_asset_if_selected=False):
 		'''
@@ -241,6 +243,10 @@ class OP_Node(CopperObject, OP_Parameters):
 		'''
 		self._needs_to_cook = on_off
 		if on_off == True:
+			print("%s setModified" % self.path())
+			for node in [output.node() for output in self._outputs if output.connected()]:
+				node.setModified(True)
+
 			self.signals.needsToCook.emit()
 
 	def needsToCook(self, time=hou.time()):

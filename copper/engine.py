@@ -163,7 +163,7 @@ class Engine(QtCore.QObject): # This is actually root node e.g.
 
 	@QtCore.pyqtSlot(str)
 	def cookNodeData(self, node_path):
-		node = self.root.node()
+		node = self.root.node(node_path)
 		if node:
 			node.cook()
 

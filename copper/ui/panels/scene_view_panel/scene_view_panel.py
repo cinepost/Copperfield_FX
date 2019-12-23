@@ -39,10 +39,11 @@ class DisplayOptionsWidget(CollapsableWidget):
         self.addStretch(1)
 
 
+from .qmodernglwidget import QModernGLWidget
 
-class SceneViewPanel(PathBasedPaneTab):
+class SceneViewPanel(PathBasedPaneTab, QModernGLWidget):
     def __init__(self):  
-        PathBasedPaneTab.__init__(self) 
+        super().__init__(self) 
 
         self._show_points = False
         self.display_options = DisplayOptionsWidget(self)
@@ -92,11 +93,15 @@ class SceneViewPanel(PathBasedPaneTab):
         # create default views layout
         self.makeViewsLayout()
 
+    def resize(self, width, height):
+        self.ctx.viewport = (0, 0, width, height)
 
     @classmethod
     def panelTypeName(cls):
         return "Scene View"
 
+    def viewports(self):
+        return tuple([viewports for viewport in self.viewports.values()])
 
     def makeViewsLayout(self, layout_name="Single View"):
         logger.debug("LAYOUT NAME: %s" % layout_name)

@@ -14,7 +14,7 @@ class Drawable():
 
     def __init__(self, scene_viewer, **kwargs):
         self._scene_viewer = scene_viewer
-        self._ctx = self._scene_viewer.ctx
+        self.ctx = self._scene_viewer.ctx
         self._visible = True
         self._xform = Matrix4()
         self._name = None
@@ -57,7 +57,7 @@ class SimpleGrid(Drawable):
     def __init__(self, scene_viewer):
         super().__init__(scene_viewer)        
 
-        self.prog = self._ctx.program(
+        self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
                 uniform mat4 Mvp;
@@ -77,11 +77,11 @@ class SimpleGrid(Drawable):
 
         self.mvp = self.prog['Mvp']
 
-        self.vbo = self._ctx.buffer(SimpleGrid.buildGridData(15, 10).astype('f4').tobytes())
-        self.vao = self._ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert')
+        self.vbo = self.ctx.buffer(SimpleGrid.buildGridData(15, 10).astype('f4').tobytes())
+        self.vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert')
 
     def render(self):
-        self._ctx.enable(moderngl.DEPTH_TEST)
+        self.ctx.enable(moderngl.DEPTH_TEST)
         self.vao.render(moderngl.LINES)
 
 class SimpleOrigin(Drawable):
@@ -90,7 +90,7 @@ class SimpleOrigin(Drawable):
     def __init__(self, scene_viewer):
         super().__init__(scene_viewer)        
 
-        self.prog = self._ctx.program(
+        self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
                 uniform mat4 Mvp;
@@ -124,11 +124,11 @@ class SimpleOrigin(Drawable):
             [0,0,1],[0,0,1],
         ])
 
-        self.vbo = self._ctx.buffer(origin_data.astype('f4').tobytes())
-        self.vao = self._ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert', 'in_color')
+        self.vbo = self.ctx.buffer(origin_data.astype('f4').tobytes())
+        self.vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert', 'in_color')
 
     def render(self):
-        self._ctx.disable(moderngl.DEPTH_TEST)
+        self.ctx.disable(moderngl.DEPTH_TEST)
         self.vao.render(moderngl.LINES)
 
 
@@ -138,7 +138,7 @@ class SimpleBackground(Drawable):
     def __init__(self, scene_viewer):
         super().__init__(scene_viewer)        
 
-        self.prog = self._ctx.program(
+        self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
                 uniform mat4 Mvp;
@@ -172,22 +172,22 @@ class SimpleBackground(Drawable):
 
         self.proj = Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10)
 
-        self.vbo = self._ctx.buffer(origin_data.astype('f4').tobytes())
-        self.vao = self._ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert', 'in_color')
+        self.vbo = self.ctx.buffer(origin_data.astype('f4').tobytes())
+        self.vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert', 'in_color')
 
     def render(self):
         self.mvp.write(self.proj.astype('f4').tobytes())
 
-        self._ctx.disable(moderngl.DEPTH_TEST)
+        self.ctx.disable(moderngl.DEPTH_TEST)
         self.vao.render(moderngl.TRIANGLE_FAN)
 
 class OBJDataDrawable(Drawable):
     title = "OBJ Data Geometry"
 
-    def __init__(self, scene_viewer, name=None):
+    def __init__(self, scene_viewer, geometry, name=None):
         super().__init__(scene_viewer, name=name)        
-
-        self.prog = self._ctx.program(
+        self._geometry = geometry
+        self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
                 uniform mat4 Mvp;
@@ -211,21 +211,42 @@ class OBJDataDrawable(Drawable):
 
         self.mvp = self.prog['Mvp']
 
-        origin_data = np.array([
-            # x,y,z,r,g,b
-            [-1,-1,-1], [0.39, 0.50, 0.55],
-            [ 1,-1,-1], [0.39, 0.50, 0.55],
-            [ 1, 1,-1], [0.75, 0.78, 0.78],
-            [-1, 1,-1], [0.75, 0.78, 0.78]
-        ])
+        self.build()
 
-        self.proj = Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10)
+    def build(self):
+        print("Numpy View")
+        print(type(self._geometry._data['P']))
+        print(self._geometry._data)
 
-        self.vbo = self._ctx.buffer(origin_data.astype('f4').tobytes())
-        self.vao = self._ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert', 'in_color')
+        if self._geometry.isEmpty():
+            self.vao = None
+            return
+
+        self.vbo = self.ctx.buffer(self._geometry._data['P'].astype('f4').tobytes()) # geometry point positions
+
+        indecies = np.array()#[]
+
+        for prim in self._geometry.prims():
+            # now we just build simple triangle fan for any type of polygon
+            vertices = prim.vertices()
+            root_vtx = vertices[0]
+
+            for p_indices in [vertices[i:i+2] for i in range(1,len(vertices)-1,1)]:
+                indecies.append(root_vtx.pointIndex())
+                indecies.append(p_indices[0].pointIndex())
+                indecies.append(p_indices[1].pointIndex())
+
+        self.ibo = self.ctx.buffer(indecies.astype('i4').tobytes())
+
+
+        vao_content = [
+            # 3 floats are assigned to the 'in' variable named 'in_vert' in the shader code
+            (self.vbo, '3f', 'in_vert')
+        ]
+
+        self.vao = self.ctx.vertex_array(self.prog, vao_content, self.ibo)
 
     def render(self):
-        self.mvp.write(self.proj.astype('f4').tobytes())
-
-        self._ctx.disable(moderngl.DEPTH_TEST)
-        self.vao.render(moderngl.TRIANGLE_FAN)
+        if self.vao:
+            self.ctx.enable(moderngl.DEPTH_TEST)
+            self.vao.render(moderngl.TRIANGLE_FAN)

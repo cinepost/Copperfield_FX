@@ -60,64 +60,22 @@ class GeometryViewport(QModernGLWidget):
         return QtCore.QSize(400, 400)
 
     def drawSceneObjects(self):
-        #glPolygonMode(GL_BACK, GL_LINE)
-
-        #glTranslatef(0.0, 0.0, 0.0)
-
         for node in hou.node("/obj").children():
-            ogl_obj_cache = SceneViewWidget.OGL_Scene_Manager.getObjNodeGeometry(node)
+            ogl_obj_cache = GeometryViewport.OGL_Scene_Manager.getObjNodeGeometry(node)
 
             if ogl_obj_cache:
                 logger.debug("Drawing node: %s" % node.path())
 
                 transform = node.worldTransform()
-                #glPushMatrix()
-                #glMultMatrixf(transform.m)
 
                 # draw points
                 if self.panel._show_points:
-                    #glColor4f(0.0, 0.0, 1.0, 1.0)
-                    if ogl_obj_cache.pointsCount() > 0:
-                        logger.debug("Drawing points for: %s" % node.path())
-                        glPointSize( 3.0 )
-                        glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
-
-                        glEnableClientState(GL_VERTEX_ARRAY)
-
-                        glVertexPointer (3, GL_FLOAT, 0, None)
-                        glDrawArrays (GL_POINTS, 0, ogl_obj_cache.pointsCount())
-
-                        glDisableClientState(GL_VERTEX_ARRAY)
-
-                        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0) # reset
+                    pass
 
                 # draw polygons
-                #glUseProgram(SceneViewWidget.OGL_Scene_Manager.defaultShaderProgram())
-                if len(node.displayNode().geometry()._points) > 0: #ogl_obj_cache.polyCount() > 0:
+                if len(node.displayNode().geometry()._data) > 0:
                     logger.debug("Drawing geometry for: %s" % node.path())
-                    #vao = self.ctx.simple_vertex_array(SceneViewWidget.OGL_Scene_Manager.m.program,  vbo, 'in_vert', 'in_color')
-                    vao = self.ctx.simple_vertex_array(SceneViewWidget.OGL_Scene_Manager.m.program, ogl_obj_cache.pointsVBO(), "in_vert")
-                    vao.render(moderngl.LINE_STRIP)
-                    """
-                    glEnable(GL_LIGHTING)
-
-                    glBindBuffer (GL_ARRAY_BUFFER, ogl_obj_cache.pointsVBO())
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ogl_obj_cache.polyIndicesVBO())
-
-                    glEnableClientState(GL_VERTEX_ARRAY)
-
-                    glVertexPointer (3, GL_FLOAT, 0, None)
-                    glDrawElements(GL_TRIANGLES, ogl_obj_cache.polyCount()*3, GL_UNSIGNED_INT, None)
-
-                    glDisableClientState(GL_VERTEX_ARRAY)
-
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
-                    glBindBuffer (GL_ARRAY_BUFFER, 0)
-
-                    glDisable(GL_LIGHTING)
-                    """
-                #glPopMatrix()
-                glUseProgram(0)
+                    ogl_obj_cache.draw()
 
     @QtCore.pyqtSlot(str)
     def updateNodeDisplay(self, node_path=None):
@@ -153,6 +111,9 @@ class GeometryViewport(QModernGLWidget):
 
         self.origin.mvp.write(mvp.astype('f4').tobytes())
         self.origin.draw()
+
+        # geometry
+        self.drawSceneObjects()
 
     def draw(self):
         self.render()

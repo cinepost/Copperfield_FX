@@ -101,6 +101,8 @@ def link_shader_program(vertex_shader, fragment_shader):
     return program
 
 
+from .drawable import OBJDataDrawable
+
 class OGL_ObjCache(object):
 
     def __init__(self, ogl_manager, sop_node):
@@ -190,8 +192,6 @@ class OGL_Scene_Manager(object):
     def __init__(self):
         self._ctx = None
         self._objects = {}
-        self._shader_programs = {}
-        self._default_shader_program = None
         logger.debug("OGL_Scene_Manager created")
 
     def setCtx(self, ctx):
@@ -206,14 +206,15 @@ class OGL_Scene_Manager(object):
         display_node = obj_node.displayNode()
         if display_node:
             display_node_path = display_node.path()
-
             if display_node_path not in self._objects:
                 # there is no cached geomerty, build it
-                self._objects[display_node_path] = OGL_ObjCache(self, display_node)
+                display_node.cook()
+                self._objects[display_node_path] = OBJDataDrawable(self, display_node.geometry())
 
             elif display_node.needsToCook():
                 # object geometry need's to be updated rebuild it
-                self._objects[display_node_path].buildFromSOP()
+                display_node.cook()
+                self._objects[display_node_path].build()
 
             return self._objects[display_node_path]
 
@@ -221,14 +222,3 @@ class OGL_Scene_Manager(object):
 
     def buildShaderPrograms(self):
         self.m = MGLMaterial(self.ctx, DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER)
-        #if not self._default_shader_program:
-        #    # create default shader programs
-        #    default_vertex_shader = compile_vertex_shader(DEFAULT_VERTEX_SHADER)
-        #    default_fragment_shader = compile_fragment_shader(DEFAULT_FRAGMENT_SHADER)
-        #    self._default_shader_program = link_shader_program(default_vertex_shader, default_fragment_shader)
-
-    def defaultShaderProgram(self):
-        return self._default_shader_program
-
-    def shaderPrograms(self):
-        return self._shader_programs

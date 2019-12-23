@@ -24,13 +24,13 @@ class Point(object):
 		self._pt_index = pt_index
 
 	def position(self):
-		return self._geometry._points[self._pt_index]
+		return self._geometry._data['P'][self._pt_index]
 
 	def setPosition(self, pos):
-		self._geometry._points[self._pt_index] = pos[:3]
+		self._geometry._data['P'][self._pt_index] = pos[:3]
 
 	def setPosition(self, x, y, z):
-		self._geometry._points[self._pt_index] = [x, y, z]
+		self._geometry._data['P'][self._pt_index] = [x, y, z]
 
 	def index(self):
 		return self._pt_index

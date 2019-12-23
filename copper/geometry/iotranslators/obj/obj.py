@@ -28,7 +28,7 @@ class ObjIO(GeoBaseIO):
 			if values[0] == 'v':
 				# read vertex data
 				#vertices.append(list(map(numpy.float32, values[1:4])))
-				geometry._points.append(values[1:4])
+				numpy.append(geometry._data['P'], values[1:4])
 			elif values[0] == 'vn':
 				# read vertex normal data
 				if swapyz:

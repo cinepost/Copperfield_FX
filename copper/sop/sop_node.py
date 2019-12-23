@@ -13,7 +13,7 @@ class SOP_Node(OP_Network):
 	
 	def __init__(self, engine, parent):
 		super(SOP_Node, self).__init__(engine, parent)
-		self._geometry = Geometry()
+		self._geometry = Geometry(sop_node=self)
 
 
 	def cookMySop(self, lock, context):

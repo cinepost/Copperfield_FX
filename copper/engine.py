@@ -266,7 +266,7 @@ class Engine(QtCore.QObject): # This is actually root node e.g.
 		ins = obj.createNode("instance")
 		
 		geo2 = obj.createNode("geo", "geo1")
-		box = geo2.createNode("box")
+		#box = geo2.createNode("box")
 
 		geo3 = obj.createNode("geo")
 		file = geo3.createNode("file")

@@ -20,7 +20,7 @@ class Drawable():
         self._name = None
 
     def name(self):
-        return self._name or self.__cls__.title or self.__cls__.__name__
+        return self._name or self.__class__.title or self.__class__.__name__
 
     def show(self, value = True):
         self._visible = value
@@ -192,19 +192,33 @@ class OBJDataDrawable(Drawable):
                 #version 330
                 uniform mat4 Mvp;
                 in vec3 in_vert;
-                in vec3 in_color;
+                //in vec3 in_color;
+                out vec3 v_vert;
                 out vec3 v_color;    // Goes to the fragment shader
                 void main() {
+                    v_vert = in_vert;
+                    v_color = vec3(1.0, 1.0, 1.0);//in_color;
                     gl_Position = Mvp * vec4(in_vert, 1.0);
-                    v_color = in_color;
                 }
             ''',
             fragment_shader='''
                 #version 330
+                in vec3 v_vert;
                 in vec3 v_color;
                 out vec4 f_color;
                 void main() {
-                    f_color = vec4(v_color, 1.0);
+                    vec3 Light = vec3(5.0, 5.0, 5.0);
+
+                    float lum = 1.0;
+                    //float lum = dot(normalize(v_norm), normalize(v_vert - Light));
+                    //lum = acos(lum) / 3.14159265;
+                    //lum = clamp(lum, 0.0, 1.0);
+                    //lum = lum * lum;
+                    //lum = smoothstep(0.0, 1.0, lum);
+                    //lum *= smoothstep(0.0, 80.0, v_vert.z) * 0.3 + 0.7;
+                    //lum = lum * 0.8 + 0.2;
+
+                    f_color = vec4(v_vert * lum, 1.0);
                 }
             ''',
         )
@@ -214,17 +228,15 @@ class OBJDataDrawable(Drawable):
         self.build()
 
     def build(self):
-        print("Numpy View")
-        print(type(self._geometry._data['P']))
-        print(self._geometry._data)
+        logger.debug("Building geometry drawable for node: %s" % self._geometry.sopNode().path())
 
         if self._geometry.isEmpty():
             self.vao = None
             return
 
-        self.vbo = self.ctx.buffer(self._geometry._data['P'].astype('f4').tobytes()) # geometry point positions
+        self.vbo = self.ctx.buffer(self._geometry.pointsRaw().data['P'].astype('f4').tobytes()) # geometry point positions
 
-        indecies = np.array()#[]
+        indecies = []
 
         for prim in self._geometry.prims():
             # now we just build simple triangle fan for any type of polygon
@@ -236,7 +248,7 @@ class OBJDataDrawable(Drawable):
                 indecies.append(p_indices[0].pointIndex())
                 indecies.append(p_indices[1].pointIndex())
 
-        self.ibo = self.ctx.buffer(indecies.astype('i4').tobytes())
+        self.ibo = self.ctx.buffer(np.array(indecies).astype('i4').tobytes())
 
 
         vao_content = [

@@ -59,7 +59,7 @@ class GeometryViewport(QModernGLWidget):
     def sizeHint(self):
         return QtCore.QSize(400, 400)
 
-    def drawSceneObjects(self):
+    def drawSceneObjects(self, mvp):
         for node in hou.node("/obj").children():
             ogl_obj_cache = GeometryViewport.OGL_Scene_Manager.getObjNodeGeometry(node)
 
@@ -73,8 +73,9 @@ class GeometryViewport(QModernGLWidget):
                     pass
 
                 # draw polygons
-                if len(node.displayNode().geometry()._data) > 0:
+                if len(node.displayNode().geometry().pointsRaw()) > 0:
                     logger.debug("Drawing geometry for: %s" % node.path())
+                    ogl_obj_cache.mvp.write(mvp.astype('f4').tobytes())
                     ogl_obj_cache.draw()
 
     @QtCore.pyqtSlot(str)
@@ -113,7 +114,7 @@ class GeometryViewport(QModernGLWidget):
         self.origin.draw()
 
         # geometry
-        self.drawSceneObjects()
+        self.drawSceneObjects(mvp)
 
     def draw(self):
         self.render()

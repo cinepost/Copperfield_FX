@@ -4,7 +4,7 @@ import logging
 from PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL
 
 from copper import hou
-from .tabbed_panel_manager import TabbedPanelManager
+from .pane import Pane
 from .dialogs import RenderNodeDialog
 from .widgets import PlayBarWidget
 
@@ -29,19 +29,19 @@ class Workarea(QtWidgets.QWidget):
 
         # Add initial panels
         panel_mgrs = []
-        panel_mgr_1 = TabbedPanelManager(self)
+        panel_mgr_1 = Pane(self)
         panel_mgr_1.addNewPaneTabByType("SceneViewPanel")
         panel_mgr_1.addNewPaneTabByType("CompositeViewPanel")
         #panel_mgr_1.addNewPaneTabByType("PythonShellPanel")
         panel_mgr_1.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))
         panel_mgrs += [panel_mgr_1]
 
-        panel_mgr_2 = TabbedPanelManager(self)
+        panel_mgr_2 = Pane(self)
         panel_mgr_2.addNewPaneTabByType("ParametersPanel")
         panel_mgr_2.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))
         panel_mgrs += [panel_mgr_2]
 
-        panel_mgr_3 = TabbedPanelManager(self)
+        panel_mgr_3 = Pane(self)
         panel_mgr_3.addNewPaneTabByType("NetworkViewPanel")
         panel_mgr_3.addNewPaneTabByType("TreeViewPanel")
         panel_mgr_3.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding))

@@ -4,16 +4,16 @@ from copper.op.node_type_category import SopNodeTypeCategory
 from copper.parm_template import *
 from copper.vmath import Matrix4
 
-class OBJ_Node(OP_Network):
+class ObjNode(OP_Network):
 	__base__ = True
 	
 	def __init__(self, engine, parent):
-		super(OBJ_Node, self).__init__(engine, parent)
+		super(ObjNode, self).__init__(engine, parent)
 		self._render_node = None
 		self._display_node = None
 
 	def parmTemplates(self):
-		templates = super(OBJ_Node, self).parmTemplates()
+		templates = super(ObjNode, self).parmTemplates()
 		templates += [
 			MenuParmTemplate(name='xOrd', label='Transform Order', 
 				menu_items=('srt', 'str', 'rst', 'rts', 'tsr', 'trs'), 

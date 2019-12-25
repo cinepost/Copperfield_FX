@@ -35,15 +35,18 @@ class DynamicArray1D(object):
         self._npsize = preallocate_chunk_size # actual ndarray size
         self._data = np.empty(shape=(self._chunk_size,), dtype=self._dtype)
 
-    def append(self, element):
+    def append(self, element=None):
         if self._size == self._npsize:
             # time to resize
             logger.debug("Resizing %s by %s elements." % (self.__class__.__name__, self._chunk_size))
             self._npsize += self._chunk_size
             self._data = np.resize(self._data, self._npsize)
 
-        self._data[self._size] = element
         self._size += 1
+        if element:
+            self._data[self._size - 1] = element
+        else:
+            return self._data[self._size - 1]
 
     def extend(self, elements):
         for element in elements:
@@ -64,6 +67,9 @@ class DynamicArray1D(object):
     def dtype(self):
         return self._dtype
     
+#dt = np.dtype({ 'names'     : ['r','g','b','a'],
+#                'formats'   : [uint8, uint8, uint8, uint8]})
+
 
 class Geometry(object):
     def __init__(self, sop_node=None):
@@ -74,7 +80,7 @@ class Geometry(object):
 
 
     def clear(self):
-        self._points = DynamicArray1D({'names':['P', 'N'], 'formats':['3f4','3f4']})
+        self._points = DynamicArray1D({'names':['P', 'Pw'], 'formats':['3f4','f4']})
         self._prims = []
 
     def pointsRaw(self)  -> DynamicArray1D:

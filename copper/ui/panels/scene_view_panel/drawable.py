@@ -19,6 +19,8 @@ class Drawable():
         self._xform = Matrix4()
         self._name = None
 
+        self.m_identity = Matrix44.identity()
+
     def name(self):
         return self._name or self.__class__.title or self.__class__.__name__
 
@@ -48,10 +50,10 @@ class SimpleGrid(Drawable):
     title = "Simple Grid"
 
     @classmethod
-    def buildGridData(cls, size, steps):
-        x = np.repeat(np.linspace(-size, size, steps), 2)
-        z = np.tile([-size, size], steps)
-        y = np.zeros(steps * 2)
+    def buildGridData(cls, size, cells):
+        x = np.repeat(np.linspace(-size, size, cells+1), 2)
+        z = np.tile([-size, size], cells+1)
+        y = np.zeros((cells+1) * 2)
         return np.concatenate([np.dstack([x, y, z]), np.dstack([z, y, x])])
 
     def __init__(self, scene_viewer):
@@ -60,10 +62,12 @@ class SimpleGrid(Drawable):
         self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
-                uniform mat4 Mvp;
+                uniform mat4 model;
+                uniform mat4 view;
+                uniform mat4 projection;
                 in vec3 in_vert;
                 void main() {
-                    gl_Position = Mvp * vec4(in_vert, 1.0);
+                    gl_Position = projection * view * model * vec4(in_vert, 1.0);
                 }
             ''',
             fragment_shader='''
@@ -75,12 +79,16 @@ class SimpleGrid(Drawable):
             ''',
         )
 
-        self.mvp = self.prog['Mvp']
+        self.model = self.prog['model']
+        self.view = self.prog['view']
+        self.projection = self.prog['projection']
 
-        self.vbo = self.ctx.buffer(SimpleGrid.buildGridData(15, 10).astype('f4').tobytes())
+        self.vbo = self.ctx.buffer(SimpleGrid.buildGridData(10, 10).astype('f4').tobytes())
         self.vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert')
 
     def render(self):
+        self.model.write(self.m_identity.astype('f4').tobytes())
+
         self.ctx.enable(moderngl.DEPTH_TEST)
         self.vao.render(moderngl.LINES)
 
@@ -93,12 +101,16 @@ class SimpleOrigin(Drawable):
         self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
-                uniform mat4 Mvp;
+                
+                uniform mat4 model;
+                uniform mat4 view;
+                uniform mat4 projection;
+
                 in vec3 in_vert;
                 in vec3 in_color;
                 out vec3 v_color;    // Goes to the fragment shader
                 void main() {
-                    gl_Position = Mvp * vec4(in_vert, 1.0);
+                    gl_Position = projection * view * model * vec4(in_vert, 1.0);
                     v_color = in_color;
                 }
             ''',
@@ -112,7 +124,9 @@ class SimpleOrigin(Drawable):
             ''',
         )
 
-        self.mvp = self.prog['Mvp']
+        self.model = self.prog['model']
+        self.view = self.prog['view']
+        self.projection = self.prog['projection']
 
         origin_data = np.array([
             # x,y,z,r,g,b
@@ -141,12 +155,16 @@ class SimpleBackground(Drawable):
         self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
-                uniform mat4 Mvp;
+                
+                uniform mat4 model;
+                uniform mat4 view;
+                uniform mat4 projection;
+
                 in vec3 in_vert;
                 in vec3 in_color;
                 out vec3 v_color;    // Goes to the fragment shader
                 void main() {
-                    gl_Position = Mvp * vec4(in_vert, 1.0);
+                    gl_Position = projection * view * model * vec4(in_vert, 1.0);
                     v_color = in_color;
                 }
             ''',
@@ -160,7 +178,9 @@ class SimpleBackground(Drawable):
             ''',
         )
 
-        self.mvp = self.prog['Mvp']
+        self.model = self.prog['model']
+        self.view = self.prog['view']
+        self.projection = self.prog['projection']
 
         origin_data = np.array([
             # x,y,z,r,g,b
@@ -170,13 +190,15 @@ class SimpleBackground(Drawable):
             [-1, 1,-1], [0.75, 0.78, 0.78]
         ])
 
-        self.proj = Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10)
+        self.m_projection = Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10)
 
         self.vbo = self.ctx.buffer(origin_data.astype('f4').tobytes())
         self.vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert', 'in_color')
 
     def render(self):
-        self.mvp.write(self.proj.astype('f4').tobytes())
+        self.model.write(self.m_identity.astype('f4').tobytes())
+        self.view.write(self.m_identity.astype('f4').tobytes())
+        self.projection.write(self.m_projection.astype('f4').tobytes())
 
         self.ctx.disable(moderngl.DEPTH_TEST)
         self.vao.render(moderngl.TRIANGLE_FAN)
@@ -190,7 +212,11 @@ class OBJDataDrawable(Drawable):
         self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
-                uniform mat4 Mvp;
+                
+                uniform mat4 model;
+                uniform mat4 view;
+                uniform mat4 projection;
+
                 in vec3 in_vert;
                 //in vec3 in_color;
                 out vec3 v_vert;
@@ -198,7 +224,7 @@ class OBJDataDrawable(Drawable):
                 void main() {
                     v_vert = in_vert;
                     v_color = vec3(1.0, 1.0, 1.0);//in_color;
-                    gl_Position = Mvp * vec4(in_vert, 1.0);
+                    gl_Position = projection * view * model * vec4(in_vert, 1.0);
                 }
             ''',
             fragment_shader='''
@@ -223,7 +249,9 @@ class OBJDataDrawable(Drawable):
             ''',
         )
 
-        self.mvp = self.prog['Mvp']
+        self.model = self.prog['model']
+        self.view = self.prog['view']
+        self.projection = self.prog['projection']
 
         self.build()
 
@@ -239,7 +267,7 @@ class OBJDataDrawable(Drawable):
         indecies = []
 
         for prim in self._geometry.prims():
-            # now we just build simple triangle fan for any type of polygon
+            # now we just build simple triangles for any type of polygon
             vertices = prim.vertices()
             root_vtx = vertices[0]
 
@@ -261,4 +289,4 @@ class OBJDataDrawable(Drawable):
     def render(self):
         if self.vao:
             self.ctx.enable(moderngl.DEPTH_TEST)
-            self.vao.render(moderngl.TRIANGLE_FAN)
+            self.vao.render(moderngl.TRIANGLES)

@@ -19,21 +19,31 @@ class primType():
 
 class Point(object):
 
-	def __init__(self, geometry, pt_index):
+	def __init__(self, geometry=None, pt_index=None):
 		self._geometry = geometry
 		self._pt_index = pt_index
 
 	def position(self):
-		return self._geometry._data['P'][self._pt_index]
+		return self._geometry._points._data['P'][self._pt_index]
 
 	def setPosition(self, pos):
-		self._geometry._data['P'][self._pt_index] = pos[:3]
+		self._geometry._points._data['P'][self._pt_index] = pos[:3]
 
 	def setPosition(self, x, y, z):
-		self._geometry._data['P'][self._pt_index] = [x, y, z]
+		self._geometry._points._data['P'][self._pt_index] = [x, y, z]
+
+	def weight(self):
+		return self._geometry._points._data['Pw'][self._pt_index]
+
+	def setWeight(self, weight):
+		self._geometry._points._data['Pw'][self._pt_index] = weight
+
+	def attribValue(self, attr_name):
+		return self._geometry._points._data[attr_name][self._pt_index]
 
 	def index(self):
 		return self._pt_index
+
 
 
 class Vertex(object):

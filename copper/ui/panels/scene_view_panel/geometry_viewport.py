@@ -10,6 +10,7 @@ import math
 
 import moderngl
 
+from copper.obj import ObjNode
 from copper.ui.utils import clearLayout
 from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget, CollapsableWidget
@@ -48,6 +49,8 @@ class GeometryViewport(QModernGLWidget):
 
         self.current_camera = 'persp'
 
+        self.m_identity = Matrix44.identity() # just a helper
+
         # connect panel signals
         self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
 
@@ -59,7 +62,7 @@ class GeometryViewport(QModernGLWidget):
     def sizeHint(self):
         return QtCore.QSize(400, 400)
 
-    def drawSceneObjects(self, mvp):
+    def drawSceneObjects(self, m_view, m_proj):
         for node in hou.node("/obj").children():
             ogl_obj_cache = GeometryViewport.OGL_Scene_Manager.getObjNodeGeometry(node)
 
@@ -75,7 +78,9 @@ class GeometryViewport(QModernGLWidget):
                 # draw polygons
                 if len(node.displayNode().geometry().pointsRaw()) > 0:
                     logger.debug("Drawing geometry for: %s" % node.path())
-                    ogl_obj_cache.mvp.write(mvp.astype('f4').tobytes())
+                    ogl_obj_cache.model.write(self.m_identity.astype('f4').tobytes())
+                    ogl_obj_cache.view.write(m_view.astype('f4').tobytes())
+                    ogl_obj_cache.projection.write(m_proj.astype('f4').tobytes())
                     ogl_obj_cache.draw()
 
     @QtCore.pyqtSlot(str)
@@ -106,15 +111,18 @@ class GeometryViewport(QModernGLWidget):
         self.ctx.clear(1.0, 1.0, 1.0)
         self.background.draw()
 
-        mvp = m_proj *m_view
-        self.grid.mvp.write(mvp.astype('f4').tobytes())
+        # TODO: we might also want to pass model matrix so we can get different grid orientations instead of rebuilding grid
+        self.grid.view.write(m_view.astype('f4').tobytes())
+        self.grid.projection.write(m_proj.astype('f4').tobytes())
         self.grid.draw()
 
-        self.origin.mvp.write(mvp.astype('f4').tobytes())
+        self.origin.model.write(self.m_identity.astype('f4').tobytes())
+        self.origin.view.write(m_view.astype('f4').tobytes())
+        self.origin.projection.write(m_proj.astype('f4').tobytes())
         self.origin.draw()
 
         # geometry
-        self.drawSceneObjects(mvp)
+        self.drawSceneObjects(m_view, m_proj)
 
     def draw(self):
         self.render()
@@ -170,3 +178,10 @@ class GeometryViewport(QModernGLWidget):
         self.old_mouse_y = mouseEvent.y()
 
 
+    # hou module stuff
+    def camera(self) -> ObjNode or None:
+        '''
+        If the viewport is currently looking through a camera or light (not necessarily locked to it), this returns an object representing the camera/light’s node. 
+        Returns None if the viewport is not looking through a camera/light.
+        '''
+        return None

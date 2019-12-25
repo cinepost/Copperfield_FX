@@ -270,7 +270,7 @@ class Engine(QtCore.QObject): # This is actually root node e.g.
 
 		geo3 = obj.createNode("geo")
 		file = geo3.createNode("file")
-		file.setParms({"filename": "/home/max/dev/Copperfield_FX/test/geometry/cube.obj"})
+		#file.setParms({"filename": "/home/max/dev/Copperfield_FX/test/geometry/cube.obj"})
 
 		## Create COP2_File node 
 		file1 = comp.createNode("file")

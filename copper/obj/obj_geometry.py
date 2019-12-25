@@ -1,8 +1,8 @@
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import ObjectNodeTypeCategory
-from .obj_node import OBJ_Node
+from .obj_node import ObjNode
 
-class OBJ_Geometry(OBJ_Node):
+class OBJ_Geometry(ObjNode):
 
 	class NodeType(NodeTypeBase):
 		icon_name = 'OBJ_geo'

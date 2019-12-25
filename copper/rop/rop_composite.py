@@ -36,6 +36,6 @@ class ROP_Composite(ROP_Node):
 		if frame:
 			output_node = self.engine.node(self.parm("coppath").evalAsString())
 			if output_node:
-				filename = self.parm("copoutput").evalAsStringAtFrame(frame).expandedString(context={'frame':frame})
-				output_node.saveImage(filename, frame=frame)
+				file_name = self.parm("copoutput").evalAsStringAtFrame(frame).expandedString(context={'frame':frame})
+				output_node.saveImage(file_name, frame_range=(frame, frame)) 
             

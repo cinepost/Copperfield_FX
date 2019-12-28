@@ -13,13 +13,15 @@ class CopperString(str):
 		return self.__str__()	
 
 	def expandedString(self, context = {}):
-		string_template = Template( self.__str__() )
 		if "frame" in context:
 			frame = context["frame"]
 		else:
-			pass
+			frame = 0 # TODO: proper time and animation substituon needed
 		
-		string_subs = string_template.substitute({
+		expanded_string = os.path.expandvars(os.path.expanduser(self.__str__()))
+
+		string_template = Template(expanded_string)
+		string_subst = string_template.substitute({
 			'F': frame,
 			'F2': '%02d' % frame,
 			'F3': '%03d' % frame,
@@ -27,4 +29,4 @@ class CopperString(str):
 			'F5': '%05d' % frame,
         })
 
-		return os.path.expandvars(os.path.expanduser(string_subs))
+		return string_subst

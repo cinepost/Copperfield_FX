@@ -257,12 +257,13 @@ class Engine(QtCore.QObject): # This is actually root node e.g.
 		img = self.node("img")
 		
 		## Create composition
-		comp = img.createNode("img")
+		comp = img.createNode("comp")
 
 		obj = self.node("obj")
 
 		geo1 = obj.createNode("geo")
-		
+		font1 = geo1.createNode("font")
+
 		ins = obj.createNode("instance")
 		
 		geo2 = obj.createNode("geo", "geo1")
@@ -283,6 +284,6 @@ class Engine(QtCore.QObject): # This is actually root node e.g.
 		blur1.setParms({"blursize":0.01, "blursizey": 0.05, "useindepy" : True})
 
 		## Create COP2_Press node
-		press1 = comp.createNode("press_raster")
-		press1.setParms({"quality":4, "density": 100})
-		press1.setInput(0, blur1) 
+		halftone1 = comp.createNode("halftone")
+		halftone1.setParms({"quality":4, "density": 100})
+		halftone1.setInput(0, blur1) 

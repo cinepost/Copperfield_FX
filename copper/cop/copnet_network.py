@@ -6,7 +6,7 @@ class COPNET_Network(OP_Network):
 
 	class NodeType(NodeTypeBase):
 		icon_name = 'cop2-network'
-		type_name = 'img'
+		type_name = 'comp'
 		category = CopNetNodeTypeCategory
 	
 	def __init__(self, engine, parent):

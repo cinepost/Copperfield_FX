@@ -5,7 +5,7 @@ from PyQt5 import QtCore
 from collections import OrderedDict
 from .copper_string import CopperString
 
-from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
+from copper.parm_template import ParmTemplate, ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +83,10 @@ class CopperParameter(QtCore.QObject):
 	def isSpare(self):
 		return self._spare
 
-	def parmTemplate(self):
+	def parmTemplate(self) -> ParmTemplate:
+		'''
+		Returns the template for this parameter.
+		'''
 		return self._parm_template
 
 	def node(self):
@@ -153,7 +156,7 @@ class CopperParameter(QtCore.QObject):
 		if self.parmTemplate().type() == ParmTemplateType.Menu:
 			return self.menuItems()[self.eval()]
 
-		return CopperString(self.eval())
+		return CopperString(self.eval()).expandedString()
 
 	def evalAtTime(self, time):
 		lesser_keys = sorted([k for k in self.__keyframes__ if k.t <= time], key=lambda x: x.t)
@@ -202,7 +205,7 @@ class CopperParameter(QtCore.QObject):
 		return self.evalAsString()
 
 	def unexpandedString(self):
-		raise BaseException("Unimplemented unexpandedString(self) in %s" % self)
+		return str(self.eval())
 
 	@QtCore.pyqtSlot(object)
 	def _setParameter(self, value):

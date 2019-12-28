@@ -2,10 +2,12 @@ import logging
 from copper import ui
 
 from copper import settings
+from copper.config import Config
 from copper.engine import Engine
 
 logger = logging.getLogger(__name__)
 
+_config = Config()
 _engine = Engine(device_type = settings.CL_DEVICE_TYPE, device_index=settings.CL_DEVICE_INDEX, cl_path=settings.CL_PROGRAMS_PATH)
 
 # non-standard hou module stuff
@@ -39,19 +41,47 @@ class hipFile():
 			_engine.load(filename)
 
 
-node = _engine.node
-
 fps =_engine.fps
 
 time = _engine.time
 
 frame = _engine.frame	
 
-def setFps(fps):
-	_engine.setFps(fps)	
+def isUIAvailable():
+	'''
+	Return whether or not the .ui module is available.
+	'''
+	return True
 
-def setTime(time):
-	_engine.setTime(time)
+import sys
+from copper.parameter import CopperParameter
 
-def setFrame(frame):
-	_engine.setFrame(frame)
+thismodule = sys.modules[__name__]
+
+# variables section
+#----------------------------------------------
+
+setattr(thismodule, 'setFps', _engine.setFps)
+setattr(thismodule, 'setTime', _engine.setTime)
+setattr(thismodule, 'setFrame', _engine.setFrame)
+
+# methods section
+#----------------------------------------------
+
+setattr(thismodule, 'isUIAvailable', _config.hasUI)
+
+setattr(thismodule, 'node', _engine.node)
+setattr(thismodule, 'setFps', _engine.setFps)
+setattr(thismodule, 'setTime', _engine.setTime)
+setattr(thismodule, 'setFrame', _engine.setFrame)
+
+# classes section
+#----------------------------------------------
+
+setattr(thismodule, 'Parm', CopperParameter)
+
+
+# Modules section
+#----------------------------------------------
+
+setattr(thismodule, 'ui', thismodule.ui)

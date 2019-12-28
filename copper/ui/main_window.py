@@ -82,6 +82,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
+        from copper.config import Config
+        Config()._has_ui = True
+
         if not hou.OpenCL.have_gl():
             logger.warning("OpenCL - OpenGL interoperability not supported !!!")
 

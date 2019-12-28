@@ -161,7 +161,7 @@ class COP2_File(CopNode):
 			self.devInBufferA = cl.Image(cl_context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.INTENSITY, cl.channel_type.HALF_FLOAT), shape=(self.source_width, self.source_height,), pitches=(self.source_width * 2,), hostbuf=numpy.ones(self.source_width * self.source_height, dtype = numpy.float16))
 	
 	def getImageFileName(self):
-		filename = self.parm("filename").evalAsString().expandedString(context={"frame":0})
+		filename = self.parm("filename").evalAsString()
 		return filename
 		#image_frame = self.engine.frame() + self.parm("start").evalAsInt() - self.parm("startframe").evalAsInt()
 		#return filename.expandedString(context={"frame": image_frame})

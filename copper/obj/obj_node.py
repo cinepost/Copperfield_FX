@@ -48,6 +48,10 @@ class ObjNode(OP_Network):
 		return SopNodeTypeCategory
 
 
+	def cookData(self, lock,  context={}):
+		self._needs_to_cook = False
+		return True
+
 	def worldTransform(self):
 		x_ord = self.parm('xOrd').evalAsString()
 		r_ord = self.parm('rOrd').evalAsString()

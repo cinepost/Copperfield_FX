@@ -206,9 +206,9 @@ class SimpleBackground(Drawable):
 class OBJDataDrawable(Drawable):
     title = "OBJ Data Geometry"
 
-    def __init__(self, scene_viewer, geometry, name=None):
+    def __init__(self, scene_viewer, obj_node, name=None):
         super().__init__(scene_viewer, name=name)        
-        self._geometry = geometry
+        self._obj_node = obj_node
         self.prog = self.ctx.program(
             vertex_shader='''
                 #version 330
@@ -255,38 +255,58 @@ class OBJDataDrawable(Drawable):
 
         self.build()
 
+    def objNode(self):
+        return self._obj_node
+
     def build(self):
-        logger.debug("Building geometry drawable for node: %s" % self._geometry.sopNode().path())
+        self.vbo = None
+        self.vao = None
+        
+        display_node = self._obj_node.displayNode()
 
-        if self._geometry.isEmpty():
-            self.vao = None
-            return
+        if not display_node:
+            # Empty obj node
+            return 
 
-        self.vbo = self.ctx.buffer(self._geometry.pointsRaw().data['P'].astype('f4').tobytes()) # geometry point positions
+        geometry = display_node.geometry()
 
-        indecies = []
+        if len(geometry._prims) == 0:
+            # No prims in geometry
+            return 
 
-        for prim in self._geometry.prims():
-            # now we just build simple triangles for any type of polygon
-            vertices = prim.vertices()
-            root_vtx = vertices[0]
+        logger.debug("Building geometry drawable for node: %s" % self._obj_node.path())
 
-            for p_indices in [vertices[i:i+2] for i in range(1,len(vertices)-1,1)]:
-                indecies.append(root_vtx.pointIndex())
-                indecies.append(p_indices[0].pointIndex())
-                indecies.append(p_indices[1].pointIndex())
+        if len(geometry.pointsRaw()) > 0:
+            self.vbo = self.ctx.buffer(geometry.pointsRaw().data['P'].astype('f4').tobytes()) # geometry point positions
 
-        self.ibo = self.ctx.buffer(np.array(indecies).astype('i4').tobytes())
+        if len(geometry._prims) > 0:
+            indecies = []
+
+            for prim in geometry.iterPrims():
+                # now we just build simple triangles for any type of polygon
+                vertices = prim.vertices()
+                root_vtx = vertices[0]
+
+                for p_indices in [vertices[i:i+2] for i in range(1,len(vertices)-1,1)]:
+                    indecies.append(root_vtx.pointIndex())
+                    indecies.append(p_indices[0].pointIndex())
+                    indecies.append(p_indices[1].pointIndex())
+
+            self.ibo = self.ctx.buffer(np.array(indecies).astype('i4').tobytes())
 
 
-        vao_content = [
-            # 3 floats are assigned to the 'in' variable named 'in_vert' in the shader code
-            (self.vbo, '3f', 'in_vert')
-        ]
+            vao_content = [
+                # 3 floats are assigned to the 'in' variable named 'in_vert' in the shader code
+                (self.vbo, '3f', 'in_vert')
+            ]
 
-        self.vao = self.ctx.vertex_array(self.prog, vao_content, self.ibo)
+            self.vao = self.ctx.vertex_array(self.prog, vao_content, self.ibo)
 
     def render(self):
         if self.vao:
             self.ctx.enable(moderngl.DEPTH_TEST)
             self.vao.render(moderngl.TRIANGLES)
+
+        if self.vbo and self._scene_viewer._show_points:
+            self.ctx.disable(moderngl.DEPTH_TEST)
+            self.vbo.render(moderngl.POINTS)

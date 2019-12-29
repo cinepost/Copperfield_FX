@@ -18,7 +18,6 @@ from copper.ui.panels.base_panel import PathBasedPaneTab
 from copper.vmath import Matrix4, Vector3
 from .geometry_viewport import GeometryViewport
 from .camera import Camera
-from .ogl_objcache import OGL_Scene_Manager
 
 from .layouts import viewport_layout_types
 

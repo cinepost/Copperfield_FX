@@ -6,6 +6,7 @@ import numpy as np
 from copper.vmath import Vector3
 
 from .primitive import Point, Polygon
+from copper.copper_object import CopperObject
 from copper.geometry.iotranslators.base import GeoIORegistry
 
 logger = logging.getLogger(__name__)
@@ -71,7 +72,7 @@ class DynamicArray1D(object):
 #                'formats'   : [uint8, uint8, uint8, uint8]})
 
 
-class Geometry(object):
+class Geometry(CopperObject):
     def __init__(self, sop_node=None):
         self._sop_node = sop_node
         self.clear()
@@ -95,12 +96,20 @@ class Geometry(object):
 
         return False
 
-    def points(self) -> [Point]:
-        return [Point(self, i) for i in range(len(self._points.data))]
+    def points(self) -> tuple([Point]):
+        return tuple([Point(self, i) for i in range(len(self._points.data))])
+
+    def iterPoints(self):
+        for i in range(len(self._points.data)):
+            yield Point(self, i)
 
 
     def prims(self):
         return self._prims
+
+    def iterPrims(self):
+        for prim in self._prims:
+            yield prim
 
 
     def createPoint(self) -> Point:

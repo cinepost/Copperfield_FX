@@ -18,7 +18,7 @@ from copper.ui.panels.base_panel import PathBasedPaneTab
 
 from copper.vmath import Matrix4, Vector3
 from .camera import Camera
-from .ogl_objcache import OGL_Scene_Manager
+from .ogl_scene_manager import OGL_Scene_Manager
 from .drawable import *
 
 from .layouts import viewport_layout_types
@@ -64,9 +64,9 @@ class GeometryViewport(QModernGLWidget):
 
     def drawSceneObjects(self, m_view, m_proj):
         for node in hou.node("/obj").children():
-            ogl_obj_cache = GeometryViewport.OGL_Scene_Manager.getObjNodeGeometry(node)
+            obj_drawable = GeometryViewport.OGL_Scene_Manager.addObjNode(node)
 
-            if ogl_obj_cache:
+            if obj_drawable:
                 logger.debug("Drawing node: %s" % node.path())
 
                 transform = node.worldTransform()
@@ -76,12 +76,12 @@ class GeometryViewport(QModernGLWidget):
                     pass
 
                 # draw polygons
-                if len(node.displayNode().geometry().pointsRaw()) > 0:
+                if len(node.displayNode().geometry()._prims) > 0:
                     logger.debug("Drawing geometry for: %s" % node.path())
-                    ogl_obj_cache.model.write(self.m_identity.astype('f4').tobytes())
-                    ogl_obj_cache.view.write(m_view.astype('f4').tobytes())
-                    ogl_obj_cache.projection.write(m_proj.astype('f4').tobytes())
-                    ogl_obj_cache.draw()
+                    obj_drawable.model.write(self.m_identity.astype('f4').tobytes())
+                    obj_drawable.view.write(m_view.astype('f4').tobytes())
+                    obj_drawable.projection.write(m_proj.astype('f4').tobytes())
+                    obj_drawable.draw()
 
     @QtCore.pyqtSlot(str)
     def updateNodeDisplay(self, node_path=None):

@@ -73,7 +73,7 @@ class OP_Node(CopperObject, OP_Parameters):
 			queue = OpCookingQueue(self)
 			queue.execute(frame_range=frame_range)
 
-	def cookData(self, context={}):
+	def cookData(self, lock, context={}):
 		raise NotImplementedError
 
 	def creationTime(self):

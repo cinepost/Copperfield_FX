@@ -1,8 +1,15 @@
+import itertools
 import uuid
 
 class CopperObject():
+	id_iter = itertools.count()
+
 	def __init__(self):
-		self.__uuid__ = uuid.uuid4()
+		self._id = next(self.id_iter)
+		self._uuid = uuid.uuid4()
+
+	def id(self):
+		return self._id
 
 	def uuid(self):
-		return self.__uuid__
+		return self._uuid

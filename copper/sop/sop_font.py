@@ -5,7 +5,7 @@ import freetype
 from copper.sop import SOP_Node
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import SopNodeTypeCategory
-from copper.op.op_connection import OP_Connection
+from copper.op.op_data_socket import OP_DataSocket
 from copper import parameter
 
 from copper.parm_template import *
@@ -24,11 +24,9 @@ class SOP_Font(SOP_Node):
 
 	def __init__(self, engine, parent):
 		super(SOP_Font, self).__init__(engine, parent)
-		self._inputs = (
-			OP_Connection("input1"),
-		)
-		self._outputs = (
-			OP_Connection("output1"),
+		
+		self._output_sockets = (
+			OP_DataSocket(self, "output1", Geometry),
 		)
 		
 	def parmTemplates(self):

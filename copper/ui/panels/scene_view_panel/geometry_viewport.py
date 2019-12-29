@@ -67,7 +67,7 @@ class GeometryViewport(QModernGLWidget):
             obj_drawable = GeometryViewport.OGL_Scene_Manager.addObjNode(node)
 
             if obj_drawable:
-                logger.debug("Drawing node: %s" % node.path())
+                #logger.debug("Drawing node: %s" % node.path())
 
                 transform = node.worldTransform()
 
@@ -76,12 +76,10 @@ class GeometryViewport(QModernGLWidget):
                     pass
 
                 # draw polygons
-                if len(node.displayNode().geometry()._prims) > 0:
-                    logger.debug("Drawing geometry for: %s" % node.path())
-                    obj_drawable.model.write(self.m_identity.astype('f4').tobytes())
-                    obj_drawable.view.write(m_view.astype('f4').tobytes())
-                    obj_drawable.projection.write(m_proj.astype('f4').tobytes())
-                    obj_drawable.draw()
+                obj_drawable.model.write(self.m_identity.astype('f4').tobytes())
+                obj_drawable.view.write(m_view.astype('f4').tobytes())
+                obj_drawable.projection.write(m_proj.astype('f4').tobytes())
+                obj_drawable.draw()
 
     @QtCore.pyqtSlot(str)
     def updateNodeDisplay(self, node_path=None):

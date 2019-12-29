@@ -97,6 +97,9 @@ class NetworkViewWidget(QtWidgets.QGraphicsView):
         self.setInteractive(True)
         self.setDragMode( QtWidgets.QGraphicsView.RubberBandDrag )
 
+    def mouseMoveEvent(self, event):
+        super(NetworkViewWidget, self).mouseMoveEvent(event)
+
     def mousePressEvent(self, event):
         # Bring picked items to front
         picked_item = self.itemAt(event.pos())

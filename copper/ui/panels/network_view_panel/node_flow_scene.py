@@ -14,7 +14,7 @@ from copper.op.base import OpRegistry
 from copper.ui.signals import signals
 
 
-from .node_item import NodeItem
+from .node_item import NodeItem, NodeLinkItem
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +23,7 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
     def __init__(self, parent=None):      
         QtWidgets.QGraphicsScene.__init__(self, parent) 
         self.nodes_map = {}
+        self.sockets_map = {}
 
         self.gridSizeWidth = 60
         self.gridSizeHeight = 30 
@@ -34,9 +35,12 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
         if node_path:
             node = engine.node(node_path)
             if node:
-                node_item= NodeItem(node)
+                node_item = NodeItem(node)
                 self.addItem(node_item)
-                self.nodes_map[node_path] = node_item
+                self.nodes_map[node.id()] = node_item
+                for socket_item in node_item.socketItems():
+                    self.sockets_map[socket_item.opDataSocket().id()] = socket_item
+
                 node_item.autoPlace()
 
     def buildNetworkLevel(self, node_path=None):
@@ -52,8 +56,11 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
 
             # build links
             for node_item in self.nodes_map.values():
-                for connection in node_item.inputConnections():
-                    pass
+                for connection in node_item.node.inputConnections():
+                    socket_from = self.sockets_map[connection.inputDataSocket().id()]
+                    socket_to = self.sockets_map[connection.outputDataSocket().id()]
+                    link_item = NodeLinkItem(socket_from, socket_to)
+                    self.addItem(link_item)
 
     def zoom(self, zoomFactor):
         self.zoomLevel *= zoomFactor
@@ -89,13 +96,16 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
 
 
     def selectNode(self, node_path):
-        if node_path not in self.nodes_map:
+        node = engine.node(node_path)
+        if node.id() not in self.nodes_map:
             # If node is not in map we need to rebuild visual network
-            node = engine.node(node_path)
             self.buildNetworkLevel(node.parent().path())
 
         # highlight selected node
-        self.nodes_map[node_path].select()
+        self.nodes_map[node.id()].select()
+
+    def mouseMoveEvent(self, event):
+        super(NodeFlowScene, self).mouseMoveEvent(event)
 
     def contextMenuEvent(self, event):
         network_node = engine.node(self.network_level)

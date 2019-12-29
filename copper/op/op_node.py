@@ -10,7 +10,6 @@ from copper import hou
 from copper.copper_object import CopperObject
 from .base import OpRegistry
 from .op_parameters import OP_Parameters
-from .op_connection import OP_Connection
 from .op_cooking_queue import OpCookingQueue
 
 
@@ -41,8 +40,11 @@ class OP_Node(CopperObject, OP_Parameters):
 
 		self._errors = []
 
-		self._inputs = ()
-		self._outputs = ()
+		self._input_sockets = []
+		self._output_sockets = []
+
+		self._inputs = []
+		self._outputs = []
 
 		self._pos_x = None
 		self._pos_y = None
@@ -154,17 +156,17 @@ class OP_Node(CopperObject, OP_Parameters):
 
 	def input(self, input_index):
 		try:
-			inp = self._inputs[input_index]
+			connection = self._inputs[input_index]
 		except:
 			raise BaseException("Wrong input index %s specified for node %s !!!") % (input_index, self)
 
-		return inp.node()	
+		return connection.outputNode()	
 
 	def inputs(self):
 		'''
 		Return a tuple of the nodes connected to this node's inputs.
 		'''
-		return tuple([op_connection.node() for op_connection in self._inputs])
+		return tuple([op_connection.outputNode() for op_connection in self._inputs])
 
 	def inputAncestors(self, include_ref_inputs=True, follow_subnets=False):
 		'''
@@ -183,7 +185,7 @@ class OP_Node(CopperObject, OP_Parameters):
 		return tuple([op_connection.name() for op_connection in self._inputs])
 
 	def inputConnections(self):
-		return tuple([op_connection for op_connection in self._inputs if op_connection.connected()])
+		return tuple([op_connection for op_connection in self._inputs])
 
 	def inputConnectors(self):
 		return tuple([op_connection for op_connection in self._inputs])
@@ -199,20 +201,37 @@ class OP_Node(CopperObject, OP_Parameters):
 		return tuple([op_connection.name() for op_connection in self._outputs])
 
 	def outputConnections(self):
-		return tuple([op_connection for op_connection in self._outputs if op_connection.connected()])
+		return tuple([op_connection for op_connection in self._outputs])
 
 	def outputConnectors(self):
 		return tuple([op_connection for op_connection in self._outputs])
 
 	def setInput(self, input_index, node, output_index=0):
-		try:
-			inp = self._inputs[input_index]					
-			out = node._outputs[output_index]
-		except:
+		from copper.op.op_connection import OP_Connection
+		
+		in_socket = self.inputDataSocket(input_index)
+		out_socket = node.outputDataSocket(output_index)
+
+		if in_socket.canConnect(out_socket):
+			connection = OP_Connection(in_socket, out_socket)
+		else:
+			logger.error("Unable to connect output socket %d of node %s to input socket %d of node %s" % (output_index, node, input_index, self))
 			raise
 
-		inp.setNode(node)
-		out.setNode(self)
+		self._inputs += [connection]
+		node._outputs += [connection]
+
+	def inputDataSockets(self):
+		return tuple(self._input_sockets)
+
+	def outputDataSockets(self):
+		return tuple(self._output_sockets)
+
+	def inputDataSocket(self, index):
+		return self._input_sockets[index]
+
+	def outputDataSocket(self, index):
+		return self._output_sockets[index]
 
 	def setSelected(on, clear_all_selected=False, show_asset_if_selected=False):
 		'''
@@ -244,7 +263,7 @@ class OP_Node(CopperObject, OP_Parameters):
 		self._needs_to_cook = on_off
 		if on_off == True:
 			print("%s setModified" % self.path())
-			for node in [output.node() for output in self._outputs if output.connected()]:
+			for node in [output.inputNode() for output in self._outputs]:
 				node.setModified(True)
 
 			self.signals.needsToCook.emit()

@@ -3,10 +3,10 @@ import copy
 import logging
 import numpy as np
 
+from copper.op.op_data import OP_DataBase
 from copper.vmath import Vector3
 
 from .primitive import Point, Polygon
-from copper.copper_object import CopperObject
 from copper.geometry.iotranslators.base import GeoIORegistry
 
 logger = logging.getLogger(__name__)
@@ -72,8 +72,9 @@ class DynamicArray1D(object):
 #                'formats'   : [uint8, uint8, uint8, uint8]})
 
 
-class Geometry(CopperObject):
+class Geometry(OP_DataBase):
     def __init__(self, sop_node=None):
+        super(Geometry, self).__init__()
         self._sop_node = sop_node
         self.clear()
 

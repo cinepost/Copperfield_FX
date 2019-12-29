@@ -261,6 +261,7 @@ class OBJDataDrawable(Drawable):
     def build(self):
         self.vbo = None
         self.vao = None
+        self.points_vao = None
         
         display_node = self._obj_node.displayNode()
 
@@ -278,6 +279,7 @@ class OBJDataDrawable(Drawable):
 
         if len(geometry.pointsRaw()) > 0:
             self.vbo = self.ctx.buffer(geometry.pointsRaw().data['P'].astype('f4').tobytes()) # geometry point positions
+            self.points_vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert')
 
         if len(geometry._prims) > 0:
             indecies = []
@@ -303,10 +305,11 @@ class OBJDataDrawable(Drawable):
             self.vao = self.ctx.vertex_array(self.prog, vao_content, self.ibo)
 
     def render(self):
-        if self.vao:
-            self.ctx.enable(moderngl.DEPTH_TEST)
-            self.vao.render(moderngl.TRIANGLES)
+        #if self.vao:
+        #    self.ctx.enable(moderngl.DEPTH_TEST)
+        #    self.vao.render(moderngl.TRIANGLES)
 
-        if self.vbo and self._scene_viewer._show_points:
+        if self.points_vao:# and self._scene_viewer._show_points:
+            self.ctx.point_size = 2.0
             self.ctx.disable(moderngl.DEPTH_TEST)
-            self.vbo.render(moderngl.POINTS)
+            self.points_vao.render(moderngl.POINTS)

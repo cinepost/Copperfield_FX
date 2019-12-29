@@ -3,7 +3,8 @@ import numpy
 
 from copper.op.node_type import NodeTypeBase
 from copper.op.node_type_category import Cop2NodeTypeCategory
-from copper.op.op_connection import OP_Connection
+from copper.op.op_data_socket import OP_DataSocket
+from copper.image_data import ImageData
 from copper.cop.cop_node import CopNode
 from copper import parameter
 
@@ -19,12 +20,12 @@ class COP2_Blur(CopNode):
 	def __init__(self, engine, parent):
 		super(COP2_Blur, self).__init__(engine, parent)
 		self.program = engine.load_program("effects_blur.cl")
-		self._inputs = (
-			OP_Connection("input1"),
-			OP_Connection("input2"),
+		self._input_sockets = (
+			OP_DataSocket(self, "input1", ImageData),
+			OP_DataSocket(self, "input2", ImageData),
 		)
-		self._outputs = (
-			OP_Connection("output1"),
+		self._output_sockets = (
+			OP_DataSocket(self, "output1", ImageData),
 		)
 		
 	@classmethod

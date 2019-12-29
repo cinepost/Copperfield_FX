@@ -23,15 +23,82 @@ def next_greater_power_of_2(x):
 
 
 class NodeLinkItem(QtWidgets.QGraphicsItem):
-    def __init__(self, socket_from, socket_to):
+    def __init__(self, socket_item_from = None, socket_item_to = None):
         QtWidgets.QGraphicsItem.__init__(self)
 
-        self._socket_from = socket_from
-        self._socket_to = socket_to
+        self.setAcceptHoverEvents(True)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
+        #self.setCacheMode(QtWidgets.QGraphicsItem.DeviceCoordinateCache)
+
+        self._socket_item_from = socket_item_from
+        self._socket_item_to = socket_item_to
+        self._pos_from = None
+        self._pos_to = None
+        self._hovered = False
 
     def paint(self, painter, option, widget=None):
-        painter.drawLine(self._socket_from.pos(), self._socket_to.pos())
+        if not self._hovered:
+            pen = QtGui.QPen(Qt.Qt.black, 1.0)
+        else:
+            pen = QtGui.QPen(QtGui.QColor(255, 128, 16), 1.5);
 
+        pen.setCosmetic(True)
+        painter.setPen(pen)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+
+        painter.drawPath(self.buildPath());
+
+    def buildPath(self) -> QtGui.QPainterPath:
+        p = QtGui.QPainterPath()
+        pos_to, pos_from = self._socket_item_to.scenePos(), self._socket_item_from.scenePos()
+        p.moveTo(pos_from)
+
+        dx = pos_to.x() - pos_from.x()
+        dy = pos_to.y() - pos_from.y()
+
+        ctr1 = QtCore.QPointF(pos_from.x() + dx * 0.25, pos_from.y() + dy * 0.1)
+        ctr2 = QtCore.QPointF(pos_from.x() + dx * 0.75, pos_from.y() + dy * 0.9)
+
+        p.cubicTo(ctr1, ctr2, pos_to)
+        return p
+
+    def shape(self):
+        # TODO: make stroker width zoom independent
+        stroker = QtGui.QPainterPathStroker()
+        stroker.setWidth(1.0)
+        return stroker.createStroke(self.buildPath())
+
+    def boundingRect(self):
+        return QtCore.QRectF(self._socket_item_from.scenePos(), self._socket_item_to.scenePos())
+
+    def setFromSocketItem(self, socket_item):
+        self._socket_item_from = socket_item
+
+    def setToSocketItem(self, socket_item):
+        self._socket_item_to = socket_item
+
+    def setPosFrom(self, pos):
+        self._pos_from = pos
+
+    def setPosTo(self, pos):
+        self._pos_to = pos
+
+    def updatePos(self):
+        if self._socket_item_from:
+            self._pos_from = self._socket_item_from.pos()
+
+        if self._socket_item_to:
+            self._pos_to = self._socket_item_to.pos()
+
+    def hoverEnterEvent(self, event):
+        super(NodeLinkItem, self).hoverEnterEvent(event)
+        self.prepareGeometryChange()
+        self._hovered = True
+
+    def hoverLeaveEvent(self, event):
+        super(NodeLinkItem, self).hoverLeaveEvent(event)
+        self.prepareGeometryChange()
+        self._hovered = False
 
 
 class NodeSocketItem(QtWidgets.QGraphicsItem):
@@ -43,15 +110,20 @@ class NodeSocketItem(QtWidgets.QGraphicsItem):
     STACK_TOP = 3
     STACK_BOTTOM = 4
 
-    def __init__(self, parent, socket_type=None, stack_side=STACK_TOP):
+    def __init__(self, parent, op_data_socket, socket_type=None, stack_side=STACK_TOP):
         QtWidgets.QGraphicsItem.__init__(self, parent)
         self.stack_side = stack_side
         self.node = parent.node
+        self._link_items = []
+        self._op_data_socket = op_data_socket
         self._socket_type = socket_type
         self.socket_color = QtGui.QColor(128, 128, 128)
         self.setAcceptHoverEvents(True)
         self.setZValue(self.parentItem().zValue() - 100)
         self.putInPlace()
+
+        self.setCacheMode(QtWidgets.QGraphicsItem.DeviceCoordinateCache)
+
 
     def paint(self, painter, option, widget=None):
         # LOD here. Do not draw socket if the viewport scale factor is less than 0.5
@@ -74,6 +146,9 @@ class NodeSocketItem(QtWidgets.QGraphicsItem):
         else:
             return QtCore.QSizeF(2.25, 9)
 
+    def opDataSocket(self):
+        return self._op_data_socket
+
     def putInPlace(self):
         node_item = self.parentItem()
         parent_size = node_item.size()
@@ -86,7 +161,7 @@ class NodeSocketItem(QtWidgets.QGraphicsItem):
                 self.setPos(0, (parent_size.height() / 2 + self.size().height() / 2))
 
             # we need to place sockets once again so they accupy all the available space on the edge
-            existing_sockets = node_item.inputSockets(self.stack_side)
+            existing_sockets = node_item.inputSocketItems(self.stack_side)
             if existing_sockets:
                 total_sockets_count = len(existing_sockets) + 1
                 sockets_distance = node_item.size().width() / total_sockets_count
@@ -128,25 +203,41 @@ class NodeItem(QtWidgets.QGraphicsItem):
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable)
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable)
 
+        self.setCacheMode(QtWidgets.QGraphicsItem.DeviceCoordinateCache)
+
         # create input sockets
-        for socket in self.node.inputConnectors():
-            socket_item = NodeSocketItem(self, socket_type=NodeSocketItem.INPUT_SOCKET, stack_side=NodeSocketItem.STACK_TOP)
+        for op_data_socket in self.node.inputDataSockets():
+            socket_item = NodeSocketItem(self, op_data_socket, socket_type=NodeSocketItem.INPUT_SOCKET, stack_side=NodeSocketItem.STACK_TOP)
             self._inputs[NodeSocketItem.STACK_TOP].append(socket_item)
 
         # create output sockets
-        for socket in self.node.outputConnectors():
-            socket_item = NodeSocketItem(self,  socket_type=NodeSocketItem.OUTPUT_SOCKET, stack_side=NodeSocketItem.STACK_BOTTOM)
+        for op_data_socket in self.node.outputDataSockets():
+            socket_item = NodeSocketItem(self, op_data_socket, socket_type=NodeSocketItem.OUTPUT_SOCKET, stack_side=NodeSocketItem.STACK_BOTTOM)
             self._outputs[NodeSocketItem.STACK_BOTTOM].append(socket_item)
 
         # connect signals
         #self.node.signals.opCookingStarted.connect(self.nodeMarkClean)
         #self.node.signals.opCookingFailed.connect(self.nodeMarkFailed)
 
-    def inputSockets(self, stack_side):
+    def inputSocketItems(self, stack_side=None):
+        if not stack_side:
+            ''' return all input socket items '''
+            return tuple([item for sublist in self._inputs.values() for item in sublist]) # used to flatten list of lists
+
         return tuple(self._inputs[stack_side])
 
-    def outputSockets(self, stack_side):
+    def outputSocketItems(self, stack_side=None):
+        if not stack_side:
+            ''' return all output socket items '''
+            return tuple([item for sublist in self._outputs.values() for item in sublist]) # used to flatten list of lists
+
         return tuple(self._outputs[stack_side])
+
+    def socketItems(self):
+        '''
+        return all available socket items
+        '''
+        return self.inputSocketItems() + self.outputSocketItems()
 
     def autoPlace(self):
         scene = self.scene()

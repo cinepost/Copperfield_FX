@@ -1,5 +1,5 @@
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import ObjectNodeTypeCategory
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import ObjectNodeTypeCategory
 from .obj_node import ObjNode
 
 class OBJ_Geometry(ObjNode):

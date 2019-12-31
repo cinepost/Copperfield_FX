@@ -15,7 +15,7 @@ from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget, CollapsableWidget
 from copper.ui.panels.base_panel import PathBasedPaneTab
 
-from copper.vmath import Matrix4, Vector3
+from copper.core.vmath import Matrix4, Vector3
 from .geometry_viewport import GeometryViewport
 from .camera import Camera
 

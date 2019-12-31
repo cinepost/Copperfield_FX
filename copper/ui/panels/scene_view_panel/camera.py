@@ -2,7 +2,7 @@ import math
 import numpy as np
 from OpenGL.GL import *
 
-from copper.vmath import Matrix4, Vector3
+from copper.core.vmath import Matrix4, Vector3
 from pyrr import Matrix44
 
 class Camera(object):

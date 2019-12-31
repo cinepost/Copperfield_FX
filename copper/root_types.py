@@ -1,5 +1,5 @@
-from copper import parm_template
-from copper.geometry import primitive
+from copper.core.parameter import parm_template
+from copper.core.data.geometry_data import primitive
 
 class ROOT_Types():
 	parmLook = parm_template.ParmLookScheme

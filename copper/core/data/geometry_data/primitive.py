@@ -1,4 +1,4 @@
-from copper.vmath import Vector3
+from copper.core.vmath import Vector3
 
 class primType():
 	class Polygon():

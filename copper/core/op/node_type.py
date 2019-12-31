@@ -1,7 +1,7 @@
 import six
 import inspect 
 
-from copper.op.base import RegistryMeta
+from .base import RegistryMeta
 
 @six.add_metaclass(RegistryMeta)
 class NodeTypeRegistry(type):

@@ -1,4 +1,4 @@
-from .singleton import SingletonOptmized
+from copper.core.utils.singleton import SingletonOptmized
 
 class Config(metaclass=SingletonOptmized):
 	'''

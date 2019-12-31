@@ -3,7 +3,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 from copper.ui.signals import signals
 from copper.ui.panels.base_panel import OverlayFilter
-from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
+from copper.core.parameter.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
 
 class LineEdit(QtWidgets.QLineEdit):

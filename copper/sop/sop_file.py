@@ -1,11 +1,12 @@
-from copper.sop import SOP_Node, SOPCookException
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import SopNodeTypeCategory
-from copper.op.op_data_socket import OP_DataSocket
-from copper import parameter
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import SopNodeTypeCategory
+from copper.core.op.op_data_socket import OP_DataSocket
 
-from copper.parm_template import *
-from copper.geometry import Geometry
+from copper.core.parameter.parm_template import *
+from copper.core.data.geometry_data import GeometryData
+
+from copper.sop import SOP_Node, SOPCookException
+
 
 class SOP_File(SOP_Node):
 
@@ -17,10 +18,10 @@ class SOP_File(SOP_Node):
 	def __init__(self, engine, parent):
 		super(SOP_File, self).__init__(engine, parent)
 		self._input_sockets = (
-			OP_DataSocket(self, "input1", Geometry),
+			OP_DataSocket(self, "input1", GeometryData),
 		)
 		self._output_sockets = (
-			OP_DataSocket(self, "output1", Geometry),
+			OP_DataSocket(self, "output1", GeometryData),
 		)
 		
 	def parmTemplates(self):

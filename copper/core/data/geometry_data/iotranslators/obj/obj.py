@@ -2,7 +2,7 @@ import numpy
 import sys
 
 from ..base import GeoBaseIO
-from copper.geometry import Polygon
+from copper.core.data.geometry_data.primitive import Polygon
 
 class ObjIO(GeoBaseIO):
 

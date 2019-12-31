@@ -3,7 +3,7 @@ import inspect
 import logging
 logger = logging.getLogger(__name__)
 
-from copper.op.base import OpRegistry, RegistryMeta
+from .base import OpRegistry, RegistryMeta
 
 @six.add_metaclass(RegistryMeta)
 class NodeTypeCategoryRegistry(type):

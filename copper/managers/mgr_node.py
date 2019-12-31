@@ -1,6 +1,6 @@
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import ManagerNodeTypeCategory
-from copper.op.op_network import OP_Network
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import ManagerNodeTypeCategory
+from copper.core.op.op_network import OP_Network
 
 class MGR_Node(OP_Network):
 	__base__ = True

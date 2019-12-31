@@ -11,6 +11,6 @@ DEFAULT_FPS = 24.0
 
 # Geometry translators modules
 GEO_TRANSLATORS = [
-	'copper.geometry.iotranslators.obj',
-	'copper.geometry.iotranslators.bgeo',
+	'copper.core.data.geometry_data.iotranslators.obj',
+	'copper.core.data.geometry_data.iotranslators.bgeo',
 ]

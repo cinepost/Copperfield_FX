@@ -17,9 +17,9 @@ from .obj import *
 from .cop import *
 from .sop import *
 
-from copper.op.node_type_category import NodeTypeCategoryRegistry
-from copper.engine import Engine
-from .copper_object import CopperObject
+from copper.core.op.node_type_category import NodeTypeCategoryRegistry
+#from copper.engine import Engine
+#from .copper_object import CopperObject
 
 def nodeTypeCategories():
     logger.debug(NodeTypeCategoryRegistry._registry_aliases)

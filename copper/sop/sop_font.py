@@ -2,18 +2,17 @@ import os
 import logging
 import freetype
 
-from copper.sop import SOP_Node
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import SopNodeTypeCategory
-from copper.op.op_data_socket import OP_DataSocket
-from copper import parameter
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import SopNodeTypeCategory
+from copper.core.op.op_data_socket import OP_DataSocket
 
-from copper.parm_template import *
-from copper.geometry import Geometry, Polygon
-from copper.utils.decorators import timeit
+from copper.core.parameter.parm_template import *
+from copper.core.data.geometry_data import GeometryData, Polygon
+from copper.core.utils.decorators import timeit
 
 logger = logging.getLogger(__name__)
 
+from copper.sop import SOP_Node
 
 class SOP_Font(SOP_Node):
 
@@ -26,7 +25,7 @@ class SOP_Font(SOP_Node):
 		super(SOP_Font, self).__init__(engine, parent)
 		
 		self._output_sockets = (
-			OP_DataSocket(self, "output1", Geometry),
+			OP_DataSocket(self, "output1", GeometryData),
 		)
 		
 	def parmTemplates(self):

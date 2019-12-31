@@ -2,9 +2,10 @@ import re, collections
 import logging 
 
 #from gui.signals import signals
-from copper.op.base import OpRegistry
-from copper.op.op_node import OP_Node
-from copper.parameter import CopperParameter
+from .base import OpRegistry
+from .op_node import OP_Node
+from copper.core.engine.engine_signals import signals as engine_signals
+from copper.core.parameter import CopperParameter
 
 logger = logging.getLogger(__name__)
 
@@ -94,8 +95,7 @@ class OP_Network(OP_Node):
 
 		self.__node_dict__[name] = node
 
-		if self.engine.gui_signals:
-			self.engine.gui_signals.copperNodeCreated[str].emit(node.path())
+		engine_signals.nodeCreated[OP_Node].emit(node)
 		
 		return node
 

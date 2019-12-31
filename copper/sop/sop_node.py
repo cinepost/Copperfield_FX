@@ -1,9 +1,9 @@
 import logging
 
-from copper.op.op_network import OP_Network
-from copper.parm_template import *
+from copper.core.op.op_network import OP_Network
+from copper.core.parameter.parm_template import *
 
-from copper.geometry import Geometry
+from copper.core.data.geometry_data import GeometryData
 
 class SOPCookException(Exception):
     pass
@@ -13,7 +13,7 @@ class SOP_Node(OP_Network):
 	
 	def __init__(self, engine, parent):
 		super(SOP_Node, self).__init__(engine, parent)
-		self._geometry = Geometry(sop_node=self)
+		self._geometry = GeometryData(sop_node=self)
 
 
 	def cookMySop(self, lock, context):

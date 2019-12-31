@@ -1,5 +1,5 @@
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import ManagerNodeTypeCategory, DriverNodeTypeCategory
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import ManagerNodeTypeCategory, DriverNodeTypeCategory
 from .mgr_node import MGR_Node
 
 class ROP_Network(MGR_Node):

@@ -3,11 +3,11 @@ import copy
 import logging
 import numpy as np
 
-from copper.op.op_data import OP_DataBase
-from copper.vmath import Vector3
+from copper.core.data.base import OP_DataBase
+from copper.core.vmath import Vector3
 
 from .primitive import Point, Polygon
-from copper.geometry.iotranslators.base import GeoIORegistry
+from copper.core.data.geometry_data.iotranslators.base import GeoIORegistry
 
 logger = logging.getLogger(__name__)
 
@@ -20,9 +20,9 @@ def check_frozen(f):
     def wrapper(*args):
         if args[0]._frozen:
             raise FrozenGeometryMedifyExcpetion()
-        
+
         return f(*args)
-    
+
     return wrapper
 
 class DynamicArray1D(object):
@@ -63,18 +63,18 @@ class DynamicArray1D(object):
     @property
     def size(self):
         return self._size
-    
+
     @property
     def dtype(self):
         return self._dtype
-    
+
 #dt = np.dtype({ 'names'     : ['r','g','b','a'],
 #                'formats'   : [uint8, uint8, uint8, uint8]})
 
 
-class Geometry(OP_DataBase):
+class GeometryData(OP_DataBase):
     def __init__(self, sop_node=None):
-        super(Geometry, self).__init__()
+        super(GeometryData, self).__init__()
         self._sop_node = sop_node
         self.clear()
 
@@ -132,7 +132,7 @@ class Geometry(OP_DataBase):
         if self._frozen:
             return self
         else:
-            frozen_geo = Geometry()
+            frozen_geo = GeometryData()
             frozen_geo._data = copy.deepcopy(self._data)
             frozen_geo._prims = copy.deepcopy(self._prims)
             frozen_geo._frozen = True

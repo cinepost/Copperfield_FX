@@ -1,6 +1,5 @@
 from copper.ui import PyQt_API
 from PyQt5 import QtWidgets, QtGui, QtCore
-from copper import parameter
 
 from .panels.panel_registry import PanelRegistry
 

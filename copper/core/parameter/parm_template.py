@@ -1,12 +1,14 @@
-class ParmNamingScheme:
+from enum import Enum
+
+class ParmNamingScheme(Enum):
 	Base1 = 1
 	XYZW = 2
 	RGBA = 3
 
-class ParmLookScheme:
+class ParmLookScheme(Enum):
 	Regular = 1
 
-class ParmTemplateType:
+class ParmTemplateType(Enum):
 	Button = 1
 	Float = 2
 	Folder = 3
@@ -16,7 +18,7 @@ class ParmTemplateType:
 	Toggle = 7
 	Menu = 8
 
-class StringParmType:
+class StringParmType(Enum):
 	Regular = 1
 	FileReference = 2
 	NodeReference = 3

@@ -2,7 +2,7 @@ import numpy as np
 import moderngl
 import logging
 
-from copper.vmath import Matrix4
+from copper.core.vmath import Matrix4
 from pyrr import Matrix44 # using it temporarily
 
 logger = logging.getLogger(__name__)

@@ -1,13 +1,13 @@
 from PyQt5 import Qt, QtWidgets, QtGui, QtCore
-from copper import parameter
 
-from copper import hou 
+from copper.core import parameter
+from copper.core.op.op_node import OP_Node
 from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget
 from copper.ui.panels.base_panel import PathBasedPaneTab
 from .parameters_widgets import *
 
-from copper.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
+from copper.core.parameter.parm_template import ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
 def clearLayout(layout):
     while layout.count():
@@ -75,16 +75,14 @@ class ParametersWidget(QtWidgets.QWidget):
         self.setLayout(self.vbox)
 
         # connect panel signals
-        self.panel.signals.copperNodeSelected.connect(self.nodeSelected)
+        self.panel.signals.copperNodeSelected[OP_Node].connect(self.nodeSelected)
 
 
-    @QtCore.pyqtSlot(str)
-    def nodeSelected(self, node_path=None):
-        if node_path in [None, "/"]:
+    @QtCore.pyqtSlot(OP_Node)
+    def nodeSelected(self, node):
+        if node.path() in [None, "/"]:
             return 
 
-        node = hou.node(str(node_path))
-        
         # remove old parms widgets
         clearLayout(self.header_bar)
         clearLayout(self.parm_box)

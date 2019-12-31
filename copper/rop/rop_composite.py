@@ -2,12 +2,11 @@ import sys
 import numpy
 from PIL import Image
 
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import DriverNodeTypeCategory
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import DriverNodeTypeCategory
 from copper.rop.rop_node import ROP_Node
-from copper import parameter
 
-from copper.parm_template import *
+from copper.core.parameter.parm_template import *
 
 class ROP_Composite(ROP_Node):
 

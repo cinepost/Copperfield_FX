@@ -9,8 +9,8 @@ import numpy
 import copper
 import math
 
-from copper import hou as engine
-from copper.op.base import OpRegistry
+from copper import hou
+from copper.core.op.base import OpRegistry
 from copper.ui.signals import signals
 
 
@@ -24,43 +24,41 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
         QtWidgets.QGraphicsScene.__init__(self, parent) 
         self.nodes_map = {}
         self.sockets_map = {}
+        self.network_level = None
 
         self.gridSizeWidth = 60
         self.gridSizeHeight = 30 
         self.zoomLevel = 1.0
         self.setSceneRect(-100000, -100000, 200000, 200000)
 
+        self.buildNetworkLevel(hou.pwd())
+
     @QtCore.pyqtSlot()
-    def addNode(self, node_path=None):
-        if node_path:
-            node = engine.node(node_path)
-            if node:
-                node_item = NodeItem(node)
-                self.addItem(node_item)
-                self.nodes_map[node.id()] = node_item
-                for socket_item in node_item.socketItems():
-                    self.sockets_map[socket_item.opDataSocket().id()] = socket_item
+    def addNode(self, node):
+        node_item = NodeItem(node)
+        self.addItem(node_item)
+        self.nodes_map[node.id()] = node_item
+        for socket_item in node_item.socketItems():
+            self.sockets_map[socket_item.opDataSocket().id()] = socket_item
 
-                node_item.autoPlace()
+        node_item.autoPlace()
 
-    def buildNetworkLevel(self, node_path=None):
-        node = engine.node(node_path)
-        if node:
-            self.network_level = node_path
-            self.nodes_map = {}
-            self.clear()
+    def buildNetworkLevel(self, node):
+        self.network_level = node
+        self.nodes_map = {}
+        self.clear()
 
-            # build node boxes
-            for child in node.children():
-                self.addNode(child.path())
+        # build node boxes
+        for child in node.children():
+            self.addNode(child)
 
-            # build links
-            for node_item in self.nodes_map.values():
-                for connection in node_item.node.inputConnections():
-                    socket_from = self.sockets_map[connection.inputDataSocket().id()]
-                    socket_to = self.sockets_map[connection.outputDataSocket().id()]
-                    link_item = NodeLinkItem(socket_from, socket_to)
-                    self.addItem(link_item)
+        # build links
+        for node_item in self.nodes_map.values():
+            for connection in node_item.node.inputConnections():
+                socket_from = self.sockets_map[connection.inputDataSocket().id()]
+                socket_to = self.sockets_map[connection.outputDataSocket().id()]
+                link_item = NodeLinkItem(socket_from, socket_to)
+                self.addItem(link_item)
 
     def zoom(self, zoomFactor):
         self.zoomLevel *= zoomFactor
@@ -95,11 +93,10 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
         pass
 
 
-    def selectNode(self, node_path):
-        node = engine.node(node_path)
+    def selectNode(self, node):
         if node.id() not in self.nodes_map:
             # If node is not in map we need to rebuild visual network
-            self.buildNetworkLevel(node.parent().path())
+            self.buildNetworkLevel(node.parent())
 
         # highlight selected node
         self.nodes_map[node.id()].select()
@@ -108,7 +105,7 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
         super(NodeFlowScene, self).mouseMoveEvent(event)
 
     def contextMenuEvent(self, event):
-        network_node = engine.node(self.network_level)
+        network_node = self.network_level
 
         menu = QtWidgets.QMenu(event.widget())
         group = QtWidgets.QActionGroup(menu)

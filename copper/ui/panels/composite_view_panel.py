@@ -13,7 +13,9 @@ import numpy as np
 import pyopencl as cl
 
 from copper import hou
-from copper.op.node_type_category import Cop2NodeTypeCategory
+from copper.core.engine import signals as engine_signals
+from copper.core.op.op_node import OP_Node
+from copper.core.op.node_type_category import Cop2NodeTypeCategory
 from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget
 from .base_panel import PathBasedPaneTab
@@ -57,7 +59,7 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
         self.emptyView()
 
         # connect panel signals
-        self.panel.signals.nodeDropped[str].connect(self.setNodeToDisplay)
+        self.panel.signals.nodeDropped[OP_Node].connect(self.setNodeToDisplay)
         #self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
 
 
@@ -264,10 +266,10 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
 
         self.update()
 
-    @QtCore.pyqtSlot(str)    
-    def setNodeToDisplay(self, node_path=None):
+    @QtCore.pyqtSlot(OP_Node)    
+    def setNodeToDisplay(self, node=None):
         if self.node:
-            logger.debug("Setting node %s as current to display" % node_path)
+            logger.debug("Setting node %s as current to display" % node.path())
 
             self.node.signals.opCookingDone.connect(self.updateNodeDisplay)
             self.node.signals.needsToCook.connect(self.requestDisplayNodeDataCook)
@@ -284,7 +286,7 @@ class CompositeViewWidget(QtWidgets.QOpenGLWidget):
     @QtCore.pyqtSlot()    
     def requestDisplayNodeDataCook(self):    
         if self.node:
-            hou.engine().signals.cookNodeData.emit(self.node.path())
+            engine_signals.cookNodeData.emit(self.node)
 
     def emptyView(self):
         self.image_width = 1280

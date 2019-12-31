@@ -1,7 +1,8 @@
 import logging
 from PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL, Qt
 
-from copper import hou as engine
+from copper import hou
+from copper.core.op.op_node import OP_Node
 
 from .node_flow_scene import NodeFlowScene
 
@@ -9,8 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 class NetworkViewWidget(QtWidgets.QGraphicsView):
-    def __init__(self, parent):  
+    def __init__(self, parent, panel):  
         QtWidgets.QGraphicsView.__init__(self, parent)
+        self.panel = panel
         self.setObjectName("network_widget")
 
         self.scene = NodeFlowScene(self)
@@ -31,29 +33,27 @@ class NetworkViewWidget(QtWidgets.QGraphicsView):
         self.setViewportUpdateMode( QtWidgets.QGraphicsView.FullViewportUpdate )
         self.setDragMode( QtWidgets.QGraphicsView.RubberBandDrag )
 
-        ## As a debug we always set new panel widget to "/"
-        self.setNetworkLevel("/img")
+        ## As a debug we always set new panel widget to current node
+        self.setNetworkLevel(hou.pwd())
 
         ## Connect panel signals
-        self.parent().signals.copperNodeCreated[str].connect(self.copperNodeCreated)
-        self.parent().signals.copperNodeSelected[str].connect(self.copperNodeSelected)
+        self.panel.signals.copperNodeCreated[OP_Node].connect(self.copperNodeCreated)
+        self.panel.signals.copperNodeSelected[OP_Node].connect(self.copperNodeSelected)
 
     def sizeHint(self):
         return QtCore.QSize(200, 200)
 
-    @QtCore.pyqtSlot(str)
-    def copperNodeCreated(self, node_path):
-        node = engine.node(str(node_path))
-        if node:
-            if self.scene.network_level == node.parent().path():
-                self.scene.addNode(str(node_path))
+    @QtCore.pyqtSlot(OP_Node)
+    def copperNodeCreated(self, node):
+        if self.scene.network_level == node.parent():
+            self.scene.addNode(node)
 
-    @QtCore.pyqtSlot(str)
-    def copperNodeSelected(self, node_path):
-        self.scene.selectNode(str(node_path))
+    @QtCore.pyqtSlot(OP_Node)
+    def copperNodeSelected(self, node):
+        self.scene.selectNode(node)
 
-    def setNetworkLevel(self, node_path):
-        self.scene.buildNetworkLevel(node_path)
+    def setNetworkLevel(self, node):
+        self.scene.buildNetworkLevel(node)
 
     def wheelEvent(self, event):
          # Zoom Factor
@@ -86,7 +86,7 @@ class NetworkViewWidget(QtWidgets.QGraphicsView):
     def mouseDoubleClickEvent(self, event):
         picked_item = self.itemAt(event.pos())
         if picked_item:
-            self.scene.buildNetworkLevel(picked_item.node.path())
+            self.scene.buildNetworkLevel(picked_item.node)
 
     def keyPressEvent(self, event):
         if event.modifiers() == QtCore.Qt.AltModifier:

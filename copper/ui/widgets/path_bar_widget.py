@@ -1,7 +1,8 @@
 from PyQt5 import QtWidgets, Qt, QtGui, QtCore
 
+from copper.core.op.op_node import OP_Node
 from copper.ui.signals import signals
-from copper import hou as engine
+from copper import hou
 
 from PyQt5 import QtCore
 
@@ -56,11 +57,11 @@ class PathBarWidget(QtWidgets.QFrame):
         self.setAcceptDrops(True)
         self.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
 
-        self.buildPathBar(node_path="/obj")
+        self.buildPathBar(hou.pwd())
 
         self.signals = PathBarWidgetSignals()
         # connect panel signals
-        self.panel.signals.copperNodeSelected[str].connect(self.nodeSelected)
+        self.panel.signals.copperNodeSelected[OP_Node].connect(self.nodeSelected)
 
     def historyGoBack(self):
         if self.history_index > 0:
@@ -86,26 +87,23 @@ class PathBarWidget(QtWidgets.QFrame):
     def pinPressed(self):
         self.signals.pinPressed.emit()
 
-    @QtCore.pyqtSlot(str)
-    def nodeSelected(self, node_path=None):
-        if node_path == "/":
+    @QtCore.pyqtSlot(OP_Node)
+    def nodeSelected(self, node):
+        if node.path() == "/":
             return
 
-        if self.buildPathBar(node_path):
+        if self.buildPathBar(node):
             if self.history:
-                if self.history[-1] == node_path:
+                if self.history[-1] == node:
                     return
 
-            self.history += [node_path]
+            self.history += [node]
             self.history_index += 1
             #print "History added: %s at index %s" % (node_path, self.history_index)
             self.btn_back.setEnabled(True)
 
-    def buildPathBar(self, node_path=None):
-        node = engine.node(node_path)
-        if not node:
-            return False
-        elif node.isRoot():
+    def buildPathBar(self, node):
+        if node.isRoot():
             btn = QtWidgets.QPushButton()
         else:
             parent = node.parent()

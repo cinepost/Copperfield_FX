@@ -5,14 +5,13 @@ import numpy
 import os
 import logging 
 
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import Cop2NodeTypeCategory
-from copper.op.op_data_socket import OP_DataSocket
-from copper.image_data import ImageData
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import Cop2NodeTypeCategory
+from copper.core.op.op_data_socket import OP_DataSocket
+from copper.core.data.image_data import ImageData
 from copper.cop.cop_node import CopNode
-from copper import parameter
 
-from copper.parm_template import *
+from copper.core.parameter.parm_template import *
 
 logger = logging.getLogger(__name__)
 

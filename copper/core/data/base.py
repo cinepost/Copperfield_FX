@@ -1,7 +1,7 @@
 import inspect
 import logging
 
-from copper.copper_object import CopperObject
+from copper.core.utils import CopperObject
 
 logger = logging.getLogger(__name__)
 

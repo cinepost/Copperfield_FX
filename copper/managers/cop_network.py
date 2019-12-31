@@ -1,5 +1,5 @@
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import ManagerNodeTypeCategory, CopNetNodeTypeCategory
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import ManagerNodeTypeCategory, CopNetNodeTypeCategory
 from .mgr_node import MGR_Node
 
 class COP_Network(MGR_Node):

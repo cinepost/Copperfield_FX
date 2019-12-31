@@ -1,7 +1,7 @@
 import logging
 
-from copper.op.node_type import NodeTypeBase
-from copper.op.node_type_category import ManagerNodeTypeCategory, DirectorNodeTypeCategory
+from copper.core.op.node_type import NodeTypeBase
+from copper.core.op.node_type_category import ManagerNodeTypeCategory, DirectorNodeTypeCategory
 from .mgr_node import MGR_Node
 
 logger = logging.getLogger(__name__)

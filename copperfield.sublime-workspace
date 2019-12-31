@@ -4,16 +4,356 @@
 		"selected_items":
 		[
 			[
+				"GE",
+				"GeometryData"
+			],
+			[
+				"fro",
+				"fromNumpy"
+			],
+			[
+				"Ima",
+				"ImageDepth"
+			],
+			[
+				"plane",
+				"plane_name"
+			],
+			[
+				"se",
+				"self"
+			],
+			[
+				"update",
+				"updatePos"
+			],
+			[
+				"post",
+				"_pos_to"
+			],
+			[
+				"QP",
+				"QPainterPath"
+			],
+			[
+				"sock",
+				"socket_to"
+			],
+			[
+				"so",
+				"socket_from"
+			],
+			[
+				"out",
+				"outputSocketItems"
+			],
+			[
+				"inputS",
+				"inputSocketItems"
+			],
+			[
+				"sta",
+				"stack_side"
+			],
+			[
+				"node",
+				"node_item"
+			],
+			[
+				"_s",
+				"_socket_item_to"
+			],
+			[
+				"_pos",
+				"_pos_to"
+			],
+			[
+				"_sock",
+				"_socket_item_to"
+			],
+			[
+				"_so",
+				"_socket_item_from"
+			],
+			[
+				"_po",
+				"_pos_to"
+			],
+			[
+				"soc",
+				"socket_item"
+			],
+			[
+				"_socket",
+				"_socket_from"
+			],
+			[
+				"_inp",
+				"_input_sockets"
+			],
+			[
+				"_",
+				"_objects"
+			],
+			[
+				"o",
+				"obj_node"
+			],
+			[
+				"conn",
+				"connection"
+			],
+			[
+				"con",
+				"connection"
+			],
+			[
+				"_in",
+				"_inputs"
+			],
+			[
+				"ou",
+				"output"
+			],
+			[
+				"inpu",
+				"input_index"
+			],
+			[
+				"in",
+				"index"
+			],
+			[
+				"op",
+				"op_data_socket"
+			],
+			[
+				"Image",
+				"ImageData"
+			],
+			[
+				"OP",
+				"OP_DataBase"
+			],
+			[
+				"__",
+				"__class__"
+			],
+			[
+				"OP_",
+				"OP_DataSocket"
+			],
+			[
+				"outpu",
+				"_output_node_socket"
+			],
+			[
+				"inp",
+				"_input_node_socket"
+			],
+			[
+				"poin",
+				"pointsRaw"
+			],
+			[
+				"dis",
+				"display_node"
+			],
+			[
+				"ob",
+				"obj_drawable"
+			],
+			[
+				"parm",
+				"parmTemplate"
+			],
+			[
+				"floa",
+				"float2"
+			],
+			[
+				"logg",
+				"logger"
+			],
+			[
+				"fo",
+				"font_file"
+			],
+			[
+				"float",
+				"float3"
+			],
+			[
+				"flo",
+				"float3"
+			],
+			[
+				"m",
+				"m_projetion"
+			],
+			[
+				"Ma",
+				"Matrix44"
+			],
+			[
+				"mdo",
+				"model"
+			],
+			[
+				"pro",
+				"projection"
+			],
+			[
+				"fiel",
+				"file_name"
+			],
+			[
+				"fr",
+				"frame_range"
+			],
+			[
+				"frame",
+				"frame_range"
+			],
+			[
+				"ret",
+				"return"
+			],
+			[
+				"_p",
+				"_pt_index"
+			],
+			[
+				"pr",
+				"print"
+			],
+			[
+				"e",
+				"elements"
+			],
+			[
+				"b",
+				"build"
+			],
+			[
+				"ini",
+				"init_size"
+			],
+			[
+				"log",
+				"logger"
+			],
+			[
+				"vi",
+				"viewports"
+			],
+			[
+				"re",
+				"return"
+			],
+			[
+				"as",
+				"astype"
+			],
+			[
+				"tan",
+				"tangent"
+			],
+			[
+				"f",
+				"float"
+			],
+			[
+				"SI",
+				"SimpleGrid"
+			],
+			[
+				"Q",
+				"QtWidgets"
+			],
+			[
+				"li",
+				"line_edit"
+			],
+			[
+				"z",
+				"zoom"
+			],
+			[
+				"pi",
+				"pivot_y"
+			],
+			[
+				"zoo",
+				"zoomFactor"
+			],
+			[
+				"cur",
+				"curr_mouse_x"
+			],
+			[
+				"del",
+				"delta_y"
+			],
+			[
+				"piv",
+				"pivot_y"
+			],
+			[
+				"nod",
+				"node"
+			],
+			[
+				"set",
+				"setCurrentNode"
+			],
+			[
+				"cook",
+				"cookNodeData"
+			],
+			[
+				"for",
+				"format"
+			],
+			[
+				"no",
+				"node"
+			],
+			[
+				"Qt",
+				"QtGui"
+			],
+			[
+				"Ov",
+				"OverlayFilter"
+			],
+			[
+				"pa",
+				"path_bar_widget"
+			],
+			[
+				"Pa",
+				"PathBarWidgetSignals"
+			],
+			[
+				"pin",
+				"pinPressed"
+			],
+			[
+				"need",
+				"needsToCook"
+			],
+			[
+				"_e",
+				"_engine"
+			],
+			[
 				"open",
 				"openclQueue"
 			],
 			[
 				"class",
 				"classmethod"
-			],
-			[
-				"_",
-				"_engine"
 			],
 			[
 				"cla",
@@ -24,24 +364,8 @@
 				"frame"
 			],
 			[
-				"set",
-				"setFrame"
-			],
-			[
 				"cl",
 				"classmethod"
-			],
-			[
-				"logg",
-				"logging"
-			],
-			[
-				"__",
-				"__engine__"
-			],
-			[
-				"in",
-				"index"
 			],
 			[
 				"data",
@@ -64,16 +388,8 @@
 				"node_path_tuple"
 			],
 			[
-				"sock",
-				"socket_to"
-			],
-			[
 				"link",
 				"link_item"
-			],
-			[
-				"node",
-				"nodes_map"
 			],
 			[
 				"up",
@@ -104,10 +420,6 @@
 				"self"
 			],
 			[
-				"fr",
-				"fragment_shader_source"
-			],
-			[
 				"ver",
 				"vertex"
 			],
@@ -124,10 +436,6 @@
 				"QtWidgets"
 			],
 			[
-				"Qt",
-				"QtWidgets"
-			],
-			[
 				"F",
 				"FAILED"
 			],
@@ -136,16 +444,8 @@
 				"cooked_op"
 			],
 			[
-				"for",
-				"force"
-			],
-			[
 				"P",
 				"PyQt5"
-			],
-			[
-				"pro",
-				"progress_cb"
 			],
 			[
 				"rende",
@@ -180,10 +480,6 @@
 				"value"
 			],
 			[
-				"se",
-				"self"
-			],
-			[
 				"signal",
 				"signals"
 			],
@@ -192,20 +488,8 @@
 				"slider_needs_update"
 			],
 			[
-				"li",
-				"line_edit_needs_update"
-			],
-			[
-				"pa",
-				"parameterChanged"
-			],
-			[
 				"Par",
 				"ParmSignals"
-			],
-			[
-				"parm",
-				"parmChanged"
 			],
 			[
 				"fil",
@@ -230,290 +514,6 @@
 			[
 				"eva",
 				"evalAsFloat"
-			],
-			[
-				"co",
-				"command"
-			],
-			[
-				"panel_",
-				"panel_type_name"
-			],
-			[
-				"pi",
-				"picked_item"
-			],
-			[
-				"netw",
-				"network_view_widget"
-			],
-			[
-				"ima",
-				"image_height"
-			],
-			[
-				"img",
-				"img_in_b"
-			],
-			[
-				"tex",
-				"texture_data"
-			],
-			[
-				"dev",
-				"devInBufferR"
-			],
-			[
-				"fi",
-				"filename"
-			],
-			[
-				"te",
-				"texture_data"
-			],
-			[
-				"iamge_",
-				"image_width"
-			],
-			[
-				"ha",
-				"have_gl"
-			],
-			[
-				"outp",
-				"output_driver"
-			],
-			[
-				"Rea",
-				"ReadCount"
-			],
-			[
-				"N",
-				"None"
-			],
-			[
-				"Error",
-				"Errors"
-			],
-			[
-				"byt",
-				"bytes"
-			],
-			[
-				"UT",
-				"UTF-8"
-			],
-			[
-				"att",
-				"attrib_list"
-			],
-			[
-				"de",
-				"debug"
-			],
-			[
-				"di",
-				"dict_stack"
-			],
-			[
-				"appen",
-				"append"
-			],
-			[
-				"cur_",
-				"cur_map"
-			],
-			[
-				"E",
-				"Errors"
-			],
-			[
-				"p",
-				"print"
-			],
-			[
-				"par",
-				"parser"
-			],
-			[
-				"Bg",
-				"ParserBGEO"
-			],
-			[
-				"DETAIL",
-				"ray_detail_1"
-			],
-			[
-				"prin",
-				"print"
-			],
-			[
-				"read",
-				"readWordBinary"
-			],
-			[
-				"lin",
-				"line_buf"
-			],
-			[
-				"ifd",
-				"ifd_commands"
-			],
-			[
-				"st",
-				"string"
-			],
-			[
-				"sc",
-				"scene_io_registry"
-			],
-			[
-				"IO",
-				"SCN_IFDTranslator"
-			],
-			[
-				"srt",
-				"string"
-			],
-			[
-				"SCN",
-				"SCN_IOTranslator"
-			],
-			[
-				"io",
-				"io_registry"
-			],
-			[
-				"r",
-				"return"
-			],
-			[
-				"S",
-				"SCN_IOTranslator"
-			],
-			[
-				"R",
-				"RendererOpenGL"
-			],
-			[
-				"w",
-				"width"
-			],
-			[
-				"scne",
-				"scene_files"
-			],
-			[
-				"Ri",
-				"Ri_Module"
-			],
-			[
-				"re",
-				"renderer"
-			],
-			[
-				"Sce",
-				"Scene_Reader"
-			],
-			[
-				"n",
-				"name"
-			],
-			[
-				"if",
-				"iface"
-			],
-			[
-				"RIB",
-				"RIB_File_Interface"
-			],
-			[
-				"ri",
-				"riDisplay"
-			],
-			[
-				"glam",
-				"glman_for_python"
-			],
-			[
-				"a",
-				"array_float"
-			],
-			[
-				"arr",
-				"array_int"
-			],
-			[
-				"floatn",
-				"floatnum"
-			],
-			[
-				"rib_a",
-				"rib_attribute_end"
-			],
-			[
-				"line",
-				"line_buff"
-			],
-			[
-				"Wo",
-				"WorldEnd"
-			],
-			[
-				"W",
-				"WorldBegin"
-			],
-			[
-				"Op",
-				"Opacity"
-			],
-			[
-				"Fr",
-				"Format"
-			],
-			[
-				"flo",
-				"floatnum3"
-			],
-			[
-				"float",
-				"floatnum"
-			],
-			[
-				"rib",
-				"rib_display"
-			],
-			[
-				"floa",
-				"floatnum"
-			],
-			[
-				"floatnum",
-				"floatnum3"
-			],
-			[
-				"Co",
-				"Combine"
-			],
-			[
-				"fl",
-				"floatnum"
-			],
-			[
-				"log",
-				"logger"
-			],
-			[
-				"nod",
-				"node_path"
-			],
-			[
-				"ma",
-				"maximizePanelManager"
-			],
-			[
-				"hi",
-				"historyIndex"
 			]
 		]
 	},
@@ -540,7 +540,10 @@
 			}
 		},
 		{
+			"contents": "import functools\nimport os\nimport re\nimport signal\nimport sys\nimport traceback\n\nimport matplotlib\n\nfrom matplotlib import backend_tools, cbook\nfrom matplotlib._pylab_helpers import Gcf\nfrom matplotlib.backend_bases import (\n    _Backend, FigureCanvasBase, FigureManagerBase, NavigationToolbar2,\n    TimerBase, cursors, ToolContainerBase, StatusbarBase, MouseButton)\nimport matplotlib.backends.qt_editor.figureoptions as figureoptions\nfrom matplotlib.backends.qt_editor.formsubplottool import UiSubplotTool\nfrom matplotlib.backend_managers import ToolManager\n\nfrom .qt_compat import (\n    QtCore, QtGui, QtWidgets, _getSaveFileName, is_pyqt5, __version__, QT_API)\n\nbackend_version = __version__\n\n# SPECIAL_KEYS are keys that do *not* return their unicode name\n# instead they have manually specified names\nSPECIAL_KEYS = {QtCore.Qt.Key_Control: 'control',\n                QtCore.Qt.Key_Shift: 'shift',\n                QtCore.Qt.Key_Alt: 'alt',\n                QtCore.Qt.Key_Meta: 'super',\n                QtCore.Qt.Key_Return: 'enter',\n                QtCore.Qt.Key_Left: 'left',\n                QtCore.Qt.Key_Up: 'up',\n                QtCore.Qt.Key_Right: 'right',\n                QtCore.Qt.Key_Down: 'down',\n                QtCore.Qt.Key_Escape: 'escape',\n                QtCore.Qt.Key_F1: 'f1',\n                QtCore.Qt.Key_F2: 'f2',\n                QtCore.Qt.Key_F3: 'f3',\n                QtCore.Qt.Key_F4: 'f4',\n                QtCore.Qt.Key_F5: 'f5',\n                QtCore.Qt.Key_F6: 'f6',\n                QtCore.Qt.Key_F7: 'f7',\n                QtCore.Qt.Key_F8: 'f8',\n                QtCore.Qt.Key_F9: 'f9',\n                QtCore.Qt.Key_F10: 'f10',\n                QtCore.Qt.Key_F11: 'f11',\n                QtCore.Qt.Key_F12: 'f12',\n                QtCore.Qt.Key_Home: 'home',\n                QtCore.Qt.Key_End: 'end',\n                QtCore.Qt.Key_PageUp: 'pageup',\n                QtCore.Qt.Key_PageDown: 'pagedown',\n                QtCore.Qt.Key_Tab: 'tab',\n                QtCore.Qt.Key_Backspace: 'backspace',\n                QtCore.Qt.Key_Enter: 'enter',\n                QtCore.Qt.Key_Insert: 'insert',\n                QtCore.Qt.Key_Delete: 'delete',\n                QtCore.Qt.Key_Pause: 'pause',\n                QtCore.Qt.Key_SysReq: 'sysreq',\n                QtCore.Qt.Key_Clear: 'clear', }\n\n# define which modifier keys are collected on keyboard events.\n# elements are (mpl names, Modifier Flag, Qt Key) tuples\nSUPER = 0\nALT = 1\nCTRL = 2\nSHIFT = 3\nMODIFIER_KEYS = [('super', QtCore.Qt.MetaModifier, QtCore.Qt.Key_Meta),\n                 ('alt', QtCore.Qt.AltModifier, QtCore.Qt.Key_Alt),\n                 ('ctrl', QtCore.Qt.ControlModifier, QtCore.Qt.Key_Control),\n                 ('shift', QtCore.Qt.ShiftModifier, QtCore.Qt.Key_Shift),\n                 ]\n\nif sys.platform == 'darwin':\n    # in OSX, the control and super (aka cmd/apple) keys are switched, so\n    # switch them back.\n    SPECIAL_KEYS.update({QtCore.Qt.Key_Control: 'cmd',  # cmd/apple key\n                         QtCore.Qt.Key_Meta: 'control',\n                         })\n    MODIFIER_KEYS[0] = ('cmd', QtCore.Qt.ControlModifier,\n                        QtCore.Qt.Key_Control)\n    MODIFIER_KEYS[2] = ('ctrl', QtCore.Qt.MetaModifier,\n                        QtCore.Qt.Key_Meta)\n\n\ncursord = {\n    cursors.MOVE: QtCore.Qt.SizeAllCursor,\n    cursors.HAND: QtCore.Qt.PointingHandCursor,\n    cursors.POINTER: QtCore.Qt.ArrowCursor,\n    cursors.SELECT_REGION: QtCore.Qt.CrossCursor,\n    cursors.WAIT: QtCore.Qt.WaitCursor,\n    }\n\n\n# make place holder\nqApp = None\n\n\ndef _create_qApp():\n    \"\"\"\n    Only one qApp can exist at a time, so check before creating one.\n    \"\"\"\n    global qApp\n\n    if qApp is None:\n        app = QtWidgets.QApplication.instance()\n        if app is None:\n            # check for DISPLAY env variable on X11 build of Qt\n            if is_pyqt5():\n                try:\n                    from PyQt5 import QtX11Extras\n                    is_x11_build = True\n                except ImportError:\n                    is_x11_build = False\n            else:\n                is_x11_build = hasattr(QtGui, \"QX11Info\")\n            if is_x11_build:\n                display = os.environ.get('DISPLAY')\n                if display is None or not re.search(r':\\d', display):\n                    raise RuntimeError('Invalid DISPLAY variable')\n\n            try:\n                QtWidgets.QApplication.setAttribute(\n                    QtCore.Qt.AA_EnableHighDpiScaling)\n            except AttributeError:  # Attribute only exists for Qt>=5.6.\n                pass\n            qApp = QtWidgets.QApplication([b\"matplotlib\"])\n            qApp.lastWindowClosed.connect(qApp.quit)\n        else:\n            qApp = app\n\n    if is_pyqt5():\n        try:\n            qApp.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps)\n        except AttributeError:\n            pass\n\n\ndef _allow_super_init(__init__):\n    \"\"\"\n    Decorator for ``__init__`` to allow ``super().__init__`` on PyQt4/PySide2.\n    \"\"\"\n\n    if QT_API == \"PyQt5\":\n\n        return __init__\n\n    else:\n        # To work around lack of cooperative inheritance in PyQt4, PySide,\n        # and PySide2, when calling FigureCanvasQT.__init__, we temporarily\n        # patch QWidget.__init__ by a cooperative version, that first calls\n        # QWidget.__init__ with no additional arguments, and then finds the\n        # next class in the MRO with an __init__ that does support cooperative\n        # inheritance (i.e., not defined by the PyQt4, PySide, PySide2, sip\n        # or Shiboken packages), and manually call its `__init__`, once again\n        # passing the additional arguments.\n\n        qwidget_init = QtWidgets.QWidget.__init__\n\n        def cooperative_qwidget_init(self, *args, **kwargs):\n            qwidget_init(self)\n            mro = type(self).__mro__\n            next_coop_init = next(\n                cls for cls in mro[mro.index(QtWidgets.QWidget) + 1:]\n                if cls.__module__.split(\".\")[0] not in [\n                    \"PyQt4\", \"sip\", \"PySide\", \"PySide2\", \"Shiboken\"])\n            next_coop_init.__init__(self, *args, **kwargs)\n\n        @functools.wraps(__init__)\n        def wrapper(self, *args, **kwargs):\n            with cbook._setattr_cm(QtWidgets.QWidget,\n                                   __init__=cooperative_qwidget_init):\n                __init__(self, *args, **kwargs)\n\n        return wrapper\n\n\nclass TimerQT(TimerBase):\n    '''\n    Subclass of :class:`backend_bases.TimerBase` that uses Qt timer events.\n\n    Attributes\n    ----------\n    interval : int\n        The time between timer events in milliseconds. Default is 1000 ms.\n    single_shot : bool\n        Boolean flag indicating whether this timer should\n        operate as single shot (run once and then stop). Defaults to False.\n    callbacks : list\n        Stores list of (func, args) tuples that will be called upon timer\n        events. This list can be manipulated directly, or the functions\n        `add_callback` and `remove_callback` can be used.\n\n    '''\n\n    def __init__(self, *args, **kwargs):\n        TimerBase.__init__(self, *args, **kwargs)\n\n        # Create a new timer and connect the timeout() signal to the\n        # _on_timer method.\n        self._timer = QtCore.QTimer()\n        self._timer.timeout.connect(self._on_timer)\n        self._timer_set_interval()\n\n    def _timer_set_single_shot(self):\n        self._timer.setSingleShot(self._single)\n\n    def _timer_set_interval(self):\n        self._timer.setInterval(self._interval)\n\n    def _timer_start(self):\n        self._timer.start()\n\n    def _timer_stop(self):\n        self._timer.stop()\n\n\nclass FigureCanvasQT(QtWidgets.QWidget, FigureCanvasBase):\n\n    # map Qt button codes to MouseEvent's ones:\n    buttond = {QtCore.Qt.LeftButton: MouseButton.LEFT,\n               QtCore.Qt.MidButton: MouseButton.MIDDLE,\n               QtCore.Qt.RightButton: MouseButton.RIGHT,\n               QtCore.Qt.XButton1: MouseButton.BACK,\n               QtCore.Qt.XButton2: MouseButton.FORWARD,\n               }\n\n    @_allow_super_init\n    def __init__(self, figure):\n        _create_qApp()\n        super().__init__(figure=figure)\n\n        self.figure = figure\n        # We don't want to scale up the figure DPI more than once.\n        # Note, we don't handle a signal for changing DPI yet.\n        figure._original_dpi = figure.dpi\n        self._update_figure_dpi()\n        # In cases with mixed resolution displays, we need to be careful if the\n        # dpi_ratio changes - in this case we need to resize the canvas\n        # accordingly. We could watch for screenChanged events from Qt, but\n        # the issue is that we can't guarantee this will be emitted *before*\n        # the first paintEvent for the canvas, so instead we keep track of the\n        # dpi_ratio value here and in paintEvent we resize the canvas if\n        # needed.\n        self._dpi_ratio_prev = None\n\n        self._draw_pending = False\n        self._is_drawing = False\n        self._draw_rect_callback = lambda painter: None\n\n        self.setAttribute(QtCore.Qt.WA_OpaquePaintEvent)\n        self.setMouseTracking(True)\n        self.resize(*self.get_width_height())\n        # Key auto-repeat enabled by default\n        self._keyautorepeat = True\n\n        palette = QtGui.QPalette(QtCore.Qt.white)\n        self.setPalette(palette)\n\n    def _update_figure_dpi(self):\n        dpi = self._dpi_ratio * self.figure._original_dpi\n        self.figure._set_dpi(dpi, forward=False)\n\n    @property\n    def _dpi_ratio(self):\n        # Not available on Qt4 or some older Qt5.\n        try:\n            # self.devicePixelRatio() returns 0 in rare cases\n            return self.devicePixelRatio() or 1\n        except AttributeError:\n            return 1\n\n    def _update_dpi(self):\n        # As described in __init__ above, we need to be careful in cases with\n        # mixed resolution displays if dpi_ratio is changing between painting\n        # events.\n        # Return whether we triggered a resizeEvent (and thus a paintEvent)\n        # from within this function.\n        if self._dpi_ratio != self._dpi_ratio_prev:\n            # We need to update the figure DPI.\n            self._update_figure_dpi()\n            self._dpi_ratio_prev = self._dpi_ratio\n            # The easiest way to resize the canvas is to emit a resizeEvent\n            # since we implement all the logic for resizing the canvas for\n            # that event.\n            event = QtGui.QResizeEvent(self.size(), self.size())\n            self.resizeEvent(event)\n            # resizeEvent triggers a paintEvent itself, so we exit this one\n            # (after making sure that the event is immediately handled).\n            return True\n        return False\n\n    def get_width_height(self):\n        w, h = FigureCanvasBase.get_width_height(self)\n        return int(w / self._dpi_ratio), int(h / self._dpi_ratio)\n\n    def enterEvent(self, event):\n        try:\n            x, y = self.mouseEventCoords(event.pos())\n        except AttributeError:\n            # the event from PyQt4 does not include the position\n            x = y = None\n        FigureCanvasBase.enter_notify_event(self, guiEvent=event, xy=(x, y))\n\n    def leaveEvent(self, event):\n        QtWidgets.QApplication.restoreOverrideCursor()\n        FigureCanvasBase.leave_notify_event(self, guiEvent=event)\n\n    def mouseEventCoords(self, pos):\n        \"\"\"Calculate mouse coordinates in physical pixels\n\n        Qt5 use logical pixels, but the figure is scaled to physical\n        pixels for rendering.   Transform to physical pixels so that\n        all of the down-stream transforms work as expected.\n\n        Also, the origin is different and needs to be corrected.\n\n        \"\"\"\n        dpi_ratio = self._dpi_ratio\n        x = pos.x()\n        # flip y so y=0 is bottom of canvas\n        y = self.figure.bbox.height / dpi_ratio - pos.y()\n        return x * dpi_ratio, y * dpi_ratio\n\n    def mousePressEvent(self, event):\n        x, y = self.mouseEventCoords(event.pos())\n        button = self.buttond.get(event.button())\n        if button is not None:\n            FigureCanvasBase.button_press_event(self, x, y, button,\n                                                guiEvent=event)\n\n    def mouseDoubleClickEvent(self, event):\n        x, y = self.mouseEventCoords(event.pos())\n        button = self.buttond.get(event.button())\n        if button is not None:\n            FigureCanvasBase.button_press_event(self, x, y,\n                                                button, dblclick=True,\n                                                guiEvent=event)\n\n    def mouseMoveEvent(self, event):\n        x, y = self.mouseEventCoords(event)\n        FigureCanvasBase.motion_notify_event(self, x, y, guiEvent=event)\n\n    def mouseReleaseEvent(self, event):\n        x, y = self.mouseEventCoords(event)\n        button = self.buttond.get(event.button())\n        if button is not None:\n            FigureCanvasBase.button_release_event(self, x, y, button,\n                                                  guiEvent=event)\n\n    if is_pyqt5():\n        def wheelEvent(self, event):\n            x, y = self.mouseEventCoords(event)\n            # from QWheelEvent::delta doc\n            if event.pixelDelta().x() == 0 and event.pixelDelta().y() == 0:\n                steps = event.angleDelta().y() / 120\n            else:\n                steps = event.pixelDelta().y()\n            if steps:\n                FigureCanvasBase.scroll_event(\n                    self, x, y, steps, guiEvent=event)\n    else:\n        def wheelEvent(self, event):\n            x = event.x()\n            # flipy so y=0 is bottom of canvas\n            y = self.figure.bbox.height - event.y()\n            # from QWheelEvent::delta doc\n            steps = event.delta() / 120\n            if event.orientation() == QtCore.Qt.Vertical:\n                FigureCanvasBase.scroll_event(\n                    self, x, y, steps, guiEvent=event)\n\n    def keyPressEvent(self, event):\n        key = self._get_key(event)\n        if key is not None:\n            FigureCanvasBase.key_press_event(self, key, guiEvent=event)\n\n    def keyReleaseEvent(self, event):\n        key = self._get_key(event)\n        if key is not None:\n            FigureCanvasBase.key_release_event(self, key, guiEvent=event)\n\n    @cbook.deprecated(\"3.0\", alternative=\"event.guiEvent.isAutoRepeat\")\n    @property\n    def keyAutoRepeat(self):\n        \"\"\"\n        If True, enable auto-repeat for key events.\n        \"\"\"\n        return self._keyautorepeat\n\n    @keyAutoRepeat.setter\n    def keyAutoRepeat(self, val):\n        self._keyautorepeat = bool(val)\n\n    def resizeEvent(self, event):\n        # _dpi_ratio_prev will be set the first time the canvas is painted, and\n        # the rendered buffer is useless before anyways.\n        if self._dpi_ratio_prev is None:\n            return\n        w = event.size().width() * self._dpi_ratio\n        h = event.size().height() * self._dpi_ratio\n        dpival = self.figure.dpi\n        winch = w / dpival\n        hinch = h / dpival\n        self.figure.set_size_inches(winch, hinch, forward=False)\n        # pass back into Qt to let it finish\n        QtWidgets.QWidget.resizeEvent(self, event)\n        # emit our resize events\n        FigureCanvasBase.resize_event(self)\n\n    def sizeHint(self):\n        w, h = self.get_width_height()\n        return QtCore.QSize(w, h)\n\n    def minumumSizeHint(self):\n        return QtCore.QSize(10, 10)\n\n    def _get_key(self, event):\n        if not self._keyautorepeat and event.isAutoRepeat():\n            return None\n\n        event_key = event.key()\n        event_mods = int(event.modifiers())  # actually a bitmask\n\n        # get names of the pressed modifier keys\n        # bit twiddling to pick out modifier keys from event_mods bitmask,\n        # if event_key is a MODIFIER, it should not be duplicated in mods\n        mods = [name for name, mod_key, qt_key in MODIFIER_KEYS\n                if event_key != qt_key and (event_mods & mod_key) == mod_key]\n        try:\n            # for certain keys (enter, left, backspace, etc) use a word for the\n            # key, rather than unicode\n            key = SPECIAL_KEYS[event_key]\n        except KeyError:\n            # unicode defines code points up to 0x0010ffff\n            # QT will use Key_Codes larger than that for keyboard keys that are\n            # are not unicode characters (like multimedia keys)\n            # skip these\n            # if you really want them, you should add them to SPECIAL_KEYS\n            MAX_UNICODE = 0x10ffff\n            if event_key > MAX_UNICODE:\n                return None\n\n            key = chr(event_key)\n            # qt delivers capitalized letters.  fix capitalization\n            # note that capslock is ignored\n            if 'shift' in mods:\n                mods.remove('shift')\n            else:\n                key = key.lower()\n\n        mods.reverse()\n        return '+'.join(mods + [key])\n\n    def new_timer(self, *args, **kwargs):\n        # docstring inherited\n        return TimerQT(*args, **kwargs)\n\n    def flush_events(self):\n        # docstring inherited\n        qApp.processEvents()\n\n    def start_event_loop(self, timeout=0):\n        # docstring inherited\n        if hasattr(self, \"_event_loop\") and self._event_loop.isRunning():\n            raise RuntimeError(\"Event loop already running\")\n        self._event_loop = event_loop = QtCore.QEventLoop()\n        if timeout:\n            timer = QtCore.QTimer.singleShot(timeout * 1000, event_loop.quit)\n        event_loop.exec_()\n\n    def stop_event_loop(self, event=None):\n        # docstring inherited\n        if hasattr(self, \"_event_loop\"):\n            self._event_loop.quit()\n\n    def draw(self):\n        \"\"\"Render the figure, and queue a request for a Qt draw.\n        \"\"\"\n        # The renderer draw is done here; delaying causes problems with code\n        # that uses the result of the draw() to update plot elements.\n        if self._is_drawing:\n            return\n        with cbook._setattr_cm(self, _is_drawing=True):\n            super().draw()\n        self.update()\n\n    def draw_idle(self):\n        \"\"\"Queue redraw of the Agg buffer and request Qt paintEvent.\n        \"\"\"\n        # The Agg draw needs to be handled by the same thread matplotlib\n        # modifies the scene graph from. Post Agg draw request to the\n        # current event loop in order to ensure thread affinity and to\n        # accumulate multiple draw requests from event handling.\n        # TODO: queued signal connection might be safer than singleShot\n        if not (getattr(self, '_draw_pending', False) or\n                getattr(self, '_is_drawing', False)):\n            self._draw_pending = True\n            QtCore.QTimer.singleShot(0, self._draw_idle)\n\n    def _draw_idle(self):\n        if self.height() < 0 or self.width() < 0:\n            self._draw_pending = False\n        if not self._draw_pending:\n            return\n        try:\n            self.draw()\n        except Exception:\n            # Uncaught exceptions are fatal for PyQt5, so catch them instead.\n            traceback.print_exc()\n        finally:\n            self._draw_pending = False\n\n    def drawRectangle(self, rect):\n        # Draw the zoom rectangle to the QPainter.  _draw_rect_callback needs\n        # to be called at the end of paintEvent.\n        if rect is not None:\n            def _draw_rect_callback(painter):\n                pen = QtGui.QPen(QtCore.Qt.black, 1 / self._dpi_ratio,\n                                 QtCore.Qt.DotLine)\n                painter.setPen(pen)\n                painter.drawRect(*(pt / self._dpi_ratio for pt in rect))\n        else:\n            def _draw_rect_callback(painter):\n                return\n        self._draw_rect_callback = _draw_rect_callback\n        self.update()\n\n\nclass MainWindow(QtWidgets.QMainWindow):\n    closing = QtCore.Signal()\n\n    def closeEvent(self, event):\n        self.closing.emit()\n        QtWidgets.QMainWindow.closeEvent(self, event)\n\n\nclass FigureManagerQT(FigureManagerBase):\n    \"\"\"\n    Attributes\n    ----------\n    canvas : `FigureCanvas`\n        The FigureCanvas instance\n    num : int or str\n        The Figure number\n    toolbar : qt.QToolBar\n        The qt.QToolBar\n    window : qt.QMainWindow\n        The qt.QMainWindow\n\n    \"\"\"\n\n    def __init__(self, canvas, num):\n        FigureManagerBase.__init__(self, canvas, num)\n        self.canvas = canvas\n        self.window = MainWindow()\n        self.window.closing.connect(canvas.close_event)\n        self.window.closing.connect(self._widgetclosed)\n\n        self.window.setWindowTitle(\"Figure %d\" % num)\n        image = os.path.join(matplotlib.rcParams['datapath'],\n                             'images', 'matplotlib.svg')\n        self.window.setWindowIcon(QtGui.QIcon(image))\n\n        # Give the keyboard focus to the figure instead of the\n        # manager; StrongFocus accepts both tab and click to focus and\n        # will enable the canvas to process event w/o clicking.\n        # ClickFocus only takes the focus is the window has been\n        # clicked\n        # on. http://qt-project.org/doc/qt-4.8/qt.html#FocusPolicy-enum or\n        # http://doc.qt.digia.com/qt/qt.html#FocusPolicy-enum\n        self.canvas.setFocusPolicy(QtCore.Qt.StrongFocus)\n        self.canvas.setFocus()\n\n        self.window._destroying = False\n\n        self.toolmanager = self._get_toolmanager()\n        self.toolbar = self._get_toolbar(self.canvas, self.window)\n        self.statusbar = None\n\n        if self.toolmanager:\n            backend_tools.add_tools_to_manager(self.toolmanager)\n            if self.toolbar:\n                backend_tools.add_tools_to_container(self.toolbar)\n                self.statusbar = StatusbarQt(self.window, self.toolmanager)\n\n        if self.toolbar is not None:\n            self.window.addToolBar(self.toolbar)\n            if not self.toolmanager:\n                # add text label to status bar\n                statusbar_label = QtWidgets.QLabel()\n                self.window.statusBar().addWidget(statusbar_label)\n                self.toolbar.message.connect(statusbar_label.setText)\n            tbs_height = self.toolbar.sizeHint().height()\n        else:\n            tbs_height = 0\n\n        # resize the main window so it will display the canvas with the\n        # requested size:\n        cs = canvas.sizeHint()\n        sbs = self.window.statusBar().sizeHint()\n        height = cs.height() + tbs_height + sbs.height()\n        self.window.resize(cs.width(), height)\n\n        self.window.setCentralWidget(self.canvas)\n\n        if matplotlib.is_interactive():\n            self.window.show()\n            self.canvas.draw_idle()\n\n        self.window.raise_()\n\n    def full_screen_toggle(self):\n        if self.window.isFullScreen():\n            self.window.showNormal()\n        else:\n            self.window.showFullScreen()\n\n    def _widgetclosed(self):\n        if self.window._destroying:\n            return\n        self.window._destroying = True\n        try:\n            Gcf.destroy(self.num)\n        except AttributeError:\n            pass\n            # It seems that when the python session is killed,\n            # Gcf can get destroyed before the Gcf.destroy\n            # line is run, leading to a useless AttributeError.\n\n    def _get_toolbar(self, canvas, parent):\n        # must be inited after the window, drawingArea and figure\n        # attrs are set\n        if matplotlib.rcParams['toolbar'] == 'toolbar2':\n            toolbar = NavigationToolbar2QT(canvas, parent, False)\n        elif matplotlib.rcParams['toolbar'] == 'toolmanager':\n            toolbar = ToolbarQt(self.toolmanager, self.window)\n        else:\n            toolbar = None\n        return toolbar\n\n    def _get_toolmanager(self):\n        if matplotlib.rcParams['toolbar'] == 'toolmanager':\n            toolmanager = ToolManager(self.canvas.figure)\n        else:\n            toolmanager = None\n        return toolmanager\n\n    def resize(self, width, height):\n        # these are Qt methods so they return sizes in 'virtual' pixels\n        # so we do not need to worry about dpi scaling here.\n        extra_width = self.window.width() - self.canvas.width()\n        extra_height = self.window.height() - self.canvas.height()\n        self.window.resize(width+extra_width, height+extra_height)\n\n    def show(self):\n        self.window.show()\n        self.window.activateWindow()\n        self.window.raise_()\n\n    def destroy(self, *args):\n        # check for qApp first, as PySide deletes it in its atexit handler\n        if QtWidgets.QApplication.instance() is None:\n            return\n        if self.window._destroying:\n            return\n        self.window._destroying = True\n        if self.toolbar:\n            self.toolbar.destroy()\n        self.window.close()\n\n    def get_window_title(self):\n        return self.window.windowTitle()\n\n    def set_window_title(self, title):\n        self.window.setWindowTitle(title)\n\n\nclass NavigationToolbar2QT(NavigationToolbar2, QtWidgets.QToolBar):\n    message = QtCore.Signal(str)\n\n    def __init__(self, canvas, parent, coordinates=True):\n        \"\"\" coordinates: should we show the coordinates on the right? \"\"\"\n        self.canvas = canvas\n        self.parent = parent\n        self.coordinates = coordinates\n        self._actions = {}\n        \"\"\"A mapping of toolitem method names to their QActions\"\"\"\n\n        QtWidgets.QToolBar.__init__(self, parent)\n        NavigationToolbar2.__init__(self, canvas)\n\n    def _icon(self, name):\n        if is_pyqt5():\n            name = name.replace('.png', '_large.png')\n        pm = QtGui.QPixmap(os.path.join(self.basedir, name))\n        if hasattr(pm, 'setDevicePixelRatio'):\n            pm.setDevicePixelRatio(self.canvas._dpi_ratio)\n        return QtGui.QIcon(pm)\n\n    def _init_toolbar(self):\n        self.basedir = os.path.join(matplotlib.rcParams['datapath'], 'images')\n\n        for text, tooltip_text, image_file, callback in self.toolitems:\n            if text is None:\n                self.addSeparator()\n            else:\n                a = self.addAction(self._icon(image_file + '.png'),\n                                   text, getattr(self, callback))\n                self._actions[callback] = a\n                if callback in ['zoom', 'pan']:\n                    a.setCheckable(True)\n                if tooltip_text is not None:\n                    a.setToolTip(tooltip_text)\n                if text == 'Subplots':\n                    a = self.addAction(self._icon(\"qt4_editor_options.png\"),\n                                       'Customize', self.edit_parameters)\n                    a.setToolTip('Edit axis, curve and image parameters')\n\n        # Add the x,y location widget at the right side of the toolbar\n        # The stretch factor is 1 which means any resizing of the toolbar\n        # will resize this label instead of the buttons.\n        if self.coordinates:\n            self.locLabel = QtWidgets.QLabel(\"\", self)\n            self.locLabel.setAlignment(\n                    QtCore.Qt.AlignRight | QtCore.Qt.AlignTop)\n            self.locLabel.setSizePolicy(\n                QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,\n                                      QtWidgets.QSizePolicy.Ignored))\n            labelAction = self.addWidget(self.locLabel)\n            labelAction.setVisible(True)\n\n        # Esthetic adjustments - we need to set these explicitly in PyQt5\n        # otherwise the layout looks different - but we don't want to set it if\n        # not using HiDPI icons otherwise they look worse than before.\n        if is_pyqt5() and self.canvas._dpi_ratio > 1:\n            self.setIconSize(QtCore.QSize(24, 24))\n            self.layout().setSpacing(12)\n\n    @cbook.deprecated(\"3.1\")\n    @property\n    def buttons(self):\n        return {}\n\n    @cbook.deprecated(\"3.1\")\n    @property\n    def adj_window(self):\n        return None\n\n    def sizeHint(self):\n        size = super().sizeHint()\n        if is_pyqt5() and self.canvas._dpi_ratio > 1:\n            # For some reason, self.setMinimumHeight doesn't seem to carry over\n            # to the actual sizeHint, so override it instead in order to make\n            # the aesthetic adjustments noted above.\n            size.setHeight(max(48, size.height()))\n        return size\n\n    def edit_parameters(self):\n        axes = self.canvas.figure.get_axes()\n        if not axes:\n            QtWidgets.QMessageBox.warning(\n                self.parent, \"Error\", \"There are no axes to edit.\")\n            return\n        elif len(axes) == 1:\n            ax, = axes\n        else:\n            titles = [\n                ax.get_label() or\n                ax.get_title() or\n                \" - \".join(filter(None, [ax.get_xlabel(), ax.get_ylabel()])) or\n                f\"<anonymous {type(ax).__name__}>\"\n                for ax in axes]\n            duplicate_titles = [\n                title for title in titles if titles.count(title) > 1]\n            for i, ax in enumerate(axes):\n                if titles[i] in duplicate_titles:\n                    titles[i] += f\" (id: {id(ax):#x})\"  # Deduplicate titles.\n            item, ok = QtWidgets.QInputDialog.getItem(\n                self.parent, 'Customize', 'Select axes:', titles, 0, False)\n            if not ok:\n                return\n            ax = axes[titles.index(item)]\n        figureoptions.figure_edit(ax, self)\n\n    def _update_buttons_checked(self):\n        # sync button checkstates to match active mode\n        self._actions['pan'].setChecked(self._active == 'PAN')\n        self._actions['zoom'].setChecked(self._active == 'ZOOM')\n\n    def pan(self, *args):\n        super().pan(*args)\n        self._update_buttons_checked()\n\n    def zoom(self, *args):\n        super().zoom(*args)\n        self._update_buttons_checked()\n\n    def set_message(self, s):\n        self.message.emit(s)\n        if self.coordinates:\n            self.locLabel.setText(s)\n\n    def set_cursor(self, cursor):\n        self.canvas.setCursor(cursord[cursor])\n\n    def draw_rubberband(self, event, x0, y0, x1, y1):\n        height = self.canvas.figure.bbox.height\n        y1 = height - y1\n        y0 = height - y0\n        rect = [int(val) for val in (x0, y0, x1 - x0, y1 - y0)]\n        self.canvas.drawRectangle(rect)\n\n    def remove_rubberband(self):\n        self.canvas.drawRectangle(None)\n\n    def configure_subplots(self):\n        image = os.path.join(matplotlib.rcParams['datapath'],\n                             'images', 'matplotlib.png')\n        dia = SubplotToolQt(self.canvas.figure, self.canvas.parent())\n        dia.setWindowIcon(QtGui.QIcon(image))\n        dia.exec_()\n\n    def save_figure(self, *args):\n        filetypes = self.canvas.get_supported_filetypes_grouped()\n        sorted_filetypes = sorted(filetypes.items())\n        default_filetype = self.canvas.get_default_filetype()\n\n        startpath = os.path.expanduser(\n            matplotlib.rcParams['savefig.directory'])\n        start = os.path.join(startpath, self.canvas.get_default_filename())\n        filters = []\n        selectedFilter = None\n        for name, exts in sorted_filetypes:\n            exts_list = \" \".join(['*.%s' % ext for ext in exts])\n            filter = '%s (%s)' % (name, exts_list)\n            if default_filetype in exts:\n                selectedFilter = filter\n            filters.append(filter)\n        filters = ';;'.join(filters)\n\n        fname, filter = _getSaveFileName(self.canvas.parent(),\n                                         \"Choose a filename to save to\",\n                                         start, filters, selectedFilter)\n        if fname:\n            # Save dir for next time, unless empty str (i.e., use cwd).\n            if startpath != \"\":\n                matplotlib.rcParams['savefig.directory'] = (\n                    os.path.dirname(fname))\n            try:\n                self.canvas.figure.savefig(fname)\n            except Exception as e:\n                QtWidgets.QMessageBox.critical(\n                    self, \"Error saving file\", str(e),\n                    QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.NoButton)\n\n    def set_history_buttons(self):\n        can_backward = self._nav_stack._pos > 0\n        can_forward = self._nav_stack._pos < len(self._nav_stack._elements) - 1\n        if 'back' in self._actions:\n            self._actions['back'].setEnabled(can_backward)\n        if 'forward' in self._actions:\n            self._actions['forward'].setEnabled(can_forward)\n\n\nclass SubplotToolQt(UiSubplotTool):\n    def __init__(self, targetfig, parent):\n        UiSubplotTool.__init__(self, None)\n\n        self._figure = targetfig\n\n        for lower, higher in [(\"bottom\", \"top\"), (\"left\", \"right\")]:\n            self._widgets[lower].valueChanged.connect(\n                lambda val: self._widgets[higher].setMinimum(val + .001))\n            self._widgets[higher].valueChanged.connect(\n                lambda val: self._widgets[lower].setMaximum(val - .001))\n\n        self._attrs = [\"top\", \"bottom\", \"left\", \"right\", \"hspace\", \"wspace\"]\n        self._defaults = {attr: vars(self._figure.subplotpars)[attr]\n                          for attr in self._attrs}\n\n        # Set values after setting the range callbacks, but before setting up\n        # the redraw callbacks.\n        self._reset()\n\n        for attr in self._attrs:\n            self._widgets[attr].valueChanged.connect(self._on_value_changed)\n        for action, method in [(\"Export values\", self._export_values),\n                               (\"Tight layout\", self._tight_layout),\n                               (\"Reset\", self._reset),\n                               (\"Close\", self.close)]:\n            self._widgets[action].clicked.connect(method)\n\n    def _export_values(self):\n        # Explicitly round to 3 decimals (which is also the spinbox precision)\n        # to avoid numbers of the form 0.100...001.\n        dialog = QtWidgets.QDialog()\n        layout = QtWidgets.QVBoxLayout()\n        dialog.setLayout(layout)\n        text = QtWidgets.QPlainTextEdit()\n        text.setReadOnly(True)\n        layout.addWidget(text)\n        text.setPlainText(\n            \",\\n\".join(\"{}={:.3}\".format(attr, self._widgets[attr].value())\n                       for attr in self._attrs))\n        # Adjust the height of the text widget to fit the whole text, plus\n        # some padding.\n        size = text.maximumSize()\n        size.setHeight(\n            QtGui.QFontMetrics(text.document().defaultFont())\n            .size(0, text.toPlainText()).height() + 20)\n        text.setMaximumSize(size)\n        dialog.exec_()\n\n    def _on_value_changed(self):\n        self._figure.subplots_adjust(**{attr: self._widgets[attr].value()\n                                        for attr in self._attrs})\n        self._figure.canvas.draw_idle()\n\n    def _tight_layout(self):\n        self._figure.tight_layout()\n        for attr in self._attrs:\n            widget = self._widgets[attr]\n            widget.blockSignals(True)\n            widget.setValue(vars(self._figure.subplotpars)[attr])\n            widget.blockSignals(False)\n        self._figure.canvas.draw_idle()\n\n    def _reset(self):\n        for attr, value in self._defaults.items():\n            self._widgets[attr].setValue(value)\n\n\nclass ToolbarQt(ToolContainerBase, QtWidgets.QToolBar):\n    def __init__(self, toolmanager, parent):\n        ToolContainerBase.__init__(self, toolmanager)\n        QtWidgets.QToolBar.__init__(self, parent)\n        self._toolitems = {}\n        self._groups = {}\n\n    @property\n    def _icon_extension(self):\n        if is_pyqt5():\n            return '_large.png'\n        return '.png'\n\n    def add_toolitem(\n            self, name, group, position, image_file, description, toggle):\n\n        button = QtWidgets.QToolButton(self)\n        button.setIcon(self._icon(image_file))\n        button.setText(name)\n        if description:\n            button.setToolTip(description)\n\n        def handler():\n            self.trigger_tool(name)\n        if toggle:\n            button.setCheckable(True)\n            button.toggled.connect(handler)\n        else:\n            button.clicked.connect(handler)\n\n        self._toolitems.setdefault(name, [])\n        self._add_to_group(group, name, button, position)\n        self._toolitems[name].append((button, handler))\n\n    def _add_to_group(self, group, name, button, position):\n        gr = self._groups.get(group, [])\n        if not gr:\n            sep = self.addSeparator()\n            gr.append(sep)\n        before = gr[position]\n        widget = self.insertWidget(before, button)\n        gr.insert(position, widget)\n        self._groups[group] = gr\n\n    def _icon(self, name):\n        pm = QtGui.QPixmap(name)\n        if hasattr(pm, 'setDevicePixelRatio'):\n            pm.setDevicePixelRatio(self.toolmanager.canvas._dpi_ratio)\n        return QtGui.QIcon(pm)\n\n    def toggle_toolitem(self, name, toggled):\n        if name not in self._toolitems:\n            return\n        for button, handler in self._toolitems[name]:\n            button.toggled.disconnect(handler)\n            button.setChecked(toggled)\n            button.toggled.connect(handler)\n\n    def remove_toolitem(self, name):\n        for button, handler in self._toolitems[name]:\n            button.setParent(None)\n        del self._toolitems[name]\n\n\nclass StatusbarQt(StatusbarBase, QtWidgets.QLabel):\n    def __init__(self, window, *args, **kwargs):\n        StatusbarBase.__init__(self, *args, **kwargs)\n        QtWidgets.QLabel.__init__(self)\n        window.statusBar().addWidget(self)\n\n    def set_message(self, s):\n        self.setText(s)\n\n\nclass ConfigureSubplotsQt(backend_tools.ConfigureSubplotsBase):\n    def trigger(self, *args):\n        NavigationToolbar2QT.configure_subplots(\n            self._make_classic_style_pseudo_toolbar())\n\n\nclass SaveFigureQt(backend_tools.SaveFigureBase):\n    def trigger(self, *args):\n        NavigationToolbar2QT.save_figure(\n            self._make_classic_style_pseudo_toolbar())\n\n\nclass SetCursorQt(backend_tools.SetCursorBase):\n    def set_cursor(self, cursor):\n        NavigationToolbar2QT.set_cursor(\n            self._make_classic_style_pseudo_toolbar(), cursor)\n\n\nclass RubberbandQt(backend_tools.RubberbandBase):\n    def draw_rubberband(self, x0, y0, x1, y1):\n        NavigationToolbar2QT.draw_rubberband(\n            self._make_classic_style_pseudo_toolbar(), None, x0, y0, x1, y1)\n\n    def remove_rubberband(self):\n        NavigationToolbar2QT.remove_rubberband(\n            self._make_classic_style_pseudo_toolbar())\n\n\nclass HelpQt(backend_tools.ToolHelpBase):\n    def trigger(self, *args):\n        QtWidgets.QMessageBox.information(None, \"Help\", self._get_help_html())\n\n\nclass ToolCopyToClipboardQT(backend_tools.ToolCopyToClipboardBase):\n    def trigger(self, *args, **kwargs):\n        pixmap = self.canvas.grab()\n        qApp.clipboard().setPixmap(pixmap)\n\n\nbackend_tools.ToolSaveFigure = SaveFigureQt\nbackend_tools.ToolConfigureSubplots = ConfigureSubplotsQt\nbackend_tools.ToolSetCursor = SetCursorQt\nbackend_tools.ToolRubberband = RubberbandQt\nbackend_tools.ToolHelp = HelpQt\nbackend_tools.ToolCopyToClipboard = ToolCopyToClipboardQT\n\n\n@cbook.deprecated(\"3.0\")\ndef error_msg_qt(msg, parent=None):\n    if not isinstance(msg, str):\n        msg = ','.join(map(str, msg))\n\n    QtWidgets.QMessageBox.warning(None, \"Matplotlib\",\n                                  msg, QtGui.QMessageBox.Ok)\n\n\n@cbook.deprecated(\"3.0\")\ndef exception_handler(type, value, tb):\n    \"\"\"Handle uncaught exceptions\n    It does not catch SystemExit\n    \"\"\"\n    msg = ''\n    # get the filename attribute if available (for IOError)\n    if hasattr(value, 'filename') and value.filename is not None:\n        msg = value.filename + ': '\n    if hasattr(value, 'strerror') and value.strerror is not None:\n        msg += value.strerror\n    else:\n        msg += str(value)\n\n    if len(msg):\n        error_msg_qt(msg)\n\n\n@_Backend.export\nclass _BackendQT5(_Backend):\n    required_interactive_framework = \"qt5\"\n    FigureCanvas = FigureCanvasQT\n    FigureManager = FigureManagerQT\n\n    @staticmethod\n    def trigger_manager_draw(manager):\n        manager.canvas.draw_idle()\n\n    @staticmethod\n    def mainloop():\n        old_signal = signal.getsignal(signal.SIGINT)\n        # allow SIGINT exceptions to close the plot window.\n        signal.signal(signal.SIGINT, signal.SIG_DFL)\n        try:\n            qApp.exec_()\n        finally:\n            # reset the SIGINT exception handler\n            signal.signal(signal.SIGINT, old_signal)\n",
 			"file": "venv/lib/python3.7/site-packages/matplotlib/backends/backend_qt5.py",
+			"file_size": 40319,
+			"file_write_time": 132204988794342620,
 			"settings":
 			{
 				"buffer_size": 40319,
@@ -562,7 +565,34 @@
 			"file": "copper/obj/obj_node.py",
 			"settings":
 			{
-				"buffer_size": 3277,
+				"buffer_size": 3359,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/obj/obj_geometry.py",
+			"settings":
+			{
+				"buffer_size": 424,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/obj/__init__.py",
+			"settings":
+			{
+				"buffer_size": 107,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/obj/obj_instance.py",
+			"settings":
+			{
+				"buffer_size": 434,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -609,7 +639,7 @@
 			"file": "requirements.txt",
 			"settings":
 			{
-				"buffer_size": 777,
+				"buffer_size": 783,
 				"line_ending": "Unix"
 			}
 		},
@@ -632,10 +662,19 @@
 			}
 		},
 		{
-			"file": "copper/cl/effects_press_raster.cl",
+			"file": "copper/cl/effects_halftone.cl",
 			"settings":
 			{
-				"buffer_size": 3720,
+				"buffer_size": 4475,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/sop/sop_font.py",
+			"settings":
+			{
+				"buffer_size": 1857,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -655,7 +694,7 @@
 			"file": "copper/rop/rop_composite.py",
 			"settings":
 			{
-				"buffer_size": 1192,
+				"buffer_size": 1210,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -664,7 +703,7 @@
 			"file": "copper/parameter.py",
 			"settings":
 			{
-				"buffer_size": 6247,
+				"buffer_size": 6300,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -693,7 +732,7 @@
 			"file": "copper/op/op_node.py",
 			"settings":
 			{
-				"buffer_size": 6975,
+				"buffer_size": 7827,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -720,7 +759,7 @@
 			"file": "copper/copper_string.py",
 			"settings":
 			{
-				"buffer_size": 632,
+				"buffer_size": 726,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -729,7 +768,7 @@
 			"file": "copper/ui/widgets/path_bar_widget.py",
 			"settings":
 			{
-				"buffer_size": 4671,
+				"buffer_size": 4763,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -738,7 +777,7 @@
 			"file": "copper/geometry/iotranslators/obj/obj.py",
 			"settings":
 			{
-				"buffer_size": 1930,
+				"buffer_size": 1985,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -765,7 +804,7 @@
 			"file": "copper/geometry/primitive.py",
 			"settings":
 			{
-				"buffer_size": 1889,
+				"buffer_size": 2207,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -774,7 +813,16 @@
 			"file": "copper/geometry/geometry.py",
 			"settings":
 			{
-				"buffer_size": 1707,
+				"buffer_size": 3969,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/op/op_data_socket.py",
+			"settings":
+			{
+				"buffer_size": 1100,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -789,10 +837,55 @@
 			}
 		},
 		{
-			"file": "copper/ui/tabbed_panel_manager.py",
+			"file": "copper/ui/pane.py",
 			"settings":
 			{
-				"buffer_size": 4588,
+				"buffer_size": 4593,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/geometry_viewport.py",
+			"settings":
+			{
+				"buffer_size": 5849,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/qmodernglwidget.py",
+			"settings":
+			{
+				"buffer_size": 1126,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/drawable.py",
+			"settings":
+			{
+				"buffer_size": 9860,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/ogl_scene_manager.py",
+			"settings":
+			{
+				"buffer_size": 6447,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/camera.py",
+			"settings":
+			{
+				"buffer_size": 7262,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -801,7 +894,7 @@
 			"file": "copper/ui/panels/scene_view_panel/scene_view_panel.py",
 			"settings":
 			{
-				"buffer_size": 14470,
+				"buffer_size": 4119,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -810,7 +903,7 @@
 			"file": "copper/ui/panels/parameters_panel/parameters_panel.py",
 			"settings":
 			{
-				"buffer_size": 5924,
+				"buffer_size": 5890,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -819,7 +912,7 @@
 			"file": "copper/ui/panels/base_panel.py",
 			"settings":
 			{
-				"buffer_size": 3999,
+				"buffer_size": 6829,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -828,7 +921,7 @@
 			"file": "copper/ui/panels/composite_view_panel.py",
 			"settings":
 			{
-				"buffer_size": 12631,
+				"buffer_size": 11701,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -846,7 +939,7 @@
 			"file": "copper/ui/panels/tree_view_panel.py",
 			"settings":
 			{
-				"buffer_size": 5260,
+				"buffer_size": 5742,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -861,13 +954,38 @@
 			}
 		},
 		{
-			"contents": "import logging\n\nfrom PyQt5 import QtWidgets, QtGui, QtCore, QtOpenGL, Qt\nfrom OpenGL.GL import *\nfrom OpenGL import GL\nfrom OpenGL.GLU import *\n\nimport numpy\nimport copper\nimport math\n\nfrom copper import hou as engine\nfrom copper.op.base import OpRegistry\nfrom copper.ui.signals import signals\n\n\nfrom .node_item import NodeItem, NodeLinkItem\n\nlogger = logging.getLogger(__name__)\n\n\nclass NodeFlowScene(QtWidgets.QGraphicsScene):\n    def __init__(self, parent=None):      \n        QtWidgets.QGraphicsScene.__init__(self, parent) \n        self.nodes_map = {}\n\n        self.gridSizeWidth = 60\n        self.gridSizeHeight = 30 \n        self.zoomLevel = 1.0\n        self.setSceneRect(-100000, -100000, 200000, 200000)\n\n    @QtCore.pyqtSlot()\n    def addNode(self, node_path=None):\n        if node_path:\n            node = engine.node(node_path)\n            if node:\n                node_item= NodeItem(node)\n                self.addItem(node_item)\n                self.nodes_map[node_path] = node_item\n                node_item.autoPlace()\n\n    def buildNetworkLevel(self, node_path=None):\n        node = engine.node(node_path)\n        if node:\n            self.network_level = node_path\n            self.nodes_map = {}\n            self.clear()\n\n            # build node boxes\n            for child in node.children():\n                self.addNode(child.path())\n\n            # build links\n            for node_item in self.nodes_map.values():\n                for connection in node_item.inputConnections():\n                    socket_to = \n                    link_item = NodeLinkItem(socket_from, socket_to)\n                    self.addItem(link_item)\n\n    def zoom(self, zoomFactor):\n        self.zoomLevel *= zoomFactor\n\n    def drawBackground(self, painter, rect):\n        painter.fillRect(rect, QtGui.QColor(42, 42, 42))\n\n        if self.zoomLevel > 0.1:\n            # Draw grid\n            left = rect.left() - (rect.left() % self.gridSizeWidth)\n            top = rect.top() - (rect.top() % self.gridSizeHeight)\n     \n            lines = []\n     \n            x = left\n            while x < rect.right():\n                lines.append( QtCore.QLineF(x, rect.top(), x, rect.bottom()) )\n                x += self.gridSizeWidth\n\n            y = top\n            while y < rect.bottom():\n                lines.append( QtCore.QLineF(rect.left(), y, rect.right(), y) )\n                y += self.gridSizeHeight\n\n            pen = QtGui.QPen(QtGui.QColor(64, 64, 64), 1)\n            pen.setCosmetic(True)\n            painter.setPen(pen)\n            painter.drawLines(lines)\n\n    def drawForeground(self, painter, rect):\n        #painter.drawText(rect, \"Network type name\")\n        pass\n\n\n    def selectNode(self, node_path):\n        if node_path not in self.nodes_map:\n            # If node is not in map we need to rebuild visual network\n            node = engine.node(node_path)\n            self.buildNetworkLevel(node.parent().path())\n\n        # highlight selected node\n        self.nodes_map[node_path].select()\n\n    def contextMenuEvent(self, event):\n        network_node = engine.node(self.network_level)\n\n        menu = QtWidgets.QMenu(event.widget())\n        group = QtWidgets.QActionGroup(menu)\n        menu.addAction('Tool Menu...')\n\n        add_operators_menu = menu.addMenu(\"Add\")\n\n        node_types = network_node.childTypeCategory().nodeTypes()\n        for node_type_name, node_class in node_types.items():\n            icon = QtGui.QIcon(node_class.iconName())\n            action = add_operators_menu.addAction(icon, node_type_name)\n            action.setActionGroup(group)\n            action.setData(node_type_name)\n        \n        group.triggered.connect(self.addOperator)\n\n        menu.exec_(event.screenPos())\n\n    def addOperator(self, action):\n        network_node = engine.node(self.network_level)\n        network_node.createNode(action.data())\n",
 			"file": "copper/ui/panels/network_view_panel/node_flow_scene.py",
-			"file_size": 3723,
-			"file_write_time": 132212528885069715,
 			"settings":
 			{
-				"buffer_size": 3858,
+				"buffer_size": 4268,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/network_view_panel/network_view_widget.py",
+			"settings":
+			{
+				"buffer_size": 3847,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/op/op_data.py",
+			"settings":
+			{
+				"buffer_size": 188,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/op/op_connection.py",
+			"settings":
+			{
+				"buffer_size": 979,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
@@ -875,8 +993,16 @@
 			"file": "copper/ui/panels/network_view_panel/node_item.py",
 			"settings":
 			{
-				"buffer_size": 11289,
+				"buffer_size": 14447,
 				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/max/dev/CopperFX/src/copperfx/panels/NodeFlowViewPanel/NodeConnectionItem.cpp",
+			"settings":
+			{
+				"buffer_size": 4146,
 				"line_ending": "Unix"
 			}
 		},
@@ -893,8 +1019,19 @@
 			"file": "copper/ui/panels/parameters_panel/parameters_widgets.py",
 			"settings":
 			{
-				"buffer_size": 7937,
+				"buffer_size": 9990,
 				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "# Copyright (c) Twisted Matrix Laboratories.\n# See LICENSE for details.\n\n\"\"\"\nTests for L{twisted.python.log}.\n\"\"\"\n\nfrom __future__ import division, absolute_import, print_function\n\nfrom twisted.python.compat import _PY3, NativeStringIO as StringIO\n\nimport os\nimport sys\nimport time\nimport logging\nimport warnings\nimport calendar\nfrom io import IOBase\nfrom imp import reload\n\nfrom twisted.trial import unittest\n\nfrom twisted.python import log, failure\nfrom twisted.logger.test.test_stdlib import handlerAndBytesIO\nfrom twisted.python.log import LogPublisher\nfrom twisted.logger import (\n    LoggingFile, LogLevel as NewLogLevel, LogBeginner,\n    LogPublisher as NewLogPublisher\n)\n\n\nclass FakeWarning(Warning):\n    \"\"\"\n    A unique L{Warning} subclass used by tests for interactions of\n    L{twisted.python.log} with the L{warnings} module.\n    \"\"\"\n\n\n\nclass TextFromEventDictTests(unittest.SynchronousTestCase):\n    \"\"\"\n    Tests for L{textFromEventDict}.\n    \"\"\"\n\n    def test_message(self):\n        \"\"\"\n        The C{\"message\"} value, when specified, is concatenated to generate the\n        message.\n        \"\"\"\n        eventDict = dict(message=(\"a\", \"b\", \"c\"))\n        text = log.textFromEventDict(eventDict)\n        self.assertEqual(text, \"a b c\")\n\n\n\n    def test_format(self):\n        \"\"\"\n        The C{\"format\"} value, when specified, is used to format the message.\n        \"\"\"\n        eventDict = dict(\n            message=(), isError=0, format=\"Hello, %(foo)s!\", foo=\"dude\"\n        )\n        text = log.textFromEventDict(eventDict)\n        self.assertEqual(text, \"Hello, dude!\")\n\n\n\n    def test_noMessageNoFormat(self):\n        \"\"\"\n        If C{\"format\"} is unspecified and C{\"message\"} is empty, return\n        L{None}.\n        \"\"\"\n        eventDict = dict(message=(), isError=0)\n        text = log.textFromEventDict(eventDict)\n        self.assertIsNone(text)\n\n\n\n    def test_whySpecified(self):\n        \"\"\"\n        The C{\"why\"} value, when specified, is first part of message.\n        \"\"\"\n        try:\n            raise RuntimeError()\n        except:\n            eventDict = dict(\n                message=(), isError=1, failure=failure.Failure(), why=\"foo\"\n            )\n            text = log.textFromEventDict(eventDict)\n            self.assertTrue(text.startswith(\"foo\\n\"))\n\n\n    def test_whyDefault(self):\n        \"\"\"\n        The C{\"why\"} value, when unspecified, defaults to C{\"Unhandled Error\"}.\n        \"\"\"\n        try:\n            raise RuntimeError()\n        except:\n            eventDict = dict(message=(), isError=1, failure=failure.Failure())\n            text = log.textFromEventDict(eventDict)\n            self.assertTrue(text.startswith(\"Unhandled Error\\n\"))\n\n\n    def test_noTracebackForYou(self):\n        \"\"\"\n        If unable to obtain a traceback due to an exception, catch it and note\n        the error.\n        \"\"\"\n        # Invalid failure object doesn't implement .getTraceback()\n        eventDict = dict(message=(), isError=1, failure=object())\n        text = log.textFromEventDict(eventDict)\n        self.assertIn(\"\\n(unable to obtain traceback)\", text)\n\n\n\nclass LogTests(unittest.SynchronousTestCase):\n\n    def setUp(self):\n        self.catcher = []\n        self.observer = self.catcher.append\n        log.addObserver(self.observer)\n        self.addCleanup(log.removeObserver, self.observer)\n\n\n    def testObservation(self):\n        catcher = self.catcher\n        log.msg(\"test\", testShouldCatch=True)\n        i = catcher.pop()\n        self.assertEqual(i[\"message\"][0], \"test\")\n        self.assertTrue(i[\"testShouldCatch\"])\n        self.assertIn(\"time\", i)\n        self.assertEqual(len(catcher), 0)\n\n\n    def testContext(self):\n        catcher = self.catcher\n        log.callWithContext({\"subsystem\": \"not the default\",\n                             \"subsubsystem\": \"a\",\n                             \"other\": \"c\"},\n                            log.callWithContext,\n                            {\"subsubsystem\": \"b\"}, log.msg, \"foo\", other=\"d\")\n        i = catcher.pop()\n        self.assertEqual(i['subsubsystem'], 'b')\n        self.assertEqual(i['subsystem'], 'not the default')\n        self.assertEqual(i['other'], 'd')\n        self.assertEqual(i['message'][0], 'foo')\n\n\n    def testErrors(self):\n        for e, ig in [(\"hello world\", \"hello world\"),\n                      (KeyError(), KeyError),\n                      (failure.Failure(RuntimeError()), RuntimeError)]:\n            log.err(e)\n            i = self.catcher.pop()\n            self.assertEqual(i['isError'], 1)\n            self.flushLoggedErrors(ig)\n\n\n    def testErrorsWithWhy(self):\n        for e, ig in [(\"hello world\", \"hello world\"),\n                      (KeyError(), KeyError),\n                      (failure.Failure(RuntimeError()), RuntimeError)]:\n            log.err(e, 'foobar')\n            i = self.catcher.pop()\n            self.assertEqual(i['isError'], 1)\n            self.assertEqual(i['why'], 'foobar')\n            self.flushLoggedErrors(ig)\n\n\n    def test_erroneousErrors(self):\n        \"\"\"\n        Exceptions raised by log observers are logged but the observer which\n        raised the exception remains registered with the publisher.  These\n        exceptions do not prevent the event from being sent to other observers\n        registered with the publisher.\n        \"\"\"\n        L1 = []\n        L2 = []\n\n        def broken(event):\n            1 // 0\n\n        for observer in [L1.append, broken, L2.append]:\n            log.addObserver(observer)\n            self.addCleanup(log.removeObserver, observer)\n\n        for i in range(3):\n            # Reset the lists for simpler comparison.\n            L1[:] = []\n            L2[:] = []\n\n            # Send out the event which will break one of the observers.\n            log.msg(\"Howdy, y'all.\", log_trace=[])\n\n            # The broken observer should have caused this to be logged.\n            excs = self.flushLoggedErrors(ZeroDivisionError)\n            del self.catcher[:]\n            self.assertEqual(len(excs), 1)\n\n            # Both other observers should have seen the message.\n            self.assertEqual(len(L1), 2)\n            self.assertEqual(len(L2), 2)\n\n            # The first event is delivered to all observers; then, errors\n            # are delivered.\n            self.assertEqual(L1[0]['message'], (\"Howdy, y'all.\",))\n            self.assertEqual(L2[0]['message'], (\"Howdy, y'all.\",))\n\n\n    def test_showwarning(self):\n        \"\"\"\n        L{twisted.python.log.showwarning} emits the warning as a message\n        to the Twisted logging system.\n        \"\"\"\n        publisher = log.LogPublisher()\n        publisher.addObserver(self.observer)\n\n        publisher.showwarning(\n            FakeWarning(\"unique warning message\"), FakeWarning,\n            \"warning-filename.py\", 27)\n        event = self.catcher.pop()\n        self.assertEqual(\n            event['format'] % event,\n            'warning-filename.py:27: twisted.test.test_log.FakeWarning: '\n            'unique warning message')\n        self.assertEqual(self.catcher, [])\n\n        # Python 2.6 requires that any function used to override the\n        # warnings.showwarning API accept a \"line\" parameter or a\n        # deprecation warning is emitted.\n        publisher.showwarning(\n            FakeWarning(\"unique warning message\"), FakeWarning,\n            \"warning-filename.py\", 27, line=object())\n        event = self.catcher.pop()\n        self.assertEqual(\n            event['format'] % event,\n            'warning-filename.py:27: twisted.test.test_log.FakeWarning: '\n            'unique warning message')\n        self.assertEqual(self.catcher, [])\n\n\n    def test_warningToFile(self):\n        \"\"\"\n        L{twisted.python.log.showwarning} passes warnings with an explicit file\n        target on to the underlying Python warning system.\n        \"\"\"\n        message = \"another unique message\"\n        category = FakeWarning\n        filename = \"warning-filename.py\"\n        lineno = 31\n\n        output = StringIO()\n        log.showwarning(message, category, filename, lineno, file=output)\n\n        self.assertEqual(\n            output.getvalue(),\n            warnings.formatwarning(message, category, filename, lineno))\n\n        # In Python 2.6 and higher, warnings.showwarning accepts\n        # a \"line\" argument which gives the source line the warning\n        # message is to include.\n        line = \"hello world\"\n        output = StringIO()\n        log.showwarning(message, category, filename, lineno, file=output,\n                        line=line)\n\n        self.assertEqual(\n            output.getvalue(),\n            warnings.formatwarning(message, category, filename, lineno,\n                                   line))\n\n\n    def test_publisherReportsBrokenObserversPrivately(self):\n        \"\"\"\n        Log publisher does not use the global L{log.err} when reporting broken\n        observers.\n        \"\"\"\n        errors = []\n\n        def logError(eventDict):\n            if eventDict.get(\"isError\"):\n                errors.append(eventDict[\"failure\"].value)\n\n        def fail(eventDict):\n            raise RuntimeError(\"test_publisherLocalyReportsBrokenObservers\")\n\n        publisher = log.LogPublisher()\n        publisher.addObserver(logError)\n        publisher.addObserver(fail)\n\n        publisher.msg(\"Hello!\")\n        self.assertEqual(set(publisher.observers), set([logError, fail]))\n        self.assertEqual(len(errors), 1)\n        self.assertIsInstance(errors[0], RuntimeError)\n\n\n\nclass FakeFile(list):\n\n    def write(self, bytes):\n        self.append(bytes)\n\n\n    def flush(self):\n        pass\n\n\nIOBase.register(FakeFile)\n\n\n\nclass EvilStr:\n    def __str__(self):\n        1 // 0\n\n\n\nclass EvilRepr:\n    def __str__(self):\n        return \"Happy Evil Repr\"\n\n\n    def __repr__(self):\n        1 // 0\n\n\n\nclass EvilReprStr(EvilStr, EvilRepr):\n    pass\n\n\n\nclass LogPublisherTestCaseMixin:\n    def setUp(self):\n        \"\"\"\n        Add a log observer which records log events in C{self.out}.  Also,\n        make sure the default string encoding is ASCII so that\n        L{testSingleUnicode} can test the behavior of logging unencodable\n        unicode messages.\n        \"\"\"\n        self.out = FakeFile()\n        self.lp = log.LogPublisher()\n        self.flo = log.FileLogObserver(self.out)\n        self.lp.addObserver(self.flo.emit)\n\n        try:\n            str(u'\\N{VULGAR FRACTION ONE HALF}')\n        except UnicodeEncodeError:\n            # This is the behavior we want - don't change anything.\n            self._origEncoding = None\n        else:\n            if _PY3:\n                self._origEncoding = None\n                return\n            reload(sys)\n            self._origEncoding = sys.getdefaultencoding()\n            sys.setdefaultencoding('ascii')\n\n\n    def tearDown(self):\n        \"\"\"\n        Verify that everything written to the fake file C{self.out} was a\n        C{str}.  Also, restore the default string encoding to its previous\n        setting, if it was modified by L{setUp}.\n        \"\"\"\n        for chunk in self.out:\n            self.assertIsInstance(chunk, str,\n                            \"%r was not a string\" % (chunk,))\n\n        if self._origEncoding is not None:\n            sys.setdefaultencoding(self._origEncoding)\n            del sys.setdefaultencoding\n\n\n\nclass LogPublisherTests(LogPublisherTestCaseMixin,\n                        unittest.SynchronousTestCase):\n    def testSingleString(self):\n        self.lp.msg(\"Hello, world.\")\n        self.assertEqual(len(self.out), 1)\n\n\n    def testMultipleString(self):\n        # Test some stupid behavior that will be deprecated real soon.\n        # If you are reading this and trying to learn how the logging\n        # system works, *do not use this feature*.\n        self.lp.msg(\"Hello, \", \"world.\")\n        self.assertEqual(len(self.out), 1)\n\n\n    def test_singleUnicode(self):\n        \"\"\"\n        L{log.LogPublisher.msg} does not accept non-ASCII Unicode on Python 2,\n        logging an error instead.\n\n        On Python 3, where Unicode is default message type, the message is\n        logged normally.\n        \"\"\"\n        message = u\"Hello, \\N{VULGAR FRACTION ONE HALF} world.\"\n        self.lp.msg(message)\n        self.assertEqual(len(self.out), 1)\n        if _PY3:\n            self.assertIn(message, self.out[0])\n        else:\n            self.assertIn('with str error', self.out[0])\n            self.assertIn('UnicodeEncodeError', self.out[0])\n\n\n\nclass FileObserverTests(LogPublisherTestCaseMixin,\n                        unittest.SynchronousTestCase):\n    \"\"\"\n    Tests for L{log.FileObserver}.\n    \"\"\"\n    ERROR_INVALID_FORMAT = 'Invalid format string'\n    ERROR_UNFORMATTABLE_OBJECT = 'UNFORMATTABLE OBJECT'\n    ERROR_FORMAT = (\n        'Invalid format string or unformattable object in log message'\n    )\n    ERROR_PATHOLOGICAL = 'PATHOLOGICAL ERROR'\n\n    ERROR_NO_FORMAT = 'Unable to format event'\n    ERROR_UNFORMATTABLE_SYSTEM = '[UNFORMATTABLE]'\n    ERROR_MESSAGE_LOST = 'MESSAGE LOST: unformattable object logged'\n\n    def _getTimezoneOffsetTest(self, tzname, daylightOffset, standardOffset):\n        \"\"\"\n        Verify that L{getTimezoneOffset} produces the expected offset for a\n        certain timezone both when daylight saving time is in effect and when\n        it is not.\n\n        @param tzname: The name of a timezone to exercise.\n        @type tzname: L{bytes}\n\n        @param daylightOffset: The number of seconds west of UTC the timezone\n            should be when daylight saving time is in effect.\n        @type daylightOffset: L{int}\n\n        @param standardOffset: The number of seconds west of UTC the timezone\n            should be when daylight saving time is not in effect.\n        @type standardOffset: L{int}\n        \"\"\"\n        if getattr(time, 'tzset', None) is None:\n            raise unittest.SkipTest(\n                \"Platform cannot change timezone, cannot verify correct \"\n                \"offsets in well-known timezones.\")\n\n        originalTimezone = os.environ.get('TZ', None)\n        try:\n            os.environ['TZ'] = tzname\n            time.tzset()\n\n            # The behavior of mktime depends on the current timezone setting.\n            # So only do this after changing the timezone.\n\n            # Compute a POSIX timestamp for a certain date and time that is\n            # known to occur at a time when daylight saving time is in effect.\n            localDaylightTuple = (2006, 6, 30, 0, 0, 0, 4, 181, 1)\n            daylight = time.mktime(localDaylightTuple)\n\n            # Compute a POSIX timestamp for a certain date and time that is\n            # known to occur at a time when daylight saving time is not in\n            # effect.\n            localStandardTuple = (2007, 1, 31, 0, 0, 0, 2, 31, 0)\n            standard = time.mktime(localStandardTuple)\n\n            self.assertEqual(\n                (self.flo.getTimezoneOffset(daylight),\n                 self.flo.getTimezoneOffset(standard)),\n                (daylightOffset, standardOffset))\n        finally:\n            if originalTimezone is None:\n                del os.environ['TZ']\n            else:\n                os.environ['TZ'] = originalTimezone\n            time.tzset()\n\n\n    def test_getTimezoneOffsetWestOfUTC(self):\n        \"\"\"\n        Attempt to verify that L{FileLogObserver.getTimezoneOffset} returns\n        correct values for the current C{TZ} environment setting for at least\n        some cases.  This test method exercises a timezone that is west of UTC\n        (and should produce positive results).\n        \"\"\"\n        self._getTimezoneOffsetTest(\"America/New_York\", 14400, 18000)\n\n\n    def test_getTimezoneOffsetEastOfUTC(self):\n        \"\"\"\n        Attempt to verify that L{FileLogObserver.getTimezoneOffset} returns\n        correct values for the current C{TZ} environment setting for at least\n        some cases.  This test method exercises a timezone that is east of UTC\n        (and should produce negative results).\n        \"\"\"\n        self._getTimezoneOffsetTest(\"Europe/Berlin\", -7200, -3600)\n\n\n    def test_getTimezoneOffsetWithoutDaylightSavingTime(self):\n        \"\"\"\n        Attempt to verify that L{FileLogObserver.getTimezoneOffset} returns\n        correct values for the current C{TZ} environment setting for at least\n        some cases.  This test method exercises a timezone that does not use\n        daylight saving time at all (so both summer and winter time test values\n        should have the same offset).\n        \"\"\"\n        # Test a timezone that doesn't have DST.  mktime() implementations\n        # available for testing seem happy to produce results for this even\n        # though it's not entirely valid.\n        self._getTimezoneOffsetTest(\"Africa/Johannesburg\", -7200, -7200)\n\n\n    def test_timeFormatting(self):\n        \"\"\"\n        Test the method of L{FileLogObserver} which turns a timestamp into a\n        human-readable string.\n        \"\"\"\n        when = calendar.timegm((2001, 2, 3, 4, 5, 6, 7, 8, 0))\n\n        # Pretend to be in US/Eastern for a moment\n        self.flo.getTimezoneOffset = lambda when: 18000\n        self.assertEqual(self.flo.formatTime(when), '2001-02-02 23:05:06-0500')\n\n        # Okay now we're in Eastern Europe somewhere\n        self.flo.getTimezoneOffset = lambda when: -3600\n        self.assertEqual(self.flo.formatTime(when), '2001-02-03 05:05:06+0100')\n\n        # And off in the Pacific or someplace like that\n        self.flo.getTimezoneOffset = lambda when: -39600\n        self.assertEqual(self.flo.formatTime(when), '2001-02-03 15:05:06+1100')\n\n        # One of those weird places with a half-hour offset timezone\n        self.flo.getTimezoneOffset = lambda when: 5400\n        self.assertEqual(self.flo.formatTime(when), '2001-02-03 02:35:06-0130')\n\n        # Half-hour offset in the other direction\n        self.flo.getTimezoneOffset = lambda when: -5400\n        self.assertEqual(self.flo.formatTime(when), '2001-02-03 05:35:06+0130')\n\n        # Test an offset which is between 0 and 60 minutes to make sure the\n        # sign comes out properly in that case.\n        self.flo.getTimezoneOffset = lambda when: 1800\n        self.assertEqual(self.flo.formatTime(when), '2001-02-03 03:35:06-0030')\n\n        # Test an offset between 0 and 60 minutes in the other direction.\n        self.flo.getTimezoneOffset = lambda when: -1800\n        self.assertEqual(self.flo.formatTime(when), '2001-02-03 04:35:06+0030')\n\n        # If a strftime-format string is present on the logger, it should\n        # use that instead.  Note we don't assert anything about day, hour\n        # or minute because we cannot easily control what time.strftime()\n        # thinks the local timezone is.\n        self.flo.timeFormat = '%Y %m'\n        self.assertEqual(self.flo.formatTime(when), '2001 02')\n\n\n    def test_microsecondTimestampFormatting(self):\n        \"\"\"\n        L{FileLogObserver.formatTime} supports a value of C{timeFormat} which\n        includes C{\"%f\"}, a L{datetime}-only format specifier for microseconds.\n        \"\"\"\n        self.flo.timeFormat = '%f'\n        self.assertEqual(\"600000\", self.flo.formatTime(112345.6))\n\n\n    def test_loggingAnObjectWithBroken__str__(self):\n        # HELLO, MCFLY\n        self.lp.msg(EvilStr())\n        self.assertEqual(len(self.out), 1)\n        # Logging system shouldn't need to crap itself for this trivial case\n        self.assertNotIn(self.ERROR_UNFORMATTABLE_OBJECT, self.out[0])\n\n\n    def test_formattingAnObjectWithBroken__str__(self):\n        self.lp.msg(format='%(blat)s', blat=EvilStr())\n        self.assertEqual(len(self.out), 1)\n        self.assertIn(self.ERROR_INVALID_FORMAT, self.out[0])\n\n\n    def test_brokenSystem__str__(self):\n        self.lp.msg('huh', system=EvilStr())\n        self.assertEqual(len(self.out), 1)\n        self.assertIn(self.ERROR_FORMAT, self.out[0])\n\n\n    def test_formattingAnObjectWithBroken__repr__Indirect(self):\n        self.lp.msg(format='%(blat)s', blat=[EvilRepr()])\n        self.assertEqual(len(self.out), 1)\n        self.assertIn(self.ERROR_UNFORMATTABLE_OBJECT, self.out[0])\n\n\n    def test_systemWithBroker__repr__Indirect(self):\n        self.lp.msg('huh', system=[EvilRepr()])\n        self.assertEqual(len(self.out), 1)\n        self.assertIn(self.ERROR_UNFORMATTABLE_OBJECT, self.out[0])\n\n\n    def test_simpleBrokenFormat(self):\n        self.lp.msg(format='hooj %s %s', blat=1)\n        self.assertEqual(len(self.out), 1)\n        self.assertIn(self.ERROR_INVALID_FORMAT, self.out[0])\n\n\n    def test_ridiculousFormat(self):\n        self.lp.msg(format=42, blat=1)\n        self.assertEqual(len(self.out), 1)\n        self.assertIn(self.ERROR_INVALID_FORMAT, self.out[0])\n\n\n    def test_evilFormat__repr__And__str__(self):\n        self.lp.msg(format=EvilReprStr(), blat=1)\n        self.assertEqual(len(self.out), 1)\n        self.assertIn(self.ERROR_PATHOLOGICAL, self.out[0])\n\n\n    def test_strangeEventDict(self):\n        \"\"\"\n        This kind of eventDict used to fail silently, so test it does.\n        \"\"\"\n        self.lp.msg(message='', isError=False)\n        self.assertEqual(len(self.out), 0)\n\n\n    def _startLoggingCleanup(self):\n        \"\"\"\n        Cleanup after a startLogging() call that mutates the hell out of some\n        global state.\n        \"\"\"\n        self.addCleanup(log.theLogPublisher._stopLogging)\n        self.addCleanup(setattr, sys, 'stdout', sys.stdout)\n        self.addCleanup(setattr, sys, 'stderr', sys.stderr)\n\n\n    def test_printToStderrSetsIsError(self):\n        \"\"\"\n        startLogging()'s overridden sys.stderr should consider everything\n        written to it an error.\n        \"\"\"\n        self._startLoggingCleanup()\n        fakeFile = StringIO()\n        log.startLogging(fakeFile)\n\n        def observe(event):\n            observed.append(event)\n        observed = []\n        log.addObserver(observe)\n\n        print(\"Hello, world.\", file=sys.stderr)\n        self.assertEqual(observed[0][\"isError\"], 1)\n\n\n    def test_startLogging(self):\n        \"\"\"\n        startLogging() installs FileLogObserver and overrides sys.stdout and\n        sys.stderr.\n        \"\"\"\n        origStdout, origStderr = sys.stdout, sys.stderr\n        self._startLoggingCleanup()\n        # When done with test, reset stdout and stderr to current values:\n        fakeFile = StringIO()\n        observer = log.startLogging(fakeFile)\n        self.addCleanup(observer.stop)\n        log.msg(\"Hello!\")\n        self.assertIn(\"Hello!\", fakeFile.getvalue())\n        self.assertIsInstance(sys.stdout, LoggingFile)\n        self.assertEqual(sys.stdout.level, NewLogLevel.info)\n        encoding = getattr(origStdout, \"encoding\", None)\n        if not encoding:\n            encoding = sys.getdefaultencoding()\n        self.assertEqual(sys.stdout.encoding.upper(), encoding.upper())\n        self.assertIsInstance(sys.stderr, LoggingFile)\n        self.assertEqual(sys.stderr.level, NewLogLevel.error)\n        encoding = getattr(origStderr, \"encoding\", None)\n        if not encoding:\n            encoding = sys.getdefaultencoding()\n        self.assertEqual(sys.stderr.encoding.upper(), encoding.upper())\n\n\n    def test_startLoggingTwice(self):\n        \"\"\"\n        There are some obscure error conditions that can occur when logging is\n        started twice. See http://twistedmatrix.com/trac/ticket/3289 for more\n        information.\n        \"\"\"\n        self._startLoggingCleanup()\n        # The bug is particular to the way that the t.p.log 'global' function\n        # handle stdout. If we use our own stream, the error doesn't occur. If\n        # we use our own LogPublisher, the error doesn't occur.\n        sys.stdout = StringIO()\n\n        def showError(eventDict):\n            if eventDict['isError']:\n                sys.__stdout__.write(eventDict['failure'].getTraceback())\n\n        log.addObserver(showError)\n        self.addCleanup(log.removeObserver, showError)\n        observer = log.startLogging(sys.stdout)\n        self.addCleanup(observer.stop)\n        # At this point, we expect that sys.stdout is a StdioOnnaStick object.\n        self.assertIsInstance(sys.stdout, LoggingFile)\n        fakeStdout = sys.stdout\n        observer = log.startLogging(sys.stdout)\n        self.assertIs(sys.stdout, fakeStdout)\n\n\n    def test_startLoggingOverridesWarning(self):\n        \"\"\"\n        startLogging() overrides global C{warnings.showwarning} such that\n        warnings go to Twisted log observers.\n        \"\"\"\n        self._startLoggingCleanup()\n        newPublisher = NewLogPublisher()\n\n        class SysModule(object):\n            stdout = object()\n            stderr = object()\n\n        tempLogPublisher = LogPublisher(\n            newPublisher, newPublisher,\n            logBeginner=LogBeginner(newPublisher, StringIO(), SysModule,\n                                    warnings)\n        )\n        # Trial reports warnings in two ways.  First, it intercepts the global\n        # 'showwarning' function *itself*, after starting logging (by way of\n        # the '_collectWarnings' function which collects all warnings as a\n        # around the test's 'run' method).  Second, it has a log observer which\n        # immediately reports warnings when they're propagated into the log\n        # system (which, in normal operation, happens only at the end of the\n        # test case).  In order to avoid printing a spurious warning in this\n        # test, we first replace the global log publisher's 'showwarning' in\n        # the module with our own.\n        self.patch(log, \"theLogPublisher\", tempLogPublisher)\n        # And, one last thing, pretend we're starting from a fresh import, or\n        # warnings.warn won't be patched at all.\n        log._oldshowwarning = None\n        # Global mutable state is bad, kids.  Stay in school.\n        fakeFile = StringIO()\n        # We didn't previously save log messages, so let's make sure we don't\n        # save them any more.\n        evt = {\"pre-start\": \"event\"}\n        received = []\n\n        def preStartObserver(x):\n            if 'pre-start' in x.keys():\n                received.append(x)\n\n        newPublisher(evt)\n        newPublisher.addObserver(preStartObserver)\n        log.startLogging(fakeFile, setStdout=False)\n        self.addCleanup(tempLogPublisher._stopLogging)\n        self.assertEqual(received, [])\n        warnings.warn(\"hello!\")\n        output = fakeFile.getvalue()\n        self.assertIn(\"UserWarning: hello!\", output)\n\n\n    def test_emitPrefix(self):\n        \"\"\"\n        FileLogObserver.emit() will add a timestamp and system prefix to its\n        file output.\n        \"\"\"\n        output = StringIO()\n        flo = log.FileLogObserver(output)\n        events = []\n\n        def observer(event):\n            # Capture the event for reference and pass it along to flo\n            events.append(event)\n            flo.emit(event)\n\n        publisher = log.LogPublisher()\n        publisher.addObserver(observer)\n\n        publisher.msg(\"Hello!\")\n        self.assertEqual(len(events), 1)\n        event = events[0]\n\n        result = output.getvalue()\n        prefix = \"{time} [{system}] \".format(\n            time=flo.formatTime(event[\"time\"]), system=event[\"system\"],\n        )\n\n        self.assertTrue(\n            result.startswith(prefix),\n            \"{0!r} does not start with {1!r}\".format(result, prefix)\n        )\n\n\n    def test_emitNewline(self):\n        \"\"\"\n        FileLogObserver.emit() will append a newline to its file output.\n        \"\"\"\n        output = StringIO()\n        flo = log.FileLogObserver(output)\n\n        publisher = log.LogPublisher()\n        publisher.addObserver(flo.emit)\n\n        publisher.msg(\"Hello!\")\n\n        result = output.getvalue()\n        suffix = \"Hello!\\n\"\n\n        self.assertTrue(\n            result.endswith(suffix),\n            \"{0!r} does not end with {1!r}\".format(result, suffix)\n        )\n\n\n\nclass PythonLoggingObserverTests(unittest.SynchronousTestCase):\n    \"\"\"\n    Test the bridge with python logging module.\n    \"\"\"\n    def setUp(self):\n        rootLogger = logging.getLogger(\"\")\n        originalLevel = rootLogger.getEffectiveLevel()\n        rootLogger.setLevel(logging.DEBUG)\n\n        @self.addCleanup\n        def restoreLevel():\n            rootLogger.setLevel(originalLevel)\n        self.hdlr, self.out = handlerAndBytesIO()\n        rootLogger.addHandler(self.hdlr)\n\n        @self.addCleanup\n        def removeLogger():\n            rootLogger.removeHandler(self.hdlr)\n            self.hdlr.close()\n\n        self.lp = log.LogPublisher()\n        self.obs = log.PythonLoggingObserver()\n        self.lp.addObserver(self.obs.emit)\n\n\n    def test_singleString(self):\n        \"\"\"\n        Test simple output, and default log level.\n        \"\"\"\n        self.lp.msg(\"Hello, world.\")\n        self.assertIn(b\"Hello, world.\", self.out.getvalue())\n        self.assertIn(b\"INFO\", self.out.getvalue())\n\n\n    def test_errorString(self):\n        \"\"\"\n        Test error output.\n        \"\"\"\n        f = failure.Failure(ValueError(\"That is bad.\"))\n        self.lp.msg(failure=f, isError=True)\n        prefix = b\"CRITICAL:\"\n        output = self.out.getvalue()\n        self.assertTrue(\n            output.startswith(prefix),\n            \"Does not start with {0!r}: {1!r}\".format(prefix, output)\n        )\n\n\n    def test_formatString(self):\n        \"\"\"\n        Test logging with a format.\n        \"\"\"\n        self.lp.msg(format=\"%(bar)s oo %(foo)s\", bar=\"Hello\", foo=\"world\")\n        self.assertIn(b\"Hello oo world\", self.out.getvalue())\n\n\n    def test_customLevel(self):\n        \"\"\"\n        Test the logLevel keyword for customizing level used.\n        \"\"\"\n        self.lp.msg(\"Spam egg.\", logLevel=logging.ERROR)\n        self.assertIn(b\"Spam egg.\", self.out.getvalue())\n        self.assertIn(b\"ERROR\", self.out.getvalue())\n        self.out.seek(0, 0)\n        self.out.truncate()\n        self.lp.msg(\"Foo bar.\", logLevel=logging.WARNING)\n        self.assertIn(b\"Foo bar.\", self.out.getvalue())\n        self.assertIn(b\"WARNING\", self.out.getvalue())\n\n\n    def test_strangeEventDict(self):\n        \"\"\"\n        Verify that an event dictionary which is not an error and has an empty\n        message isn't recorded.\n        \"\"\"\n        self.lp.msg(message='', isError=False)\n        self.assertEqual(self.out.getvalue(), b'')\n\n\n\nclass PythonLoggingIntegrationTests(unittest.SynchronousTestCase):\n    \"\"\"\n    Test integration of python logging bridge.\n    \"\"\"\n\n    def test_startStopObserver(self):\n        \"\"\"\n        Test that start and stop methods of the observer actually register\n        and unregister to the log system.\n        \"\"\"\n        oldAddObserver = log.addObserver\n        oldRemoveObserver = log.removeObserver\n        l = []\n        try:\n            log.addObserver = l.append\n            log.removeObserver = l.remove\n            obs = log.PythonLoggingObserver()\n            obs.start()\n            self.assertEqual(l[0], obs.emit)\n            obs.stop()\n            self.assertEqual(len(l), 0)\n        finally:\n            log.addObserver = oldAddObserver\n            log.removeObserver = oldRemoveObserver\n\n\n    def test_inheritance(self):\n        \"\"\"\n        Test that we can inherit L{log.PythonLoggingObserver} and use super:\n        that's basically a validation that L{log.PythonLoggingObserver} is\n        new-style class.\n        \"\"\"\n        class MyObserver(log.PythonLoggingObserver):\n            def emit(self, eventDict):\n                super(MyObserver, self).emit(eventDict)\n        obs = MyObserver()\n        l = []\n        oldEmit = log.PythonLoggingObserver.emit\n        try:\n            log.PythonLoggingObserver.emit = l.append\n            obs.emit('foo')\n            self.assertEqual(len(l), 1)\n        finally:\n            log.PythonLoggingObserver.emit = oldEmit\n\n\n\nclass DefaultObserverTests(unittest.SynchronousTestCase):\n    \"\"\"\n    Test the default observer.\n    \"\"\"\n\n    def test_failureLogger(self):\n        \"\"\"\n        The reason argument passed to log.err() appears in the report\n        generated by DefaultObserver.\n        \"\"\"\n        self.catcher = []\n        self.observer = self.catcher.append\n        log.addObserver(self.observer)\n        self.addCleanup(log.removeObserver, self.observer)\n\n        obs = log.DefaultObserver()\n        obs.stderr = StringIO()\n        obs.start()\n        self.addCleanup(obs.stop)\n\n        reason = \"The reason.\"\n        log.err(Exception(), reason)\n        errors = self.flushLoggedErrors()\n\n        self.assertIn(reason, obs.stderr.getvalue())\n        self.assertEqual(len(errors), 1)\n\n\n    def test_emitEventWithBrokenRepr(self):\n        \"\"\"\n        DefaultObserver.emit() does not raise when it observes an error event\n        with a message that causes L{repr} to raise.\n        \"\"\"\n        class Ouch(object):\n            def __repr__(self):\n                return str(1 / 0)\n\n        message = (\"foo\", Ouch())\n        event = dict(message=message, isError=1)\n\n        observer = log.DefaultObserver()\n        with StringIO() as output:\n            observer.stderr = output\n            observer.emit(event)\n            self.assertTrue(output.getvalue().startswith(\"foo <Ouch instance\"))\n\n\n\nclass StdioOnnaStickTests(unittest.SynchronousTestCase):\n    \"\"\"\n    StdioOnnaStick should act like the normal sys.stdout object.\n    \"\"\"\n\n    def setUp(self):\n        self.resultLogs = []\n        log.addObserver(self.resultLogs.append)\n\n\n    def tearDown(self):\n        log.removeObserver(self.resultLogs.append)\n\n\n    def getLogMessages(self):\n        return [\"\".join(d['message']) for d in self.resultLogs]\n\n\n    def test_write(self):\n        \"\"\"\n        Writing to a StdioOnnaStick instance results in Twisted log messages.\n\n        Log messages are generated every time a '\\\\n' is encountered.\n        \"\"\"\n        stdio = log.StdioOnnaStick()\n        stdio.write(\"Hello there\\nThis is a test\")\n        self.assertEqual(self.getLogMessages(), [\"Hello there\"])\n        stdio.write(\"!\\n\")\n        self.assertEqual(self.getLogMessages(),\n                         [\"Hello there\", \"This is a test!\"])\n\n\n    def test_metadata(self):\n        \"\"\"\n        The log messages written by StdioOnnaStick have printed=1 keyword, and\n        by default are not errors.\n        \"\"\"\n        stdio = log.StdioOnnaStick()\n        stdio.write(\"hello\\n\")\n        self.assertFalse(self.resultLogs[0]['isError'])\n        self.assertTrue(self.resultLogs[0]['printed'])\n\n\n    def test_writeLines(self):\n        \"\"\"\n        Writing lines to a StdioOnnaStick results in Twisted log messages.\n        \"\"\"\n        stdio = log.StdioOnnaStick()\n        stdio.writelines([\"log 1\", \"log 2\"])\n        self.assertEqual(self.getLogMessages(), [\"log 1\", \"log 2\"])\n\n\n    def test_print(self):\n        \"\"\"\n        When StdioOnnaStick is set as sys.stdout, prints become log messages.\n        \"\"\"\n        oldStdout = sys.stdout\n        sys.stdout = log.StdioOnnaStick()\n        self.addCleanup(setattr, sys, \"stdout\", oldStdout)\n        print(\"This\", end=\" \")\n        print(\"is a test\")\n        self.assertEqual(self.getLogMessages(), [\"This is a test\"])\n\n\n    def test_error(self):\n        \"\"\"\n        StdioOnnaStick created with isError=True log messages as errors.\n        \"\"\"\n        stdio = log.StdioOnnaStick(isError=True)\n        stdio.write(\"log 1\\n\")\n        self.assertTrue(self.resultLogs[0]['isError'])\n\n\n    def test_unicode(self):\n        \"\"\"\n        StdioOnnaStick converts unicode prints to byte strings on Python 2, in\n        order to be compatible with the normal stdout/stderr objects.\n\n        On Python 3, the prints are left unmodified.\n        \"\"\"\n        unicodeString = u\"Hello, \\N{VULGAR FRACTION ONE HALF} world.\"\n        stdio = log.StdioOnnaStick(encoding=\"utf-8\")\n        self.assertEqual(stdio.encoding, \"utf-8\")\n        stdio.write(unicodeString + u\"\\n\")\n        stdio.writelines([u\"Also, \" + unicodeString])\n        oldStdout = sys.stdout\n        sys.stdout = stdio\n        self.addCleanup(setattr, sys, \"stdout\", oldStdout)\n        # This should go to the log, utf-8 encoded too:\n        print(unicodeString)\n        if _PY3:\n            self.assertEqual(self.getLogMessages(),\n                             [unicodeString,\n                              u\"Also, \" + unicodeString,\n                              unicodeString])\n        else:\n            self.assertEqual(self.getLogMessages(),\n                             [unicodeString.encode(\"utf-8\"),\n                              (u\"Also, \" + unicodeString).encode(\"utf-8\"),\n                              unicodeString.encode(\"utf-8\")])\n",
+			"file": "venv/lib/python3.7/site-packages/twisted/test/test_log.py",
+			"file_size": 36330,
+			"file_write_time": 132213485547644810,
+			"settings":
+			{
+				"buffer_size": 36330,
 				"line_ending": "Unix"
 			}
 		},
@@ -920,7 +1057,16 @@
 			"file": "copper/engine.py",
 			"settings":
 			{
-				"buffer_size": 7913,
+				"buffer_size": 8351,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/cop/copnet_network.py",
+			"settings":
+			{
+				"buffer_size": 553,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -938,7 +1084,7 @@
 			"file": "copper/hou/__init__.py",
 			"settings":
 			{
-				"buffer_size": 1007,
+				"buffer_size": 2098,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -947,16 +1093,27 @@
 			"file": "copper/ui/main_window.py",
 			"settings":
 			{
-				"buffer_size": 5705,
+				"buffer_size": 5707,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
+			"contents": "import os\nimport logging \n\nlogger = logging.getLogger(__name__)\n\nos.environ[\"PYOPENCL_COMPILER_OUTPUT\"] = \"1\"\nos.environ[\"PYOPENCL_NO_CACHE\"] = \"0\"\n\nif not os.environ.get(\"COPPER_HOME\"):\n    cwd = os.getcwd()\n    logger.info(\"Using current directory %s as $COPPER_HOME\" % cwd)\n    os.environ[\"COPPER_HOME\"] = cwd\n\nfrom copper import settings\n\nfrom .rop import *\nfrom .obj import *\nfrom .cop import *\nfrom .sop import *\n\nfrom copper.op.node_type_category import NodeTypeCategoryRegistry\nfrom copper.engine import Engine\nfrom .copper_object import CopperObject\n\ndef nodeTypeCategories():\n    logger.debug(NodeTypeCategoryRegistry._registry_aliases)\n",
 			"file": "copper/__init__.py",
+			"file_size": 646,
+			"file_write_time": 132217676012831742,
 			"settings":
 			{
 				"buffer_size": 647,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/cop/cop_node.py",
+			"settings":
+			{
+				"buffer_size": 6425,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -965,7 +1122,7 @@
 			"file": "copper/copper_object.py",
 			"settings":
 			{
-				"buffer_size": 127,
+				"buffer_size": 234,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -1014,6 +1171,16 @@
 				"encoding": "UTF-8",
 				"line_ending": "Unix",
 				"name": "# Taken from here: https://stackoverflow.com/quest"
+			}
+		},
+		{
+			"file": "copper/config.py",
+			"settings":
+			{
+				"buffer_size": 221,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "from singleton impot"
 			}
 		},
 		{
@@ -1108,28 +1275,82 @@
 			}
 		},
 		{
-			"file": "copper/cop2/cop2_file.py",
+			"file": "copper/cop/cop_blur.py",
 			"settings":
 			{
-				"buffer_size": 9987,
+				"buffer_size": 2826,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "copper/op/op_data_socket.py",
+			"file": "copper/cop/cop_comps.py",
 			"settings":
 			{
-				"buffer_size": 339,
+				"buffer_size": 2456,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "copper/cop2/cop2_node.py",
+			"file": "copper/cop/cop_file.py",
 			"settings":
 			{
-				"buffer_size": 6176,
+				"buffer_size": 10010,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/image_data/__init__.py",
+			"settings":
+			{
+				"buffer_size": 45,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/parm_template.py",
+			"settings":
+			{
+				"buffer_size": 3262,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/image_data/image_data.py",
+			"settings":
+			{
+				"buffer_size": 1773,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/cop/__init__.py",
+			"settings":
+			{
+				"buffer_size": 148,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/cop/cop_halftone.py",
+			"settings":
+			{
+				"buffer_size": 2143,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/cop/cop_sources.py",
+			"settings":
+			{
+				"buffer_size": 7798,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -1138,7 +1359,7 @@
 			"file": "copper/sop/sop_node.py",
 			"settings":
 			{
-				"buffer_size": 688,
+				"buffer_size": 701,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -1147,7 +1368,7 @@
 			"file": "copper/sop/sop_file.py",
 			"settings":
 			{
-				"buffer_size": 1650,
+				"buffer_size": 1697,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -1156,7 +1377,7 @@
 			"file": "copper/sop/sop_box.py",
 			"settings":
 			{
-				"buffer_size": 4533,
+				"buffer_size": 4545,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -1201,15 +1422,28 @@
 		"/home/max/dev/Copperfield_FX",
 		"/home/max/dev/Copperfield_FX/bin",
 		"/home/max/dev/Copperfield_FX/copper",
+		"/home/max/dev/Copperfield_FX/copper/cop",
+		"/home/max/dev/Copperfield_FX/copper/geometry",
+		"/home/max/dev/Copperfield_FX/copper/geometry/iotranslators",
+		"/home/max/dev/Copperfield_FX/copper/geometry/iotranslators/obj",
 		"/home/max/dev/Copperfield_FX/copper/hou",
+		"/home/max/dev/Copperfield_FX/copper/image_data",
+		"/home/max/dev/Copperfield_FX/copper/obj",
+		"/home/max/dev/Copperfield_FX/copper/op",
+		"/home/max/dev/Copperfield_FX/copper/sop",
 		"/home/max/dev/Copperfield_FX/copper/ui",
 		"/home/max/dev/Copperfield_FX/copper/ui/panels",
 		"/home/max/dev/Copperfield_FX/copper/ui/panels/network_view_panel",
-		"/home/max/dev/Copperfield_FX/copper/ui/panels/parameters_panel",
-		"/home/max/dev/Copperfield_FX/copper/ui/panels/scene_view_panel"
+		"/home/max/dev/Copperfield_FX/copper/ui/panels/scene_view_panel",
+		"/home/max/dev/Copperfield_FX/copper/utils",
+		"/home/max/dev/Copperfield_FX/gui",
+		"/home/max/dev/Copperfield_FX/gui/config"
 	],
 	"file_history":
 	[
+		"/home/max/dev/Copperfield_FX/copper/op/op_data_socket.py",
+		"/home/max/dev/Copperfield_FX/copper/cop2/cop2_file.py",
+		"/home/max/dev/Copperfield_FX/copper/cop2/cop_node.py",
 		"/home/max/dev/Copperfield_FX/gui/widgets/collapsable_widget.py",
 		"/home/max/dev/Copperfield_FX/gui/panels/scene_view_panel/ogl_objcache.py",
 		"/home/max/dev/Copperfield_FX/gui/panels/scene_view_panel/scene_view_panel.py",
@@ -1334,10 +1568,7 @@
 		"/Users/max/Documents/stor1.htzr.s4account",
 		"/Users/max/htzr.ovpn",
 		"/Users/max/htzr_hosta01.ovpn",
-		"/Users/max/htzr_stor1.ovpn",
-		"/Users/max/dev/Copperfield_FX/test/mantra/test.ifd",
-		"/Users/max/dev/Copperfield_FX/gui/panels/network_view_panel.py",
-		"/Users/max/dev/Copperfield_FX/copper/shout/parsers/ifd/parser_bgeo.py"
+		"/Users/max/htzr_stor1.ovpn"
 	],
 	"find":
 	{
@@ -1356,6 +1587,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"hoverLeaveEvent",
+			"Geometry",
+			"\t\n",
+			"COP2_PressRaster",
+			"COP2_Node",
+			"oldy",
+			"oldx",
 			"None",
 			"OP_Engine",
 			"opCookingStarted",
@@ -1375,6 +1613,10 @@
 		"regex": false,
 		"replace_history":
 		[
+			"COP2_HalfTone",
+			"CopNode",
+			"curr_mouse_y",
+			"curr_mouse_x",
 			"Engine",
 			"OP_Root",
 			"self.Token",
@@ -1390,7 +1632,7 @@
 	"groups":
 	[
 		{
-			"selected": 47,
+			"selected": 61,
 			"sheets":
 			[
 				{
@@ -1406,8 +1648,8 @@
 						"selection":
 						[
 							[
-								303,
-								303
+								1201,
+								1201
 							]
 						],
 						"settings":
@@ -1417,10 +1659,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 714.0,
+						"translation.y": 510.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 30,
+					"stack_index": 40,
 					"type": "text"
 				},
 				{
@@ -1450,7 +1692,7 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 42,
+					"stack_index": 76,
 					"type": "text"
 				},
 				{
@@ -1480,7 +1722,7 @@
 						"translation.y": 14857.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 43,
+					"stack_index": 77,
 					"type": "text"
 				},
 				{
@@ -1510,7 +1752,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 36,
+					"stack_index": 74,
 					"type": "text"
 				},
 				{
@@ -1519,15 +1761,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3277,
+						"buffer_size": 3359,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2953,
-								2953
+								2177,
+								2177
 							]
 						],
 						"settings":
@@ -1536,14 +1778,98 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 816.0,
+						"translation.y": 357.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 49,
+					"stack_index": 30,
 					"type": "text"
 				},
 				{
 					"buffer": 5,
+					"file": "copper/obj/obj_geometry.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 424,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								424,
+								424
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 33,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "copper/obj/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 107,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								107,
+								107
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 51,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "copper/obj/obj_instance.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 434,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								166,
+								166
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 32,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
 					"file": "copper/op/op_cooking_queue.py",
 					"semi_transient": false,
 					"settings":
@@ -1565,14 +1891,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 102.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 31,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 9,
 					"file": "copper/vmath/matrix4.py",
 					"semi_transient": false,
 					"settings":
@@ -1584,8 +1910,8 @@
 						"selection":
 						[
 							[
-								3592,
-								3592
+								154,
+								154
 							]
 						],
 						"settings":
@@ -1595,14 +1921,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1530.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 53,
+					"stack_index": 59,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 10,
 					"file": "gui/main_window.py",
 					"semi_transient": false,
 					"settings":
@@ -1628,11 +1954,11 @@
 						"translation.y": 153.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 51,
+					"stack_index": 58,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 11,
 					"file": ".gitignore",
 					"semi_transient": false,
 					"settings":
@@ -1656,16 +1982,16 @@
 						"translation.y": 357.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 55,
+					"stack_index": 82,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 12,
 					"file": "requirements.txt",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 777,
+						"buffer_size": 783,
 						"regions":
 						{
 						},
@@ -1684,11 +2010,11 @@
 						"translation.y": 102.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 54,
+					"stack_index": 81,
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 13,
 					"file": "copper/settings.py",
 					"semi_transient": false,
 					"settings":
@@ -1712,11 +2038,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 60,
+					"stack_index": 85,
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 14,
 					"file": "copper/cl/effects_blur.cl",
 					"semi_transient": false,
 					"settings":
@@ -1740,24 +2066,24 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 59,
+					"stack_index": 84,
 					"type": "text"
 				},
 				{
-					"buffer": 12,
-					"file": "copper/cl/effects_press_raster.cl",
+					"buffer": 15,
+					"file": "copper/cl/effects_halftone.cl",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3720,
+						"buffer_size": 4475,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								627,
-								627
+								1092,
+								1092
 							]
 						],
 						"settings":
@@ -1766,14 +2092,43 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 357.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 58,
+					"stack_index": 43,
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 16,
+					"file": "copper/sop/sop_font.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1857,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								674,
+								674
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 51.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 24,
+					"type": "text"
+				},
+				{
+					"buffer": 17,
 					"file": "gui/panels/parameters_panel/parameters_widgets.py",
 					"semi_transient": false,
 					"settings":
@@ -1798,24 +2153,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 41,
+					"stack_index": 75,
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 18,
 					"file": "copper/rop/rop_composite.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1192,
+						"buffer_size": 1210,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1130,
-								1130
+								1210,
+								1210
 							]
 						],
 						"settings":
@@ -1831,20 +2186,20 @@
 					"type": "text"
 				},
 				{
-					"buffer": 15,
+					"buffer": 19,
 					"file": "copper/parameter.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6247,
+						"buffer_size": 6300,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5984,
-								5984
+								2000,
+								2000
 							]
 						],
 						"settings":
@@ -1853,14 +2208,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 408.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
+					"stack_index": 41,
 					"type": "text"
 				},
 				{
-					"buffer": 16,
+					"buffer": 20,
 					"file": "gui/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -1884,11 +2239,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 35,
+					"stack_index": 73,
 					"type": "text"
 				},
 				{
-					"buffer": 17,
+					"buffer": 21,
 					"file": "copper/op/op_parameters.py",
 					"semi_transient": false,
 					"settings":
@@ -1913,24 +2268,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 19,
+					"stack_index": 35,
 					"type": "text"
 				},
 				{
-					"buffer": 18,
+					"buffer": 22,
 					"file": "copper/op/op_node.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6975,
+						"buffer_size": 7827,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								6938,
-								6938
+								5578,
+								5578
 							]
 						],
 						"settings":
@@ -1939,14 +2294,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 3723.0,
+						"translation.y": 3060.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 16,
+					"stack_index": 12,
 					"type": "text"
 				},
 				{
-					"buffer": 19,
+					"buffer": 23,
 					"file": "gui/config/copper.stylesheet.qss",
 					"semi_transient": false,
 					"settings":
@@ -1958,8 +2313,8 @@
 						"selection":
 						[
 							[
-								7410,
-								7410
+								3751,
+								3751
 							]
 						],
 						"settings":
@@ -1967,14 +2322,14 @@
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 6324.0,
+						"translation.y": 3264.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 44,
+					"stack_index": 65,
 					"type": "text"
 				},
 				{
-					"buffer": 20,
+					"buffer": 24,
 					"file": "copper/rop/rop_node.py",
 					"semi_transient": false,
 					"settings":
@@ -1999,24 +2354,24 @@
 						"translation.y": 459.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 47,
+					"stack_index": 79,
 					"type": "text"
 				},
 				{
-					"buffer": 21,
+					"buffer": 25,
 					"file": "copper/copper_string.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 632,
+						"buffer_size": 726,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								39,
-								39
+								726,
+								726
 							]
 						],
 						"settings":
@@ -2028,24 +2383,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 44,
 					"type": "text"
 				},
 				{
-					"buffer": 22,
+					"buffer": 26,
 					"file": "copper/ui/widgets/path_bar_widget.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4671,
+						"buffer_size": 4763,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								271,
-								271
+								545,
+								545
 							]
 						],
 						"settings":
@@ -2055,27 +2410,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 102.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 32,
+					"stack_index": 66,
 					"type": "text"
 				},
 				{
-					"buffer": 23,
+					"buffer": 27,
 					"file": "copper/geometry/iotranslators/obj/obj.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1930,
+						"buffer_size": 1985,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1359,
-								1359
+								429,
+								429
 							]
 						],
 						"settings":
@@ -2084,14 +2439,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 561.0,
+						"translation.y": 408.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 38,
+					"stack_index": 47,
 					"type": "text"
 				},
 				{
-					"buffer": 24,
+					"buffer": 28,
 					"file": "test/geometry/cube.obj",
 					"semi_transient": false,
 					"settings":
@@ -2103,8 +2458,8 @@
 						"selection":
 						[
 							[
-								0,
-								0
+								501,
+								501
 							]
 						],
 						"settings":
@@ -2116,11 +2471,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 39,
+					"stack_index": 48,
 					"type": "text"
 				},
 				{
-					"buffer": 25,
+					"buffer": 29,
 					"file": "test/geometry/skeleton.obj",
 					"semi_transient": false,
 					"settings":
@@ -2144,24 +2499,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 46,
+					"stack_index": 78,
 					"type": "text"
 				},
 				{
-					"buffer": 26,
+					"buffer": 30,
 					"file": "copper/geometry/primitive.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1889,
+						"buffer_size": 2207,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								442,
-								442
+								274,
+								274
 							]
 						],
 						"settings":
@@ -2173,40 +2528,70 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 25,
+					"stack_index": 53,
 					"type": "text"
 				},
 				{
-					"buffer": 27,
+					"buffer": 31,
 					"file": "copper/geometry/geometry.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1707,
+						"buffer_size": 3969,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								215,
-								215
+								1064,
+								1064
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 408.0,
+						"translation.y": 459.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 34,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 28,
+					"buffer": 32,
+					"file": "copper/op/op_data_socket.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1100,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								872,
+								872
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 33,
 					"file": "copper/ui/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -2230,24 +2615,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 42,
 					"type": "text"
 				},
 				{
-					"buffer": 29,
-					"file": "copper/ui/tabbed_panel_manager.py",
+					"buffer": 34,
+					"file": "copper/ui/pane.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4588,
+						"buffer_size": 4593,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								30,
-								30
+								4519,
+								4519
 							]
 						],
 						"settings":
@@ -2257,27 +2642,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1326.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 33,
+					"stack_index": 55,
 					"type": "text"
 				},
 				{
-					"buffer": 30,
-					"file": "copper/ui/panels/scene_view_panel/scene_view_panel.py",
+					"buffer": 35,
+					"file": "copper/ui/panels/scene_view_panel/geometry_viewport.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 14470,
+						"buffer_size": 5849,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1244,
-								1244
+								1938,
+								1938
 							]
 						],
 						"settings":
@@ -2287,27 +2672,177 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1785.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 11,
 					"type": "text"
 				},
 				{
-					"buffer": 31,
+					"buffer": 36,
+					"file": "copper/ui/panels/scene_view_panel/qmodernglwidget.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1126,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								909,
+								909
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 56,
+					"type": "text"
+				},
+				{
+					"buffer": 37,
+					"file": "copper/ui/panels/scene_view_panel/drawable.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9860,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								8481,
+								8481
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4330.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 18,
+					"type": "text"
+				},
+				{
+					"buffer": 38,
+					"file": "copper/ui/panels/scene_view_panel/ogl_scene_manager.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6447,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6151,
+								6151
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3111.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
+					"type": "text"
+				},
+				{
+					"buffer": 39,
+					"file": "copper/ui/panels/scene_view_panel/camera.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7262,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3042,
+								3042
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 57,
+					"type": "text"
+				},
+				{
+					"buffer": 40,
+					"file": "copper/ui/panels/scene_view_panel/scene_view_panel.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4119,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1344,
+								1344
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 357.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 29,
+					"type": "text"
+				},
+				{
+					"buffer": 41,
 					"file": "copper/ui/panels/parameters_panel/parameters_panel.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5924,
+						"buffer_size": 5890,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								718,
-								718
+								1759,
+								1759
 							]
 						],
 						"settings":
@@ -2317,27 +2852,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 663.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 62,
 					"type": "text"
 				},
 				{
-					"buffer": 32,
+					"buffer": 42,
 					"file": "copper/ui/panels/base_panel.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3999,
+						"buffer_size": 6829,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1572,
-								1572
+								6717,
+								6717
 							]
 						],
 						"settings":
@@ -2347,27 +2882,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 816.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 14,
+					"stack_index": 54,
 					"type": "text"
 				},
 				{
-					"buffer": 33,
+					"buffer": 43,
 					"file": "copper/ui/panels/composite_view_panel.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 12631,
+						"buffer_size": 11701,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7437,
-								7437
+								1179,
+								1179
 							]
 						],
 						"settings":
@@ -2377,14 +2912,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 3264.0,
+						"translation.y": 219.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 60,
 					"type": "text"
 				},
 				{
-					"buffer": 34,
+					"buffer": 44,
 					"file": "copper/ui/panels/help_browser_panel.py",
 					"semi_transient": false,
 					"settings":
@@ -2410,24 +2945,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 31,
+					"stack_index": 72,
 					"type": "text"
 				},
 				{
-					"buffer": 35,
+					"buffer": 45,
 					"file": "copper/ui/panels/tree_view_panel.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5260,
+						"buffer_size": 5742,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								321,
-								321
+								417,
+								417
 							]
 						],
 						"settings":
@@ -2437,14 +2972,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 51.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 24,
+					"stack_index": 64,
 					"type": "text"
 				},
 				{
-					"buffer": 36,
+					"buffer": 46,
 					"file": "copper/ui/panels/network_view_panel/network_view_panel.py",
 					"semi_transient": false,
 					"settings":
@@ -2470,24 +3005,113 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 37,
+					"buffer": 47,
 					"file": "copper/ui/panels/network_view_panel/node_flow_scene.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3858,
+						"buffer_size": 4268,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1534,
-								1534
+								1614,
+								1614
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 612.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 48,
+					"file": "copper/ui/panels/network_view_panel/network_view_widget.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3847,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3401,
+								3401
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 765.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 49,
+					"file": "copper/op/op_data.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 188,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								134,
+								134
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 15,
+					"type": "text"
+				},
+				{
+					"buffer": 50,
+					"file": "copper/op/op_connection.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 979,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								889,
+								889
 							]
 						],
 						"settings":
@@ -2500,24 +3124,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 13,
+					"stack_index": 16,
 					"type": "text"
 				},
 				{
-					"buffer": 38,
+					"buffer": 51,
 					"file": "copper/ui/panels/network_view_panel/node_item.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 11289,
+						"buffer_size": 14447,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								473,
-								473
+								1880,
+								1880
 							]
 						],
 						"settings":
@@ -2527,14 +3151,42 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 102.0,
+						"translation.y": 306.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 23,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
-					"buffer": 39,
+					"buffer": 52,
+					"file": "/home/max/dev/CopperFX/src/copperfx/panels/NodeFlowViewPanel/NodeConnectionItem.cpp",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4146,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2840,
+								2840
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 1785.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 53,
 					"file": "copper/ui/widgets/play_bar_widget/time_line.py",
 					"semi_transient": false,
 					"settings":
@@ -2560,40 +3212,70 @@
 						"translation.y": 408.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 22,
+					"stack_index": 70,
 					"type": "text"
 				},
 				{
-					"buffer": 40,
+					"buffer": 54,
 					"file": "copper/ui/panels/parameters_panel/parameters_widgets.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7937,
+						"buffer_size": 9990,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								193,
-								193
+								487,
+								487
 							]
 						],
 						"settings":
 						{
 							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 61,
 					"type": "text"
 				},
 				{
-					"buffer": 41,
+					"buffer": 55,
+					"file": "venv/lib/python3.7/site-packages/twisted/test/test_log.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 36330,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								31418,
+								31418
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 14798.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 63,
+					"type": "text"
+				},
+				{
+					"buffer": 56,
 					"file": "copper/geometry/iotranslators/bgeo/bgeo.py",
 					"semi_transient": false,
 					"settings":
@@ -2618,11 +3300,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 52,
+					"stack_index": 80,
 					"type": "text"
 				},
 				{
-					"buffer": 42,
+					"buffer": 57,
 					"file": "copper/cl/source_image.cl",
 					"semi_transient": false,
 					"settings":
@@ -2647,24 +3329,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 56,
+					"stack_index": 83,
 					"type": "text"
 				},
 				{
-					"buffer": 43,
+					"buffer": 58,
 					"file": "copper/engine.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7913,
+						"buffer_size": 8351,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3544,
-								3544
+								7630,
+								7630
 							]
 						],
 						"settings":
@@ -2673,14 +3355,43 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1530.0,
+						"translation.y": 1938.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 44,
+					"buffer": 59,
+					"file": "copper/cop/copnet_network.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 553,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								290,
+								290
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 46,
+					"type": "text"
+				},
+				{
+					"buffer": 60,
 					"file": "copper/copper_cache.py",
 					"semi_transient": false,
 					"settings":
@@ -2706,52 +3417,53 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 69,
 					"type": "text"
 				},
 				{
-					"buffer": 45,
+					"buffer": 61,
 					"file": "copper/hou/__init__.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1007,
+						"buffer_size": 2098,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								567,
-								567
+								786,
+								786
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax"
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 556.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 46,
+					"buffer": 62,
 					"file": "copper/ui/main_window.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5705,
+						"buffer_size": 5707,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3231,
-								3231
+								3772,
+								3772
 							]
 						],
 						"settings":
@@ -2761,14 +3473,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1479.0,
+						"translation.y": 1224.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 36,
 					"type": "text"
 				},
 				{
-					"buffer": 47,
+					"buffer": 63,
 					"file": "copper/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -2780,8 +3492,8 @@
 						"selection":
 						[
 							[
-								145,
-								145
+								26,
+								26
 							]
 						],
 						"settings":
@@ -2792,24 +3504,53 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 38,
 					"type": "text"
 				},
 				{
-					"buffer": 48,
-					"file": "copper/copper_object.py",
+					"buffer": 64,
+					"file": "copper/cop/cop_node.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 127,
+						"buffer_size": 6425,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								127,
-								127
+								194,
+								194
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 714.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 49,
+					"type": "text"
+				},
+				{
+					"buffer": 65,
+					"file": "copper/copper_object.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 234,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								134,
+								134
 							]
 						],
 						"settings":
@@ -2821,11 +3562,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 34,
 					"type": "text"
 				},
 				{
-					"buffer": 49,
+					"buffer": 66,
 					"file": "copper/managers/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -2849,11 +3590,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 28,
+					"stack_index": 67,
 					"type": "text"
 				},
 				{
-					"buffer": 50,
+					"buffer": 67,
 					"file": "copper/managers/root_network.py",
 					"semi_transient": false,
 					"settings":
@@ -2878,11 +3619,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 27,
+					"stack_index": 71,
 					"type": "text"
 				},
 				{
-					"buffer": 51,
+					"buffer": 68,
 					"file": "copper/op/op_network.py",
 					"semi_transient": false,
 					"settings":
@@ -2894,8 +3635,8 @@
 						"selection":
 						[
 							[
-								6890,
-								6890
+								513,
+								513
 							]
 						],
 						"settings":
@@ -2904,14 +3645,14 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 51.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 20,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
-					"buffer": 52,
+					"buffer": 69,
 					"file": "copper/managers/mgr_node.py",
 					"semi_transient": false,
 					"settings":
@@ -2936,11 +3677,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 26,
+					"stack_index": 68,
 					"type": "text"
 				},
 				{
-					"buffer": 53,
+					"buffer": 70,
 					"file": "copper/singleton.py",
 					"semi_transient": false,
 					"settings":
@@ -2952,8 +3693,8 @@
 						"selection":
 						[
 							[
-								847,
-								847
+								462,
+								462
 							]
 						],
 						"settings":
@@ -2967,11 +3708,40 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 29,
+					"stack_index": 39,
 					"type": "text"
 				},
 				{
-					"buffer": 54,
+					"buffer": 71,
+					"file": "copper/config.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 221,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								131,
+								131
+							]
+						],
+						"settings":
+						{
+							"auto_name": "from singleton impot",
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 37,
+					"type": "text"
+				},
+				{
+					"buffer": 72,
 					"file": "copper/shout/parsers/base.py",
 					"semi_transient": false,
 					"settings":
@@ -2996,11 +3766,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 69,
+					"stack_index": 93,
 					"type": "text"
 				},
 				{
-					"buffer": 55,
+					"buffer": 73,
 					"file": "copper/shout/parsers/rib/parser_rib.py",
 					"semi_transient": false,
 					"settings":
@@ -3025,11 +3795,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 68,
+					"stack_index": 92,
 					"type": "text"
 				},
 				{
-					"buffer": 56,
+					"buffer": 74,
 					"file": "copper/shout/parsers/ifd/parser_ifd.py",
 					"semi_transient": false,
 					"settings":
@@ -3054,11 +3824,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 67,
+					"stack_index": 91,
 					"type": "text"
 				},
 				{
-					"buffer": 57,
+					"buffer": 75,
 					"file": "copper/shout/parsers/ifd/parser_bgeo.py",
 					"semi_transient": false,
 					"settings":
@@ -3083,11 +3853,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 62,
+					"stack_index": 86,
 					"type": "text"
 				},
 				{
-					"buffer": 58,
+					"buffer": 76,
 					"file": "copper/shout/shout.py",
 					"semi_transient": false,
 					"settings":
@@ -3112,11 +3882,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 61,
+					"stack_index": 27,
 					"type": "text"
 				},
 				{
-					"buffer": 59,
+					"buffer": 77,
 					"file": "copper/shout/parsers/ifd/hgeo.py",
 					"semi_transient": false,
 					"settings":
@@ -3142,11 +3912,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 66,
+					"stack_index": 90,
 					"type": "text"
 				},
 				{
-					"buffer": 60,
+					"buffer": 78,
 					"file": "copper/shout/drivers/mplay.py",
 					"semi_transient": false,
 					"settings":
@@ -3172,11 +3942,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 63,
+					"stack_index": 87,
 					"type": "text"
 				},
 				{
-					"buffer": 61,
+					"buffer": 79,
 					"file": "copper/shout/drivers/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -3200,11 +3970,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 64,
+					"stack_index": 88,
 					"type": "text"
 				},
 				{
-					"buffer": 62,
+					"buffer": 80,
 					"file": "test/mantra/test.ifd",
 					"semi_transient": false,
 					"settings":
@@ -3230,11 +4000,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 65,
+					"stack_index": 89,
 					"type": "text"
 				},
 				{
-					"buffer": 63,
+					"buffer": 81,
 					"semi_transient": false,
 					"settings":
 					{
@@ -3297,27 +4067,27 @@
 							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 836.0,
+						"translation.y": 54.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 57,
+					"stack_index": 28,
 					"type": "text"
 				},
 				{
-					"buffer": 64,
-					"file": "copper/cop2/cop2_file.py",
+					"buffer": 82,
+					"file": "copper/cop/cop_blur.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9987,
+						"buffer_size": 2826,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7516,
-								7516
+								143,
+								143
 							]
 						],
 						"settings":
@@ -3326,27 +4096,56 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 2652.0,
+						"translation.y": 408.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 48,
+					"stack_index": 19,
 					"type": "text"
 				},
 				{
-					"buffer": 65,
-					"file": "copper/op/op_data_socket.py",
+					"buffer": 83,
+					"file": "copper/cop/cop_comps.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 339,
+						"buffer_size": 2456,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								49,
-								49
+								1089,
+								1089
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 51.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 52,
+					"type": "text"
+				},
+				{
+					"buffer": 84,
+					"file": "copper/cop/cop_file.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10010,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								701,
+								701
 							]
 						],
 						"settings":
@@ -3362,49 +4161,48 @@
 					"type": "text"
 				},
 				{
-					"buffer": 66,
-					"file": "copper/cop2/cop2_node.py",
+					"buffer": 85,
+					"file": "copper/image_data/__init__.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6176,
+						"buffer_size": 45,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								5150,
-								5150
+								36,
+								36
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/Python/Python.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 2225.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 18,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 67,
-					"file": "copper/sop/sop_node.py",
+					"buffer": 86,
+					"file": "copper/parm_template.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 688,
+						"buffer_size": 3262,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								341,
-								341
+								253,
+								267
 							]
 						],
 						"settings":
@@ -3416,24 +4214,168 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 40,
+					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 68,
+					"buffer": 87,
+					"file": "copper/image_data/image_data.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1773,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								933,
+								933
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 102.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 88,
+					"file": "copper/cop/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 148,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								125,
+								125
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 45,
+					"type": "text"
+				},
+				{
+					"buffer": 89,
+					"file": "copper/cop/cop_halftone.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2143,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								867,
+								867
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 20,
+					"type": "text"
+				},
+				{
+					"buffer": 90,
+					"file": "copper/cop/cop_sources.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7798,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								337,
+								337
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2193.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 26,
+					"type": "text"
+				},
+				{
+					"buffer": 91,
+					"file": "copper/sop/sop_node.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 701,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								625,
+								625
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 25,
+					"type": "text"
+				},
+				{
+					"buffer": 92,
 					"file": "copper/sop/sop_file.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1650,
+						"buffer_size": 1697,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1001,
-								1001
+								156,
+								156
 							]
 						],
 						"settings":
@@ -3442,27 +4384,27 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 255.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 37,
+					"stack_index": 23,
 					"type": "text"
 				},
 				{
-					"buffer": 69,
+					"buffer": 93,
 					"file": "copper/sop/sop_box.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4533,
+						"buffer_size": 4545,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1745,
-								1745
+								188,
+								188
 							]
 						],
 						"settings":
@@ -3471,10 +4413,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 306.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 45,
+					"stack_index": 22,
 					"type": "text"
 				}
 			]

@@ -2,8 +2,8 @@ import inspect
 import logging
 
 from .op_node import OP_Node
-from .op_data import OP_DataBase
-from copper.copper_object import CopperObject
+from copper.core.data.base import OP_DataBase
+from copper.core.utils.copper_object import CopperObject
 
 logger = logging.getLogger(__name__)
 

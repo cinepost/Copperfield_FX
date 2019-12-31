@@ -1,7 +1,9 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWidgets, QtGui, QtCore, Qt
 from PyQt5.QtCore import pyqtSignal
 
 from copper import hou
+from copper.core.engine import signals as engine_signals
+from copper.core.op.op_node import OP_Node
 from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget
 
@@ -29,7 +31,7 @@ class TreeViewPanel(PathBasedPaneTab):
     def __init__(self):      
         PathBasedPaneTab.__init__(self) 
 
-        self.tree_view_widget = TreeViewWidget()
+        self.tree_view_widget = TreeViewWidget(self, self)
         self.addWidget(self.tree_view_widget)
 
     @classmethod
@@ -38,8 +40,9 @@ class TreeViewPanel(PathBasedPaneTab):
 
 
 class TreeViewWidget(QtWidgets.QTreeWidget):
-    def __init__(self, parent=None):      
+    def __init__(self, parent, panel):      
         QtWidgets.QTreeWidget.__init__(self, parent)
+        self.panel = panel
         self.nodes_map = {}
         self.setDragEnabled(True)
         self.setObjectName("QTreeView")
@@ -56,28 +59,30 @@ class TreeViewWidget(QtWidgets.QTreeWidget):
         # build tree from root
         self.createNodeTree(self)
 
-        ### Connect signals from UI
-        signals.copperNodeCreated.connect(self.rebuildNodeTree)
-        signals.copperNodeSelected[str].connect(self.nodeSelected)
+        ### Connect signals from panel
+        self._panel_signals = self.panel.signals
+        self._panel_signals.copperNodeCreated.connect(self.rebuildNodeTree)
+        self._panel_signals.copperNodeSelected[OP_Node].connect(self.nodeSelected)
 
         ### Connect internal signals
         #self.connect(self, QtCore.SIGNAL("customContextMenuRequested(const QPoint &)"), self.menuContextMenu)
         self.customContextMenuRequested.connect(self.menuContextMenu)
         self.itemClicked.connect(self.handleItemClicked)
 
-    def createNodeTree(self, parent, node_path=None):
+    def createNodeTree(self, parent, node=None):
         """Builds node tree from node"""
-        if not node_path:
+        if not node:
             # create root node item
+            root_node = hou.node("/")
             root_item = QtWidgets.QTreeWidgetItem(self)
             root_item.setExpanded(True)
-            root_item.setIcon(0, QtGui.QIcon(hou.node("/").iconName()))
+            root_item.setIcon(0, QtGui.QIcon(root_node.iconName()))
             root_item.setText(0, "/")
             root_item.setText(1, "/")
-            self.nodes_map["/"] = root_item
-            self.createNodeTree(root_item, "/")
+            root_item.setData(2, Qt.Qt.UserRole, None)
+            #self.nodes_map["/"] = root_item
+            self.createNodeTree(root_item, root_node)
         else:
-            node = hou.node(node_path)
             if node:
                 for child_node in node.children():
                     node_path = child_node.path()
@@ -89,33 +94,33 @@ class TreeViewWidget(QtWidgets.QTreeWidget):
 
                     item.setText(0, child_node.name())
                     item.setText(1, node_path)
-                    self.nodes_map[node_path] = item
+                    item.setData(2, Qt.Qt.UserRole, child_node)
+                    self.nodes_map[child_node.id()] = item
 
                     # connect signals
                     child_node.signals.opCookingStarted.connect(lambda node_path=node_path: self.nodeMarkClean(node_path))
                     child_node.signals.opCookingFailed.connect(lambda node_path=node_path: self.nodeMarkFailed(node_path))
 
                     if child_node.children():
-                        self.createNodeTree(item, child_node.path())
+                        self.createNodeTree(item, child_node)
 
         self.sortByColumn(0, QtCore.Qt.AscendingOrder)
 
     def handleItemClicked(self, item):
-        selected_node_path = str(item.text(1))
-        signals.copperNodeSelected[str].emit(selected_node_path)              
+        engine_signals.nodeSelected[OP_Node].emit(item.data(2, Qt.Qt.UserRole))              
 
-    def handleShowInViewer(self, node_path):
-        signals.copperSetCompositeViewNode[str].emit(node_path)
+    def handleShowInViewer(self, node):
+        signals.copperSetCompositeViewNode[OP_Node].emit(node)
 
     @QtCore.pyqtSlot()   
     def nodeMarkClean(self, node_path):
         '''Marks node as claen (cooking stated, remove all error signs)'''
         pass
 
-    @QtCore.pyqtSlot()   
-    def nodeMarkFailed(self, node_path):
+    @QtCore.pyqtSlot(OP_Node)   
+    def nodeMarkFailed(self, node):
         '''Marks node as failed during cooking'''
-        item = self.nodes_map[node_path]
+        item = self.nodes_map[node.id()]
         if item:
             #self.itemWidget(item,2).setProperty("failed", True);
             pass
@@ -127,11 +132,11 @@ class TreeViewWidget(QtWidgets.QTreeWidget):
         self.nodes_map = {}
         self.createNodeTree(self)
 
-    @QtCore.pyqtSlot(str)   
-    def nodeSelected(self, node_path):
+    @QtCore.pyqtSlot(OP_Node)   
+    def nodeSelected(self, node):
         for item in self.selectedItems():
             item.setSelected(False)
-        item = self.nodes_map[node_path]
+        item = self.nodes_map[node.id()]
         item.setSelected(True)
 
     @QtCore.pyqtSlot()   
@@ -143,7 +148,7 @@ class TreeViewWidget(QtWidgets.QTreeWidget):
             return
 
         item = self.itemAt(point)
-        node_path = str(item.text(1))
+        node = item.data(2, Qt.Qt.UserRole)
         name = item.text(0)  # The text of the node.
 
         # We build the menu.
@@ -152,7 +157,7 @@ class TreeViewWidget(QtWidgets.QTreeWidget):
         menu.addSeparator()
 
         action_1=menu.addAction("Show in viewer")
-        action_1.triggered.connect(lambda: self.handleShowInViewer(node_path))
+        action_1.triggered.connect(lambda: self.handleShowInViewer(node))
 
         action_2=menu.addAction("Render")
         #action_2.triggered.connect(lambda: self.workspace.copperRenderNode(node_path))
@@ -163,9 +168,7 @@ class TreeViewWidget(QtWidgets.QTreeWidget):
         menu.exec_(QtGui.QCursor.pos())
 
     def mimeData(self, items):
-        from copper import hou
-
-        node_path = items[0].text(1)
-        node = hou.node(node_path)
+        node = items[0].data(2, Qt.Qt.UserRole)
+        print("Mime node%s" % node)
         mime_data = NodeMimeData(node)
         return mime_data

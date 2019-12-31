@@ -10,7 +10,7 @@ import copper
 import math
 
 from copper import hou as engine
-from copper.op.base import OpRegistry
+from copper.core.op.base import OpRegistry
 
 from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget, CollapsableWidget
@@ -37,7 +37,7 @@ class NetworkViewPanel(PathBasedPaneTab):
         PathBasedPaneTab.__init__(self) 
 
         self.network_view_controls = NetworkViewControls(self)
-        self.network_view_widget = NetworkViewWidget(self)
+        self.network_view_widget = NetworkViewWidget(self, self)
 
         self.addWidget(self.network_view_controls)
         self.addWidget(self.network_view_widget)

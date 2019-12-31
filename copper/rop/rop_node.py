@@ -2,10 +2,8 @@ import logging
 
 from PyQt5 import QtCore
 
-from copper.op.op_network import OP_Network
-import copper.parameter as parameter
-
-from copper.parm_template import *
+from copper.core.op.op_network import OP_Network
+from copper.core.parameter.parm_template import *
 
 logger = logging.getLogger(__name__)
 

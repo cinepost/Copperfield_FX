@@ -6,8 +6,7 @@ from collections import OrderedDict
 
 from PyQt5 import QtCore
 
-from copper import hou
-from copper.copper_object import CopperObject
+from copper.core.utils import CopperObject
 from .base import OpRegistry
 from .op_parameters import OP_Parameters
 from .op_cooking_queue import OpCookingQueue
@@ -207,7 +206,7 @@ class OP_Node(CopperObject, OP_Parameters):
 		return tuple([op_connection for op_connection in self._outputs])
 
 	def setInput(self, input_index, node, output_index=0):
-		from copper.op.op_connection import OP_Connection
+		from copper.core.op.op_connection import OP_Connection
 		
 		in_socket = self.inputDataSocket(input_index)
 		out_socket = node.outputDataSocket(output_index)
@@ -268,7 +267,7 @@ class OP_Node(CopperObject, OP_Parameters):
 
 			self.signals.needsToCook.emit()
 
-	def needsToCook(self, time=hou.time()):
+	def needsToCook(self, time=0):#hou.time()):
 		return self._needs_to_cook
 
 	def warnings(self):

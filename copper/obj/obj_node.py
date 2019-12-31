@@ -1,8 +1,8 @@
-from copper.op.op_network import OP_Network
-from copper.op.node_type_category import SopNodeTypeCategory
+from copper.core.op.op_network import OP_Network
+from copper.core.op.node_type_category import SopNodeTypeCategory
 
-from copper.parm_template import *
-from copper.vmath import Matrix4
+from copper.core.parameter.parm_template import *
+from copper.core.vmath import Matrix4
 
 class ObjNode(OP_Network):
 	__base__ = True

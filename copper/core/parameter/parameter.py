@@ -3,9 +3,9 @@ import logging
 from PyQt5 import QtCore
 
 from collections import OrderedDict
-from .copper_string import CopperString
+from copper.core.utils.copper_string import CopperString
 
-from copper.parm_template import ParmTemplate, ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
+from .parm_template import ParmTemplate, ParmLookScheme, ParmNamingScheme, ParmTemplateType, StringParmType
 
 logger = logging.getLogger(__name__)
 

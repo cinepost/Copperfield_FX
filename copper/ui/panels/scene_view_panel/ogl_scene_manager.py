@@ -8,7 +8,7 @@ import moderngl
 from ctypes import c_float
 import numpy as np
 
-from copper.vmath import Matrix4, Vector3
+from copper.core.vmath import Matrix4, Vector3
 
 logger = logging.getLogger(__name__)
 

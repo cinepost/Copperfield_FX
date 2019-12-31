@@ -19,13 +19,13 @@ class Workarea(QtWidgets.QWidget):
         self.timeline_widget = PlayBarWidget()
 
         # Create layout and place widgets
-        VBox = QtWidgets.QVBoxLayout()    
+        VBox = QtWidgets.QVBoxLayout()
         VBox.setSpacing(0)
         VBox.setContentsMargins(0, 0, 0, 0)
         HBox = QtWidgets.QHBoxLayout()
         HBox.setSpacing(0)
         HBox.setContentsMargins(0, 0, 0, 0)
-    
+
 
         # Add initial panels
         panel_mgrs = []
@@ -82,7 +82,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
 
-        from copper.config import Config
+        from copper.core.config import Config
         Config()._has_ui = True
 
         if not hou.OpenCL.have_gl():

@@ -10,13 +10,14 @@ import math
 
 import moderngl
 
+from copper.core.op.op_node import OP_Node
 from copper.obj import ObjNode
 from copper.ui.utils import clearLayout
 from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget, CollapsableWidget
 from copper.ui.panels.base_panel import PathBasedPaneTab
 
-from copper.vmath import Matrix4, Vector3
+from copper.core.vmath import Matrix4, Vector3
 from .camera import Camera
 from .ogl_scene_manager import OGL_Scene_Manager
 from .drawable import *
@@ -52,7 +53,7 @@ class GeometryViewport(QModernGLWidget):
         self.m_identity = Matrix44.identity() # just a helper
 
         # connect panel signals
-        self.panel.signals.copperNodeModified[str].connect(self.updateNodeDisplay)
+        self.panel.signals.copperNodeModified[OP_Node].connect(self.updateNodeDisplay)
 
         logger.debug("SceneViewWidget created")
 
@@ -81,10 +82,10 @@ class GeometryViewport(QModernGLWidget):
                 obj_drawable.projection.write(m_proj.astype('f4').tobytes())
                 obj_drawable.draw()
 
-    @QtCore.pyqtSlot(str)
-    def updateNodeDisplay(self, node_path=None):
+    @QtCore.pyqtSlot(OP_Node)
+    def updateNodeDisplay(self, node):
         # Now using quick and dirty hack to check that only geometry nodes changes reflected in scene view
-        if str(node_path).startswith("/obj"):
+        if node.path().startswith("/obj"):
             self.update()
 
     def init(self):

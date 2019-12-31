@@ -9,8 +9,10 @@ import numpy
 import copper
 import math
 
-from copper import hou as engine
-from copper.op.base import OpRegistry
+#from copper import hou as engine
+from copper.core.engine import signals as engine_signals
+from copper.core.op.op_node import OP_Node
+from copper.core.op.base import OpRegistry
 from copper.ui.signals import signals
 
 
@@ -19,7 +21,6 @@ logger = logging.getLogger(__name__)
 
 def next_greater_power_of_2(x):  
     return 2**(x-1).bit_length()
-
 
 
 class NodeLinkItem(QtWidgets.QGraphicsItem):
@@ -341,7 +342,7 @@ class NodeItem(QtWidgets.QGraphicsItem):
             if value == True:
                 # do stuff if selected
                 if not self._selected_indirect:
-                    signals.copperNodeSelected[str].emit(self.node.path()) 
+                    engine_signals.nodeSelected[OP_Node].emit(self.node) 
             else:
                 # do stuff if unselected
                 pass
@@ -357,8 +358,9 @@ class NodeItem(QtWidgets.QGraphicsItem):
             if abs(new_pos.x() - snapped_x) < 5: new_pos.setX(snapped_x)
             if abs(new_pos.y() - snapped_y) < 5: new_pos.setY(snapped_y)
             
+            # move node itsef
+            self.node.setPosition((new_pos.x(), new_pos.y()))
 
-            #print "ItemPositionChange %s" % new_pos
             value = QtCore.QVariant(new_pos)
 
         return super(NodeItem, self).itemChange(change, value)

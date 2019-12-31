@@ -1,9 +1,9 @@
+import sys
 import logging
-from copper import ui
 
 from copper import settings
-from copper.config import Config
-from copper.engine import Engine
+from copper.core.config import Config
+from copper.core.engine import Engine
 
 logger = logging.getLogger(__name__)
 
@@ -40,26 +40,13 @@ class hipFile():
 		else:
 			_engine.load(filename)
 
-
-fps =_engine.fps
-
-time = _engine.time
-
-frame = _engine.frame	
-
-def isUIAvailable():
-	'''
-	Return whether or not the .ui module is available.
-	'''
-	return True
-
-import sys
-from copper.parameter import CopperParameter
-
 thismodule = sys.modules[__name__]
 
 # variables section
 #----------------------------------------------
+setattr(thismodule, 'fps', _engine.fps)
+setattr(thismodule, 'time', _engine.time)
+setattr(thismodule, 'frame', _engine.frame)
 
 setattr(thismodule, 'setFps', _engine.setFps)
 setattr(thismodule, 'setTime', _engine.setTime)
@@ -70,6 +57,10 @@ setattr(thismodule, 'setFrame', _engine.setFrame)
 
 setattr(thismodule, 'isUIAvailable', _config.hasUI)
 
+setattr(thismodule, 'root', lambda root=_engine.root: root)
+setattr(thismodule, 'pwd', _engine.pwd)
+setattr(thismodule, 'setPwd', _engine.setPwd)
+
 setattr(thismodule, 'node', _engine.node)
 setattr(thismodule, 'setFps', _engine.setFps)
 setattr(thismodule, 'setTime', _engine.setTime)
@@ -77,11 +68,25 @@ setattr(thismodule, 'setFrame', _engine.setFrame)
 
 # classes section
 #----------------------------------------------
+from copper.core.parameter import CopperParameter
+from copper.core.data import GeometryData
+from copper.core.data.geometry_data.primitive import Point, Vertex, Polygon
 
+setattr(thismodule, 'Point', Point)
+setattr(thismodule, 'Vertex', Vertex)
+setattr(thismodule, 'Polygon', Polygon)
 setattr(thismodule, 'Parm', CopperParameter)
+setattr(thismodule, 'Geometry', GeometryData)
 
 
 # Modules section
 #----------------------------------------------
+from copper.core.data.image_data import ImageDepth
+from copper.core.parameter.parm_template import StringParmType
 
-setattr(thismodule, 'ui', thismodule.ui)
+if _config.hasUI():
+	from copper import ui
+	setattr(thismodule, 'ui', thismodule.ui)
+
+setattr(thismodule, 'imageDepth', ImageDepth)
+setattr(thismodule, 'stringParmType', StringParmType)

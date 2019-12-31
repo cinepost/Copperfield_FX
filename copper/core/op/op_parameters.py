@@ -1,5 +1,5 @@
-from copper.parameter import CopperParameter
-from copper.parm_template import ParmNamingScheme
+from copper.core.parameter import CopperParameter
+from copper.core.parameter.parm_template import ParmNamingScheme
 import collections
 
 class OP_Parameters(object):

@@ -1,2 +1,2 @@
 from .primitive import Point, Vertex, Polygon
-from .geometry import Geometry
+from .geometry_data import GeometryData

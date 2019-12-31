@@ -8,10 +8,10 @@ import threading
 import logging
 import copy
 
-from copper.parameter import CopperParameter
-from copper.op.op_network import OP_Network
+from .op_network import OP_Network
 
-from copper.parm_template import *
+from copper.core.parameter import CopperParameter
+from copper.core.parameter.parm_template import *
 
 class OP_Base(OP_Network):
 	__base__ = True

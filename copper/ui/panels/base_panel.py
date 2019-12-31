@@ -4,6 +4,8 @@ from functools import wraps
 import six
 import inspect
 
+from copper.core.op.op_node import OP_Node
+from copper.core.engine import signals as engine_signals
 from copper.ui.widgets import PathBarWidget
 import copper.ui.signals as ui_signals
 from copper.ui.signals import Signals
@@ -98,7 +100,7 @@ class BasePanel(QtWidgets.QFrame):
 
 class PathBasedPaneTabSignals(Signals):
     nodeDropped = QtCore.pyqtSignal(uuid.UUID)
-    nodeDropped = QtCore.pyqtSignal(str)
+    nodeDropped = QtCore.pyqtSignal(OP_Node)
 
     def __init__(self):  
         Signals.__init__(self)
@@ -123,9 +125,11 @@ class PathBasedPaneTab(BasePanel):
         # connect signals
         self.path_bar_widget.signals.pinPressed.connect(self.togglePin)
 
+        # engine signals
+        engine_signals.nodeSelected.connect(self.copperNodeSelected)
+        engine_signals.nodeCreated.connect(self.copperNodeCreated)
+
         # connect global gui signals
-        ui_signals.signals.copperNodeCreated.connect(self.copperNodeCreated)
-        ui_signals.signals.copperNodeSelected.connect(self.copperNodeSelected)
         ui_signals.signals.copperSetCompositeViewNode.connect(self.copperSetCompositeViewNode)
         ui_signals.signals.copperNodeModified.connect(self.copperNodeModified)
 
@@ -170,25 +174,25 @@ class PathBasedPaneTab(BasePanel):
     def togglePin(self):
         self.pinned = not self.pinned
 
-    @QtCore.pyqtSlot(str)
-    def copperNodeSelected(self, node_path = None):
+    @QtCore.pyqtSlot(OP_Node)
+    def copperNodeSelected(self, node):
         if not self.isPin():
-            self.signals.copperNodeSelected[str].emit(node_path)
+            self.signals.copperNodeSelected[OP_Node].emit(node)
 
-    @QtCore.pyqtSlot(str)
-    def copperNodeCreated(self, node_path = None):
+    @QtCore.pyqtSlot(OP_Node)
+    def copperNodeCreated(self, node):
         if not self.isPin():
-            self.signals.copperNodeCreated[str].emit(node_path)
+            self.signals.copperNodeCreated[OP_Node].emit(node)
 
-    @QtCore.pyqtSlot(str)
-    def copperSetCompositeViewNode(self, node_path = None):
+    @QtCore.pyqtSlot(OP_Node)
+    def copperSetCompositeViewNode(self, node):
         if not self.isPin():
-            self.signals.copperSetCompositeViewNode[str].emit(node_path)
+            self.signals.copperSetCompositeViewNode[OP_Node].emit(node)
 
-    @QtCore.pyqtSlot(str)
-    def copperNodeModified(self, node_path = None):
+    @QtCore.pyqtSlot(OP_Node)
+    def copperNodeModified(self, node):
         if not self.isPin():
-            self.signals.copperNodeModified[str].emit(node_path)
+            self.signals.copperNodeModified[OP_Node].emit(node)
 
     def dragEnterEvent(self, event):
         from copper import hou
@@ -207,6 +211,6 @@ class PathBasedPaneTab(BasePanel):
                 node_path = event.mimeData().nodePath()
                 node = hou.node(node_path)
                 self.setCurrentNode(node, pick_node=False)
-                self.signals.nodeDropped.emit(node_path)
+                self.signals.nodeDropped.emit(node)
             
             event.acceptProposedAction()

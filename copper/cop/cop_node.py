@@ -8,12 +8,12 @@ import threading
 import logging
 import copy
 
-from copper.copper_string import CopperString
-from copper.parameter import CopperParameter
-from copper.op.op_network import OP_Network
+from copper.core.utils.copper_string import CopperString
+from copper.core.parameter import CopperParameter
+from copper.core.op.op_network import OP_Network
 from copper.cop.cop_plane import COP_Plane
 
-from copper.parm_template import *
+from copper.core.parameter.parm_template import *
 
 logger = logging.getLogger(__name__)
 

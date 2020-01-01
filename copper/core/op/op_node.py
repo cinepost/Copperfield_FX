@@ -263,7 +263,11 @@ class OP_Node(CopperObject, OP_Parameters):
 		if on_off == True:
 			print("%s setModified" % self.path())
 			for node in [output.inputNode() for output in self._outputs]:
+				# set output nodes to modified state
 				node.setModified(True)
+
+			if self.parent():
+				self.parent().setModified(True)
 
 			self.signals.needsToCook.emit()
 

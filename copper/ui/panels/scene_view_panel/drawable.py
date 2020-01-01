@@ -289,6 +289,7 @@ class OBJDataDrawable(Drawable):
 
         if not display_node:
             # Empty obj node
+            logger.debug("No display node to build geometry for %s !" % self._obj_node.path())
             return 
 
         geometry = display_node.geometry()
@@ -326,9 +327,12 @@ class OBJDataDrawable(Drawable):
 
             self.vao = self.ctx.vertex_array(self.prog, vao_content, self.ibo)
 
+            logger.debug("Done for %s" % self._obj_node.path())
+
     def render(self, show_points=True):
         if self.vao:
             # surface
+            print("surface %s" % self._obj_node.path())
             self.points_mode.write(bytearray(struct.pack("f", 0)) )
             self.ctx.enable(moderngl.DEPTH_TEST)
             self.vao.render(moderngl.TRIANGLES)

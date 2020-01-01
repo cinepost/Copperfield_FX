@@ -70,10 +70,10 @@ class GeometryViewport(QModernGLWidget):
 
     def drawSceneObjects(self, m_view, m_proj):
         for node in hou.node("/obj").children():
-            obj_drawable = GeometryViewport.OGL_Scene_Manager.addObjNode(node)
+            obj_drawable = GeometryViewport.OGL_Scene_Manager.getObjNodeDrawable(node)
 
             if obj_drawable:
-                #logger.debug("Drawing node: %s" % node.path())
+                logger.debug("Drawing node: %s" % node.path())
 
                 transform = node.worldTransform()
 
@@ -96,6 +96,7 @@ class GeometryViewport(QModernGLWidget):
     def updateNodeDisplay(self, node):
         # Now using quick and dirty hack to check that only geometry nodes changes reflected in scene view
         if node.path().startswith("/obj"):
+            print("!!!!!!!!!!!!!!!!!!!")
             self.update()
 
     def init(self):

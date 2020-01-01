@@ -8,6 +8,9 @@ import moderngl
 from ctypes import c_float
 import numpy as np
 
+from PyQt5 import QtCore
+
+from copper.core.op.op_node import OP_Node
 from copper.core.vmath import Matrix4, Vector3
 
 logger = logging.getLogger(__name__)
@@ -66,44 +69,10 @@ class MGLMaterial(object):
             print(name)
             print(self._program[name])
 
-def compile_vertex_shader(source):
-    """Compile a vertex shader from source."""
-    vertex_shader = glCreateShader(GL_VERTEX_SHADER)
-    glShaderSource(vertex_shader, source)
-    glCompileShader(vertex_shader)
-    # check compilation error
-    result = glGetShaderiv(vertex_shader, GL_COMPILE_STATUS)
-    if not(result):
-        raise RuntimeError(glGetShaderInfoLog(vertex_shader))
-    return vertex_shader
-
-def compile_fragment_shader(source):
-    """Compile a fragment shader from source."""
-    fragment_shader = glCreateShader(GL_FRAGMENT_SHADER)
-    glShaderSource(fragment_shader, source)
-    glCompileShader(fragment_shader)
-    # check compilation error
-    result = glGetShaderiv(fragment_shader, GL_COMPILE_STATUS)
-    if not(result):
-        raise RuntimeError(glGetShaderInfoLog(fragment_shader))
-    return fragment_shader
-
-def link_shader_program(vertex_shader, fragment_shader):
-    """Create a shader program with from compiled shaders."""
-    program = glCreateProgram()
-    glAttachShader(program, vertex_shader)
-    glAttachShader(program, fragment_shader)
-    glLinkProgram(program)
-    # check linking error
-    result = glGetProgramiv(program, GL_LINK_STATUS)
-    if not(result):
-        raise RuntimeError(glGetProgramInfoLog(program))
-    return program
-
 
 from .drawable import OBJDataDrawable
 
-class OGL_ObjCache(object):
+class OGL_ObjCache(QtCore.QObject):
 
     def __init__(self, ogl_manager, sop_node):
         logger.debug("Init OGL_ObjCache")
@@ -202,25 +171,27 @@ class OGL_Scene_Manager(object):
         return self._ctx or moderngl.create_context()
     
 
-    def addObjNode(self, obj_node):
+    def getObjNodeDrawable(self, obj_node):
         obj_node_id = obj_node.id()
 
         if obj_node_id in self._objects:
             return self._objects[obj_node_id]
 
+        # there is no cached geomerty, build it
         if obj_node.displayNode():
-            # there is no cached geomerty, build it
-            #obj_node.cook()
             obj_drawable = OBJDataDrawable(self, obj_node)
             if obj_drawable:
                 self._objects[obj_node_id] = obj_drawable
+                obj_node.signals.needsToCook.connect(lambda node=obj_node: self.updateObjNodeDrawable(node))
                 return obj_drawable
-            #elif obj_node.needsToCook():
-                # object geometry need's to be updated rebuild it
-                #obj_node.cook()
-                #self._objects[obj_node_id].build()
 
         return None
+
+    @QtCore.pyqtSlot(OP_Node)
+    def updateObjNodeDrawable(self, obj_node):
+        if obj_node.id() in self._objects:
+            obj_node.displayNode().cook()
+            self._objects[obj_node.id()].build()
 
     def buildShaderPrograms(self):
         self.m = MGLMaterial(self.ctx, DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER)

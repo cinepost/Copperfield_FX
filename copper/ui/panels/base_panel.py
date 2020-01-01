@@ -128,10 +128,10 @@ class PathBasedPaneTab(BasePanel):
         # engine signals
         engine_signals.nodeSelected.connect(self.copperNodeSelected)
         engine_signals.nodeCreated.connect(self.copperNodeCreated)
+        engine_signals.nodeModified.connect(self.copperNodeModified)
 
         # connect global gui signals
         ui_signals.signals.copperSetCompositeViewNode.connect(self.copperSetCompositeViewNode)
-        ui_signals.signals.copperNodeModified.connect(self.copperNodeModified)
 
     @classmethod
     def hasNetworkControls(cls):

@@ -11,6 +11,7 @@ class EngineSignals(QtCore.QObject):
 
     nodeSelected = QtCore.pyqtSignal(OP_Node)	# fired by the engine when node selected e.g hou.cd(node_path), hou.pwd(node_or_path)
     nodeCreated  = QtCore.pyqtSignal(OP_Node)	# fired by the engine when new node created
+    nodeModified = QtCore.pyqtSignal(OP_Node)	# fired by the engine when new node created
 
     def __init__(self):  
         QtCore.QObject.__init__(self)

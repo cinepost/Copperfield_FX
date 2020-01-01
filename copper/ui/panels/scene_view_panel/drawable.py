@@ -39,9 +39,9 @@ class Drawable():
     def setTransform(self, xform):
         self._xform = xform
 
-    def draw(self):
+    def draw(self, **kwargs):
         if self._visible:
-            self.render()
+            self.render(**kwargs)
 
     def render(self):
         raise NotImplementedError("")
@@ -203,6 +203,9 @@ class SimpleBackground(Drawable):
         self.ctx.disable(moderngl.DEPTH_TEST)
         self.vao.render(moderngl.TRIANGLE_FAN)
 
+
+import struct
+
 class OBJDataDrawable(Drawable):
     title = "OBJ Data Geometry"
 
@@ -216,14 +219,24 @@ class OBJDataDrawable(Drawable):
                 uniform mat4 model;
                 uniform mat4 view;
                 uniform mat4 projection;
+                uniform float points_mode;
 
                 in vec3 in_vert;
                 //in vec3 in_color;
                 out vec3 v_vert;
                 out vec3 v_color;    // Goes to the fragment shader
+                out float pts_mode;
+
                 void main() {
                     v_vert = in_vert;
-                    v_color = vec3(1.0, 1.0, 1.0);//in_color;
+                    if( points_mode < 0.5) {
+                        // surfce mode
+                        v_color = vec3(1.0, 1.0, 1.0);//in_color;
+                    } else {
+                        // points mode
+                        v_color = vec3(0.0, 0.0, 1.0);
+                    }
+                    pts_mode = points_mode;
                     gl_Position = projection * view * model * vec4(in_vert, 1.0);
                 }
             ''',
@@ -231,20 +244,28 @@ class OBJDataDrawable(Drawable):
                 #version 330
                 in vec3 v_vert;
                 in vec3 v_color;
+                in float pts_mode;
+
                 out vec4 f_color;
+                
                 void main() {
-                    vec3 Light = vec3(5.0, 5.0, 5.0);
+                    if ( pts_mode < 0.5 ) {
+                        // surfce mode
+                        vec3 Light = vec3(5.0, 5.0, 5.0);
 
-                    float lum = 1.0;
-                    //float lum = dot(normalize(v_norm), normalize(v_vert - Light));
-                    //lum = acos(lum) / 3.14159265;
-                    //lum = clamp(lum, 0.0, 1.0);
-                    //lum = lum * lum;
-                    //lum = smoothstep(0.0, 1.0, lum);
-                    //lum *= smoothstep(0.0, 80.0, v_vert.z) * 0.3 + 0.7;
-                    //lum = lum * 0.8 + 0.2;
-
-                    f_color = vec4(v_vert * lum, 1.0);
+                        float lum = 1.0;
+                        //float lum = dot(normalize(v_norm), normalize(v_vert - Light));
+                        //lum = acos(lum) / 3.14159265;
+                        //lum = clamp(lum, 0.0, 1.0);
+                        //lum = lum * lum;
+                        //lum = smoothstep(0.0, 1.0, lum);
+                        //lum *= smoothstep(0.0, 80.0, v_vert.z) * 0.3 + 0.7;
+                        //lum = lum * 0.8 + 0.2;
+                        f_color = vec4(v_color * lum, 1.0);
+                    } else {
+                        // points mode
+                        f_color = vec4(v_color, 1.0);
+                    }
                 }
             ''',
         )
@@ -252,6 +273,7 @@ class OBJDataDrawable(Drawable):
         self.model = self.prog['model']
         self.view = self.prog['view']
         self.projection = self.prog['projection']
+        self.points_mode = self.prog['points_mode']
 
         self.build()
 
@@ -304,12 +326,16 @@ class OBJDataDrawable(Drawable):
 
             self.vao = self.ctx.vertex_array(self.prog, vao_content, self.ibo)
 
-    def render(self):
-        #if self.vao:
-        #    self.ctx.enable(moderngl.DEPTH_TEST)
-        #    self.vao.render(moderngl.TRIANGLES)
+    def render(self, show_points=True):
+        if self.vao:
+            # surface
+            self.points_mode.write(bytearray(struct.pack("f", 0)) )
+            self.ctx.enable(moderngl.DEPTH_TEST)
+            self.vao.render(moderngl.TRIANGLES)
 
-        if self.points_vao:# and self._scene_viewer._show_points:
-            self.ctx.point_size = 2.0
-            self.ctx.disable(moderngl.DEPTH_TEST)
+        if self.points_vao and show_points:
+            # points
+            self.points_mode.write(bytearray(struct.pack("f", 1)) )
+            self.ctx.point_size = 3.0
+            #self.ctx.disable(moderngl.DEPTH_TEST)
             self.points_vao.render(moderngl.POINTS)

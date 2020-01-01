@@ -12,7 +12,7 @@ class QModernGLWidget(QtWidgets.QOpenGLWidget):
     def __init__(self, parent=None):
         super(QModernGLWidget, self).__init__(parent)
         fmt = QtGui.QSurfaceFormat()
-        fmt.setVersion(3, 3)
+        fmt.setVersion(4, 1)
         fmt.setProfile(QtGui.QSurfaceFormat.CoreProfile)
         fmt.setDepthBufferSize(24)
         fmt.setSwapInterval(0)

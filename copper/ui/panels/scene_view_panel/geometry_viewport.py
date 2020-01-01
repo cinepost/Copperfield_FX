@@ -49,11 +49,16 @@ class GeometryViewport(QModernGLWidget):
         }
 
         self.current_camera = 'persp'
+        self._show_points = None
 
         self.m_identity = Matrix44.identity() # just a helper
 
         # connect panel signals
         self.panel.signals.copperNodeModified[OP_Node].connect(self.updateNodeDisplay)
+
+        # connect panel buttons signals
+        self.panel.display_options.toggle_points_btn.pressed.connect(self.toggleShowPoints)
+
 
         logger.debug("SceneViewWidget created")
 
@@ -80,7 +85,12 @@ class GeometryViewport(QModernGLWidget):
                 obj_drawable.model.write(self.m_identity.astype('f4').tobytes())
                 obj_drawable.view.write(m_view.astype('f4').tobytes())
                 obj_drawable.projection.write(m_proj.astype('f4').tobytes())
-                obj_drawable.draw()
+                obj_drawable.draw(show_points = self._show_points)
+
+    @QtCore.pyqtSlot()
+    def toggleShowPoints(self):
+        self._show_points = not self._show_points
+        self.update()
 
     @QtCore.pyqtSlot(OP_Node)
     def updateNodeDisplay(self, node):

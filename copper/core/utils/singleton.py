@@ -16,7 +16,7 @@ def synchronized(lock):
         return inner_wrapper
     return wrapper
 
-class SingletonOptmized(type):
+class SingletonOptimized(type):
     _instances = {}
 
     def __call__(cls, *args, **kwargs):
@@ -27,4 +27,4 @@ class SingletonOptmized(type):
     @synchronized(lock)
     def _locked_call(cls, *args, **kwargs):
         if cls not in cls._instances:
-            cls._instances[cls] = super(SingletonOptmized, cls).__call__(*args, **kwargs)
+            cls._instances[cls] = super(SingletonOptimized, cls).__call__(*args, **kwargs)

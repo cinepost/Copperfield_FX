@@ -28,7 +28,7 @@ except:
 
 logger = logging.getLogger(__name__)
 
-class Engine(QtCore.QObject): # This is actually root node e.g.
+class Engine(QtCore.QObject):
     programs    = {}
     app         = None
     filters     = {}
@@ -282,17 +282,17 @@ class Engine(QtCore.QObject): # This is actually root node e.g.
 
         obj = self.node("obj")
 
-        geo1 = obj.createNode("geo")
-        font1 = geo1.createNode("font")
+        #geo1 = obj.createNode("geo")
+        #font1 = geo1.createNode("font")
 
-        ins = obj.createNode("instance")
+        #ins = obj.createNode("instance")
         
         #geo2 = obj.createNode("geo", "geo1")
         #box = geo2.createNode("box")
 
         geo3 = obj.createNode("geo")
         file = geo3.createNode("file")
-        #file.setParms({"filename": "/home/max/dev/Copperfield_FX/test/geometry/cube.obj"})
+        file.setParms({"filename": "/home/max/dev/Copperfield_FX/test/geometry/cube.obj"})
 
         ## Create COP2_File node 
         file1 = comp.createNode("file")

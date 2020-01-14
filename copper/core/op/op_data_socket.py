@@ -21,7 +21,7 @@ class OP_DataSocket(CopperObject):
 
         self._data_cls = data_cls
 
-    def setNode(self, node):
+    def setNode(self, node:OP_Node):
         self._node = node
 
     def node(self):

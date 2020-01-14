@@ -5,6 +5,8 @@ from OpenGL import GL
 from OpenGL.GLU import *
 import moderngl
 
+from copper.ui.context_manager import ContextManager
+
 logger = logging.getLogger(__name__)
 
 
@@ -14,10 +16,11 @@ class QModernGLWidget(QtWidgets.QOpenGLWidget):
         fmt = QtGui.QSurfaceFormat()
         fmt.setVersion(4, 1)
         fmt.setProfile(QtGui.QSurfaceFormat.CoreProfile)
-        fmt.setDepthBufferSize(24)
+        fmt.setDepthBufferSize(32)
         fmt.setSwapInterval(0)
-        fmt.setSamples(8)
+        fmt.setSamples(1)
         self.setFormat(fmt)
+        self.setUpdateBehavior(QtWidgets.QOpenGLWidget.PartialUpdate)
 
     def initializeGL(self):
         pass
@@ -27,6 +30,8 @@ class QModernGLWidget(QtWidgets.QOpenGLWidget):
 
     def paintGL(self):
         self.ctx = moderngl.create_context()
+        #self.ctx = ContextManager.get_default_context()
+
         self.screen = self.ctx.detect_framebuffer(self.defaultFramebufferObject())
         self.init()
 

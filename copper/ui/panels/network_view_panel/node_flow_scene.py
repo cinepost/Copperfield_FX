@@ -125,5 +125,5 @@ class NodeFlowScene(QtWidgets.QGraphicsScene):
         menu.exec_(event.screenPos())
 
     def addOperator(self, action):
-        network_node = engine.node(self.network_level)
+        network_node = hou.node(self.network_level.path())
         network_node.createNode(action.data())

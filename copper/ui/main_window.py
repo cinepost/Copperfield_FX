@@ -7,6 +7,7 @@ from copper import hou
 from .pane import Pane
 from .dialogs import RenderNodeDialog
 from .widgets import PlayBarWidget
+from .context_manager import ContextManager
 
 logger = logging.getLogger(__name__)
 
@@ -116,9 +117,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.setStyleSheet(fh.read())
 
     def initUI(self):
+        ContextManager.get_qt_context(self)
         self.setMinimumWidth(960)
         self.setMinimumHeight(640)
-        self.resize(1800, 1000)
+        self.resize(1600, 900)
         self.workarea = Workarea(self)
         self.setCentralWidget(self.workarea)
 

@@ -90,11 +90,11 @@ class SOP_Box(SOP_Node):
 				# z axis points
 				for x in range(divsx):
 					for y in range(divsy):
-						self._geometry._points.append([tx1 + x*step_x, ty1 + y*step_y, tz1])
+						self._geometry.appendPoint(tx1 + x*step_x, ty1 + y*step_y, tz1)
 
 				for x in range(divsx):
 					for y in range(divsy):
-						self._geometry._points.append([tx2 - x*step_x, ty2 - y*step_y, tz2])
+						self._geometry.appendPoint(tx2 - x*step_x, ty2 - y*step_y, tz2)
 
 
 				# create z axis polygons
@@ -116,20 +116,20 @@ class SOP_Box(SOP_Node):
 				# y axis points 
 				for z in range(1, divsz -1):
 					for x in range(divsx):
-						self._geometry._points.append([tx1 + x*step_x, ty1, tz1 + z*step_z])
+						self._geometry.appendPoint(tx1 + x*step_x, ty1, tz1 + z*step_z)
 
 				for z in range(1, divsz -1):
 					for x in range(divsx):
-						self._geometry._points.append([tx2 - x*step_x, ty2, tz2 - z*step_z])
+						self._geometry.appendPoint(tx2 - x*step_x, ty2, tz2 - z*step_z)
 
 				# x axis points 
 				for z in range(1, divsz-1):
 					for y in range(1, divsy-1):
-						self._geometry._points.append([tx1, ty1 + y*step_y, tz1 + z*step_z])
+						self._geometry.appendPoint(tx1, ty1 + y*step_y, tz1 + z*step_z)
 
 				for z in range(1, divsz-1):
 					for y in range(1, divsy-1):
-						self._geometry._points.append([tx2, ty2 - y*step_y, tz2 - z*step_z])
+						self._geometry.appendPoint(tx2, ty2 - y*step_y, tz2 - z*step_z)
 
 
 

@@ -1,4 +1,5 @@
 import math
+import random
 import numpy as np
 from OpenGL.GL import *
 
@@ -6,10 +7,9 @@ from copper.core.vmath import Matrix4, Vector3
 from pyrr import Matrix44
 
 class Camera(object):
-
-    #class prijection
-
-    def __init__(self, position=[5,5,5], target=[0,0,0], fov_degrees = 41.0, near_plane = 0.1, far_plane = 1000.0):
+    def __init__(self, position=[5,5,5], target=[0,0,0], fov_degrees = 41.0, near_plane = 0.1, far_plane = 1000.0,
+                    ortogrphic_width=50.0, is_perspective=True):
+        self.is_perspective = is_perspective
         self.fov_degrees = self.default_fov_degrees = fov_degrees
         self.orbiting_speed_degrees_per_radians = 300.0
 
@@ -66,7 +66,7 @@ class Camera(object):
         self.viewportHeightInPixels = heightInPixels
         self.viewportRadiusInPixels = 0.5*widthInPixels if (widthInPixels < heightInPixels) else 0.5*heightInPixels
 
-    def getProjection(self):
+    def getProjection(self, jittered=False, point=None):
         tangent = math.tan( self.fov_degrees / 2.0 / 180.0 * math.pi )
         viewportRadius = self.near_plane * tangent
         if self.viewportWidthInPixels < self.viewportHeightInPixels:
@@ -81,30 +81,25 @@ class Camera(object):
         bottom = - 0.5 * viewportHeight
         top = 0.5 * viewportHeight
 
-        A = (right + left) / float(right - left)
-        B = (top + bottom) / float(top - bottom)
-        C = (self.far_plane + self.near_plane) / float(self.far_plane - self.near_plane)
-        D = 2.0 * self.far_plane * self.near_plane / float(self.far_plane - self.near_plane)
-        E = 2.0 * self.near_plane / float(right - left)
-        F = 2.0 * self.near_plane / float(top - bottom)
+        print("left %s right %s top %s bottom %s" %(left, right, top, bottom))
+
+        if jittered:
+            if point:
+                x_j = random.uniform(-.5,.5) * viewportWidth / self.viewportWidthInPixels
+                y_j = random.uniform(-.5,.5) * viewportHeight / self.viewportHeightInPixels
+            else:
+                x_j = (point[0] - 0.5) * 0.5 * viewportWidth / self.viewportWidthInPixels
+                y_j = (point[1] - 0.5) * 0.5 * viewportHeight / self.viewportHeightInPixels
+
+            left += x_j
+            right += x_j
+            top += y_j
+            bottom += y_j
 
         return Matrix44.perspective_projection_bounds(left, right, top, bottom, self.near_plane, self.far_plane)
-        #return Matrix44.perspective_projection(self.fov_degrees, self.aspect_ratio, self.near_plane, self.far_plane)
-        return M
-
-        M = Matrix4()
-
-        M.m = np.array((
-            (E, 0, 0, 0),
-            (0, F, 0, 0),
-            (A, B, C, 1),
-            (0, 0, D, 0),
-        ), dtype=np.float64)
-        return M
 
     def getTransform(self):
         return Matrix44.look_at(self.position, self.target, -self.up)
-        return Matrix4.lookAt(self.position, self.target, self.up, False)
 
     # Causes the camera to "orbit" around the target point.
     # This is also called "tumbling" in some software packages.

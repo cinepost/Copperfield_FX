@@ -188,7 +188,7 @@ class OP_Network(OP_Node):
 	def name(self):
 		return self._name
 
-	def node(self, node_path):
+	def node(self, node_path:str):
 		"""Return the node at the given path, or None if no such node exists."""
 		if not node_path:
 			return None

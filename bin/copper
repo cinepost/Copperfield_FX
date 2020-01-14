@@ -4,7 +4,7 @@ import sys, os
 import argparse
 import logging
 
-from PyQt5 import QtWebEngineWidgets, QtWidgets, QtGui, QtCore
+from PyQt5 import QtWebEngineWidgets, QtWidgets, QtGui, QtCore, Qt
 
 
 module = sys.modules['__main__'].__file__
@@ -46,6 +46,7 @@ if __name__ == '__main__':
     finally:
         logging.shutdown()
 
+    QtWidgets.QApplication.setAttribute(Qt.Qt.AA_ShareOpenGLContexts);    
     app = QtWidgets.QApplication(sys.argv)
     QtGui.QFontDatabase.addApplicationFont('media/fonts')
     app.setStyle(QtWidgets.QStyleFactory.create('Plastique'))

@@ -1,0 +1,483 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"a",
+				"audio"
+			],
+			[
+				"ca",
+				"category_slug"
+			],
+			[
+				"cate",
+				"category_slug"
+			],
+			[
+				"cat",
+				"category_slug"
+			],
+			[
+				"sec",
+				"section_slug"
+			],
+			[
+				"__",
+				"__init__"
+			],
+			[
+				"It",
+				"ItemUploadForm"
+			],
+			[
+				"suc",
+				"success_url"
+			],
+			[
+				"form",
+				"form_data"
+			],
+			[
+				"for",
+				"form_data"
+			],
+			[
+				"sle",
+				"selectCat"
+			],
+			[
+				"sele",
+				"selectVal"
+			],
+			[
+				"ob",
+				"objects"
+			],
+			[
+				"mo",
+				"models"
+			],
+			[
+				"seri",
+				"serializers"
+			],
+			[
+				"seriali",
+				"serializer"
+			],
+			[
+				"setting",
+				"settings"
+			],
+			[
+				"se",
+				"self"
+			],
+			[
+				"post",
+				"poster_image"
+			],
+			[
+				"ec",
+				"exception"
+			],
+			[
+				"req",
+				"request"
+			],
+			[
+				"re",
+				"request"
+			],
+			[
+				"dis",
+				"display_style"
+			],
+			[
+				"pro",
+				"property\tNew Property"
+			],
+			[
+				"item",
+				"item_uuid"
+			],
+			[
+				"kw",
+				"kwargs"
+			],
+			[
+				"Ge",
+				"GeneralSerializer"
+			],
+			[
+				"ser",
+				"serializer_class"
+			],
+			[
+				"ce",
+				"create"
+			],
+			[
+				"cre",
+				"created"
+			],
+			[
+				"val",
+				"validated_data"
+			],
+			[
+				"model",
+				"models"
+			],
+			[
+				"I",
+				"Item"
+			],
+			[
+				"va",
+				"validated_data"
+			],
+			[
+				"ite",
+				"item_uuid"
+			],
+			[
+				"Item",
+				"ItemSerializer"
+			],
+			[
+				"siz",
+				"size_field"
+			],
+			[
+				"file",
+				"file_name"
+			],
+			[
+				"Ite",
+				"ItemPreviewVideo"
+			],
+			[
+				"ta",
+				"task_id"
+			],
+			[
+				"_tas",
+				"_task_progress"
+			],
+			[
+				"vid",
+				"video_file_info"
+			],
+			[
+				"time",
+				"timedelta"
+			],
+			[
+				"vi",
+				"video_file_info"
+			],
+			[
+				"fil",
+				"file_or_path"
+			],
+			[
+				"fi",
+				"file_name"
+			],
+			[
+				"exit",
+				"exit_code"
+			],
+			[
+				"ste",
+				"stderr"
+			],
+			[
+				"temp",
+				"temp_file"
+			],
+			[
+				"in",
+				"input_file"
+			],
+			[
+				"from",
+				"forms"
+			],
+			[
+				"fie",
+				"fields"
+			],
+			[
+				"si",
+				"size"
+			],
+			[
+				"task",
+				"task_id"
+			],
+			[
+				"pre",
+				"preview_audio_uploaded"
+			],
+			[
+				"preview",
+				"preview_video"
+			],
+			[
+				"thub",
+				"thumb_mode"
+			],
+			[
+				"thumb",
+				"thumb_mode"
+			],
+			[
+				"proce",
+				"processed_video"
+			],
+			[
+				"In",
+				"PositiveIntegerField"
+			],
+			[
+				"def",
+				"default"
+			],
+			[
+				"Mo",
+				"ModelForm"
+			],
+			[
+				"get",
+				"get_model"
+			],
+			[
+				"attr",
+				"attribs"
+			],
+			[
+				"fa",
+				"fa-3x"
+			],
+			[
+				"USB",
+				"USB_DEV"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/home/max/Downloads/JD2Setup_x64 (1).sh",
+		"/opt/vipid/wserver/pro/models/media.py",
+		"/opt/vipid/wserver/templates/pro/items_photo.html",
+		"/opt/vipid/wserver/templates/pro/items_base.html",
+		"/opt/vipid/wserver/pro/admin/__init__.py",
+		"/opt/vipid/wserver/templates/pro/item.html",
+		"/opt/vipid/wserver/templates/pro/section.html",
+		"/opt/vipid/wserver/coinbase/buttons.py",
+		"/opt/vipid/wserver/vipid/views/payments.py",
+		"/opt/vipid/wserver/vipid/models/android_models.py",
+		"/opt/vipid/wserver/templates/profile.html",
+		"/opt/vipid/wserver/vipid/views/dashboard.py",
+		"/opt/vipid/wserver/vipid/views/themes.py",
+		"/opt/vipid/wserver/vipid/views/subscriptions.py",
+		"/opt/vipid/wserver/vipid/views/blog.py",
+		"/opt/vipid/wserver/vipid/views/packages.py",
+		"/opt/vipid/wserver/vipid/templatetags/is_file_exists.py",
+		"/opt/vipid/wserver/vipid/models/user_content_models.py",
+		"/opt/vipid/wserver/templates/my_videos.html",
+		"/opt/vipid/wserver/api/handlers.py",
+		"/opt/vipid/wserver/vipid/views/common.py",
+		"/opt/vipid/wserver/vipid/context_processors.py",
+		"/opt/vipid/wserver/settings/maxim.py",
+		"/opt/vipid/wserver/settings/_base.py",
+		"/opt/vipid/wserver/templates/base.html",
+		"/opt/vipid/wserver/pro/urls.py",
+		"/opt/vipid/wserver/pro/models/item.py",
+		"/opt/vipid/wserver/templates/pro/upload_item.html",
+		"/opt/vipid/wserver/templates/pro/upload.html",
+		"/opt/vipid/wserver/pro/api/serializers.py",
+		"/opt/vipid/wserver/templates/registration/login.html",
+		"/opt/vipid/wserver/pro/api/views.py",
+		"/opt/vipid/wserver/pro/forms.py",
+		"/opt/vipid/wserver/static/skin/less/pro.less",
+		"/opt/vipid/wserver/templates/pro/items_audio.html",
+		"/opt/vipid/wserver/templates/pro/items_quad.html",
+		"/opt/vipid/wserver/pro/models/category.py",
+		"/opt/vipid/wserver/pro/views.py",
+		"/opt/vipid/wserver/pro/apps.py",
+		"/opt/vipid/wserver/templates/pro/category.html",
+		"/home/max/vms/mac/boot-macos.sh",
+		"/home/max/vms/win/boot-windows.sh",
+		"/opt/vipid/acid/acid/utils/misc.py",
+		"/opt/vipid/acid/broker/scheduler/clients.py",
+		"/opt/vipid/acid/acid/utils.py",
+		"/opt/vipid/acid/acid/utils/command.py",
+		"/media/max/1TB_Ext/vms/win/boot-windows.sh",
+		"/media/max/1TB_Ext/vms/mac/boot-macos.sh",
+		"/home/max/vms/mac/backup-macos.sh"
+	],
+	"find":
+	{
+		"height": 26.0
+	},
+	"find_in_files":
+	{
+		"height": 101.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"lala",
+			"payment_was_flagged",
+			"payment_was_successful",
+			"abou",
+			"render_",
+			"ItemUploadView"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 38.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "engine.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 306.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

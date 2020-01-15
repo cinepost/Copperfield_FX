@@ -19,7 +19,7 @@ class Overlay(QtWidgets.QWidget):
         self.setAttribute(Qt.Qt.WA_TranslucentBackground, True)
 
     def paintEvent(self, event):
-        painter = QtGui.QPainter(self) #self.viewport()
+        painter = QtGui.QPainter(self)
         painter.fillRect(self.rect(), QtGui.QColor(80, 80, 255, 128));
 
 

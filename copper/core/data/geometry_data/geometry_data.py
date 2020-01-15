@@ -6,7 +6,7 @@ import numpy as np
 from copper.core.data.base import OP_DataBase
 from copper.core.vmath import Vector3
 
-from .primitive import Point, Polygon
+from .primitive import Prim, Point, Polygon, Vertex
 from copper.core.data.geometry_data.iotranslators.base import GeoIORegistry
 
 logger = logging.getLogger(__name__)
@@ -50,11 +50,20 @@ class DynamicArray1D(object):
         return self._data[self._size - 1]
 
     def extend(self, elements):
-        for element in elements:
-            self.append(element)
+        self._data = np.concatenate((self.data, elements))
+        self._size += len(elements)
 
     def __len__(self):
         return self._size
+
+    def __str__(self):
+        return "%s\n%s" % (self.__class__.__name__, self.data)
+
+    def __getitem__(self, key):
+        return self._data[:self._size][key]
+
+    def __setitem__(self, key, value):
+        self._data[:self._size][key] = value
 
     @property
     def data(self):
@@ -68,8 +77,6 @@ class DynamicArray1D(object):
     def dtype(self):
         return self._dtype
 
-#dt = np.dtype({ 'names'     : ['r','g','b','a'],
-#                'formats'   : [uint8, uint8, uint8, uint8]})
 
 from .attribs import attribType, Attrib
 
@@ -84,11 +91,19 @@ class GeometryData(OP_DataBase):
 
     def clear(self):
         #self._points = DynamicArray1D({'names':['P', 'Pw'], 'formats':['3f4','f4']})
-        self._prims = []
+        
+        self._pts_index_map = {}
+        self._vts_index_map = {}
+        self._prims_index_map = {}
+        
+        self._points_list = []
+        self._vertices_list = []
+        self._prims_list = []
+
         self._attribs = [{}, {}, {}, {}]
         self._attribs[attribType.Point] = {
-            'P': DynamicArray1D("3f4", (0.0, 0.0, 0.0)),
-            'Pw': DynamicArray1D('f4', 1.0),        
+            Attrib(self, attribType.Point, 'P', (0.0, 0.0, 0.0)): DynamicArray1D("3f4", (0.0, 0.0, 0.0)),
+            Attrib(self, attribType.Point, 'Pw', 1.0): DynamicArray1D('f4', 1.0),        
         }
 
         self._attribs[attribType.Prim] = {}
@@ -97,6 +112,8 @@ class GeometryData(OP_DataBase):
 
         # shortcuts
         self._point_attribs = self._attribs[attribType.Point]
+        self._vertex_attribs = self._attribs[attribType.Vertex]
+        self._prim_attribs = self._attribs[attribType.Prim]
 
     def pointsRaw(self)  -> DynamicArray1D:
         '''
@@ -111,48 +128,72 @@ class GeometryData(OP_DataBase):
         return False
 
     def points(self) -> tuple([Point]):
-        return tuple([Point(self, i) for i in range(len(self._attribs[attribType.Point]['P'].data))])
+        return tuple(self._points_list)
 
     def iterPoints(self):
-        for i in range(len(self._attribs[attribType.Point]['P'].data)):
-            yield Point(self, i)
+        for pt in self._points_list:
+            yield pt
 
-
-    def prims(self):
-        return self._prims
+    def prims(self) -> tuple([Prim]):
+        return tuple(self._prims_list)
 
     def iterPrims(self):
-        for prim in self._prims:
+        for prim in self._prims_list:
             yield prim
-
 
     def createPoint(self) -> Point:
         """
-        Create a new point located at (0, 0, 0) and return the corresponding hou.Point object.
+        Create a new point located at (0, 0, 0) and return the corresponding Point object.
         """
 
         for attrib in self._attribs[attribType.Point].values():
             attrib.append()
-        
-        return Point(self, len(self._attribs[attribType.Point]['P'])-1)
 
-    def createPoints(self, point_positions) -> tuple([Point]):
-        pass
+        pt = Point(self, len(self._points_list))
+        self._points_list.append(pt)
+        
+        return pt
+
+    def createVertex(self, prim, point):
+
+        for attrib in self._attribs[attribType.Vertex].values():
+            attrib.append()
+
+        vt = Vertex(prim, point._pt_index, len(self._vertices_list))
+        self._vertices_list.append(vt)
+        return vt
+
+    def createPoints(self, point_positions: tuple or list or np.ndarray) -> tuple([Point]):
+        self._point_attribs['P'].extend(point_positions)
+        #old_points_num = len(self._points_list)
+        #created_points_num = len(point_positions)
+        #new_points_list = [Point(self, idx) for idx in range(old_points_num, created_points_num)]
+        #self._points_list += new_points_list
+        #return tuple(new_points_list)
 
     def appendPoint(self, x, y, z):
         self._points.append([x, y, z])
 
+    def createPolygon(self, is_closed=True):
+        '''
+        Create a new polygon and return the corresponding Polygon object.
+        '''
+        poly = Polygon(self, len(self._prims_list))
+        poly.setIsClosed(is_closed)
+        self._prims_list.append(poly)
+
+        return poly
+
+    def createPolygons(points, is_closed=True) -> tuple([Polygon]):
+        pass
+
     def addAttrib(self, attrib_type: attribType, name: str, default_value, transform_as_normal=False, create_local_variable=True) -> Attrib:
         if name not in self._attribs[attrib_type]:
             # attribute not present, create it first
-            self._attribs[attrib_type][name] = Attrib(self, 
-                attrib_type=attrib_type,
-                name=name,
-                default_value=default_value,
-                data_type=data_type,
-                data_size=data_size)
+            attrib = Attrib(self, attrib_type, name, default_value)
+            self._attribs[attrib_type][attrib] = DynamicArray1D("3f4", default_value)
         
-        return self._attribs[attrib_type][name]
+        return attrib
         
     def pointAttribs(self) -> tuple([Attrib]):
         """

@@ -291,11 +291,18 @@ class OBJDataDrawable(Drawable):
     def objNode(self):
         return self._obj_node
 
+    def renderNull(self):
+        # dummy render
+        pass
+
     def build(self):
         self.vbo = None
-        self.vao = None
+        self.vao_content = None
         self.points_vao = None
         self._prims_count = 0
+
+        self.renderPoints = self.renderNull
+        self.renderSurface = self.renderNull
         
         display_node = self._obj_node.displayNode()
 
@@ -306,19 +313,19 @@ class OBJDataDrawable(Drawable):
 
         geometry = display_node.geometry()
 
-        if len(geometry._prims) == 0:
+        if len(geometry._prims_list) == 0:
             # No prims in geometry
-            print("No prims in geometry!")
-            return
+            logger.warning("No prims in geometry %s !!!" % display_node.path())
 
-        self._prims_count = len(geometry._prims)
+        self._prims_count = len(geometry._prims_list)
 
         logger.debug("Building geometry drawable for node: %s" % self._obj_node.path())
 
-        if len(geometry.pointsRaw()['P'].data) > 0:
+        if geometry._point_attribs['P'].size > 0:
             self.vbo = self.ctx.buffer(geometry.pointsRaw()['P'].data.astype('f4').tobytes()) # geometry point positions
+            self.renderPoints = self._renderPoints
 
-        if len(geometry._prims) > 0:
+        if len(geometry._prims_list) > 0:
             indecies = []
 
             for prim in geometry.iterPrims():
@@ -338,20 +345,23 @@ class OBJDataDrawable(Drawable):
                 (self.vbo, '3f', 'in_vert')
             ]
 
+            self.renderSurface = self._renderSurface
+
             logger.debug("Done for %s" % self._obj_node.path())
 
-    def render(self, show_points=True):
+    def _renderSurface(self):
+        #print("surface %s with %s prims" % (self._obj_node.path(), self._prims_count))
         vao = self.ctx.vertex_array(self.prog, self.vao_content, self.ibo)
-
-        # surface
-        print("surface %s with %s prims" % (self._obj_node.path(), self._prims_count))
         self.points_mode.write(bytearray(struct.pack("f", 0)) )
-        self.ctx.enable(moderngl.DEPTH_TEST)
         vao.render(moderngl.TRIANGLES)
 
+    def _renderPoints(self):
+        points_vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert')
+        self.points_mode.write(bytearray(struct.pack("f", 1)) )
+        points_vao.render(moderngl.POINTS)
+
+    def render(self, show_points=True):
+        self.renderSurface()
+
         if show_points:
-            points_vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert')
-            self.points_mode.write(bytearray(struct.pack("f", 1)) )
-            self.ctx.point_size = 2.0
-            #self.ctx.disable(moderngl.DEPTH_TEST)
-            points_vao.render(moderngl.POINTS)
+            self.renderPoints()

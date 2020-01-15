@@ -81,8 +81,6 @@ class Camera(object):
         bottom = - 0.5 * viewportHeight
         top = 0.5 * viewportHeight
 
-        print("left %s right %s top %s bottom %s" %(left, right, top, bottom))
-
         if jittered:
             if point:
                 x_j = random.uniform(-.5,.5) * viewportWidth / self.viewportWidthInPixels

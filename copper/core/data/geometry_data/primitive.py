@@ -31,9 +31,23 @@ class primType(Enum):
 
 from .attribs import attribType, Attrib
 
-class Point(object):
+class ObjWithAttribs(object):
 
-	def __init__(self, geometry=None, pt_index=None):
+	def __init__(self, attribs_dict, index):
+		self._attribs_dict = attribs_dict
+		self._index = index
+
+	def setAttribValue(self, name_or_attrib: str or Attrib, attrib_value):		
+		attribs = self._attribs_dict[name_or_attrib]		
+		attribs.data[self._index] = attrib_value
+
+	def attribValue(self, name_or_attrib: str or Attrib):
+		return self._attribs_dict[name_or_attrib][self._index]	
+
+class Point(ObjWithAttribs):
+
+	def __init__(self, geometry, pt_index):
+		super(Point, self).__init__(geometry._point_attribs, pt_index)
 		self._geometry = geometry
 		self._pt_index = pt_index
 
@@ -49,26 +63,21 @@ class Point(object):
 	def setWeight(self, weight):
 		self._geometry._point_attribs['Pw'][self._pt_index] = weight
 
-	def attribValue(self, name_or_attrib: str or Attrib):
-		if isinstance(name_or_attrib, Attrib):
-			return self._geometry._point_attribs[name_or_attrib.name()][self._pt_index]
-
-		return self._geometry._point_attribs[name_or_attrib][self._pt_index]
-
 	def index(self):
 		return self._pt_index
 
 
 
-class Vertex(object):
+class Vertex(ObjWithAttribs):
 
-	def __init__(self, pt_index, prim, number):
+	def __init__(self, prim, pt_index, vt_index):
+		super(Vertex, self).__init__(prim._geometry._vertex_attribs, vt_index)
 		self._pt_index = pt_index
 		self._prim = prim
-		self._number = number
+		self._vt_index = vt_index
 
 	def number(self):
-		return self._number
+		return self._vt_index
 
 	def prim(self):
 		return self._prim
@@ -85,28 +94,25 @@ class Vertex(object):
 	def raw_point(self):
 		return self._prim._geometry._points[self._pt_index]
 
-	def attribValue(self, name_or_attrib: str or Attrib):
-		if isinstance(name_or_attrib, Attrib):
-			return self._geometry._vertex_attribs[name_or_attrib.name()][self._pt_index]
 
-		return self._geometry._vertex_attribs[name_or_attrib][self._pt_index]
-
-class Prim():
-	def __init__(self, geometry):
+class Prim(ObjWithAttribs):
+	def __init__(self, geometry, prim_index):
+		super(Prim, self).__init__(geometry._prim_attribs, prim_index)
 		self._geometry = geometry
+		self._prim_index = prim_index
 		self._vertices = [] # this is actually just a list of point numbers, so index is vertex number and value is point number in geometry._points
 	
 	def numVertices(self):
 		return len(self._vertices)
 
 	def vertex(self, index):
-		return Vertex(self._vertices[index])
+		return self._vertices[index]
 
 	def verticesRaw(self):
 		return self._vertices
 
 	def vertices(self) -> tuple:
-		return tuple([Vertex(self._vertices[i], self, i) for i in range(len(self._vertices))])
+		return tuple(self._vertices)
 
 	def attribValue(self, name_or_attrib) -> int or float or str or tuple:
 		pass
@@ -115,8 +121,8 @@ class Prim():
 		return self.__class__.prim_type
 
 class Face(Prim):
-	def __init__(self, geometry):
-		super(Face, self).__init__(geometry)
+	def __init__(self, geometry, prim_index):
+		super(Face, self).__init__(geometry, prim_index)
 		self._closed = False
 
 	def isClosed(self) -> bool:
@@ -131,6 +137,14 @@ class Face(Prim):
 		'''
 		self._closed = on_off
 
+	def addVertex(self, point) -> Vertex:
+		'''
+		Create a new vertex inside this face, adding it to the end of the vertex list.
+		'''
+		vt = self._geometry.createVertex(self, point)
+		self._vertices.append(vt)
+		return vt
+
 	def normal(self):
 		'''
 		Return the vector that’s perpendicular to the face.
@@ -141,8 +155,8 @@ class Polygon(Face):
 	
 	prim_type = primType.Polygon
 	
-	def __init__(self, geometry):
-		super(Polygon, self).__init__(geometry)
+	def __init__(self, geometry, prim_index):
+		super(Polygon, self).__init__(geometry, prim_index)
 
 
 

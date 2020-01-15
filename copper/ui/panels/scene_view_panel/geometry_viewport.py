@@ -125,6 +125,33 @@ def quad_fs(ctx, size=(1.0, 1.0), pos=(0.0, 0.0), name=None):
 
     return vao
 
+class HUD_Info():
+    def __init__(self):
+        self.fps = 0
+
+class Pixmap_Overlay(QtWidgets.QWidget):
+    def __init__(self):
+        QtWidgets.QWidget.__init__(self)
+        self.setPixmap()
+        self.setAttribute(Qt.Qt.WA_NoSystemBackground, True)
+        self.setAttribute(Qt.Qt.WA_TransparentForMouseEvents, True)
+        self.setAttribute(Qt.Qt.WA_TranslucentBackground, True) 
+
+    def setPixmap(self, pixmap=None):
+        if pixmap:
+            self._pixmap = pixmap
+            self.paintEvent = self._paintEvent
+        else:
+            self.paintEvent = self._paintEventNull
+
+    def _paintEventNull(self, event):
+        pass
+
+    def _paintEvent(self, event):
+        painter = QtGui.QPainter(self)
+        painter.drawPixmap(0, 0, self._pixmap)
+        painter.end()
+
 class Signals(QtCore.QObject):
     request_aa_pass = QtCore.pyqtSignal(int)
 
@@ -138,12 +165,15 @@ class GeometryViewport(QModernGLWidget):
     def __init__(self, parent, panel=None, share_widget=None, scene_manager=None):
         super(GeometryViewport, self).__init__(parent)
 
-        self.pt_font = QtGui.QFont("verdana", 8)
+        # panel section
         self.panel = panel
         self.setMinimumSize(160, 160)
+
+        # mouse interactions
         self.orbit_mode = False
         self.old_mouse_x = self.old_mouse_y = 0
 
+        # some viewport stuff
         self.cameras = {
             'persp': Camera(),
             'top': Camera(position=[10,0,0]),
@@ -156,20 +186,24 @@ class GeometryViewport(QModernGLWidget):
 
         self.scene_manager = OGL_Scene_Manager()
 
-        # Offscreen render target / AA offscreen buffer
+        # offscreen render target / offscreen HUD pixmap
         self.offscreen = None
-        self.aa_buffer = None
+        self.hud_pixmap = None
 
+        # aa stuff
+        self.aa_buffer = None
         self.max_aa_samples = 16
         self.aa_pass_num = 0
 
+        # helpers
         self.m_identity = Matrix44.identity() # just a helper
 
-        # Add in creating and connecting the timer 
-        self.timer = QtCore.QTimer()
-        self.timer.setInterval(100)  # 100 milliseconds = 0.1 seconds
-        #self.timer.timeout.connect(self.fps_display)  # Connect timeout signal to function
-        #self.timer.start()  # Set the timer running
+        # HUD seciton
+        self.hud_font = QtGui.QFont("verdana", 8)
+        self.hud_info = HUD_Info()
+        self.hud_overlay = Pixmap_Overlay()
+        self.hud_overlay.setParent(self)
+        self.hud_overlay.show()
 
         # connect panel signals
         self.panel.signals.copperNodeModified[OP_Node].connect(self.updateNodeDisplay)
@@ -177,7 +211,7 @@ class GeometryViewport(QModernGLWidget):
         # connect panel buttons signals
         self.panel.display_options.toggle_points_btn.pressed.connect(self.toggleShowPoints)
 
-        # aa
+        # aa signalling
         self.signals = Signals(self)
         self.signals.request_aa_pass.connect(self.doAAPass)
 
@@ -213,16 +247,6 @@ class GeometryViewport(QModernGLWidget):
             print("!!!!!!!!!!!!!!!!!!!")
             self.update()
 
-    @QtCore.pyqtSlot()  # Decorator to tell PyQt this method is a slot that accepts no arguments
-    def fps_display(self):
-        start_time = time.time()
-        counter = 1
-
-        time_now = time.time()
-        fps = str((counter / (time_now - start_time)))
-        #self.ui.label_fps.setText(fps)
-        print("fps %s" % fps)
-
     def initAA(self, num_samples=16):
         import ghalton
 
@@ -238,6 +262,7 @@ class GeometryViewport(QModernGLWidget):
 
     def init(self):
         self.makeCurrent()
+        self.ctx.point_size = 2.0
         self.scope = None
         
         self.buildOffscreen(self.ctx.viewport[2], self.ctx.viewport[3])
@@ -254,6 +279,20 @@ class GeometryViewport(QModernGLWidget):
         self.initAA(16)
 
         self._init_done = True
+
+    def renderHUD(self, aa_pass_num):
+        if aa_pass_num == 0:
+            # render aa pass independent HUD info
+            self.hud_pixmap.fill(QtGui.QColor(0, 0, 0, 0))
+            painter = QtGui.QPainter(self.hud_pixmap)
+            painter.setPen(QtGui.QColor(255, 128, 16))
+            painter.setFont(self.hud_font)
+            painter.drawText(10, 10, "FPS: %.1f" % self.hud_info.fps)
+            painter.end()
+            self.hud_overlay.update()
+        else:
+            # render aa pass dependent HUD info
+            pass
 
     def render(self):
         start_time = time.time()
@@ -272,10 +311,10 @@ class GeometryViewport(QModernGLWidget):
         # Render the scene
         self.scene_manager.background.draw()
 
+        self.ctx.enable(moderngl.DEPTH_TEST)
         # TODO: we might also want to pass model matrix so we can get different grid orientations instead of rebuilding grid
         self.scene_manager.grid.view.write(m_view.astype('f4').tobytes())
         self.scene_manager.grid.projection.write(m_proj.astype('f4').tobytes())
-
         self.scene_manager.grid.draw()
 
         self.scene_manager.origin.model.write(Matrix44.identity().astype('f4').tobytes())
@@ -291,6 +330,9 @@ class GeometryViewport(QModernGLWidget):
         if self.aa_pass_num == 0:
             self.screen.clear(0.0, 0.0, 1.0, 0.0)
 
+        # render hud surface
+        self.renderHUD(self.aa_pass_num)
+
         # Render aa buffer to screen
         self.ctx.disable(moderngl.DEPTH_TEST)
         self.offscreen_diffuse.use(location=0)
@@ -301,14 +343,14 @@ class GeometryViewport(QModernGLWidget):
         self.ctx.enable(moderngl.BLEND)
         self.ctx.blend_equation = moderngl.FUNC_ADD
         self.ctx.blend_func = moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA
-        #self.ctx.blend_func = moderngl.ONE, moderngl.ONE
         self.quad_fs.render(moderngl.TRIANGLES)
         self.ctx.disable(moderngl.BLEND)
         self.ctx.finish()
 
         time_now = time.time()
-        print("fps: %s" % (1.0 / (time_now - start_time)))
+        self.hud_info.fps = 1.0 / (time_now - start_time)
 
+        # do aa passes
         if self.aa_pass_num < (self.max_aa_samples-1):
             print("aa pass %s" % self.aa_pass_num)
             self.signals.request_aa_pass.emit(self.aa_pass_num)
@@ -320,7 +362,7 @@ class GeometryViewport(QModernGLWidget):
         self.render()
 
     def buildOffscreen(self, width, height):
-        # --- Offscreen render target
+        # offscreen render target
         if self.offscreen:
             self.offscreen.release()
             self.offscreen_diffuse.release()
@@ -352,6 +394,14 @@ class GeometryViewport(QModernGLWidget):
             )
             self.offscreen.viewport = (0, 0, width, height)
 
+        # offscreen hud pixmap
+        if self.hud_pixmap:
+            self.hud_pixmap = None
+
+        if not self.hud_pixmap:
+            self.hud_pixmap = QtGui.QPixmap(width, height)
+            self.hud_overlay.setPixmap(self.hud_pixmap)
+
     def resize(self, width, height):
         self.aa_pass_num = 0
         self.makeCurrent()
@@ -362,6 +412,7 @@ class GeometryViewport(QModernGLWidget):
         self.screen = self.ctx.detect_framebuffer(self.defaultFramebufferObject())
 
         self.buildOffscreen(width, height)
+        self.hud_overlay.resize(width, height)
 
     @property
     def activeCamera(self):

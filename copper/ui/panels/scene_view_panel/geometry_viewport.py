@@ -24,7 +24,6 @@ from .camera import Camera
 from .scene_manager import OGL_Scene_Manager, scene_manager
 
 from .scene_manager.drawable import SimpleBackground
-from .layouts import viewport_layout_types
 
 logger = logging.getLogger(__name__)
 
@@ -84,8 +83,6 @@ def quad_fs(ctx, size=(1.0, 1.0), pos=(0.0, 0.0), name=None):
                 }
             ''',
         )
-
-    print("Program %s " % shader_program)
 
     pos_data = np.array([
         xpos - width / 1.0, ypos + height / 1.0, -1.0,
@@ -158,16 +155,26 @@ class Signals(QtCore.QObject):
     def __init__(self, parent=None):  
         QtCore.QObject.__init__(self, parent)
 
+from enum import IntEnum
+
 class GeometryViewport(QModernGLWidget):
 
-    test = None
+    class viewType(IntEnum):
+        PERSP = 0
+        TOP = 1
+        BOTTOM = 2
+        LEFT = 3
+        RIGHT = 4
+        FRONT = 5
+        BACK = 6
     
-    def __init__(self, parent, panel=None, share_widget=None, scene_manager=None):
+    def __init__(self, parent, panel=None, view_type=0, share_widget=None, scene_manager=None):
         super(GeometryViewport, self).__init__(parent)
 
         # panel section
         self.panel = panel
         self.setMinimumSize(160, 160)
+        self.setSizePolicy(QtWidgets.QSizePolicy( QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding))
 
         # mouse interactions
         self.orbit_mode = False
@@ -176,12 +183,20 @@ class GeometryViewport(QModernGLWidget):
         # some viewport stuff
         self.cameras = {
             'persp': Camera(),
-            'top': Camera(position=[10,0,0]),
-            'left': Camera(position=[0,0,10])
+            'top': Camera(position=[10,0,0], is_perspective=False),
+            'left': Camera(position=[0,0,10], is_perspective=False),
         }
 
-        self.current_camera = 'persp'
+        if view_type == GeometryViewport.viewType.PERSP:
+            self.current_camera = 'persp'
+        elif view_type == GeometryViewport.viewType.TOP:
+            self.current_camera = 'top'
+        else:
+            self.current_camera = 'left'
+
         self._show_points = None
+        self._show_normals = None
+        self._show_hud = None
         self._init_done = False
 
         self.scene_manager = OGL_Scene_Manager()
@@ -203,13 +218,15 @@ class GeometryViewport(QModernGLWidget):
         self.hud_info = HUD_Info()
         self.hud_overlay = Pixmap_Overlay()
         self.hud_overlay.setParent(self)
-        self.hud_overlay.show()
+        self.hud_overlay.hide()
 
         # connect panel signals
         self.panel.signals.copperNodeModified[OP_Node].connect(self.updateNodeDisplay)
 
         # connect panel buttons signals
         self.panel.display_options.toggle_points_btn.pressed.connect(self.toggleShowPoints)
+        self.panel.display_options.toggle_normals_btn.pressed.connect(self.toggleShowNormals)
+        self.panel.display_options.toggle_hud_btn.pressed.connect(self.toggleShowHUD)
 
         # aa signalling
         self.signals = Signals(self)
@@ -239,6 +256,19 @@ class GeometryViewport(QModernGLWidget):
     def toggleShowPoints(self):
         self._show_points = not self._show_points
         self.update()
+
+    @QtCore.pyqtSlot()
+    def toggleShowNormals(self):
+        self._show_normals = not self._show_normals
+        self.update()
+
+    @QtCore.pyqtSlot()
+    def toggleShowHUD(self):
+        self._show_hud = not self._show_hud
+        if self._show_hud:
+            self.hud_overlay.show()
+        else:
+            self.hud_overlay.hide()
 
     @QtCore.pyqtSlot(OP_Node)
     def updateNodeDisplay(self, node):
@@ -287,7 +317,7 @@ class GeometryViewport(QModernGLWidget):
             painter = QtGui.QPainter(self.hud_pixmap)
             painter.setPen(QtGui.QColor(255, 128, 16))
             painter.setFont(self.hud_font)
-            painter.drawText(10, 10, "FPS: %.1f" % self.hud_info.fps)
+            painter.drawText(10, 20, "FPS: %.1f" % self.hud_info.fps)
             painter.end()
             self.hud_overlay.update()
         else:
@@ -330,9 +360,6 @@ class GeometryViewport(QModernGLWidget):
         if self.aa_pass_num == 0:
             self.screen.clear(0.0, 0.0, 1.0, 0.0)
 
-        # render hud surface
-        self.renderHUD(self.aa_pass_num)
-
         # Render aa buffer to screen
         self.ctx.disable(moderngl.DEPTH_TEST)
         self.offscreen_diffuse.use(location=0)
@@ -350,9 +377,12 @@ class GeometryViewport(QModernGLWidget):
         time_now = time.time()
         self.hud_info.fps = 1.0 / (time_now - start_time)
 
+        # render hud surface
+        self.renderHUD(self.aa_pass_num)
+
         # do aa passes
         if self.aa_pass_num < (self.max_aa_samples-1):
-            print("aa pass %s" % self.aa_pass_num)
+            #print("aa pass %s" % self.aa_pass_num)
             self.signals.request_aa_pass.emit(self.aa_pass_num)
             self.aa_pass_num += 1
         else:

@@ -10,6 +10,7 @@ class Camera(object):
     def __init__(self, position=[5,5,5], target=[0,0,0], fov_degrees = 41.0, near_plane = 0.1, far_plane = 1000.0,
                     ortogrphic_width=50.0, is_perspective=True):
         self.is_perspective = is_perspective
+        self.ortogrphic_width = ortogrphic_width
         self.fov_degrees = self.default_fov_degrees = fov_degrees
         self.orbiting_speed_degrees_per_radians = 300.0
 
@@ -67,8 +68,11 @@ class Camera(object):
         self.viewportRadiusInPixels = 0.5*widthInPixels if (widthInPixels < heightInPixels) else 0.5*heightInPixels
 
     def getProjection(self, jittered=False, point=None):
-        tangent = math.tan( self.fov_degrees / 2.0 / 180.0 * math.pi )
-        viewportRadius = self.near_plane * tangent
+        if self.is_perspective:
+            viewportRadius = self.near_plane * math.tan( self.fov_degrees / 2.0 / 180.0 * math.pi )
+        else:
+            viewportRadius = self.ortogrphic_width * 0.5
+
         if self.viewportWidthInPixels < self.viewportHeightInPixels:
             viewportWidth = 2.0 * viewportRadius
             viewportHeight = viewportWidth * self.viewportHeightInPixels / float(self.viewportWidthInPixels)
@@ -94,7 +98,10 @@ class Camera(object):
             top += y_j
             bottom += y_j
 
-        return Matrix44.perspective_projection_bounds(left, right, top, bottom, self.near_plane, self.far_plane)
+        if self.is_perspective:
+            return Matrix44.perspective_projection_bounds(left, right, top, bottom, self.near_plane, self.far_plane)
+        else:
+            return Matrix44.orthogonal_projection(left, right, top, bottom, self.near_plane, self.far_plane)
 
     def getTransform(self):
         return Matrix44.look_at(self.position, self.target, -self.up)
@@ -102,6 +109,9 @@ class Camera(object):
     # Causes the camera to "orbit" around the target point.
     # This is also called "tumbling" in some software packages.
     def orbit(self,delta_x_pixels, delta_y_pixels):
+        if not self.is_perspective:
+            return 
+
         pixelsPerDegree = 1000 / float(self.orbiting_speed_degrees_per_radians)
         radiansPerPixel = 1.0 / pixelsPerDegree * math.pi / 180.0
 
@@ -142,22 +152,26 @@ class Camera(object):
     # If ``push_target_distance'' is True, the point of interest translates forward (or backward)
     # *with* the camera, i.e. it's "pushed" along with the camera; otherwise it remains stationary.
     def dolly( self, delta_pixels, push_target_distance = None):
-        direction = self.target - self.position
-        distanceFromTarget = direction.length()
-        direction = direction.normalized()
+        if self.is_perspective:
+            direction = self.target - self.position
+            distanceFromTarget = direction.length()
+            direction = direction.normalized()
 
-        translationSpeedInUnitsPerRadius = distanceFromTarget * math.tan( self.fov_degrees/2.0 / 180.0 * math.pi )
-        pixelsPerUnit = self.viewportRadiusInPixels / translationSpeedInUnitsPerRadius
+            translationSpeedInUnitsPerRadius = distanceFromTarget * math.tan( self.fov_degrees/2.0 / 180.0 * math.pi )
+            pixelsPerUnit = self.viewportRadiusInPixels / translationSpeedInUnitsPerRadius
 
-        dollyDistance = delta_pixels / pixelsPerUnit
+            dollyDistance = delta_pixels / pixelsPerUnit
 
-        if not push_target_distance:
-            distanceFromTarget -= dollyDistance
-            if distanceFromTarget < self.target_push_threshold * self.near_plane:
-                distanceFromTarget = self.target_push_threshold * self.near_plane
+            if not push_target_distance:
+                distanceFromTarget -= dollyDistance
+                if distanceFromTarget < self.target_push_threshold * self.near_plane:
+                    distanceFromTarget = self.target_push_threshold * self.near_plane
 
-        self.position += direction * dollyDistance
-        self.target = self.position + direction * distanceFromTarget
+            self.position += direction * dollyDistance
+            self.target = self.position + direction * distanceFromTarget
+        else:
+            self.ortogrphic_width = max(self.ortogrphic_width - delta_pixels, 0.001)
+
 
     def getBackgroundImageName(self):
         return ""

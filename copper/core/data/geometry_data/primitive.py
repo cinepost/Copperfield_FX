@@ -100,7 +100,7 @@ class Prim(ObjWithAttribs):
 		super(Prim, self).__init__(geometry._prim_attribs, prim_index)
 		self._geometry = geometry
 		self._prim_index = prim_index
-		self._vertices = [] # this is actually just a list of point numbers, so index is vertex number and value is point number in geometry._points
+		self._vertices = [] # list of Vertex objects
 	
 	def numVertices(self):
 		return len(self._vertices)
@@ -155,8 +155,9 @@ class Polygon(Face):
 	
 	prim_type = primType.Polygon
 	
-	def __init__(self, geometry, prim_index):
+	def __init__(self, geometry, prim_index, is_closed=True):
 		super(Polygon, self).__init__(geometry, prim_index)
+		self._closed = is_closed
 
 
 

@@ -40,9 +40,9 @@ class ObjIO(GeoBaseIO):
                 logger.warning(reader.Warning())
 
         attrib = reader.GetAttrib()
-        #print("attrib.vertices = ", len(attrib.vertices))
-        #print("attrib.normals = ", len(attrib.normals))
-        #print("attrib.texcoords = ", len(attrib.texcoords))
+        print("attrib.vertices = ", len(attrib.vertices))
+        print("attrib.normals = ", len(attrib.normals))
+        print("attrib.texcoords = ", len(attrib.texcoords))
 
         # vertex data must be `xyzxyzxyz...`
         assert len(attrib.vertices) % 3 == 0
@@ -53,16 +53,36 @@ class ObjIO(GeoBaseIO):
         # texcoords data must be `uvuvuv...`
         assert len(attrib.texcoords) % 2 == 0
 
-        #print("numpy_vertices = {}".format(attrib.numpy_vertices()))
+        # create Point's
+        geometry.createPoints(np.reshape(attrib.numpy_vertices(), (-1, 3)))
 
+        # create primitives
         shapes = reader.GetShapes()
         print("Num shapes: ", len(shapes))
         for shape in shapes:
             print(shape.name)
-            print("num_indices = {}".format(len(shape.mesh.indices)))
+            #print("num_indices = {}".format(len(shape.mesh.indices)))
+            print(dir(shape.mesh))
+            #print(shape.mesh.numpy_indices())
+            #print(shape.mesh.numpy_num_face_vertices())
 
+            point_indices = shape.mesh.numpy_indices()[0::3]
 
-        geometry.createPoints(np.reshape(attrib.numpy_vertices(), (-1, 3)))
+            normal_indices = None
+            if len(attrib.normals) > 0:
+                normal_indices = shape.mesh.numpy_indices()[1::3]
+
+            txcoord_indices = None
+            if len(attrib.texcoords) > 0:
+                txcoord_indices = shape.mesh.numpy_indices()[2::3]
+
+            face_pts_offset = 0
+            points = []
+            for face_pts_num in shape.mesh.numpy_num_face_vertices():
+                points.append(point_indices[face_pts_offset: face_pts_offset+face_pts_num])
+                face_pts_offset += face_pts_num
+
+            geometry.createPolygons(points)
 
         end_time = time.time()
         logger.debug("Geometry read from .obj in %s seconds" % (end_time - start_time))

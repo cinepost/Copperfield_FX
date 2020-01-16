@@ -172,7 +172,8 @@ QSplitter::handle:horizontal {
     width: 4px;
 }
 
-QSplitter::handle:horizontal:hover {
+QSplitter::handle:horizontal:hover,
+QSplitter::handle:vertical:hover {
     background-color: #654;
 }
 
@@ -184,10 +185,25 @@ QSplitter::handle:vertical {
     height: 4px;
 }
 
-QSplitter::handle:vertical:hover {
-    background-color: #654;
+QSplitter#tiny::handle {
+	border: none;
+    background-color: #000;
 }
 
+QSplitter#tiny::handle:horizontal:hover,
+QSplitter#tiny::handle:vertical:hover {
+    background-color: #854;
+}
+
+QSplitter#tiny::handle:horizontal {
+    width: 2px;
+}
+
+QSplitter#tiny::handle:vertical {
+    height: 2px;
+}
+
+/* Labels */
 QLabel#info, QLabel#info:hover {
 	color: #aaa;
 	border: none;
@@ -277,6 +293,10 @@ QToolButton#pin {
 
 QToolButton#pin:checked, QToolButton#pin:pressed {
 	image: url("gui/icons/main/pin-pressed.svg");
+	background-color: #972;
+}
+
+QToolButton#pinable:checked, QToolButton#pinable:pressed {
 	background-color: #972;
 }
 

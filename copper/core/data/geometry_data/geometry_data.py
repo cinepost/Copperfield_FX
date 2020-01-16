@@ -50,8 +50,18 @@ class DynamicArray1D(object):
         return self._data[self._size - 1]
 
     def extend(self, elements):
+        assert isinstance(elements, (tuple, list, np.ndarray))
         self._data = np.concatenate((self.data, elements))
         self._size += len(elements)
+        self._npsize = self._size
+
+    def extendByNum(self, num_elements):
+        assert isinstance(num_elements, int)
+        arr_to_append = np.empty((num_elements,), dtype=self._dtype)
+        arr_to_append.fill(self._default_value)
+        self._data = np.concatenate((self.data, arr_to_append))
+        self._size += num_elements
+        self._npsize = self._size
 
     def __len__(self):
         return self._size
@@ -88,10 +98,7 @@ class GeometryData(OP_DataBase):
 
         self._frozen = False
 
-
-    def clear(self):
-        #self._points = DynamicArray1D({'names':['P', 'Pw'], 'formats':['3f4','f4']})
-        
+    def clear(self):        
         self._pts_index_map = {}
         self._vts_index_map = {}
         self._prims_index_map = {}
@@ -154,22 +161,42 @@ class GeometryData(OP_DataBase):
         
         return pt
 
-    def createVertex(self, prim, point):
+    def createVertex(self, prim, point) -> Vertex:
 
         for attrib in self._attribs[attribType.Vertex].values():
             attrib.append()
 
-        vt = Vertex(prim, point._pt_index, len(self._vertices_list))
-        self._vertices_list.append(vt)
-        return vt
+        self._vertices_list.append(Vertex(prim, point._pt_index, len(self._vertices_list)))
+        return self._vertices_list[-1]
+
+    def createVerticesBulk(self, prim, points_or_indices) -> tuple([Vertex]):
+        '''
+        create vertices without attributes modification
+        '''
+        #assert isinstance(points_or_indices, (tuple, list, np.ndarray))
+        #assert isinstance(points_or_indices[0], (int, np.int32, Point))
+
+        new_vertices = [Vertex(prim, pt_index, vt_index) for vt_index, pt_index in enumerate(points_or_indices, len(self._vertices_list))]
+
+        self._vertices_list += new_vertices
+        return tuple(new_vertices)
+
+    def createVertices(self, prim, points_or_indices) -> tuple([Vertex]):
+        #assert isinstance(points_or_indices, (tuple, list, np.ndarray))
+        #assert isinstance(points_or_indices[0], (int, np.int32, Point))
+
+        for attrib in self._attribs[attribType.Vertex].values():
+            attrib.extendByNum(len(points_or_indices))
+
+        return self.createVerticesBulk(prim, points_or_indices)
 
     def createPoints(self, point_positions: tuple or list or np.ndarray) -> tuple([Point]):
         self._point_attribs['P'].extend(point_positions)
-        #old_points_num = len(self._points_list)
-        #created_points_num = len(point_positions)
-        #new_points_list = [Point(self, idx) for idx in range(old_points_num, created_points_num)]
-        #self._points_list += new_points_list
-        #return tuple(new_points_list)
+        old_points_num = len(self._points_list)
+        created_points_num = len(point_positions)
+        new_points_list = [Point(self, idx) for idx in range(old_points_num, created_points_num)]
+        self._points_list += new_points_list
+        return tuple(new_points_list)
 
     def appendPoint(self, x, y, z):
         self._points.append([x, y, z])
@@ -178,14 +205,32 @@ class GeometryData(OP_DataBase):
         '''
         Create a new polygon and return the corresponding Polygon object.
         '''
-        poly = Polygon(self, len(self._prims_list))
-        poly.setIsClosed(is_closed)
-        self._prims_list.append(poly)
+        self._prims_list.append(Polygon(self, len(self._prims_list)))
 
-        return poly
+        return self._prims_list[-1]
 
-    def createPolygons(points, is_closed=True) -> tuple([Polygon]):
-        pass
+    def createPolygons(self, points: tuple or list or np.ndarray, is_closed=True) -> tuple([Polygon]):
+        assert isinstance(points, (tuple, list, np.ndarray)), "points should be either tuple/list/ndarray of tuples/lists/ndarray"
+        assert isinstance(points[0], (tuple, list, np.ndarray)), "points should be either tuple/list/ndarray of tuples/lists/ndarray"
+
+        total_vtx_count = sum([len(sublist) for sublist in points])
+        for attrib in self._attribs[attribType.Vertex].values():
+            attrib.extendByNum(total_vtx_count)
+
+        if type(points[0][0]) in (int, np.int32):
+            # create polygons using point numbers(indices)
+            for pts in points:
+                prim = Polygon(self, len(self._prims_list))
+                prim._vertices = self.createVerticesBulk(prim, pts)
+                self._prims_list.append(prim)
+
+        elif type(points[0][0]) == Point:
+            # create polygons using Point objects 
+            for pts in points:
+                pass
+
+        else:
+            raise BaseException("Unknown %s passed as point" % type(points[0][0]))
 
     def addAttrib(self, attrib_type: attribType, name: str, default_value, transform_as_normal=False, create_local_variable=True) -> Attrib:
         if name not in self._attribs[attrib_type]:

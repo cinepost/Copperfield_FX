@@ -252,7 +252,7 @@ class OBJDataDrawable(Drawable):
 
         self._prims_count = len(geometry._prims_list)
 
-        logger.debug("Building geometry drawable for node: %s" % self._obj_node.path())
+        logger.debug("Building renderer geometry drawable for node: %s" % self._obj_node.path())
 
         # Vertex/Points/Prims Normals
         if geometry.findVertexAttrib('N'):

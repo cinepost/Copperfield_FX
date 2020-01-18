@@ -188,7 +188,7 @@ class GeometryViewport(QModernGLWidget):
     @QtCore.pyqtSlot()
     def handleRenderedSample(self):
         self.makeCurrent()
-        self.offscreen2_diffuse.write(self.renderer.image.tobytes())
+        self.offscreen2_diffuse.write(self.renderer.image_data)
         self.update()
 
     @QtCore.pyqtSlot()
@@ -408,7 +408,10 @@ class GeometryViewport(QModernGLWidget):
             self.old_mouse_y = mouseEvent.y()
             
             self.renderer._camera = self.activeCamera
+            self.renderer.start.disconnect()
+            self.renderer.start.connect(self.renderer.run)
             self.renderer.start.emit(self._width, self._height)
+            
             self.update()
 
     # hou module stuff

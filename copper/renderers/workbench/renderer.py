@@ -45,9 +45,6 @@ class Signals(QtCore.QObject):
     stop_progressive_render = QtCore.pyqtSignal()
     reset_progressive_render = QtCore.pyqtSignal()
 
-    def __init__(self):  
-        QtCore.QObject.__init__(self, None)
-
 
 class Workbench(QtCore.QObject):
     start = QtCore.pyqtSignal(int, int)
@@ -69,7 +66,7 @@ class Workbench(QtCore.QObject):
         self._width = None
         self._height = None
 
-        self.image = None
+        self.image_data = None
 
         # helpers
         self.m_identity = Matrix44.identity() # just a helper
@@ -92,7 +89,7 @@ class Workbench(QtCore.QObject):
             "Occlusion" : RenderPasses.OCCLUSION
         }
 
-    def init(self, width, height, render_samples = 16):
+    def init(self, width, height, render_samples = 1):
         if not self._initialized:
             self.ctx = ContextManager.get_offscreen_context()
             self._camera = Camera()
@@ -181,20 +178,22 @@ class Workbench(QtCore.QObject):
         # Activate the window screen as the render target
         self._frame_buffer.use()
         self._render_buffer_albedo.use(location=0)
-        self.quad_fs.flip_v.value = 1
+        self.quad_fs.flip_v.value = 0
         self.quad_fs.program['aa_pass'].value = self.render_sample_num
         
         self.ctx.disable(moderngl.DEPTH_TEST)        
         self.ctx.enable(moderngl.BLEND)
         self.ctx.blend_equation = moderngl.FUNC_ADD
         self.ctx.blend_func = moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA
-        self.quad_fs.flip_v.value = 0
+        self.quad_fs.flip_v.value = 1
         self.quad_fs.render()
         self.ctx.disable(moderngl.BLEND)
         
         self.ctx.finish()
 
-        self.image = Image.frombytes('RGBA', self._frame_buffer.size, self._frame_buffer.read(components=4, attachment=0, alignment=1, dtype='f1'), 'raw', 'RGBA', 0, -1)#.show()
+        #self.image = Image.frombytes('RGBA', self._frame_buffer.size, self._frame_buffer.read(components=4, attachment=0, alignment=1, dtype='f1'), 'raw', 'RGBA', 0, -1)#.show()
+        self._frame_buffer.read_into(self.image_data, components=4, attachment=0, alignment=1, dtype='f1')
+        
 
         self.signals.sample_rendered.emit()
 
@@ -248,9 +247,11 @@ class Workbench(QtCore.QObject):
         )
         self._frame_buffer.viewport = (0, 0, width, height)
 
-    def resize(self, width, height):
-        self.aa_pass_num = 0 # reset aa
+        # rendered data buffer
+        self.image_data = np.empty((width, height), dtype="2float16")
+        #self.image = Image.new("RGBA", (width, height), (0, 0, 0))
 
+    def resize(self, width, height):
         self._width, self._height = width, height
         self._camera.setViewportDimensions(width, height)
         

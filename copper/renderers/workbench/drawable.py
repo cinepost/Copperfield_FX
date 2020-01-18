@@ -70,18 +70,22 @@ class QuadFS(Drawable):
                 uniform mat4 m_proj;
                 uniform mat4 m_model;
                 uniform mat4 m_view;
+                uniform float flip_v;
                 uniform float aa_passes;
                 uniform float aa_pass;
 
                 out vec2 uv;
-                out float passes;
-                out float pass;
+                out float pass_weight;
 
                 void main() {
                     gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
-                    uv = in_texcoord_0;
-                    passes = aa_passes;
-                    pass = aa_pass;
+
+                    if (flip_v < 0.5) {
+                        uv = vec2(in_texcoord_0.x, 1.0 - in_texcoord_0.y);
+                    } else {
+                        uv = in_texcoord_0;
+                    }
+                    pass_weight = 1.0 - (aa_pass / aa_passes);
                 }
             ''',
             fragment_shader='''
@@ -92,16 +96,20 @@ class QuadFS(Drawable):
                 out vec4 fragColor;
                 
                 in vec2 uv;
-                in float passes;
-                in float pass;
+                in float pass_weight;
 
                 void main() {
                     vec4 color = texture(texture0, uv);
-                    color.a *= 1.0 - (pass / passes);
+                    color.a *= pass_weight;
                     fragColor = color;
                 }
             ''',
         )
+
+        self.flip_v = self.program["flip_v"]
+        self.m_proj = self.program["m_proj"]
+        self.m_model = self.program["m_model"]
+        self.m_view = self.program["m_view"]
 
         pos_data = np.array([
             xpos - width / 1.0, ypos + height / 1.0, -1.0,

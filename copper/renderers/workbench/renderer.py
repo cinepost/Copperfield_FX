@@ -51,12 +51,13 @@ class Signals(QtCore.QObject):
 
 class Workbench(QtCore.QObject):
     start = QtCore.pyqtSignal(int, int)
+    pause = QtCore.pyqtSignal()
 
     def __init__(self, scene=None):
         QtCore.QObject.__init__(self)
 
         self._initialized = False
-        self._cancelled = False
+        self._done = False
         self._progressive_update = False
         
         #self._scene = scene or Scene(self.ctx)
@@ -75,10 +76,6 @@ class Workbench(QtCore.QObject):
         
         # signals
         self.signals = Signals()
-        self.signals.request_render_sample_pass.connect(self.renderProgressiveRenderSample)
-        self.signals.start_progressive_render.connect(self.startProgressiveRender)
-        self.signals.stop_progressive_render.connect(self.stopProgressiveRender)
-        self.signals.reset_progressive_render.connect(self.resetProgressiveRender)
 
         logger.debug("Workbench Renderer created")
     
@@ -100,15 +97,15 @@ class Workbench(QtCore.QObject):
             self.ctx = ContextManager.get_offscreen_context()
             self._camera = Camera()
 
-            self.resize(width, height)
-
             self._scene = Scene(self.ctx)
             self._scene.init()
             
             # A fullscreen quad just for rendering one pass to offscreen textures
             self.quad_fs = QuadFS(self.ctx)
-            self.quad_fs.program['m_model'].write(Matrix44.identity().astype('f4').tobytes())
-            self.quad_fs.program['m_view'].write(Matrix44.identity().astype('f4').tobytes())
+            self.quad_fs.m_model.write(Matrix44.identity().astype('f4').tobytes())
+            self.quad_fs.m_view.write(Matrix44.identity().astype('f4').tobytes())
+            self.quad_fs.m_proj.write(Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10).astype('f4').tobytes())
+            self.quad_fs.flip_v.value = 0
 
             # aa sampler
             self.setRenderSamples(render_samples)
@@ -116,13 +113,25 @@ class Workbench(QtCore.QObject):
             self._initialized = True
             print("Workbench initialized")
 
+        if (self._width, self._height) != (width, height):
+            self.resize(width, height)
+
     @QtCore.pyqtSlot(int, int)
-    def run(self, w, h):
+    def run(self, w, h): # run / rerun interactive renderer
+        self._done = False
+        self.render_sample_num = 0
+        self.renderPassSample = self._renderPassSample
         self.init(w, h)
-        for i in range(1, 2000):
-            self.renderPass()
-            #sleep(0.00001)
-        #self.signals.request_render_sample_pass.emit()
+
+        while not self._done:
+            self.renderPassSample()
+
+        self.renderPassSample = self.nofunc
+
+    @QtCore.pyqtSlot()
+    def stop(self):
+        self._done = True
+        self.renderPassSample = self.nofunc
 
     def setRenderSamples(self, samples):
         self.render_samples = samples
@@ -135,37 +144,13 @@ class Workbench(QtCore.QObject):
     def nofunc(self):
         pass
 
-    @QtCore.pyqtSlot()
-    def startProgressiveRender(self):
-        print("Workbench start progressive render")
-        self.render_sample_num = 0
-        self._progressive_update = True
-        
-        self.renderPass()
-        
-        print("exited")
-        return
-
-    @QtCore.pyqtSlot()
-    def renderProgressiveRenderSample(self):
-        self.renderPass()
-        
-    @QtCore.pyqtSlot()
-    def stopProgressiveRender(self):
-        print("Workbench stop progressive render")
-        self._progressive_update = False
-
-    @QtCore.pyqtSlot()
-    def resetProgressiveRender(self):
-        print("Workbench reset progressive render")
-        self.render_sample_num = 0
-
-    def renderPass(self):
+    def _renderPassSample(self):
         if self.render_sample_num == self.render_samples:
             self.render_sample_num = 0
+            self._done = True
             return 
 
-        #print("Workbench render image sample %s" % self.render_sample_num)
+        print("Workbench render image sample %s" % self.render_sample_num)
         m_view = self._camera.getTransform()
         m_proj = self._camera.getProjection(jittered=True, point=self.sampling_points[self.render_sample_num])
 
@@ -196,13 +181,14 @@ class Workbench(QtCore.QObject):
         # Activate the window screen as the render target
         self._frame_buffer.use()
         self._render_buffer_albedo.use(location=0)
-        self.quad_fs.program['m_proj'].write(Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10).astype('f4').tobytes())
+        self.quad_fs.flip_v.value = 1
         self.quad_fs.program['aa_pass'].value = self.render_sample_num
         
         self.ctx.disable(moderngl.DEPTH_TEST)        
         self.ctx.enable(moderngl.BLEND)
         self.ctx.blend_equation = moderngl.FUNC_ADD
         self.ctx.blend_func = moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA
+        self.quad_fs.flip_v.value = 0
         self.quad_fs.render()
         self.ctx.disable(moderngl.BLEND)
         
@@ -227,42 +213,40 @@ class Workbench(QtCore.QObject):
             self._render_buffer_normals.release()
             self._render_buffer_depth.release()
 
-        if not self._render_buffer:
-            self._render_buffer_albedo = self.ctx.texture(buffer_size, 4, dtype='f2') # RGBA color/diffuse layer
-            self._render_buffer_metalness = self.ctx.texture(buffer_size, 1, dtype='f2') # RGBA color/diffuse layer
-            self._render_buffer_roughness = self.ctx.texture(buffer_size, 1, dtype='f2') # RGBA color/diffuse layer
-            self._render_buffer_normals = self.ctx.texture(buffer_size, 3, dtype='f2') # Textures for storing normals (16 bit floats)
-            self._render_buffer_depth = self.ctx.depth_texture(buffer_size) # Texture for storing depth values
+        self._render_buffer_albedo = self.ctx.texture(buffer_size, 4, dtype='f2') # RGBA color/diffuse layer
+        self._render_buffer_metalness = self.ctx.texture(buffer_size, 1, dtype='f2') # RGBA color/diffuse layer
+        self._render_buffer_roughness = self.ctx.texture(buffer_size, 1, dtype='f2') # RGBA color/diffuse layer
+        self._render_buffer_normals = self.ctx.texture(buffer_size, 3, dtype='f2') # Textures for storing normals (16 bit floats)
+        self._render_buffer_depth = self.ctx.depth_texture(buffer_size) # Texture for storing depth values
 
-            # create a framebuffer we can render to
-            self._render_buffer = self.ctx.framebuffer(
-                color_attachments=[
-                    self._render_buffer_albedo,
-                    self._render_buffer_metalness,
-                    self._render_buffer_roughness,
-                    self._render_buffer_normals
-                ],
-                depth_attachment=self._render_buffer_depth,
-            )
-            self._render_buffer.viewport = (0, 0, width, height)
+        # create a framebuffer we can render to
+        self._render_buffer = self.ctx.framebuffer(
+            color_attachments=[
+                self._render_buffer_albedo,
+                self._render_buffer_metalness,
+                self._render_buffer_roughness,
+                self._render_buffer_normals
+            ],
+            depth_attachment=self._render_buffer_depth,
+        )
+        self._render_buffer.viewport = (0, 0, width, height)
 
         if self._frame_buffer:
             self._frame_buffer.release()
             self._frame_buffer_diffuse.release()
             self._frame_buffer_depth.release()
 
-        if not self._frame_buffer:
-            self._frame_buffer_diffuse = self.ctx.texture(buffer_size, 4, dtype='f1') # RGBA color/diffuse layer
-            self._frame_buffer_depth = self.ctx.depth_texture(buffer_size) # Texture for storing depth values
+        self._frame_buffer_diffuse = self.ctx.texture(buffer_size, 4, dtype='f1') # RGBA color/diffuse layer
+        self._frame_buffer_depth = self.ctx.depth_texture(buffer_size) # Texture for storing depth values
 
-            # create a framebuffer we can render to
-            self._frame_buffer = self.ctx.framebuffer(
-                color_attachments=[
-                    self._frame_buffer_diffuse,
-                ],
-                depth_attachment=self._frame_buffer_depth,
-            )
-            self._frame_buffer.viewport = (0, 0, width, height)
+        # create a framebuffer we can render to
+        self._frame_buffer = self.ctx.framebuffer(
+            color_attachments=[
+                self._frame_buffer_diffuse,
+            ],
+            depth_attachment=self._frame_buffer_depth,
+        )
+        self._frame_buffer.viewport = (0, 0, width, height)
 
     def resize(self, width, height):
         self.aa_pass_num = 0 # reset aa

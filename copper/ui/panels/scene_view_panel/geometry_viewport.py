@@ -115,8 +115,7 @@ class GeometryViewport(QModernGLWidget):
 
         self.scene_manager = OGL_Scene_Manager()
 
-        # viewport geometry renderer
-        self._progressive_render_started = None
+        self._width, self._height = None, None
 
         # offscreen render target / offscreen HUD pixmap
         self.offscreen = None
@@ -188,16 +187,13 @@ class GeometryViewport(QModernGLWidget):
 
     @QtCore.pyqtSlot()
     def handleRenderedSample(self):
-        #print("Handle rendered sample")
         self.makeCurrent()
         self.offscreen2_diffuse.write(self.renderer.image.tobytes())
-        
-        #self.render()
         self.update()
 
     @QtCore.pyqtSlot()
     def handleFinishedSamples(self):
-        print("Handle finished samples")
+        pass
 
     def init(self):
         if not self._init_done:
@@ -217,18 +213,16 @@ class GeometryViewport(QModernGLWidget):
             # init renderer
             self.renderer = Workbench()
             self.renderer.signals.sample_rendered.connect(self.handleRenderedSample)
-            #self.renderer.init(self.ctx.viewport[2], self.ctx.viewport[3])
-
-            self._init_done = True
 
             self.thread = QtCore.QThread()
             self.thread.start()
 
             self.renderer.moveToThread(self.thread)
+            self.renderer.pause.connect(self.renderer.stop)
             self.renderer.start.connect(self.renderer.run)
-            self.renderer.start.emit(self.ctx.viewport[2], self.ctx.viewport[3])
+            #self.renderer.start.emit(self.ctx.viewport[2], self.ctx.viewport[3])
             
-            #self.renderer.signals.start_progressive_render.emit()
+            self._init_done = True
 
     def renderHUD(self, aa_pass_num):
         if aa_pass_num == 0:
@@ -310,12 +304,6 @@ class GeometryViewport(QModernGLWidget):
         # render hud surface
         self.renderHUD(0)
 
-        #threading.Thread(target=lambda: self.renderer.signals.request_render_sample_pass.emit()).start()
-        #self.renderer.signals.request_render_sample_pass.emit()
-        #thread = QtCore.QThread()
-        #thread.started.connect(self.renderer.signals.request_render_sample_pass)
-        #thread.start()
-
 
     def buildOffscreen(self, width, height):
         buffer_size = (width, height)
@@ -366,16 +354,18 @@ class GeometryViewport(QModernGLWidget):
             self.hud_overlay.setPixmap(self.hud_pixmap)
 
     def resize(self, width, height):
+        self._width, self._height = width, height
+        self.renderer.pause.emit()
         self.makeCurrent()
-
         self.activeCamera.setViewportDimensions(width, height)
         self.ctx.viewport = (0, 0, width, height)
 
         self.screen = self.ctx.detect_framebuffer(self.defaultFramebufferObject())
 
         self.buildOffscreen(width, height)
-        #self.renderer.resize(width, height)
         self.hud_overlay.resize(width, height)
+
+        self.renderer.start.emit(width, height)
 
     @property
     def activeCamera(self):
@@ -418,6 +408,7 @@ class GeometryViewport(QModernGLWidget):
             self.old_mouse_y = mouseEvent.y()
             
             self.renderer._camera = self.activeCamera
+            self.renderer.start.emit(self._width, self._height)
             self.update()
 
     # hou module stuff

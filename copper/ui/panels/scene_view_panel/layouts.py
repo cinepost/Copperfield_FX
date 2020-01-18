@@ -3,12 +3,17 @@ viewport_layouts = {
         "title": "Single View",
         "shortcut": "Cmd+1",
         "icon": "gui/icons/panels/scene_view_panel/layout_single_view.svg",
-        "layout": None
+        "layout": "persp"
     },
     "four_views": {
         "title": "Four Views",
         "shortcut": "Cmd+2",
         "icon": "gui/icons/panels/scene_view_panel/layout_four_views.svg",
+        "layout": {
+            "hbox": {
+
+            }
+        }
     },
     "two_stacked": {
         "title": "Two Views Stacked",

@@ -2,21 +2,23 @@ import numpy as np
 import moderngl
 import logging
 
-from copper.ui.context_manager import ContextManager
+from copper.core.vmath import Matrix4
 from copper.core.vmath import Matrix4, normalize_v3
+from copper.ui.context_manager import ContextManager
 from pyrr import Matrix44 # using it temporarily
 
+from .shaders import SURFACE
+
 logger = logging.getLogger(__name__)
+
 
 class Drawable():
     gl_version = (3, 3)
     title = "Drawable"
 
-    def __init__(self, scene_viewer, **kwargs):
-        self._scene_viewer = scene_viewer
-        
-        self.ctx = ContextManager.get_default_context()
-        #self.ctx = moderngl.create_context()
+    def __init__(self, ctx, **kwargs):        
+        self.ctx = ContextManager.get_offscreen_context()#moderngl.create_context()
+        #self.ctx = moderngl.create_standalone_context()
 
         self._visible = True
         self._xform = Matrix4()
@@ -49,10 +51,9 @@ class Drawable():
     def render(self):
         raise NotImplementedError("")
 
-
 class QuadFS(Drawable):
-    def __init__(self, scene_viewer):
-        super().__init__(scene_viewer)
+    def __init__(self, ctx):
+        super().__init__(ctx)
         """
         Creates a 2D quad VAO using 2 triangles with normals and texture coordinates.
         """
@@ -69,12 +70,18 @@ class QuadFS(Drawable):
                 uniform mat4 m_proj;
                 uniform mat4 m_model;
                 uniform mat4 m_view;
+                uniform float aa_passes;
+                uniform float aa_pass;
 
                 out vec2 uv;
+                out float passes;
+                out float pass;
 
                 void main() {
                     gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
                     uv = in_texcoord_0;
+                    passes = aa_passes;
+                    pass = aa_pass;
                 }
             ''',
             fragment_shader='''
@@ -85,9 +92,12 @@ class QuadFS(Drawable):
                 out vec4 fragColor;
                 
                 in vec2 uv;
+                in float passes;
+                in float pass;
 
                 void main() {
                     vec4 color = texture(texture0, uv);
+                    color.a *= 1.0 - (pass / passes);
                     fragColor = color;
                 }
             ''',
@@ -132,60 +142,11 @@ class QuadFS(Drawable):
         vao.render(moderngl.TRIANGLES)
         vao.release()
 
-class SimpleGrid(Drawable):
-    title = "Simple Grid"
+class SimpleBackground(Drawable):
+    title = "Simple Background"
 
-    @classmethod
-    def buildGridData(cls, size, cells):
-        x = np.repeat(np.linspace(-size, size, cells+1), 2)
-        z = np.tile([-size, size], cells+1)
-        y = np.zeros((cells+1) * 2)
-        return np.concatenate([np.dstack([x, y, z]), np.dstack([z, y, x])])
-
-    def __init__(self, scene_viewer):
-        super().__init__(scene_viewer)        
-
-        self.prog = self.ctx.program(
-            vertex_shader='''
-                #version 330
-                uniform mat4 model;
-                uniform mat4 view;
-                uniform mat4 projection;
-                in vec3 in_vert;
-                void main() {
-                    gl_Position = projection * view * model * vec4(in_vert, 1.0);
-                }
-            ''',
-            fragment_shader='''
-                #version 330
-                out vec4 f_color;
-                void main() {
-                    f_color = vec4(0.1, 0.1, 0.1, 1.0);
-                }
-            ''',
-        )
-
-        self.vbo = self.ctx.buffer(SimpleGrid.buildGridData(10, 10).astype('f4').tobytes())
-
-        self.model = self.prog['model']
-        self.view = self.prog['view']
-        self.projection = self.prog['projection']
-
-        self.model.write(self.m_identity.astype('f4').tobytes())
-
-    def render(self):
-
-        #self.ctx.enable(moderngl.DEPTH_TEST)
-        vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert')
-        vao.render(moderngl.LINES)
-        vao.release()
-
-
-class SimpleOrigin(Drawable):
-    title = "Simple Origin"
-
-    def __init__(self, scene_viewer):
-        super().__init__(scene_viewer)        
+    def __init__(self, ctx):
+        super().__init__(ctx)        
 
         self.prog = self.ctx.program(
             vertex_shader='''
@@ -205,6 +166,7 @@ class SimpleOrigin(Drawable):
             ''',
             fragment_shader='''
                 #version 330
+
                 in vec3 v_color;
                 out vec4 f_color;
                 void main() {
@@ -219,36 +181,35 @@ class SimpleOrigin(Drawable):
 
         origin_data = np.array([
             # x,y,z,r,g,b
-            [0,0,0],[1,0,0],
-            [1,0,0],[1,0,0],
-            [0,0,0],[0,1,0],
-            [0,1,0],[0,1,0],
-            [0,0,0],[0,0,1],
-            [0,0,1],[0,0,1],
+            [-1,-1,-1], [0.39, 0.50, 0.55],
+            [ 1,-1,-1], [0.39, 0.50, 0.55],
+            [ 1, 1,-1], [0.75, 0.78, 0.78],
+            [-1, 1,-1], [0.75, 0.78, 0.78]
         ])
 
+        self.m_projection = Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10)
+
         self.vbo = self.ctx.buffer(origin_data.astype('f4').tobytes())
+
+        self.model.write(self.m_identity.astype('f4').tobytes())
+        self.view.write(self.m_identity.astype('f4').tobytes())
+        self.projection.write(self.m_projection.astype('f4').tobytes())
+
         
     def render(self):
-        #self.ctx.disable(moderngl.DEPTH_TEST)
         vao = self.ctx.simple_vertex_array(self.prog, self.vbo, 'in_vert', 'in_color')
-        vao.render(moderngl.LINES)
+        vao.render(moderngl.TRIANGLE_FAN)
         vao.release()
 
-from .shaders import SURFACE, POINTS
 
 class OBJDataDrawable(Drawable):
     title = "OBJ Data Geometry"
 
-    def __init__(self, scene_viewer, obj_node, name=None):
-        super().__init__(scene_viewer, name=name)        
+    def __init__(self, ctx, obj_node, name=None):
+        super().__init__(ctx, name=name)        
         self._obj_node = obj_node
 
         self.surface_prog = self.ctx.program( vertex_shader = SURFACE.VS, fragment_shader = SURFACE.FS )
-        self.points_prog = self.ctx.program( vertex_shader = POINTS.VS, fragment_shader = POINTS.FS )
-
-        self.programs = (self.surface_prog, self.points_prog)
-
         self.build()
 
     def objNode(self):
@@ -258,10 +219,6 @@ class OBJDataDrawable(Drawable):
         # dummy render
         pass
 
-    def uniformWrite(self, unifrom_name, unifrom_value):
-        for prog in self.programs:
-            prog[unifrom_name].write(unifrom_value)
-
     def build(self):
         self.points_vbo = None
         self.surface_vbo_v = None
@@ -270,9 +227,7 @@ class OBJDataDrawable(Drawable):
 
         self._prims_count = 0
 
-        self.renderPoints = self.renderNull
         self.renderSurface = self.renderNull
-        self.renderNormals = self.renderNull
         
         display_node = self._obj_node.displayNode()
 
@@ -290,11 +245,6 @@ class OBJDataDrawable(Drawable):
         self._prims_count = len(geometry._prims_list)
 
         logger.debug("Building geometry drawable for node: %s" % self._obj_node.path())
-
-        # Points
-        if len(geometry._point_attribs['P']) > 0:
-            self.points_vbo = self.ctx.buffer(geometry.pointsRaw()['P'].data.astype('f4').tobytes()) # geometry point positions
-            self.renderPoints = self._renderPoints
 
         # Vertex/Points/Prims Normals
         if geometry.findVertexAttrib('N'):
@@ -352,25 +302,10 @@ class OBJDataDrawable(Drawable):
 
             logger.debug("Done for %s" % self._obj_node.path())
 
-    def _renderNormals(self):
-        vao = self.ctx.vertex_array(self.normals_prog, self.normals_vao_content, self.normals_ibo)
-        vao.render(moderngl.LINES)
-        vao.release()
-
     def _renderSurface(self):
-        #print("surface %s with %s prims" % (self._obj_node.path(), self._prims_count))
         vao = self.ctx.vertex_array(self.surface_prog, self.surface_vao_content, self.surface_ibo)
         vao.render(moderngl.TRIANGLES)
         vao.release()
 
-    def _renderPoints(self):
-        vao = self.ctx.simple_vertex_array(self.points_prog, self.points_vbo, 'in_vert')
-        vao.render(moderngl.POINTS)
-        vao.release()
-
-    def render(self, show_points=True):
+    def render(self):
         self.renderSurface()
-        self.renderNormals()
-
-        if show_points:
-            self.renderPoints()

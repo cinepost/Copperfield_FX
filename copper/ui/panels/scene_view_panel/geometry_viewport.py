@@ -10,6 +10,7 @@ from copper import hou
 import math
 from PIL import Image
 
+import threading
 import moderngl
 
 from copper.core.op.op_node import OP_Node
@@ -18,15 +19,13 @@ from copper.ui.utils import clearLayout
 from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget, CollapsableWidget
 from copper.ui.panels.base_panel import PathBasedPaneTab
+from copper.renderers import Workbench
 
 from copper.core.vmath import Matrix4, Vector3
 from .camera import Camera
+
 from .scene_manager import OGL_Scene_Manager, scene_manager
-
-from .scene_manager.drawable import SimpleBackground
-
-logger = logging.getLogger(__name__)
-
+from .scene_manager.drawable import QuadFS
 
 from pyrr import Matrix44
 
@@ -34,93 +33,8 @@ from .qmodernglwidget import QModernGLWidget
 
 from moderngl_window.opengl.vao import VAO
 
-def quad_fs(ctx, size=(1.0, 1.0), pos=(0.0, 0.0), name=None):
-    """
-    Creates a 2D quad VAO using 2 triangles with normals and texture coordinates.
-    """
-    width, height = size
-    xpos, ypos = pos
+logger = logging.getLogger(__name__)
 
-    shader_program = ctx.program(
-            vertex_shader='''
-                #version 330
-                
-                in vec3 in_position;
-                in vec2 in_texcoord_0;
-
-                uniform mat4 m_proj;
-                uniform mat4 m_model;
-                uniform mat4 m_view;
-                uniform float aa_passes;
-                uniform float aa_pass;
-
-                out vec2 uv;
-                out float passes;
-                out float pass;
-
-                void main() {
-                    gl_Position = m_proj * m_view * m_model * vec4(in_position, 1.0);
-                    uv = in_texcoord_0;
-                    passes = aa_passes;
-                    pass = aa_pass;
-                }
-            ''',
-            fragment_shader='''
-                #version 330
-                
-                uniform sampler2D texture0;
-
-                out vec4 fragColor;
-                
-                in vec2 uv;
-                in float passes;
-                in float pass;
-
-                void main() {
-                    vec4 color = texture(texture0, uv);
-                    color.a *= 1.0 - (pass / passes);
-                    fragColor = color;
-                }
-            ''',
-        )
-
-    pos_data = np.array([
-        xpos - width / 1.0, ypos + height / 1.0, -1.0,
-        xpos - width / 1.0, ypos - height / 1.0, -1.0,
-        xpos + width / 1.0, ypos - height / 1.0, -1.0,
-        xpos + width / 1.0, ypos + height / 1.0, -1.0,
-    ], dtype=np.float32)
-
-    normal_data = np.array([
-        0.0, 0.0, 1.0,
-        0.0, 0.0, 1.0,
-        0.0, 0.0, 1.0,
-        0.0, 0.0, 1.0,
-    ], dtype=np.float32)
-
-    uv_data = np.array([
-        0.0, 0.0,
-        0.0, 1.0,
-        1.0, 1.0,
-        1.0, 0.0,
-    ], dtype=np.float32)
-
-    ibo = ctx.buffer(np.array([0,1,2,0,2,3]).astype('i4').tobytes())
-
-    vbo1 = ctx.buffer(pos_data.astype('f4').tobytes())
-    #vbo2 = ctx.buffer(normal_data.astype('f4').tobytes())
-    vbo3 = ctx.buffer(uv_data.astype('f4').tobytes())
-
-
-    vao_content = [
-        (vbo1, "3f", "in_position"),
-        #(vbo2, "3f", "in_normal"),
-        (vbo3, "2f", "in_texcoord_0")
-    ]
-
-    vao = ctx.vertex_array(shader_program, vao_content, index_buffer=ibo)
-
-    return vao
 
 class HUD_Info():
     def __init__(self):
@@ -201,14 +115,13 @@ class GeometryViewport(QModernGLWidget):
 
         self.scene_manager = OGL_Scene_Manager()
 
+        # viewport geometry renderer
+        self._progressive_render_started = None
+
         # offscreen render target / offscreen HUD pixmap
         self.offscreen = None
+        self.offscreen2 = None
         self.hud_pixmap = None
-
-        # aa stuff
-        self.aa_buffer = None
-        self.max_aa_samples = 16
-        self.aa_pass_num = 0
 
         # helpers
         self.m_identity = Matrix44.identity() # just a helper
@@ -221,7 +134,7 @@ class GeometryViewport(QModernGLWidget):
         self.hud_overlay.hide()
 
         # connect panel signals
-        self.panel.signals.copperNodeModified[OP_Node].connect(self.updateNodeDisplay)
+        #self.panel.signals.copperNodeModified[OP_Node].connect(self.updateNodeDisplay)
 
         # connect panel buttons signals
         self.panel.display_options.toggle_points_btn.pressed.connect(self.toggleShowPoints)
@@ -230,7 +143,9 @@ class GeometryViewport(QModernGLWidget):
 
         # aa signalling
         self.signals = Signals(self)
-        self.signals.request_aa_pass.connect(self.doAAPass)
+
+        # scene manager signals
+        self.scene_manager.signals.geometryUpdated.connect(self.updateGeometryDisplay)
 
         logger.debug("GeometryViewport widget created")
 
@@ -243,14 +158,10 @@ class GeometryViewport(QModernGLWidget):
     def drawSceneObjects(self, m_view, m_proj):
         for drawable in self.scene_manager.objects():
             # draw polygons
-            drawable.model.write(self.m_identity.astype('f4').tobytes())
-            drawable.view.write(m_view.astype('f4').tobytes())
-            drawable.projection.write(m_proj.astype('f4').tobytes())
+            drawable.uniformWrite("model", self.m_identity.astype('f4').tobytes())
+            drawable.uniformWrite("view", m_view.astype('f4').tobytes())
+            drawable.uniformWrite("projection", m_proj.astype('f4').tobytes())
             drawable.draw(show_points = self._show_points)
-
-    @QtCore.pyqtSlot(int)
-    def doAAPass(self, aa_pass_num):
-        self.update()
         
     @QtCore.pyqtSlot()
     def toggleShowPoints(self):
@@ -270,45 +181,54 @@ class GeometryViewport(QModernGLWidget):
         else:
             self.hud_overlay.hide()
 
-    @QtCore.pyqtSlot(OP_Node)
-    def updateNodeDisplay(self, node):
+    @QtCore.pyqtSlot()
+    def updateGeometryDisplay(self):
         # Now using quick and dirty hack to check that only geometry nodes changes reflected in scene view
-        if node.path().startswith("/obj"):
-            print("!!!!!!!!!!!!!!!!!!!")
-            self.update()
+        self.update()
 
-    def initAA(self, num_samples=16):
-        import ghalton
-
-        self.max_aa_samples = num_samples
-        self.aa_pass_num = 0
+    @QtCore.pyqtSlot()
+    def handleRenderedSample(self):
+        #print("Handle rendered sample")
+        self.makeCurrent()
+        self.offscreen2_diffuse.write(self.renderer.image.tobytes())
         
-        dim = 2
-        sequencer = ghalton.GeneralizedHalton(ghalton.EA_PERMS[:dim])
-        self.aa_points = sequencer.get(num_samples)
+        #self.render()
+        self.update()
 
-        if self.quad_fs:
-            self.quad_fs.program['aa_passes'].value = num_samples
+    @QtCore.pyqtSlot()
+    def handleFinishedSamples(self):
+        print("Handle finished samples")
 
     def init(self):
-        self.makeCurrent()
-        self.ctx.point_size = 2.0
-        self.scope = None
-        
-        self.buildOffscreen(self.ctx.viewport[2], self.ctx.viewport[3])
-        self.scene_manager.init()
+        if not self._init_done:
+            self.makeCurrent()
+            self.ctx.point_size = 2.0
+            self.scope = None
+            
+            self.buildOffscreen(self.ctx.viewport[2], self.ctx.viewport[3])
+            self.scene_manager.init()
 
-        # A fullscreen quad just for rendering one pass to offscreen textures
-        self.quad_fs = quad_fs(self.ctx)
-        self.quad_fs.program['aa_passes'].value = self.max_aa_samples
-        self.quad_fs.program['m_model'].write(Matrix44.identity().astype('f4').tobytes())
-        self.quad_fs.program['m_view'].write(Matrix44.identity().astype('f4').tobytes())
+            # A fullscreen quad just for rendering one pass to offscreen textures
+            self.quad_fs = QuadFS(self)
+            self.quad_fs.program['m_model'].write(Matrix44.identity().astype('f4').tobytes())
+            self.quad_fs.program['m_view'].write(Matrix44.identity().astype('f4').tobytes())
+            self.quad_fs.program['m_proj'].write(Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10).astype('f4').tobytes())
 
+            # init renderer
+            self.renderer = Workbench()
+            self.renderer.signals.sample_rendered.connect(self.handleRenderedSample)
+            #self.renderer.init(self.ctx.viewport[2], self.ctx.viewport[3])
 
-        # init AA
-        self.initAA(16)
+            self._init_done = True
 
-        self._init_done = True
+            self.thread = QtCore.QThread()
+            self.thread.start()
+
+            self.renderer.moveToThread(self.thread)
+            self.renderer.start.connect(self.renderer.run)
+            self.renderer.start.emit(self.ctx.viewport[2], self.ctx.viewport[3])
+            
+            #self.renderer.signals.start_progressive_render.emit()
 
     def renderHUD(self, aa_pass_num):
         if aa_pass_num == 0:
@@ -324,22 +244,29 @@ class GeometryViewport(QModernGLWidget):
             # render aa pass dependent HUD info
             pass
 
+    def resetProgressiveRender(self):
+        #self.rendering_thread.join()
+        self._progressive_render_started = False
+        self.renderer.resetProgressiveRender()
+
     def render(self):
+        #print("GeometryViewport render")
+        
+        self.makeCurrent()
         start_time = time.time()
 
         m_view = self.activeCamera.getTransform()
-        m_proj = self.activeCamera.getProjection(jittered=True, point=self.aa_points[self.aa_pass_num])
+        m_proj = self.activeCamera.getProjection()
 
         # Render the scene to offscreen buffer
         self.offscreen.use()
-        self.offscreen.clear(1.0, 0.0, 0.0, 0.0)
+        self.offscreen.clear(0.0, 0.0, 0.0, 0.0)
     
 
-        self.ctx.multisample = False
+        self.ctx.multisample = True
         self.ctx.disable(moderngl.DEPTH_TEST)
 
-        # Render the scene
-        self.scene_manager.background.draw()
+        # Render guides
 
         self.ctx.enable(moderngl.DEPTH_TEST)
         # TODO: we might also want to pass model matrix so we can get different grid orientations instead of rebuilding grid
@@ -352,77 +279,83 @@ class GeometryViewport(QModernGLWidget):
         self.scene_manager.origin.projection.write(m_proj.astype('f4').tobytes())
         self.scene_manager.origin.draw()
 
-        # geometry
+        # draw guides
         self.drawSceneObjects(m_view, m_proj)
 
-        # Activate the window screen as the render target
-        self.screen.use()
-        if self.aa_pass_num == 0:
-            self.screen.clear(0.0, 0.0, 1.0, 0.0)
+        # ---
 
-        # Render aa buffer to screen
+        # Activate the window screen as the render target
         self.ctx.disable(moderngl.DEPTH_TEST)
-        self.offscreen_diffuse.use(location=0)
-        prog = self.quad_fs.program
-        prog['m_proj'].write(Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10).astype('f4').tobytes())
-        prog['aa_pass'].value = self.aa_pass_num
+        self.screen.clear(0.0, 1.0, 0.0, 1.0)
+        self.screen.use()
+
+        # Image from renderer        
+        self.offscreen2_diffuse.use(location=0)
+        self.quad_fs.render()
         
+
+        # Render offscreen guides buffer over of screen
         self.ctx.enable(moderngl.BLEND)
         self.ctx.blend_equation = moderngl.FUNC_ADD
         self.ctx.blend_func = moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA
-        self.quad_fs.render(moderngl.TRIANGLES)
+        self.offscreen_diffuse.use(location=0)
+        self.quad_fs.render()
         self.ctx.disable(moderngl.BLEND)
+
         self.ctx.finish()
 
         time_now = time.time()
         self.hud_info.fps = 1.0 / (time_now - start_time)
 
         # render hud surface
-        self.renderHUD(self.aa_pass_num)
+        self.renderHUD(0)
 
-        # do aa passes
-        if self.aa_pass_num < (self.max_aa_samples-1):
-            #print("aa pass %s" % self.aa_pass_num)
-            self.signals.request_aa_pass.emit(self.aa_pass_num)
-            self.aa_pass_num += 1
-        else:
-            self.aa_pass_num = 0
+        #threading.Thread(target=lambda: self.renderer.signals.request_render_sample_pass.emit()).start()
+        #self.renderer.signals.request_render_sample_pass.emit()
+        #thread = QtCore.QThread()
+        #thread.started.connect(self.renderer.signals.request_render_sample_pass)
+        #thread.start()
 
-    def draw(self):
-        self.render()
 
     def buildOffscreen(self, width, height):
+        buffer_size = (width, height)
         # offscreen render target
         if self.offscreen:
             self.offscreen.release()
             self.offscreen_diffuse.release()
             self.offscreen_normals.release()
             self.offscreen_depth.release()
-            self.offscreen = None
-            self.offscreen_diffuse = None
-            self.offscreen_normals = None
-            self.offscreen_depth = None
 
-        if not self.offscreen:
-            buffer_size = (width, height)
-            # RGBA color/diffuse layer
-            self.offscreen_diffuse = self.ctx.texture(buffer_size, 4)
+        self.offscreen_diffuse = self.ctx.texture(buffer_size, 4, dtype='f2') # RGBA color/diffuse layer
+        self.offscreen_normals = self.ctx.texture(buffer_size, 4, dtype='f2') # Textures for storing normals (16 bit floats)
+        self.offscreen_depth = self.ctx.depth_texture(buffer_size) # Texture for storing depth values
 
-            # Textures for storing normals (16 bit floats)
-            self.offscreen_normals = self.ctx.texture(buffer_size, 4, dtype='f2')
-            
-            # Texture for storing depth values
-            self.offscreen_depth = self.ctx.depth_texture(buffer_size)
+        # create a framebuffer we can render to
+        self.offscreen = self.ctx.framebuffer(
+            color_attachments=[
+                self.offscreen_diffuse,
+                self.offscreen_normals
+            ],
+            depth_attachment=self.offscreen_depth,
+        )
+        self.offscreen.viewport = (0, 0, width, height)
 
-            # create a framebuffer we can render to
-            self.offscreen = self.ctx.framebuffer(
-                color_attachments=[
-                    self.offscreen_diffuse,
-                    self.offscreen_normals
-                ],
-                depth_attachment=self.offscreen_depth,
-            )
-            self.offscreen.viewport = (0, 0, width, height)
+        if self.offscreen2:
+            self.offscreen2.release()
+            self.offscreen2_diffuse.release()
+            self.offscreen2_depth.release()
+
+        self.offscreen2_diffuse = self.ctx.texture(buffer_size, 4, dtype='f1') # RGBA color/diffuse layer
+        self.offscreen2_depth = self.ctx.depth_texture(buffer_size) # Texture for storing depth values
+
+        # create a framebuffer we can render to
+        self.offscreen2 = self.ctx.framebuffer(
+            color_attachments=[
+                self.offscreen2_diffuse,
+            ],
+            depth_attachment=self.offscreen2_depth,
+        )
+        self.offscreen2.viewport = (0, 0, width, height)
 
         # offscreen hud pixmap
         if self.hud_pixmap:
@@ -433,7 +366,6 @@ class GeometryViewport(QModernGLWidget):
             self.hud_overlay.setPixmap(self.hud_pixmap)
 
     def resize(self, width, height):
-        self.aa_pass_num = 0
         self.makeCurrent()
 
         self.activeCamera.setViewportDimensions(width, height)
@@ -442,6 +374,7 @@ class GeometryViewport(QModernGLWidget):
         self.screen = self.ctx.detect_framebuffer(self.defaultFramebufferObject())
 
         self.buildOffscreen(width, height)
+        #self.renderer.resize(width, height)
         self.hud_overlay.resize(width, height)
 
     @property
@@ -480,13 +413,12 @@ class GeometryViewport(QModernGLWidget):
             elif int(mouseEvent.buttons()) & QtCore.Qt.MidButton :
                 # pan camera
                 self.activeCamera.pan( delta_x, delta_y )
-            
-            self.aa_pass_num = 0
-            self.update()
-        
+
             self.old_mouse_x = mouseEvent.x()
             self.old_mouse_y = mouseEvent.y()
-
+            
+            self.renderer._camera = self.activeCamera
+            self.update()
 
     # hou module stuff
     def camera(self) -> ObjNode or None:

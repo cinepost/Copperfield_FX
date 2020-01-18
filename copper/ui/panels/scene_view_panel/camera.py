@@ -86,12 +86,12 @@ class Camera(object):
         top = 0.5 * viewportHeight
 
         if jittered:
-            if point:
-                x_j = random.uniform(-.5,.5) * viewportWidth / self.viewportWidthInPixels
-                y_j = random.uniform(-.5,.5) * viewportHeight / self.viewportHeightInPixels
+            if not point:
+                x_j = random.uniform(-.75,.75) * viewportWidth / self.viewportWidthInPixels
+                y_j = random.uniform(-.75,.75) * viewportHeight / self.viewportHeightInPixels
             else:
-                x_j = (point[0] - 0.5) * 0.5 * viewportWidth / self.viewportWidthInPixels
-                y_j = (point[1] - 0.5) * 0.5 * viewportHeight / self.viewportHeightInPixels
+                x_j = (point[0] - 0.5) * 1.0 * viewportWidth / self.viewportWidthInPixels
+                y_j = (point[1] - 0.5) * 1.0 * viewportHeight / self.viewportHeightInPixels
 
             left += x_j
             right += x_j

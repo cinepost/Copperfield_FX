@@ -16,11 +16,16 @@ from copper.core.utils import Singleton
 from copper.core.op.op_node import OP_Node
 from copper.core.vmath import Matrix4, Vector3
 
-from .drawable import SimpleGrid, SimpleOrigin, SimpleBackground
+from .drawable import SimpleGrid, SimpleOrigin
 from .drawable import OBJDataDrawable
 
 logger = logging.getLogger(__name__)
 
+class Signals(QtCore.QObject):
+    geometryUpdated = QtCore.pyqtSignal()
+
+    def __init__(self, parent=None):  
+        QtCore.QObject.__init__(self, parent)
 
 class OGL_Scene_Manager(object, metaclass=Singleton):
     def __init__(self):
@@ -28,6 +33,8 @@ class OGL_Scene_Manager(object, metaclass=Singleton):
         self._initialized = None
         self._objects = {}
         self._grid = None
+
+        self.signals = Signals()
 
         logger.debug("OGL_Scene_Manager created")
 
@@ -40,7 +47,6 @@ class OGL_Scene_Manager(object, metaclass=Singleton):
 
     def init(self):
         if not self._initialized:
-            self.background = SimpleBackground(self)
             self.grid = SimpleGrid(self)
             self.origin = SimpleOrigin(self)
 
@@ -71,6 +77,7 @@ class OGL_Scene_Manager(object, metaclass=Singleton):
             print("Update drawable in OGL_Scene_Manager")
             obj_node.displayNode().cook()
             self._objects[obj_node.id()].build()
+            self.signals.geometryUpdated.emit()
 
     def buildShaderPrograms(self):
         self.m = MGLMaterial(self.ctx, DEFAULT_VERTEX_SHADER, DEFAULT_FRAGMENT_SHADER)

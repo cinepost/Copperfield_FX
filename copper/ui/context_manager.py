@@ -4,6 +4,7 @@ import moderngl
 
 class ContextManager:
     ctx = None
+    offscreen_context = None
     qt_ctx = None
 
     @staticmethod
@@ -22,6 +23,20 @@ class ContextManager:
                     raise
 
         return ContextManager.ctx
+
+    @staticmethod
+    def get_offscreen_context() -> moderngl.Context:
+        '''
+        Offscreen context
+        '''
+
+        if ContextManager.offscreen_context is None:
+            try:
+                ContextManager.offscreen_context = moderngl.create_standalone_context()
+            except moderngl.Error:
+                raise
+
+        return ContextManager.offscreen_context
 
     @staticmethod
     def get_qt_context(window=None):

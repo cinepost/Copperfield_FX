@@ -18,7 +18,7 @@ class QModernGLWidget(QtWidgets.QOpenGLWidget):
         fmt.setProfile(QtGui.QSurfaceFormat.CoreProfile)
         fmt.setDepthBufferSize(32)
         fmt.setSwapInterval(0)
-        fmt.setSamples(1)
+        fmt.setSamples(4)
         self.setFormat(fmt)
         self.setUpdateBehavior(QtWidgets.QOpenGLWidget.PartialUpdate)
 
@@ -29,15 +29,14 @@ class QModernGLWidget(QtWidgets.QOpenGLWidget):
         pass
 
     def paintGL(self):
-        self.ctx = moderngl.create_context()
-        #self.ctx = ContextManager.get_default_context()
+        self.ctx = ContextManager.get_default_context()
 
         self.screen = self.ctx.detect_framebuffer(self.defaultFramebufferObject())
         self.init()
 
         self.resize(self.ctx.viewport[2],self.ctx.viewport[3])
 
-        self.render()
+        #self.render()
         self.paintGL = self.render
         self.resizeGL = self.resize
 

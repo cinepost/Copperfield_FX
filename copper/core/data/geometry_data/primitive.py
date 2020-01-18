@@ -51,7 +51,10 @@ class Point(ObjWithAttribs):
 		self._geometry = geometry
 		self._pt_index = pt_index
 
-	def position(self):
+	def position(self) -> Vector3:
+		return Vector3(self._geometry._point_attribs['P'][self._pt_index])
+
+	def positionData(self):
 		return self._geometry._point_attribs['P'][self._pt_index]
 
 	def setPosition(self, pos):
@@ -75,6 +78,8 @@ class Vertex(ObjWithAttribs):
 		self._pt_index = pt_index
 		self._prim = prim
 		self._vt_index = vt_index
+		self._geometry = self._prim._geometry
+		self._point = self._geometry._points_list[pt_index]
 
 	def number(self):
 		return self._vt_index
@@ -88,11 +93,17 @@ class Vertex(ObjWithAttribs):
 	def pointIndex(self):
 		return self._pt_index
 
-	def point(self):
-		raise Point(self._prim._geometry, self._pt_index)
+	def point(self) -> Point:
+		return self._point
 
-	def raw_point(self):
-		return self._prim._geometry._points[self._pt_index]
+	def normalData(self) -> tuple or list or np.ndarray:
+		'''
+		return normal x, y, z data. inefficient. only for debug
+		'''
+		if self._geometry.findVertexAttrib('N'):
+			return self._geometry._vertex_attribs['N'][self._vt_index]
+		else:
+			return self._prim.normalData()
 
 
 class Prim(ObjWithAttribs):
@@ -150,6 +161,9 @@ class Face(Prim):
 		Return the vector that’s perpendicular to the face.
 		'''
 		return Vector3()
+
+	def normalData(self):
+		return 
 
 class Polygon(Face):
 	

@@ -1,1 +1,1 @@
-from .renderer import Workbench
+from .renderer import Workbench, WorkbenchIPR

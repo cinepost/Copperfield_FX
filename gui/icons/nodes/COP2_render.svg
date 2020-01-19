@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Generator: Adobe Illustrator 19.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   id="Layer_1"
+   x="0px"
+   y="0px"
+   viewBox="0 0 15.999999 15.999999"
+   xml:space="preserve"
+   sodipodi:docname="COP2_render.svg"
+   width="16"
+   height="16"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)"><metadata
+   id="metadata61"><rdf:RDF><cc:Work
+       rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+         rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
+   id="defs59" /><sodipodi:namedview
+   pagecolor="#ffffff"
+   bordercolor="#666666"
+   borderopacity="1"
+   objecttolerance="10"
+   gridtolerance="10"
+   guidetolerance="10"
+   inkscape:pageopacity="0"
+   inkscape:pageshadow="2"
+   inkscape:window-width="1719"
+   inkscape:window-height="1118"
+   id="namedview57"
+   showgrid="false"
+   inkscape:zoom="40.125"
+   inkscape:cx="8"
+   inkscape:cy="8"
+   inkscape:window-x="0"
+   inkscape:window-y="27"
+   inkscape:window-maximized="0"
+   inkscape:current-layer="Layer_1" />
+<g
+   id="g24"
+   transform="matrix(0.05713714,0,0,0.05713714,0,2.940864e-5)">
+	<path
+   style="fill:#e4e5e6"
+   d="m 201.27,35.004 h 35.003 c 4.839,0 8.751,3.92 8.751,8.751 v 8.751 h -52.505 v -8.751 c 0,-4.83 3.911,-8.751 8.751,-8.751 z"
+   id="path2"
+   inkscape:connector-curvature="0" />
+	<path
+   style="fill:#51bba8"
+   d="m 17.502,52.506 h 245.024 c 9.661,0 17.502,7.841 17.502,17.502 v 140.014 c 0,9.661 -7.841,17.502 -17.502,17.502 H 17.502 C 7.841,227.523 0,219.682 0,210.022 V 70.008 C 0,60.347 7.841,52.506 17.502,52.506 Z"
+   id="path4"
+   inkscape:connector-curvature="0" />
+	<path
+   style="fill:#e4e5e6"
+   d="m 122.512,35.004 c 57.992,0 105.01,47.018 105.01,105.01 0,57.992 -47.018,105.01 -105.01,105.01 -57.992,0 -105.01,-47.018 -105.01,-105.01 0,-57.992 47.018,-105.01 105.01,-105.01 z"
+   id="path6"
+   inkscape:connector-curvature="0" />
+	<path
+   style="fill:#5b717c"
+   d="m 122.512,61.257 c 43.5,0 78.758,35.257 78.758,78.758 0,43.492 -35.257,78.758 -78.758,78.758 -43.501,0 -78.758,-35.257 -78.758,-78.758 0,-43.492 35.257,-78.758 78.758,-78.758 z"
+   id="path8"
+   inkscape:connector-curvature="0" />
+	<path
+   style="fill:#2b414d"
+   d="m 122.512,87.51 c 29,0 52.505,23.514 52.505,52.505 0,28.991 -23.505,52.505 -52.505,52.505 -28.992,0 -52.505,-23.522 -52.505,-52.505 0,-28.983 23.513,-52.505 52.505,-52.505 z"
+   id="path10"
+   inkscape:connector-curvature="0" />
+	<path
+   style="fill:#ffffff"
+   d="m 144.389,105.011 c 7.246,0 13.126,5.881 13.126,13.126 0,7.254 -5.881,13.126 -13.126,13.126 -7.245,0 -13.126,-5.872 -13.126,-13.126 0,-7.254 5.88,-13.126 13.126,-13.126 z"
+   id="path12"
+   inkscape:connector-curvature="0" />
+	<path
+   style="fill:#ffffff"
+   d="m 249.399,70.008 c 7.246,0 13.126,5.872 13.126,13.126 0,7.254 -5.881,13.126 -13.126,13.126 -7.246,0 -13.126,-5.872 -13.126,-13.126 0,-7.254 5.881,-13.126 13.126,-13.126 z"
+   id="path14"
+   inkscape:connector-curvature="0" />
+	<g
+   id="g22">
+		<rect
+   x="201.27"
+   y="35.004002"
+   style="fill:#cdcecf"
+   width="8.7510004"
+   height="17.502001"
+   id="rect16" />
+		<rect
+   x="218.771"
+   y="35.004002"
+   style="fill:#cdcecf"
+   width="8.7510004"
+   height="17.502001"
+   id="rect18" />
+		<path
+   style="fill:#cdcecf"
+   d="m 236.273,35.004 v 17.502 h 8.751 v -8.751 c 0,-4.83 -3.912,-8.751 -8.751,-8.751 z"
+   id="path20"
+   inkscape:connector-curvature="0" />
+	</g>
+</g>
+<g
+   id="g26"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g28"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g30"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g32"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g34"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g36"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g38"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g40"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g42"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g44"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g46"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g48"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g50"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g52"
+   transform="translate(0,-264.02802)">
+</g>
+<g
+   id="g54"
+   transform="translate(0,-264.02802)">
+</g>
+</svg>

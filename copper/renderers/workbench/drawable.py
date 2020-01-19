@@ -17,8 +17,8 @@ class Drawable():
     title = "Drawable"
 
     def __init__(self, ctx, **kwargs):        
-        self.ctx = ContextManager.get_offscreen_context()#moderngl.create_context()
-        #self.ctx = moderngl.create_standalone_context()
+        self.ctx = ctx
+        #self.ctx = ContextManager.get_offscreen_context()#moderngl.create_context()    
 
         self._visible = True
         self._xform = Matrix4()

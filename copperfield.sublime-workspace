@@ -4,516 +4,516 @@
 		"selected_items":
 		[
 			[
-				"pr",
-				"prog"
+				"im",
+				"image"
 			],
 			[
-				"qu",
-				"quad_fs"
+				"flip",
+				"flip_v"
 			],
 			[
-				"sh",
-				"shader_program"
-			],
-			[
-				"normal",
-				"normal_data"
-			],
-			[
-				"Cont",
-				"ContextManager"
-			],
-			[
-				"view",
-				"viewport"
-			],
-			[
-				"sc",
-				"screen"
+				"_",
+				"_stopped"
 			],
 			[
 				"re",
-				"render"
+				"render_samples"
 			],
 			[
-				"No",
-				"None"
+				"ren",
+				"render_sample_num"
+			],
+			[
+				"A",
+				"AThread"
+			],
+			[
+				"inte",
+				"interactive_renderer"
+			],
+			[
+				"ha",
+				"handleRenderedSample"
+			],
+			[
+				"C",
+				"RunCancellableThread"
+			],
+			[
+				"to",
+				"tobytes"
+			],
+			[
+				"a",
+				"astype"
+			],
+			[
+				"pr",
+				"_progressive_render_started"
+			],
+			[
+				"st",
+				"start_progressive_render"
 			],
 			[
 				"f",
 				"fbo"
 			],
 			[
-				"c",
-				"clear"
-			],
-			[
-				"is",
-				"is_perspective"
-			],
-			[
-				"Si",
-				"singleton"
-			],
-			[
-				"S",
-				"SimpleOrigin"
-			],
-			[
-				"draw",
-				"drawable"
-			],
-			[
-				"OP",
-				"OP_DataSocket"
-			],
-			[
-				"_x",
-				"_context"
-			],
-			[
-				"vie",
-				"views_layout"
-			],
-			[
-				"Q",
-				"QModernGLWidget"
-			],
-			[
-				"de",
-				"debug"
-			],
-			[
-				"pri",
-				"prims"
-			],
-			[
-				"_pr",
-				"_prims_count"
-			],
-			[
-				"OP_N",
-				"OP_Node"
-			],
-			[
-				"s",
-				"self"
-			],
-			[
-				"ob",
-				"object"
+				"_r",
+				"_frame_buffer"
 			],
 			[
 				"scene",
 				"scene_manager"
 			],
 			[
-				"obj",
-				"obj_drawable"
+				"color",
+				"color_attachments"
 			],
 			[
-				"up",
-				"updateObjNodeDrawable"
+				"_fr",
+				"_frame_buffer"
 			],
 			[
-				"obj_",
-				"obj_node"
+				"c",
+				"ctx"
 			],
 			[
-				"poi",
-				"points_mode"
+				"F",
+				"False"
 			],
 			[
-				"poins_",
-				"points_mode"
-			],
-			[
-				"set",
-				"setPwd"
-			],
-			[
-				"bui",
-				"buildNetworkLevel"
-			],
-			[
-				"eng",
-				"engine_signals"
-			],
-			[
-				"p",
-				"panel"
-			],
-			[
-				"pa",
-				"parent"
-			],
-			[
-				"node",
-				"nodeSelected"
+				"T",
+				"True"
 			],
 			[
 				"no",
-				"nodeSelected"
+				"nofunc"
 			],
 			[
-				"setPo",
-				"setPosition"
+				"_render",
+				"_render_cb"
 			],
 			[
-				"en",
-				"engine_signals"
+				"View",
+				"viewport"
 			],
 			[
-				"e",
-				"engine"
+				"d",
+				"dtype"
 			],
 			[
-				"GE",
-				"GeometryData"
+				"sing",
+				"signals"
 			],
 			[
-				"fro",
-				"fromNumpy"
+				"render",
+				"renderer"
 			],
 			[
-				"Ima",
-				"ImageDepth"
+				"p",
+				"print"
 			],
 			[
-				"plane",
-				"plane_name"
+				"in",
+				"interactive_update"
+			],
+			[
+				"OB",
+				"ObjNode"
+			],
+			[
+				"obj",
+				"obj_node"
+			],
+			[
+				"Re",
+				"RenderPasses"
+			],
+			[
+				"REnd",
+				"RenderPasses"
+			],
+			[
+				"nor",
+				"normalize_v3"
+			],
+			[
+				"Si",
+				"Signals"
+			],
+			[
+				"ini",
+				"indices"
+			],
+			[
+				"Po",
+				"Point"
+			],
+			[
+				"tri",
+				"tri_indices"
+			],
+			[
+				"indi",
+				"indecies"
+			],
+			[
+				"surf",
+				"surface_vbo_p"
+			],
+			[
+				"_po",
+				"_points"
+			],
+			[
+				"posii",
+				"positions"
+			],
+			[
+				"points_",
+				"points_vbo"
+			],
+			[
+				"uni",
+				"unifrom_value"
+			],
+			[
+				"point",
+				"points_prog"
+			],
+			[
+				"sur",
+				"surface_prog"
+			],
+			[
+				"_ver",
+				"_vertex_attribs"
+			],
+			[
+				"sel",
+				"sefl"
+			],
+			[
+				"_v",
+				"_vertex_attribs"
+			],
+			[
+				"value_",
+				"value_type"
+			],
+			[
+				"value",
+				"value_size"
+			],
+			[
+				"attr",
+				"attribType"
+			],
+			[
+				"atr",
+				"attribType"
+			],
+			[
+				"at",
+				"attribType"
+			],
+			[
+				"new",
+				"new_points_list"
+			],
+			[
+				"ex",
+				"extend"
+			],
+			[
+				"_op",
+				"_points_list"
+			],
+			[
+				"poi",
+				"points_or_indices"
 			],
 			[
 				"se",
 				"self"
 			],
 			[
-				"update",
-				"updatePos"
+				"s",
+				"self"
 			],
 			[
-				"post",
-				"_pos_to"
+				"crea",
+				"createVertices"
 			],
 			[
-				"QP",
-				"QPainterPath"
+				"po",
+				"points_or_indices"
 			],
 			[
-				"sock",
-				"socket_to"
+				"arr",
+				"arr_to_append"
 			],
 			[
-				"so",
-				"socket_from"
+				"ar",
+				"arr_to_append"
 			],
 			[
-				"out",
-				"outputSocketItems"
+				"num",
+				"num_elements"
 			],
 			[
-				"inputS",
-				"inputSocketItems"
+				"nu",
+				"num_elements"
 			],
 			[
-				"sta",
-				"stack_side"
+				"_p",
+				"_prims_list"
 			],
 			[
-				"_s",
-				"_socket_item_to"
+				"is",
+				"is_closed"
 			],
 			[
-				"_pos",
-				"_pos_to"
+				"as",
+				"assert"
 			],
 			[
-				"_sock",
-				"_socket_item_to"
+				"view",
+				"viewport_widget"
 			],
 			[
-				"_so",
-				"_socket_item_from"
+				"vie",
+				"viewport"
 			],
 			[
-				"_po",
-				"_pos_to"
+				"del",
+				"delta_pixels"
 			],
 			[
-				"soc",
-				"socket_item"
+				"or",
+				"ortogrphic_width"
 			],
 			[
-				"_socket",
-				"_socket_from"
+				"tn",
+				"tangent"
 			],
 			[
-				"_inp",
-				"_input_sockets"
+				"cure",
+				"current_camera"
 			],
 			[
-				"_",
-				"_objects"
+				"la",
+				"layout_scheme"
 			],
 			[
-				"o",
-				"obj_node"
+				"Sce",
+				"SceneViewPanel"
 			],
 			[
-				"conn",
-				"connection"
+				"La",
+				"layout_name"
 			],
 			[
-				"con",
-				"connection"
+				"vi",
+				"viewport_layouts"
 			],
 			[
-				"_in",
-				"_inputs"
+				"togg",
+				"toggleShowHUD"
 			],
 			[
-				"ou",
-				"output"
+				"toggle",
+				"toggleShowNormals"
 			],
 			[
-				"inpu",
-				"input_index"
+				"togglePoints",
+				"toggleShowPoints"
 			],
 			[
-				"in",
-				"index"
+				"_pain",
+				"_paintEventNull"
 			],
 			[
-				"op",
-				"op_data_socket"
+				"paint",
+				"paintEvent"
 			],
 			[
-				"Image",
-				"ImageData"
+				"hud",
+				"hud_overlay"
 			],
 			[
-				"__",
-				"__class__"
+				"HU",
+				"HUD_Overlay"
 			],
 			[
-				"OP_",
-				"OP_DataSocket"
+				"HUD",
+				"HUD_Info"
 			],
 			[
-				"outpu",
-				"_output_node_socket"
-			],
-			[
-				"inp",
-				"_input_node_socket"
-			],
-			[
-				"poin",
-				"pointsRaw"
-			],
-			[
-				"dis",
-				"display_node"
-			],
-			[
-				"parm",
-				"parmTemplate"
-			],
-			[
-				"floa",
-				"float2"
+				"hu",
+				"hud_pixmap"
 			],
 			[
 				"logg",
 				"logger"
 			],
 			[
-				"fo",
-				"font_file"
+				"ne",
+				"new_points_list"
 			],
 			[
-				"float",
-				"float3"
+				"cre",
+				"created_points_num"
 			],
 			[
-				"flo",
-				"float3"
+				"_poi",
+				"_points_list"
 			],
 			[
-				"m",
-				"m_projetion"
+				"_re",
+				"_renderSurface"
 			],
 			[
-				"Ma",
-				"Matrix44"
+				"rend",
+				"renderSurface"
 			],
 			[
-				"mdo",
-				"model"
+				"va",
+				"vao_content"
 			],
 			[
-				"pro",
-				"projection"
-			],
-			[
-				"fiel",
-				"file_name"
-			],
-			[
-				"fr",
-				"frame_range"
-			],
-			[
-				"frame",
-				"frame_range"
-			],
-			[
-				"ret",
-				"return"
-			],
-			[
-				"_p",
-				"_pt_index"
-			],
-			[
-				"b",
-				"build"
-			],
-			[
-				"ini",
-				"init_size"
-			],
-			[
-				"log",
+				"l",
 				"logger"
 			],
 			[
-				"vi",
-				"viewports"
-			],
-			[
-				"as",
-				"astype"
-			],
-			[
-				"tan",
-				"tangent"
-			],
-			[
-				"SI",
-				"SimpleGrid"
-			],
-			[
-				"li",
-				"line_edit"
-			],
-			[
-				"z",
-				"zoom"
-			],
-			[
-				"pi",
-				"pivot_y"
-			],
-			[
-				"zoo",
-				"zoomFactor"
-			],
-			[
-				"cur",
-				"curr_mouse_x"
-			],
-			[
-				"del",
-				"delta_y"
-			],
-			[
-				"piv",
-				"pivot_y"
-			],
-			[
-				"nod",
-				"node"
-			],
-			[
-				"cook",
-				"cookNodeData"
-			],
-			[
-				"for",
-				"format"
-			],
-			[
-				"Qt",
-				"QtGui"
-			],
-			[
-				"Ov",
-				"OverlayFilter"
-			],
-			[
-				"Pa",
-				"PathBarWidgetSignals"
-			],
-			[
-				"pin",
-				"pinPressed"
-			],
-			[
-				"need",
-				"needsToCook"
-			],
-			[
-				"_e",
-				"_engine"
-			],
-			[
-				"open",
-				"openclQueue"
-			],
-			[
-				"class",
-				"classmethod"
-			],
-			[
-				"cla",
-				"classmethod"
-			],
-			[
-				"frm",
-				"frame"
-			],
-			[
-				"cl",
-				"classmethod"
-			],
-			[
-				"data",
-				"data_index"
-			],
-			[
-				"Not",
-				"NotImplementedError"
-			],
-			[
-				"path",
-				"path_list"
-			],
-			[
-				"node_",
-				"node_path"
-			],
-			[
-				"node_p",
-				"node_path_tuple"
-			],
-			[
-				"link",
-				"link_item"
+				"__",
+				"__name__"
 			],
 			[
 				"create",
-				"createNode"
+				"createPoints"
+			],
+			[
+				"eleme",
+				"elements_size"
+			],
+			[
+				"el",
+				"else"
+			],
+			[
+				"sefl",
+				"self"
+			],
+			[
+				"P",
+				"Point"
+			],
+			[
+				"nd",
+				"ndarray"
+			],
+			[
+				"use",
+				"use_uvw"
+			],
+			[
+				"ho",
+				"hou_vertices"
+			],
+			[
+				"pt",
+				"pt_indices"
+			],
+			[
+				"nr",
+				"norm_indices"
+			],
+			[
+				"ve",
+				"_vertices_list"
+			],
+			[
+				"sef",
+				"self"
+			],
+			[
+				"_points",
+				"_points_list"
+			],
+			[
+				"prm",
+				"prim_index"
+			],
+			[
+				"prim",
+				"prim_index"
+			],
+			[
+				"nam",
+				"name_or_attrib"
+			],
+			[
+				"_ve",
+				"_vertex_attribs"
+			],
+			[
+				"qua",
+				"quad_fs"
+			],
+			[
+				"aa_p",
+				"aa_points"
+			],
+			[
+				"x",
+				"x_j"
+			],
+			[
+				"m",
+				"m_proj"
+			],
+			[
+				"m_",
+				"m_view"
+			],
+			[
+				"aa",
+				"aa_pass_num"
+			],
+			[
+				"pass",
+				"aa_pass_num"
+			],
+			[
+				"lo",
+				"location"
+			],
+			[
+				"off",
+				"offscreen"
+			],
+			[
+				"of",
+				"offscreen_normals"
+			],
+			[
+				"att",
+				"attr_name_or_attrib"
+			],
+			[
+				"data",
+				"data_size"
+			],
+			[
+				"da",
+				"data_type"
+			],
+			[
+				"def",
+				"default_value"
 			]
 		]
 	},
@@ -523,7 +523,7 @@
 			"file": "bin/copper",
 			"settings":
 			{
-				"buffer_size": 2781,
+				"buffer_size": 2818,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -621,7 +621,7 @@
 			"file": "requirements.txt",
 			"settings":
 			{
-				"buffer_size": 783,
+				"buffer_size": 901,
 				"line_ending": "Unix"
 			}
 		},
@@ -696,7 +696,7 @@
 			"file": "gui/config/copper.stylesheet.qss",
 			"settings":
 			{
-				"buffer_size": 11771,
+				"buffer_size": 12131,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -720,13 +720,11 @@
 			}
 		},
 		{
-			"file": "test/geometry/cube.obj",
+			"file": "test/geometry/dino.obj",
 			"settings":
 			{
-				"buffer_size": 521,
-				"encoding": "UTF-8",
-				"line_ending": "Unix",
-				"name": "# cube.obj"
+				"buffer_size": 600252,
+				"line_ending": "Unix"
 			}
 		},
 		{
@@ -759,32 +757,61 @@
 			"file": "copper/ui/panels/scene_view_panel/geometry_viewport.py",
 			"settings":
 			{
-				"buffer_size": 13017,
+				"buffer_size": 14349,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "test/geometry/Eagle_custom_Normals.obj",
+			"file": "copper/core/data/geometry_data/attribs.py",
 			"settings":
 			{
-				"buffer_size": 40351348,
+				"buffer_size": 1601,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "copper/ui/panels/scene_view_panel/layouts.py",
+			"file": "copper/core/data/geometry_data/geometry_data.py",
 			"settings":
 			{
-				"buffer_size": 1882,
+				"buffer_size": 10512,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "copper/ui/panels/scene_view_panel/qmodernglwidget.py",
+			"file": "copper/core/data/geometry_data/primitive.py",
 			"settings":
 			{
-				"buffer_size": 1404,
+				"buffer_size": 4006,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/renderers/workbench/drawable.py",
+			"settings":
+			{
+				"buffer_size": 10447,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/core/vmath/vector3.py",
+			"settings":
+			{
+				"buffer_size": 2024,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/core/vmath/__init__.py",
+			"settings":
+			{
+				"buffer_size": 325,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -793,7 +820,88 @@
 			"file": "copper/ui/panels/scene_view_panel/scene_manager/drawable.py",
 			"settings":
 			{
-				"buffer_size": 11492,
+				"buffer_size": 12290,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/scene_manager/shaders.py",
+			"settings":
+			{
+				"buffer_size": 2016,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/renderers/workbench/renderer.py",
+			"settings":
+			{
+				"buffer_size": 8802,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/renderers/__init__.py",
+			"settings":
+			{
+				"buffer_size": 32,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/scene_manager/ogl_scene_manager.py",
+			"settings":
+			{
+				"buffer_size": 2391,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/renderers/workbench/shaders.py",
+			"settings":
+			{
+				"buffer_size": 963,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "test/geometry/cube.obj",
+			"settings":
+			{
+				"buffer_size": 520,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "# cube.obj"
+			}
+		},
+		{
+			"file": "test/geometry/bunny.obj",
+			"settings":
+			{
+				"buffer_size": 5213426,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/core/data/geometry_data/iotranslators/obj/obj.py",
+			"settings":
+			{
+				"buffer_size": 2875,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/qmodernglwidget.py",
+			"settings":
+			{
+				"buffer_size": 1263,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -802,17 +910,26 @@
 			"file": "copper/ui/context_manager.py",
 			"settings":
 			{
-				"buffer_size": 899,
+				"buffer_size": 1315,
 				"encoding": "UTF-8",
 				"line_ending": "Unix",
 				"name": "import moderngl"
 			}
 		},
 		{
-			"file": "copper/ui/panels/scene_view_panel/scene_manager/ogl_scene_manager.py",
+			"file": "copper/renderers/workbench/scene.py",
 			"settings":
 			{
-				"buffer_size": 2221,
+				"buffer_size": 2073,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/renderers/workbench/__init__.py",
+			"settings":
+			{
+				"buffer_size": 31,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -857,7 +974,7 @@
 			"file": "copper/ui/panels/scene_view_panel/camera.py",
 			"settings":
 			{
-				"buffer_size": 7352,
+				"buffer_size": 7653,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -866,7 +983,25 @@
 			"file": "copper/ui/panels/scene_view_panel/scene_view_panel.py",
 			"settings":
 			{
-				"buffer_size": 4096,
+				"buffer_size": 6007,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/utils.py",
+			"settings":
+			{
+				"buffer_size": 524,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "copper/ui/panels/scene_view_panel/layouts.py",
+			"settings":
+			{
+				"buffer_size": 2183,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -884,7 +1019,7 @@
 			"file": "copper/ui/panels/base_panel.py",
 			"settings":
 			{
-				"buffer_size": 6888,
+				"buffer_size": 6871,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -1346,7 +1481,14 @@
 		"/home/max/dev/Copperfield_FX/bin",
 		"/home/max/dev/Copperfield_FX/copper",
 		"/home/max/dev/Copperfield_FX/copper/core",
+		"/home/max/dev/Copperfield_FX/copper/core/data",
+		"/home/max/dev/Copperfield_FX/copper/core/data/geometry_data",
+		"/home/max/dev/Copperfield_FX/copper/core/data/geometry_data/iotranslators",
+		"/home/max/dev/Copperfield_FX/copper/core/data/geometry_data/iotranslators/obj",
 		"/home/max/dev/Copperfield_FX/copper/core/engine",
+		"/home/max/dev/Copperfield_FX/copper/core/vmath",
+		"/home/max/dev/Copperfield_FX/copper/renderers",
+		"/home/max/dev/Copperfield_FX/copper/renderers/workbench",
 		"/home/max/dev/Copperfield_FX/copper/ui",
 		"/home/max/dev/Copperfield_FX/copper/ui/panels",
 		"/home/max/dev/Copperfield_FX/copper/ui/panels/scene_view_panel",
@@ -1354,6 +1496,9 @@
 	],
 	"file_history":
 	[
+		"/home/max/dev/Copperfield_FX/copper/core/data/geometry_data/iotranslators/obj/obj_old.py",
+		"/home/max/dev/Copperfield_FX/copper/ui/panels/scene_view_panel/geometry_viewport.py",
+		"/home/max/dev/Copperfield_FX/test/geometry/Eagle_custom_Normals.obj",
 		"/home/max/dev/dev/Copperfield_FX/copper/ui/panels/scene_view_panel/qmodernglwidget.py",
 		"/home/max/dev/CopperFX/src/copperfx/panels/NodeFlowViewPanel/NodeConnectionItem.cpp",
 		"/home/max/dev/Copperfield_FX/copper/core/engine/engine.py",
@@ -1478,10 +1623,7 @@
 		"/Users/max/dev/glman/src/glman_lib/RIB_File_Interface.cpp",
 		"/Users/max/dev/Copperfield_FX/test/mantra/test.rib",
 		"/Users/max/dev/glman/include/glman/Scene_Reader.h",
-		"/Users/max/dev/glman/src/glman_lib/Scene_Reader.cpp",
-		"/Users/max/dev/CopperFX/src/copper_pymodule/HOM_Geometry.cpp",
-		"/Users/max/dev/CopperFX/src/copper_pymodule/HOM_Module.cpp",
-		"/Users/max/dev/CopperFX/include/copper/HOM/HOM_Module.h"
+		"/Users/max/dev/glman/src/glman_lib/Scene_Reader.cpp"
 	],
 	"find":
 	{
@@ -1501,6 +1643,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"self.ctx.multisample = False",
 			"vieport",
 			"OGL_Scene_Manager",
 			"nodeModified",
@@ -1550,7 +1693,7 @@
 	"groups":
 	[
 		{
-			"selected": 26,
+			"selected": 25,
 			"sheets":
 			[
 				{
@@ -1559,15 +1702,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2781,
+						"buffer_size": 2818,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1707,
-								1707
+								2818,
+								2818
 							]
 						],
 						"settings":
@@ -1577,7 +1720,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 102.0,
+						"translation.y": 632.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 5,
@@ -1610,7 +1753,7 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 70,
+					"stack_index": 86,
 					"type": "text"
 				},
 				{
@@ -1640,7 +1783,7 @@
 						"translation.y": 14857.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 71,
+					"stack_index": 87,
 					"type": "text"
 				},
 				{
@@ -1670,7 +1813,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 68,
+					"stack_index": 84,
 					"type": "text"
 				},
 				{
@@ -1699,7 +1842,7 @@
 						"translation.y": 357.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 48,
+					"stack_index": 15,
 					"type": "text"
 				},
 				{
@@ -1727,7 +1870,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 50,
+					"stack_index": 68,
 					"type": "text"
 				},
 				{
@@ -1755,7 +1898,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 57,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
@@ -1783,7 +1926,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 49,
+					"stack_index": 67,
 					"type": "text"
 				},
 				{
@@ -1813,7 +1956,7 @@
 						"translation.y": 153.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 59,
+					"stack_index": 76,
 					"type": "text"
 				},
 				{
@@ -1841,7 +1984,7 @@
 						"translation.y": 357.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 75,
+					"stack_index": 90,
 					"type": "text"
 				},
 				{
@@ -1850,7 +1993,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 783,
+						"buffer_size": 901,
 						"regions":
 						{
 						},
@@ -1869,7 +2012,7 @@
 						"translation.y": 102.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 74,
+					"stack_index": 89,
 					"type": "text"
 				},
 				{
@@ -1897,7 +2040,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 41,
+					"stack_index": 60,
 					"type": "text"
 				},
 				{
@@ -1925,7 +2068,7 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 77,
+					"stack_index": 92,
 					"type": "text"
 				},
 				{
@@ -1954,7 +2097,7 @@
 						"translation.y": 357.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 52,
+					"stack_index": 70,
 					"type": "text"
 				},
 				{
@@ -1983,7 +2126,7 @@
 						"translation.y": 255.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 28,
+					"stack_index": 53,
 					"type": "text"
 				},
 				{
@@ -2012,7 +2155,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 69,
+					"stack_index": 85,
 					"type": "text"
 				},
 				{
@@ -2041,7 +2184,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 56,
+					"stack_index": 74,
 					"type": "text"
 				},
 				{
@@ -2069,7 +2212,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 67,
+					"stack_index": 83,
 					"type": "text"
 				},
 				{
@@ -2078,15 +2221,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 11771,
+						"buffer_size": 12131,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3751,
-								3751
+								3501,
+								3501
 							]
 						],
 						"settings":
@@ -2094,10 +2237,10 @@
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 3264.0,
+						"translation.y": 2606.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 61,
+					"stack_index": 27,
 					"type": "text"
 				},
 				{
@@ -2126,7 +2269,7 @@
 						"translation.y": 459.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 73,
+					"stack_index": 88,
 					"type": "text"
 				},
 				{
@@ -2156,36 +2299,35 @@
 						"translation.y": 204.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 31,
+					"stack_index": 35,
 					"type": "text"
 				},
 				{
 					"buffer": 21,
-					"file": "test/geometry/cube.obj",
+					"file": "test/geometry/dino.obj",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 521,
+						"buffer_size": 600252,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								501,
-								501
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"auto_name": "# cube.obj",
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 29,
+					"stack_index": 34,
 					"type": "text"
 				},
 				{
@@ -2210,10 +2352,10 @@
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 18231.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 72,
+					"stack_index": 39,
 					"type": "text"
 				},
 				{
@@ -2241,7 +2383,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 38,
+					"stack_index": 59,
 					"type": "text"
 				},
 				{
@@ -2268,10 +2410,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1275.0,
+						"translation.y": 296.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 40,
+					"stack_index": 36,
 					"type": "text"
 				},
 				{
@@ -2280,15 +2422,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 13017,
+						"buffer_size": 14349,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								9925,
-								9925
+								5776,
+								5776
 							]
 						],
 						"settings":
@@ -2298,19 +2440,402 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4794.0,
+						"translation.y": 6301.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 26,
+					"file": "copper/core/data/geometry_data/attribs.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1601,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 22,
+					"type": "text"
+				},
+				{
+					"buffer": 27,
+					"file": "copper/core/data/geometry_data/geometry_data.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10512,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								9445,
+								9445
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 4035.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 21,
+					"type": "text"
+				},
+				{
+					"buffer": 28,
+					"file": "copper/core/data/geometry_data/primitive.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4006,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1172,
+								1172
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 510.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 20,
+					"type": "text"
+				},
+				{
+					"buffer": 29,
+					"file": "copper/renderers/workbench/drawable.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 10447,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7415,
+								7415
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 3946.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 30,
+					"file": "copper/core/vmath/vector3.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2024,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2024,
+								2024
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 918.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 17,
+					"type": "text"
+				},
+				{
+					"buffer": 31,
+					"file": "copper/core/vmath/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 325,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								325,
+								325
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 16,
+					"type": "text"
+				},
+				{
+					"buffer": 32,
+					"file": "copper/ui/panels/scene_view_panel/scene_manager/drawable.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 12290,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								4778,
+								4778
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2244.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 33,
+					"file": "copper/ui/panels/scene_view_panel/scene_manager/shaders.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2016,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								545,
+								545
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 34,
+					"file": "copper/renderers/workbench/renderer.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8802,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3246,
+								3246
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1091.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 26,
-					"file": "test/geometry/Eagle_custom_Normals.obj",
+					"buffer": 35,
+					"file": "copper/renderers/__init__.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 40351348,
+						"buffer_size": 32,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6,
+								6
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 36,
+					"file": "copper/ui/panels/scene_view_panel/scene_manager/ogl_scene_manager.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2391,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								392,
+								392
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 510.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 37,
+					"file": "copper/renderers/workbench/shaders.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 963,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								616,
+								616
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 38,
+					"file": "test/geometry/cube.obj",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 520,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								352,
+								352
+							]
+						],
+						"settings":
+						{
+							"auto_name": "# cube.obj",
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 19,
+					"type": "text"
+				},
+				{
+					"buffer": 39,
+					"file": "test/geometry/bunny.obj",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5213426,
 						"regions":
 						{
 						},
@@ -2326,27 +2851,56 @@
 							"syntax": "Packages/Text/Plain text.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 18159789.0,
+						"translation.y": 25568.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 24,
 					"type": "text"
 				},
 				{
-					"buffer": 27,
-					"file": "copper/ui/panels/scene_view_panel/layouts.py",
-					"semi_transient": true,
+					"buffer": 40,
+					"file": "copper/core/data/geometry_data/iotranslators/obj/obj.py",
+					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1882,
+						"buffer_size": 2875,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								0,
-								0
+								2613,
+								2613
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 517.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 23,
+					"type": "text"
+				},
+				{
+					"buffer": 41,
+					"file": "copper/ui/panels/scene_view_panel/qmodernglwidget.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1263,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1119,
+								1119
 							]
 						],
 						"settings":
@@ -2359,84 +2913,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 28,
-					"file": "copper/ui/panels/scene_view_panel/qmodernglwidget.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 1404,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1031,
-								1031
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 153.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 2,
-					"type": "text"
-				},
-				{
-					"buffer": 29,
-					"file": "copper/ui/panels/scene_view_panel/scene_manager/drawable.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11492,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								10408,
-								10408
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Python/Python.sublime-syntax",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 5286.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 3,
-					"type": "text"
-				},
-				{
-					"buffer": 30,
+					"buffer": 42,
 					"file": "copper/ui/context_manager.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 899,
+						"buffer_size": 1315,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								899,
-								899
+								989,
+								989
 							]
 						],
 						"settings":
@@ -2450,24 +2944,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
-					"buffer": 31,
-					"file": "copper/ui/panels/scene_view_panel/scene_manager/ogl_scene_manager.py",
+					"buffer": 43,
+					"file": "copper/renderers/workbench/scene.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2221,
+						"buffer_size": 2073,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								344,
-								344
+								657,
+								657
 							]
 						],
 						"settings":
@@ -2477,14 +2971,42 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 51.0,
+						"translation.y": 364.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 10,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
-					"buffer": 32,
+					"buffer": 44,
+					"file": "copper/renderers/workbench/__init__.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 31,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								31,
+								31
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 45,
 					"file": "copper/ui/panels/scene_view_panel/scene_manager/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -2508,11 +3030,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 16,
+					"stack_index": 43,
 					"type": "text"
 				},
 				{
-					"buffer": 33,
+					"buffer": 46,
 					"file": "copper/core/utils/singleton.py",
 					"semi_transient": false,
 					"settings":
@@ -2538,11 +3060,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 12,
+					"stack_index": 40,
 					"type": "text"
 				},
 				{
-					"buffer": 34,
+					"buffer": 47,
 					"file": "copper/core/utils/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -2566,11 +3088,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 14,
+					"stack_index": 42,
 					"type": "text"
 				},
 				{
-					"buffer": 35,
+					"buffer": 48,
 					"file": "copper/core/config.py",
 					"semi_transient": false,
 					"settings":
@@ -2594,24 +3116,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 13,
+					"stack_index": 41,
 					"type": "text"
 				},
 				{
-					"buffer": 36,
+					"buffer": 49,
 					"file": "copper/ui/panels/scene_view_panel/camera.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 7352,
+						"buffer_size": 7653,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2288,
-								2288
+								3933,
+								3933
 							]
 						],
 						"settings":
@@ -2621,27 +3143,27 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 510.0,
+						"translation.y": 1275.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 11,
+					"stack_index": 7,
 					"type": "text"
 				},
 				{
-					"buffer": 37,
+					"buffer": 50,
 					"file": "copper/ui/panels/scene_view_panel/scene_view_panel.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4096,
+						"buffer_size": 6007,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3440,
-								3445
+								4885,
+								4885
 							]
 						],
 						"settings":
@@ -2654,11 +3176,71 @@
 						"translation.y": 1377.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 18,
 					"type": "text"
 				},
 				{
-					"buffer": 38,
+					"buffer": 51,
+					"file": "copper/ui/utils.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 524,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								446,
+								446
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 25,
+					"type": "text"
+				},
+				{
+					"buffer": 52,
+					"file": "copper/ui/panels/scene_view_panel/layouts.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2183,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								197,
+								197
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 26,
+					"type": "text"
+				},
+				{
+					"buffer": 53,
 					"file": "copper/ui/panels/parameters_panel/parameters_panel.py",
 					"semi_transient": false,
 					"settings":
@@ -2670,8 +3252,8 @@
 						"selection":
 						[
 							[
-								1002,
-								1002
+								1368,
+								1368
 							]
 						],
 						"settings":
@@ -2684,24 +3266,24 @@
 						"translation.y": 255.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 17,
+					"stack_index": 31,
 					"type": "text"
 				},
 				{
-					"buffer": 39,
+					"buffer": 54,
 					"file": "copper/ui/panels/base_panel.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 6888,
+						"buffer_size": 6871,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4103,
-								4103
+								2360,
+								2360
 							]
 						],
 						"settings":
@@ -2714,11 +3296,11 @@
 						"translation.y": 714.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 15,
+					"stack_index": 28,
 					"type": "text"
 				},
 				{
-					"buffer": 40,
+					"buffer": 55,
 					"file": "copper/ui/signals.py",
 					"semi_transient": false,
 					"settings":
@@ -2730,8 +3312,8 @@
 						"selection":
 						[
 							[
-								466,
-								466
+								70,
+								70
 							]
 						],
 						"settings":
@@ -2742,11 +3324,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 39,
+					"stack_index": 37,
 					"type": "text"
 				},
 				{
-					"buffer": 41,
+					"buffer": 56,
 					"file": "copper/ui/panels/composite_view_panel.py",
 					"semi_transient": false,
 					"settings":
@@ -2769,14 +3351,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1275.0,
+						"translation.y": 2295.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 36,
+					"stack_index": 30,
 					"type": "text"
 				},
 				{
-					"buffer": 42,
+					"buffer": 57,
 					"file": "copper/ui/panels/help_browser_panel.py",
 					"semi_transient": false,
 					"settings":
@@ -2802,11 +3384,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 66,
+					"stack_index": 82,
 					"type": "text"
 				},
 				{
-					"buffer": 43,
+					"buffer": 58,
 					"file": "copper/ui/panels/tree_view_panel.py",
 					"semi_transient": false,
 					"settings":
@@ -2832,11 +3414,11 @@
 						"translation.y": 1581.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 23,
+					"stack_index": 49,
 					"type": "text"
 				},
 				{
-					"buffer": 44,
+					"buffer": 59,
 					"file": "copper/ui/panels/network_view_panel/network_view_panel.py",
 					"semi_transient": false,
 					"settings":
@@ -2862,11 +3444,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 27,
+					"stack_index": 52,
 					"type": "text"
 				},
 				{
-					"buffer": 45,
+					"buffer": 60,
 					"file": "copper/ui/panels/network_view_panel/node_flow_scene.py",
 					"semi_transient": false,
 					"settings":
@@ -2892,11 +3474,11 @@
 						"translation.y": 1428.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 24,
+					"stack_index": 50,
 					"type": "text"
 				},
 				{
-					"buffer": 46,
+					"buffer": 61,
 					"file": "copper/core/op/op_network.py",
 					"semi_transient": false,
 					"settings":
@@ -2921,11 +3503,11 @@
 						"translation.y": 3927.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 19,
+					"stack_index": 45,
 					"type": "text"
 				},
 				{
-					"buffer": 47,
+					"buffer": 62,
 					"file": "copper/core/op/op_data_socket.py",
 					"semi_transient": false,
 					"settings":
@@ -2951,11 +3533,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 18,
+					"stack_index": 44,
 					"type": "text"
 				},
 				{
-					"buffer": 48,
+					"buffer": 63,
 					"file": "copper/ui/panels/network_view_panel/network_view_widget.py",
 					"semi_transient": false,
 					"settings":
@@ -2981,11 +3563,11 @@
 						"translation.y": 1428.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 26,
+					"stack_index": 51,
 					"type": "text"
 				},
 				{
-					"buffer": 49,
+					"buffer": 64,
 					"file": "copper/ui/panels/network_view_panel/node_item.py",
 					"semi_transient": false,
 					"settings":
@@ -2997,8 +3579,8 @@
 						"selection":
 						[
 							[
-								13267,
-								13267
+								1235,
+								1235
 							]
 						],
 						"settings":
@@ -3008,14 +3590,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 714.0,
+						"translation.y": 408.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 25,
+					"stack_index": 33,
 					"type": "text"
 				},
 				{
-					"buffer": 50,
+					"buffer": 65,
 					"file": "copper/ui/widgets/play_bar_widget/time_line.py",
 					"semi_transient": false,
 					"settings":
@@ -3041,11 +3623,11 @@
 						"translation.y": 153.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 37,
+					"stack_index": 58,
 					"type": "text"
 				},
 				{
-					"buffer": 51,
+					"buffer": 66,
 					"file": "copper/ui/panels/parameters_panel/parameters_widgets.py",
 					"semi_transient": false,
 					"settings":
@@ -3071,11 +3653,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 35,
+					"stack_index": 32,
 					"type": "text"
 				},
 				{
-					"buffer": 52,
+					"buffer": 67,
 					"file": "venv/lib/python3.7/site-packages/twisted/test/test_log.py",
 					"semi_transient": false,
 					"settings":
@@ -3101,11 +3683,11 @@
 						"translation.y": 14798.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 60,
+					"stack_index": 77,
 					"type": "text"
 				},
 				{
-					"buffer": 53,
+					"buffer": 68,
 					"file": "copper/cl/source_image.cl",
 					"semi_transient": false,
 					"settings":
@@ -3130,11 +3712,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 76,
+					"stack_index": 91,
 					"type": "text"
 				},
 				{
-					"buffer": 54,
+					"buffer": 69,
 					"file": "copper/cop/copnet_network.py",
 					"semi_transient": false,
 					"settings":
@@ -3159,11 +3741,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 54,
+					"stack_index": 72,
 					"type": "text"
 				},
 				{
-					"buffer": 55,
+					"buffer": 70,
 					"file": "copper/copper_cache.py",
 					"semi_transient": false,
 					"settings":
@@ -3189,11 +3771,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 64,
+					"stack_index": 80,
 					"type": "text"
 				},
 				{
-					"buffer": 56,
+					"buffer": 71,
 					"file": "copper/hou/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -3218,11 +3800,11 @@
 						"translation.y": 556.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 33,
+					"stack_index": 56,
 					"type": "text"
 				},
 				{
-					"buffer": 57,
+					"buffer": 72,
 					"file": "copper/ui/main_window.py",
 					"semi_transient": false,
 					"settings":
@@ -3234,8 +3816,8 @@
 						"selection":
 						[
 							[
-								3879,
-								3879
+								1174,
+								1174
 							]
 						],
 						"settings":
@@ -3245,14 +3827,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1632.0,
+						"translation.y": 255.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 29,
 					"type": "text"
 				},
 				{
-					"buffer": 58,
+					"buffer": 73,
 					"file": "copper/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -3276,11 +3858,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 51,
+					"stack_index": 69,
 					"type": "text"
 				},
 				{
-					"buffer": 59,
+					"buffer": 74,
 					"file": "copper/cop/cop_node.py",
 					"semi_transient": false,
 					"settings":
@@ -3305,11 +3887,11 @@
 						"translation.y": 714.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 55,
+					"stack_index": 73,
 					"type": "text"
 				},
 				{
-					"buffer": 60,
+					"buffer": 75,
 					"file": "copper/managers/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -3333,11 +3915,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 62,
+					"stack_index": 78,
 					"type": "text"
 				},
 				{
-					"buffer": 61,
+					"buffer": 76,
 					"file": "copper/managers/root_network.py",
 					"semi_transient": false,
 					"settings":
@@ -3362,11 +3944,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 65,
+					"stack_index": 81,
 					"type": "text"
 				},
 				{
-					"buffer": 62,
+					"buffer": 77,
 					"file": "copper/managers/mgr_node.py",
 					"semi_transient": false,
 					"settings":
@@ -3391,11 +3973,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 63,
+					"stack_index": 79,
 					"type": "text"
 				},
 				{
-					"buffer": 63,
+					"buffer": 78,
 					"file": "copper/shout/parsers/base.py",
 					"semi_transient": false,
 					"settings":
@@ -3420,11 +4002,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 85,
+					"stack_index": 100,
 					"type": "text"
 				},
 				{
-					"buffer": 64,
+					"buffer": 79,
 					"file": "copper/shout/parsers/rib/parser_rib.py",
 					"semi_transient": false,
 					"settings":
@@ -3449,11 +4031,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 84,
+					"stack_index": 99,
 					"type": "text"
 				},
 				{
-					"buffer": 65,
+					"buffer": 80,
 					"file": "copper/shout/parsers/ifd/parser_ifd.py",
 					"semi_transient": false,
 					"settings":
@@ -3478,11 +4060,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 83,
+					"stack_index": 98,
 					"type": "text"
 				},
 				{
-					"buffer": 66,
+					"buffer": 81,
 					"file": "copper/shout/parsers/ifd/parser_bgeo.py",
 					"semi_transient": false,
 					"settings":
@@ -3507,11 +4089,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 78,
+					"stack_index": 93,
 					"type": "text"
 				},
 				{
-					"buffer": 67,
+					"buffer": 82,
 					"file": "copper/shout/shout.py",
 					"semi_transient": false,
 					"settings":
@@ -3536,11 +4118,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 47,
+					"stack_index": 66,
 					"type": "text"
 				},
 				{
-					"buffer": 68,
+					"buffer": 83,
 					"file": "copper/shout/parsers/ifd/hgeo.py",
 					"semi_transient": false,
 					"settings":
@@ -3566,11 +4148,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 82,
+					"stack_index": 97,
 					"type": "text"
 				},
 				{
-					"buffer": 69,
+					"buffer": 84,
 					"file": "copper/shout/drivers/mplay.py",
 					"semi_transient": false,
 					"settings":
@@ -3596,11 +4178,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 79,
+					"stack_index": 94,
 					"type": "text"
 				},
 				{
-					"buffer": 70,
+					"buffer": 85,
 					"file": "copper/shout/drivers/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -3624,11 +4206,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 80,
+					"stack_index": 95,
 					"type": "text"
 				},
 				{
-					"buffer": 71,
+					"buffer": 86,
 					"file": "test/mantra/test.ifd",
 					"semi_transient": false,
 					"settings":
@@ -3654,11 +4236,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 81,
+					"stack_index": 96,
 					"type": "text"
 				},
 				{
-					"buffer": 72,
+					"buffer": 87,
 					"semi_transient": false,
 					"settings":
 					{
@@ -3732,11 +4314,11 @@
 						"translation.y": 1038.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 34,
+					"stack_index": 57,
 					"type": "text"
 				},
 				{
-					"buffer": 73,
+					"buffer": 88,
 					"file": "copper/cop/cop_blur.py",
 					"semi_transient": false,
 					"settings":
@@ -3761,11 +4343,11 @@
 						"translation.y": 408.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 42,
+					"stack_index": 61,
 					"type": "text"
 				},
 				{
-					"buffer": 74,
+					"buffer": 89,
 					"file": "copper/cop/cop_comps.py",
 					"semi_transient": false,
 					"settings":
@@ -3790,11 +4372,11 @@
 						"translation.y": 51.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 58,
+					"stack_index": 75,
 					"type": "text"
 				},
 				{
-					"buffer": 75,
+					"buffer": 90,
 					"file": "copper/cop/cop_file.py",
 					"semi_transient": false,
 					"settings":
@@ -3819,11 +4401,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 44,
+					"stack_index": 63,
 					"type": "text"
 				},
 				{
-					"buffer": 76,
+					"buffer": 91,
 					"file": "copper/cop/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -3847,11 +4429,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 53,
+					"stack_index": 71,
 					"type": "text"
 				},
 				{
-					"buffer": 77,
+					"buffer": 92,
 					"file": "copper/cop/cop_halftone.py",
 					"semi_transient": false,
 					"settings":
@@ -3876,11 +4458,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 43,
+					"stack_index": 62,
 					"type": "text"
 				},
 				{
-					"buffer": 78,
+					"buffer": 93,
 					"file": "copper/cop/cop_sources.py",
 					"semi_transient": false,
 					"settings":
@@ -3905,11 +4487,11 @@
 						"translation.y": 2193.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 46,
+					"stack_index": 65,
 					"type": "text"
 				},
 				{
-					"buffer": 79,
+					"buffer": 94,
 					"file": "copper/sop/sop_node.py",
 					"semi_transient": false,
 					"settings":
@@ -3934,11 +4516,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 45,
+					"stack_index": 64,
 					"type": "text"
 				},
 				{
-					"buffer": 80,
+					"buffer": 95,
 					"file": "copper/sop/sop_file.py",
 					"semi_transient": false,
 					"settings":
@@ -3963,11 +4545,11 @@
 						"translation.y": 357.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 22,
+					"stack_index": 48,
 					"type": "text"
 				},
 				{
-					"buffer": 81,
+					"buffer": 96,
 					"file": "copper/sop/sop_box.py",
 					"semi_transient": false,
 					"settings":
@@ -3992,11 +4574,11 @@
 						"translation.y": 63.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 21,
+					"stack_index": 47,
 					"type": "text"
 				},
 				{
-					"buffer": 82,
+					"buffer": 97,
 					"file": "copper/core/op/op_node.py",
 					"semi_transient": false,
 					"settings":
@@ -4022,11 +4604,11 @@
 						"translation.y": 408.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 20,
+					"stack_index": 46,
 					"type": "text"
 				},
 				{
-					"buffer": 83,
+					"buffer": 98,
 					"file": "copper/core/engine/engine.py",
 					"semi_transient": false,
 					"settings":
@@ -4049,14 +4631,14 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 4688.0,
+						"translation.y": 200.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 38,
 					"type": "text"
 				},
 				{
-					"buffer": 84,
+					"buffer": 99,
 					"file": "copper/core/engine/engine_signals.py",
 					"semi_transient": false,
 					"settings":
@@ -4080,11 +4662,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 30,
+					"stack_index": 54,
 					"type": "text"
 				},
 				{
-					"buffer": 85,
+					"buffer": 100,
 					"file": "copper/core/engine/__init__.py",
 					"semi_transient": false,
 					"settings":
@@ -4108,7 +4690,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 32,
+					"stack_index": 55,
 					"type": "text"
 				}
 			]

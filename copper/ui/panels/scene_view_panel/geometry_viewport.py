@@ -19,7 +19,7 @@ from copper.ui.utils import clearLayout
 from copper.ui.signals import signals
 from copper.ui.widgets import PathBarWidget, CollapsableWidget
 from copper.ui.panels.base_panel import PathBasedPaneTab
-from copper.renderers import Workbench
+from copper.renderers import Workbench, WorkbenchIPR
 
 from copper.core.vmath import Matrix4, Vector3
 from .camera import Camera
@@ -187,6 +187,7 @@ class GeometryViewport(QModernGLWidget):
 
     @QtCore.pyqtSlot()
     def handleRenderedSample(self):
+        #print("handleRenderedSample")
         self.makeCurrent()
         self.offscreen2_diffuse.write(self.renderer.image_data)
         self.update()
@@ -211,17 +212,9 @@ class GeometryViewport(QModernGLWidget):
             self.quad_fs.program['m_proj'].write(Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10).astype('f4').tobytes())
 
             # init renderer
-            self.renderer = Workbench()
-            self.renderer.signals.sample_rendered.connect(self.handleRenderedSample)
+            self.renderer = WorkbenchIPR()
+            self.renderer.setImageUpdateHandler(self.handleRenderedSample)
 
-            self.thread = QtCore.QThread()
-            self.thread.start()
-
-            self.renderer.moveToThread(self.thread)
-            self.renderer.pause.connect(self.renderer.stop)
-            self.renderer.start.connect(self.renderer.run)
-            #self.renderer.start.emit(self.ctx.viewport[2], self.ctx.viewport[3])
-            
             self._init_done = True
 
     def renderHUD(self, aa_pass_num):
@@ -239,7 +232,6 @@ class GeometryViewport(QModernGLWidget):
             pass
 
     def resetProgressiveRender(self):
-        #self.rendering_thread.join()
         self._progressive_render_started = False
         self.renderer.resetProgressiveRender()
 
@@ -254,7 +246,7 @@ class GeometryViewport(QModernGLWidget):
 
         # Render the scene to offscreen buffer
         self.offscreen.use()
-        self.offscreen.clear(0.0, 0.0, 0.0, 0.0)
+        self.offscreen.clear(0.0)
     
 
         self.ctx.multisample = True
@@ -276,11 +268,9 @@ class GeometryViewport(QModernGLWidget):
         # draw guides
         self.drawSceneObjects(m_view, m_proj)
 
-        # ---
-
         # Activate the window screen as the render target
         self.ctx.disable(moderngl.DEPTH_TEST)
-        self.screen.clear(0.0, 1.0, 0.0, 1.0)
+        self.screen.clear(0.0)
         self.screen.use()
 
         # Image from renderer        
@@ -333,7 +323,7 @@ class GeometryViewport(QModernGLWidget):
             self.offscreen2_diffuse.release()
             self.offscreen2_depth.release()
 
-        self.offscreen2_diffuse = self.ctx.texture(buffer_size, 4, dtype='f1') # RGBA color/diffuse layer
+        self.offscreen2_diffuse = self.ctx.texture(buffer_size, 4, dtype='f2') # RGBA color/diffuse layer
         self.offscreen2_depth = self.ctx.depth_texture(buffer_size) # Texture for storing depth values
 
         # create a framebuffer we can render to
@@ -355,7 +345,6 @@ class GeometryViewport(QModernGLWidget):
 
     def resize(self, width, height):
         self._width, self._height = width, height
-        self.renderer.pause.emit()
         self.makeCurrent()
         self.activeCamera.setViewportDimensions(width, height)
         self.ctx.viewport = (0, 0, width, height)
@@ -365,7 +354,7 @@ class GeometryViewport(QModernGLWidget):
         self.buildOffscreen(width, height)
         self.hud_overlay.resize(width, height)
 
-        self.renderer.start.emit(width, height)
+        self.renderer.start(width, height)
 
     @property
     def activeCamera(self):
@@ -407,10 +396,8 @@ class GeometryViewport(QModernGLWidget):
             self.old_mouse_x = mouseEvent.x()
             self.old_mouse_y = mouseEvent.y()
             
-            self.renderer._camera = self.activeCamera
-            self.renderer.start.disconnect()
-            self.renderer.start.connect(self.renderer.run)
-            self.renderer.start.emit(self._width, self._height)
+            self.renderer.updateCamera(self.activeCamera)
+            self.renderer.start(self._width, self._height)
             
             self.update()
 

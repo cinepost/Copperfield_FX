@@ -1,1 +1,1 @@
-from .workbench import Workbench
+from .workbench import Workbench, WorkbenchIPR

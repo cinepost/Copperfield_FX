@@ -294,6 +294,9 @@ class Engine(QtCore.QObject):
         file = geo3.createNode("file")
         file.setParms({"filename": "/home/max/dev/Copperfield_FX/test/geometry/cube.obj"})
 
+        ## Create COP2_Render node
+        render1 = comp.createNode("render")
+
         ## Create COP2_File node 
         file1 = comp.createNode("file")
         file1.setPosition((10, 10))
@@ -301,7 +304,7 @@ class Engine(QtCore.QObject):
 
         ## Create COP2_blur node
         blur1 = comp.createNode("blur")
-        blur1.setInput(0, file1)
+        blur1.setInput(0, render1)
         blur1.setParms({"blursize":0.01, "blursizey": 0.05, "useindepy" : True})
 
         ## Create COP2_Press node

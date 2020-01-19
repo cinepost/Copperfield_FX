@@ -62,7 +62,6 @@ class ObjIO(GeoBaseIO):
         for shape in shapes:
             print(shape.name)
             #print("num_indices = {}".format(len(shape.mesh.indices)))
-            print(dir(shape.mesh))
             #print(shape.mesh.numpy_indices())
             #print(shape.mesh.numpy_num_face_vertices())
 

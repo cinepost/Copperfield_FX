@@ -38,6 +38,42 @@ class RenderPasses(IntEnum):
     OCCLUSION = 4
 
 
+class WorkbenchIPR(QtCore.QObject):
+    _start = QtCore.pyqtSignal(int, int)
+    _stop = QtCore.pyqtSignal()
+
+    def __init__(self, scene=None):
+        super().__init__()
+        self.thread = QtCore.QThread()
+        self.thread.setTerminationEnabled(True)
+        self.thread.start()
+        self.thread.setPriority(QtCore.QThread.TimeCriticalPriority)
+        
+        self.renderer = Workbench(scene)
+        self.renderer.moveToThread(self.thread)
+        self._start.connect(self.renderer.runIPR)
+        self._stop.connect(self.renderer.stopIPR)
+    
+    def setImageUpdateHandler(self, handler):
+        self.renderer.signals.sample_rendered.connect(handler)
+
+    def updateCamera(self, camera):
+        self.renderer._camera = camera
+
+    def start(self, width, height, samples = 16):
+        if not self.renderer.isRunningIPR():
+            self._start.emit(width, height)
+
+    def stop(self):
+        self._stop.emit()
+        
+    def terminate(self):
+        self.thread.terminate()
+
+    @property
+    def image_data(self):
+        return self.renderer._image_data
+
 class Signals(QtCore.QObject):
     request_render_sample_pass = QtCore.pyqtSignal()
     sample_rendered = QtCore.pyqtSignal()
@@ -45,20 +81,14 @@ class Signals(QtCore.QObject):
     stop_progressive_render = QtCore.pyqtSignal()
     reset_progressive_render = QtCore.pyqtSignal()
 
-
 class Workbench(QtCore.QObject):
-    start = QtCore.pyqtSignal(int, int)
-    pause = QtCore.pyqtSignal()
-
     def __init__(self, scene=None):
         QtCore.QObject.__init__(self)
+        self.ctx = None
 
         self._initialized = False
-        self._done = False
+        self._is_running_ipr = False
         self._progressive_update = False
-        
-        #self._scene = scene or Scene(self.ctx)
-        #self._camera = Camera()
 
         self._frame_buffer = None # final composited frame
         self._render_buffer = None 
@@ -66,7 +96,7 @@ class Workbench(QtCore.QObject):
         self._width = None
         self._height = None
 
-        self.image_data = None
+        self._image_data = None
 
         # helpers
         self.m_identity = Matrix44.identity() # just a helper
@@ -89,9 +119,11 @@ class Workbench(QtCore.QObject):
             "Occlusion" : RenderPasses.OCCLUSION
         }
 
-    def init(self, width, height, render_samples = 1):
+    def init(self, width, height, render_samples = 16):
+        logger.debug("Init")
         if not self._initialized:
             self.ctx = ContextManager.get_offscreen_context()
+            
             self._camera = Camera()
 
             self._scene = Scene(self.ctx)
@@ -114,21 +146,28 @@ class Workbench(QtCore.QObject):
             self.resize(width, height)
 
     @QtCore.pyqtSlot(int, int)
-    def run(self, w, h): # run / rerun interactive renderer
-        self._done = False
+    def runIPR(self, w, h): # run / rerun interactive renderer
+        self._is_running_ipr = True
         self.render_sample_num = 0
         self.renderPassSample = self._renderPassSample
         self.init(w, h)
+        #self._image_data.fill(0.0)
 
-        while not self._done:
+        while self._is_running_ipr:
             self.renderPassSample()
 
         self.renderPassSample = self.nofunc
 
     @QtCore.pyqtSlot()
-    def stop(self):
-        self._done = True
+    def stopIPR(self):
+        self._is_running_ipr = False
         self.renderPassSample = self.nofunc
+
+    def isRunningIPR(self):
+        return self._is_running_ipr
+
+    def nofunc(self):
+        pass
 
     def setRenderSamples(self, samples):
         self.render_samples = samples
@@ -138,22 +177,22 @@ class Workbench(QtCore.QObject):
         sequencer = ghalton.GeneralizedHalton(ghalton.EA_PERMS[:2])
         self.sampling_points = sequencer.get(samples)
 
-    def nofunc(self):
-        pass
+    def renderFrame(self) -> np.ndarray:
+        self.render_sample_num = 0
+        for i in range(self.render_samples):
+            self._renderPassSample(intermediate_sample_update=False)
 
-    def _renderPassSample(self):
-        if self.render_sample_num == self.render_samples:
-            self.render_sample_num = 0
-            self._done = True
-            return 
+        return self._image_data
 
+
+    def _renderPassSample(self, intermediate_sample_update=True):
         print("Workbench render image sample %s" % self.render_sample_num)
         m_view = self._camera.getTransform()
         m_proj = self._camera.getProjection(jittered=True, point=self.sampling_points[self.render_sample_num])
 
         # Render the scene to offscreen buffer
         self._render_buffer.use()
-        self._render_buffer.clear(1.0, 1.0, 0.0, 1.0)
+        self._render_buffer.clear(0.0, 0.0, 0.0, 0.0)
 
         self.ctx.multisample = False
         self.ctx.disable(moderngl.DEPTH_TEST)
@@ -191,14 +230,15 @@ class Workbench(QtCore.QObject):
         
         self.ctx.finish()
 
-        #self.image = Image.frombytes('RGBA', self._frame_buffer.size, self._frame_buffer.read(components=4, attachment=0, alignment=1, dtype='f1'), 'raw', 'RGBA', 0, -1)#.show()
-        self._frame_buffer.read_into(self.image_data, components=4, attachment=0, alignment=1, dtype='f1')
-        
-
-        self.signals.sample_rendered.emit()
-
         self.render_sample_num += 1
 
+        if intermediate_sample_update or self.render_sample_num >= self.render_samples:
+            self._frame_buffer.read_into(self._image_data, components=4, attachment=0, alignment=1, dtype='f2')        
+            self.signals.sample_rendered.emit()
+
+        if self.render_sample_num >= self.render_samples:
+            self.render_sample_num = 0
+            self._is_running_ipr = False
 
     def buildRenderBuffers(self, width, height):
         buffer_size = (width, height)
@@ -248,8 +288,7 @@ class Workbench(QtCore.QObject):
         self._frame_buffer.viewport = (0, 0, width, height)
 
         # rendered data buffer
-        self.image_data = np.empty((width, height), dtype="2float16")
-        #self.image = Image.new("RGBA", (width, height), (0, 0, 0))
+        self._image_data = np.empty((width, height), dtype="4float16")
 
     def resize(self, width, height):
         self._width, self._height = width, height

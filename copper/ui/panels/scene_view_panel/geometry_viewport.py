@@ -351,10 +351,12 @@ class GeometryViewport(QModernGLWidget):
 
         self.screen = self.ctx.detect_framebuffer(self.defaultFramebufferObject())
 
+        self.renderer.stop()
+        
         self.buildOffscreen(width, height)
         self.hud_overlay.resize(width, height)
 
-        self.renderer.start(width, height)
+        self.renderer.start(width, height) # restart rendering
 
     @property
     def activeCamera(self):
@@ -396,9 +398,7 @@ class GeometryViewport(QModernGLWidget):
             self.old_mouse_x = mouseEvent.x()
             self.old_mouse_y = mouseEvent.y()
             
-            self.renderer.updateCamera(self.activeCamera)
-            self.renderer.start(self._width, self._height)
-            
+            self.renderer.updateCamera(self.activeCamera)            
             self.update()
 
     # hou module stuff

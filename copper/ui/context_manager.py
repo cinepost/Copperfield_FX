@@ -29,7 +29,8 @@ class ContextManager:
         '''
         Offscreen context
         '''
-
+        return moderngl.create_standalone_context()
+        
         if ContextManager.offscreen_context is None:
             try:
                 ContextManager.offscreen_context = moderngl.create_standalone_context()

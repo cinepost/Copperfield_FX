@@ -77,7 +77,7 @@ class COP2_Render(CopNode):
 		self.image_height = self.parm("size2").eval()
 
 		print("render init")
-		self.renderer.init(self.image_width, self.image_height)
+		self.renderer.init(self.image_width, self.image_height, 16)
 
 		print("rendering")
 		image_array = np.flip(self.renderer.renderFrame(), (0, 1))

@@ -37,11 +37,11 @@ class RenderPasses(IntEnum):
     NORMALS = 3
     OCCLUSION = 4
 
+class SignalsIPR(QtCore.QObject):
+    start = QtCore.pyqtSignal(int, int)
+    update_sample = QtCore.pyqtSignal()
 
 class WorkbenchIPR(QtCore.QObject):
-    _start = QtCore.pyqtSignal(int, int)
-    _stop = QtCore.pyqtSignal()
-
     def __init__(self, scene=None):
         super().__init__()
         self.thread = QtCore.QThread()
@@ -49,23 +49,34 @@ class WorkbenchIPR(QtCore.QObject):
         self.thread.start()
         self.thread.setPriority(QtCore.QThread.TimeCriticalPriority)
         
+        self.signals = SignalsIPR()
+
         self.renderer = Workbench(scene)
         self.renderer.moveToThread(self.thread)
-        self._start.connect(self.renderer.runIPR)
-        self._stop.connect(self.renderer.stopIPR)
-    
+        self.signals.start.connect(self.renderer.runIPR)
+
+        self.width, self.height = None, None
+
     def setImageUpdateHandler(self, handler):
         self.renderer.signals.sample_rendered.connect(handler)
 
     def updateCamera(self, camera):
         self.renderer._camera = camera
+        self.reset()
 
     def start(self, width, height, samples = 16):
-        if not self.renderer.isRunningIPR():
-            self._start.emit(width, height)
+        if (self.width, self.height) != (width, height):
+            self.width, self.height = width, height
+            self.reset()
+        elif not self.renderer.isRunningIPR():
+            self.signals.start.emit(width, height)
 
     def stop(self):
-        self._stop.emit()
+        self.renderer._is_running_ipr = False
+    
+    def reset(self):
+        self.renderer._is_running_ipr = False
+        self.signals.start.emit(self.width, self.height)
         
     def terminate(self):
         self.thread.terminate()
@@ -120,7 +131,6 @@ class Workbench(QtCore.QObject):
         }
 
     def init(self, width, height, render_samples = 16):
-        logger.debug("Init")
         if not self._initialized:
             self.ctx = ContextManager.get_offscreen_context()
             
@@ -149,19 +159,13 @@ class Workbench(QtCore.QObject):
     def runIPR(self, w, h): # run / rerun interactive renderer
         self._is_running_ipr = True
         self.render_sample_num = 0
-        self.renderPassSample = self._renderPassSample
+        self.renderIPRPassSample = self.renderPassSample
         self.init(w, h)
-        #self._image_data.fill(0.0)
 
         while self._is_running_ipr:
-            self.renderPassSample()
+            self.renderIPRPassSample()
 
-        self.renderPassSample = self.nofunc
-
-    @QtCore.pyqtSlot()
-    def stopIPR(self):
-        self._is_running_ipr = False
-        self.renderPassSample = self.nofunc
+        self.renderIPRPassSample = self.nofunc
 
     def isRunningIPR(self):
         return self._is_running_ipr
@@ -180,13 +184,13 @@ class Workbench(QtCore.QObject):
     def renderFrame(self) -> np.ndarray:
         self.render_sample_num = 0
         for i in range(self.render_samples):
-            self._renderPassSample(intermediate_sample_update=False)
+            self.renderPassSample(intermediate_sample_update=False)
 
         return self._image_data
 
 
-    def _renderPassSample(self, intermediate_sample_update=True):
-        print("Workbench render image sample %s" % self.render_sample_num)
+    def renderPassSample(self, intermediate_sample_update=True):
+        #print("Workbench render image sample %s" % self.render_sample_num)
         m_view = self._camera.getTransform()
         m_proj = self._camera.getProjection(jittered=True, point=self.sampling_points[self.render_sample_num])
 
@@ -233,8 +237,9 @@ class Workbench(QtCore.QObject):
         self.render_sample_num += 1
 
         if intermediate_sample_update or self.render_sample_num >= self.render_samples:
-            self._frame_buffer.read_into(self._image_data, components=4, attachment=0, alignment=1, dtype='f2')        
-            self.signals.sample_rendered.emit()
+            self._frame_buffer.read_into(self._image_data, components=4, attachment=0, alignment=1, dtype='f2')
+            if self._is_running_ipr:        
+                self.signals.sample_rendered.emit()
 
         if self.render_sample_num >= self.render_samples:
             self.render_sample_num = 0
@@ -275,7 +280,7 @@ class Workbench(QtCore.QObject):
             self._frame_buffer_diffuse.release()
             self._frame_buffer_depth.release()
 
-        self._frame_buffer_diffuse = self.ctx.texture(buffer_size, 4, dtype='f1') # RGBA color/diffuse layer
+        self._frame_buffer_diffuse = self.ctx.texture(buffer_size, 4, dtype='f2') # RGBA color/diffuse layer
         self._frame_buffer_depth = self.ctx.depth_texture(buffer_size) # Texture for storing depth values
 
         # create a framebuffer we can render to

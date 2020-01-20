@@ -42,7 +42,7 @@ class SignalsIPR(QtCore.QObject):
     update_sample = QtCore.pyqtSignal()
 
 class WorkbenchIPR(QtCore.QObject):
-    def __init__(self, scene=None):
+    def __init__(self, scene=None, camera=Camera()):
         super().__init__()
         self.thread = QtCore.QThread()
         self.thread.setTerminationEnabled(True)
@@ -51,7 +51,7 @@ class WorkbenchIPR(QtCore.QObject):
         
         self.signals = SignalsIPR()
 
-        self.renderer = Workbench(scene)
+        self.renderer = Workbench(scene, camera)
         self.renderer.moveToThread(self.thread)
         self.signals.start.connect(self.renderer.runIPR)
 
@@ -93,7 +93,7 @@ class Signals(QtCore.QObject):
     reset_progressive_render = QtCore.pyqtSignal()
 
 class Workbench(QtCore.QObject):
-    def __init__(self, scene=None):
+    def __init__(self, scene=None, camera=Camera()):
         QtCore.QObject.__init__(self)
         self.ctx = None
 
@@ -106,6 +106,8 @@ class Workbench(QtCore.QObject):
 
         self._width = None
         self._height = None
+
+        self._camera = camera
 
         self._image_data = None
 
@@ -134,8 +136,6 @@ class Workbench(QtCore.QObject):
         if not self._initialized:
             self.ctx = ContextManager.get_offscreen_context()
             
-            self._camera = Camera()
-
             self._scene = Scene(self.ctx)
             self._scene.init()
             
@@ -237,9 +237,8 @@ class Workbench(QtCore.QObject):
         self.render_sample_num += 1
 
         if intermediate_sample_update or self.render_sample_num >= self.render_samples:
-            self._frame_buffer.read_into(self._image_data, components=4, attachment=0, alignment=1, dtype='f2')
-            if self._is_running_ipr:        
-                self.signals.sample_rendered.emit()
+            self._frame_buffer.read_into(self._image_data, components=4, attachment=0, alignment=1, dtype='f2')       
+            self.signals.sample_rendered.emit()
 
         if self.render_sample_num >= self.render_samples:
             self.render_sample_num = 0

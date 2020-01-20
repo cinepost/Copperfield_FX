@@ -187,10 +187,10 @@ class GeometryViewport(QModernGLWidget):
 
     @QtCore.pyqtSlot()
     def handleRenderedSample(self):
-        #print("handleRenderedSample")
-        self.makeCurrent()
-        self.offscreen2_diffuse.write(self.renderer.image_data)
-        self.update()
+        if self.renderer.image_data.shape[0:2] == (self._width, self._height):
+            self.makeCurrent()
+            self.offscreen2_diffuse.write(self.renderer.image_data)
+            self.update()
 
     @QtCore.pyqtSlot()
     def handleFinishedSamples(self):
@@ -212,7 +212,7 @@ class GeometryViewport(QModernGLWidget):
             self.quad_fs.program['m_proj'].write(Matrix44.orthogonal_projection(-1, 1, 1, -1, 1, 10).astype('f4').tobytes())
 
             # init renderer
-            self.renderer = WorkbenchIPR()
+            self.renderer = WorkbenchIPR(scene=None, camera = self.activeCamera)
             self.renderer.setImageUpdateHandler(self.handleRenderedSample)
 
             self._init_done = True
@@ -356,7 +356,7 @@ class GeometryViewport(QModernGLWidget):
         self.buildOffscreen(width, height)
         self.hud_overlay.resize(width, height)
 
-        self.renderer.start(width, height) # restart rendering
+        self.renderer.start(width, height) # actually starts/restart rendering
 
     @property
     def activeCamera(self):
